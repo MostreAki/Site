@@ -1,0 +1,291 @@
+<!DOCTYPE html><html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <title>MostraKi</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#ffffff" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+    body {
+      background-image: url("fundo-mobile.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+    }
+    @media (min-width: 768px) {
+      body { background-image: url("fundo-desktop.png"); }
+    }
+    header {
+      background-color: #ffffff;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      position: relative;
+    }
+    .logo-container { display: flex; align-items: center; }
+    .logo-container img { height: 40px; margin-right: 10px; }
+    .logo { font-size: 1.5rem; font-weight: bold; }
+    .logo .mostra { color: #008182; }
+    .logo .ki { color: #ec2c4a; }
+    .menu-icon { font-size: 1.5rem; cursor: pointer; }
+    .menu-list {
+      position: absolute;
+      top: 60px;
+      right: 20px;
+      background-color: #ffe3c6;
+      border: 2px solid black;
+      border-radius: 6px;
+      display: none;
+      flex-direction: column;
+      padding: 10px;
+      z-index: 1000;
+    }
+    .menu-list a {
+      text-decoration: none;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 6px;
+      font-weight: bold;
+      background-color: #d73e45;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+    .menu-list a:hover { background-color: #b8313b; }
+    .banner video { width: 100%; height: auto; }
+    .section {
+      background-color: #ffe3c6;
+      margin: 40px auto;
+      padding: 20px;
+      width: 80%;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+    .section h2 { color: #008b8b; margin-bottom: 10px; }
+    .btn {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 10px 20px;
+      background-color: #d73e45;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    footer {
+      background-color: #ffe3c6;
+      padding: 20px;
+      text-align: center;
+      color: #555;
+      font-size: 0.9rem;
+    }
+    .google-login {
+      width: 100%;
+      padding: 10px;
+      background: white;
+      color: black;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .google-login img { height: 20px; }
+    .user-circle {
+      background-color: #15b0af;
+      color: white;
+      font-weight: bold;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      margin-left: 10px;
+      font-size: 0.8rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo-container">
+      <img src="logo.png" alt="Logo" />
+      <div class="logo"><span class="mostra">Mostra</span><span class="ki">Ki</span></div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <span id="authText" style="font-weight:bold; color:#15b0af; cursor:pointer; display:none;" onclick="handleAuthAction()"></span>
+      <div id="userCircle" class="user-circle" title="Perfil"></div>
+      <div class="menu-icon" onclick="toggleMenu()">&#9776;</div>
+    </div>
+    <div class="menu-list" id="menu">
+      <a href="/">Página Inicia</a>
+      <a href="/sobre">Sobre</a>
+      <a href="/planos">Planos</a>
+      <a href="/servicos-adicionais">Serviços Adicionais</a>
+      <a href="/meusiteaki">Meu SiteAki</a>
+      <a href="/contato">Contato</a>
+    </div>
+  </header>
+  <div class="banner">
+    <a href="https://www.mostraki.com.br/planos">
+      <video autoplay muted loop playsinline preload="auto">
+        <source src="banner-mobile.webm" type="video/webm" media="(max-width: 768px)">
+        <source src="banner-desktop.webm" type="video/webm" media="(min-width: 769px)">
+        Seu navegador não suporta vídeo HTML5.
+      </video>
+    </a>
+  </div>
+  <div class="section">
+    <h2>Como Funciona?</h2>
+    <p>Explicamos de forma clara como usar o MostraKi para divulgar seus produtos e ideias.</p>
+    <a href="#" class="btn">Veja Mais</a>
+  </div>
+  <div class="section">
+    <h2>Redes Sociais</h2>
+    <p>Conecte-se com o público nas redes sociais por meio do MostraKi.</p>
+    <a href="#" class="btn">Veja Mais</a>
+  </div>
+  <div class="section">
+    <h2>Serviços Adicionais</h2>
+    <p>Descubra como potencializar sua presença com nossos serviços extras.</p>
+    <a href="#" class="btn">Veja Mais</a>
+  </div>
+  <footer>
+    &copy; 2025 MostraKi. Todos os direitos reservados.
+  </footer>  <!-- Modal de Login -->  <div id="loginModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:9999;">
+    <div style="background:white; padding:20px; border-radius:8px; width:90%; max-width:400px;">
+      <h2>Entrar no MostraKi</h2>
+      <input type="email" id="email" placeholder="Email" style="width:100%; padding:10px; margin:10px 0;">
+      <input type="password" id="password" placeholder="Senha" style="width:100%; padding:10px; margin:10px 0;">
+      <button onclick="login()" style="width:100%; padding:10px; background:#15b0af; color:white; border:none;">Entrar</button>
+      <p style="margin-top:10px; text-align:center;"><a href="#" onclick="resetarSenha()" style="color:#d73e45; text-decoration:none;">Esqueceu sua senha?</a></p>
+      <button onclick="window.location.href='cadastro.html'" style="width:100%; padding:10px; background:#d73e45; color:white; border:none; margin-top:10px;">Cadastrar</button>
+      <button class="google-login" onclick="loginComGoogle()">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google Logo">
+        Entrar com Google
+      </button>
+      <p style="margin-top:10px; text-align:right;"><a href="#" onclick="closeModal()">Fechar</a></p>
+    </div>
+  </div>  <script>
+    function toggleMenu() {
+      const menu = document.getElementById("menu");
+      menu.style.display = menu.style.display === "flex" ? "none" : "flex";
+    }
+    function openModal() {
+      document.getElementById('loginModal').style.display = 'flex';
+    }
+    function closeModal() {
+      document.getElementById('loginModal').style.display = 'none';
+    }
+    function handleAuthAction() {
+      const text = document.getElementById("authText").textContent;
+      if (text === "Entrar") {
+        openModal();
+      } else if (text === "Sair") {
+        logout();
+      }
+    }
+  </script>  <!-- Firebase SDK com MostraKi atualizado -->  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+    import { getAuth, onAuthStateChanged, sendPasswordResetEmail, signOut, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
+      authDomain: "mostreaki-2025.firebaseapp.com",
+      projectId: "mostreaki-2025",
+      storageBucket: "mostreaki-2025.firebasestorage.app",
+      messagingSenderId: "748712068097",
+      appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    window.login = function () {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      signInWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          alert("Login realizado com sucesso!");
+          closeModal();
+        })
+        .catch(error => {
+          alert("Erro ao fazer login: " + error.message);
+        });
+    };
+
+    window.resetarSenha = function () {
+      const email = document.getElementById("email").value;
+      if (!email) {
+        alert("Digite seu e-mail para redefinir a senha.");
+        return;
+      }
+      sendPasswordResetEmail(auth, email)
+        .then(() => {
+          alert("Enviamos um link para redefinir sua senha. Verifique sua caixa de entrada.");
+        })
+        .catch(error => {
+          alert("Erro ao enviar e-mail de redefinição: " + error.message);
+        });
+    };
+
+    window.loginComGoogle = function () {
+      const provider = new GoogleAuthProvider();
+      signInWithPopup(auth, provider)
+        .then((result) => {
+          const isNewUser = result._tokenResponse?.isNewUser;
+          if (isNewUser) {
+            alert("Cadastro realizado com sua conta Google!");
+          } else {
+            alert("Login realizado com Google!");
+          }
+          closeModal();
+        })
+        .catch((error) => {
+          if (error.code === 'auth/popup-closed-by-user') {
+            alert("O login com Google foi cancelado.");
+          } else {
+            alert("Erro ao fazer login com Google: " + error.message);
+          }
+        });
+    };
+
+    window.logout = function () {
+      signOut(auth).then(() => {
+        alert("Você saiu da sua conta.");
+        document.getElementById("userCircle").style.display = "none";
+        document.getElementById("authText").textContent = "Entrar";
+      }).catch((error) => {
+        alert("Erro ao sair: " + error.message);
+      });
+    };
+
+    onAuthStateChanged(auth, (user) => {
+      const userCircle = document.getElementById("userCircle");
+      const authText = document.getElementById("authText");
+      if (user) {
+        const nome = user.displayName || user.email;
+        const iniciais = nome.trim().charAt(0).toUpperCase();
+        userCircle.textContent = iniciais;
+        userCircle.style.display = "flex";
+        authText.textContent = "Sair";
+        authText.style.display = "inline";
+      } else {
+        userCircle.style.display = "none";
+        authText.textContent = "Entrar";
+        authText.style.display = "inline";
+      }
+    });
+  </script></body>
+</html>
