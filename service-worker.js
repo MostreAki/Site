@@ -1,6 +1,6 @@
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open("mostraki-cache").then((cache) => {
+    caches.open("mostreaki-cache").then((cache) => {
       return cache.addAll([
         "/",
         "/index.html",
