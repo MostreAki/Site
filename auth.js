@@ -17,7 +17,7 @@ const auth = getAuth(app);
 window.handleAuthAction = function () {
   const action = document.getElementById("authText").textContent;
   if (action === "Entrar") {
-    window.location.href = "/login.html";
+    document.getElementById("loginModal").style.display = "flex";
   } else {
     signOut(auth).then(() => {
       localStorage.removeItem("fotoPerfil");
