@@ -1,4 +1,4 @@
-const CACHE_NAME = "mostreaki-cache-v2"; // Atualize o número sempre que mudar os arquivos
+const CACHE_NAME = "mostreaki-cache-v3"; // Atualize o número sempre que mudar os arquivos
 
 const FILES_TO_CACHE = [
   "/",
