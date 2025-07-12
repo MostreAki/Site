@@ -1,5 +1,4 @@
-<!DOCTYPE html><html lang="pt-BR">
-<head>
+<!DOCTYPE html><html lang="pt-BR"><head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -57,19 +56,6 @@
       text-align: center;
     }
     .menu-list a:hover { background-color: #b8313b; }
-    .user-circle {
-      background-color: #15b0af;
-      color: white;
-      font-weight: bold;
-      border-radius: 50%;
-      width: 32px;
-      height: 32px;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      margin-left: 10px;
-      font-size: 0.8rem;
-    }
     .section {
       background-color: #ffffff;
       margin: 40px auto;
@@ -87,6 +73,16 @@
       margin: 10px 0;
       border: 1px solid #ccc;
       border-radius: 6px;
+    }
+    .input-wrapper {
+      position: relative;
+    }
+    .toggle-password {
+      position: absolute;
+      top: 50%;
+      right: 15px;
+      transform: translateY(-50%);
+      cursor: pointer;
     }
     .btn {
       display: inline-block;
@@ -123,11 +119,7 @@
       <img src="logo.png" alt="Logo" />
       <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
     </div>
-    <div style="display: flex; align-items: center; gap: 10px;">
-      <span id="authText" style="font-weight:bold; color:#15b0af; cursor:pointer; display:none;" onclick="handleAuthAction()"></span>
-      <div id="userCircle" class="user-circle" title="Perfil"></div>
-      <div class="menu-icon" onclick="toggleMenu()">&#9776;</div>
-    </div>
+    <div class="menu-icon" onclick="toggleMenu()">&#9776;</div>
     <div class="menu-list" id="menu">
       <a href="/pagina-inicial.html">Página Inicial</a>
       <a href="/sobre.html">Sobre</a>
@@ -137,110 +129,91 @@
       <a href="/crieaki.html">CrieAki</a>
       <a href="/contatos.html">Contatos</a>
     </div>
-  </header>  <div class="section">
+  </header>
+  <div class="section">
     <h2>Cadastro</h2>
     <input type="text" id="nome" placeholder="Nome completo" class="form-input" />
     <input type="email" id="email" placeholder="E-mail" class="form-input" />
-    <input type="password" id="senha" placeholder="Senha" class="form-input" />
-    <input type="password" id="confirmarSenha" placeholder="Confirmar senha" class="form-input" />
+    <div class="input-wrapper">
+      <input type="password" id="senha" placeholder="Senha" class="form-input" />
+      <span class="toggle-password" onclick="toggleSenha('senha')">👁️</span>
+    </div>
+    <div class="input-wrapper">
+      <input type="password" id="confirmarSenha" placeholder="Confirmar senha" class="form-input" />
+      <span class="toggle-password" onclick="toggleSenha('confirmarSenha')">👁️</span>
+    </div>
     <button class="btn" onclick="cadastrar()">Cadastrar</button>
     <p style="margin: 15px 0;">ou</p>
     <button class="google-login" onclick="loginComGoogle()">
       <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google Logo">
       Cadastrar com Google
     </button>
-  </div>  <footer style="background-color:#c2e7df; padding:20px; text-align:center; color:#555; font-size:0.9rem;">
+  </div>
+  <footer style="background-color:#c2e7df; padding:20px; text-align:center; color:#555; font-size:0.9rem;">
     &copy; 2025 MostreAki. Todos os direitos reservados.
-  </footer>  <script>
+  </footer>
+  <script>
     function toggleMenu() {
       const menu = document.getElementById("menu");
       menu.style.display = menu.style.display === "flex" ? "none" : "flex";
     }
-    function handleAuthAction() {
-      const text = document.getElementById("authText").textContent;
-      if (text === "Entrar") {
-        window.location.href = "/index.html";
-      } else if (text === "Sair") {
-        logout();
-      }
+    function toggleSenha(id) {
+      const input = document.getElementById(id);
+      input.type = input.type === "password" ? "text" : "password";
     }
-  </script>  <script type="module">
+  </script>
+  <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-    import { getAuth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+    import { getAuth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';const firebaseConfig = {
+  apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
+  authDomain: "mostreaki-2025.firebaseapp.com",
+  projectId: "mostreaki-2025",
+  storageBucket: "mostreaki-2025.firebasestorage.app",
+  messagingSenderId: "748712068097",
+  appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
+};
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
-      authDomain: "mostreaki-2025.firebaseapp.com",
-      projectId: "mostreaki-2025",
-      storageBucket: "mostreaki-2025.firebasestorage.app",
-      messagingSenderId: "748712068097",
-      appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
-    };
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+window.cadastrar = function () {
+  const nome = document.getElementById("nome").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const senha = document.getElementById("senha").value;
+  const confirmarSenha = document.getElementById("confirmarSenha").value;
 
-    window.cadastrar = function () {
-      const nome = document.getElementById("nome").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const senha = document.getElementById("senha").value;
-      const confirmarSenha = document.getElementById("confirmarSenha").value;
+  if (!nome || !email || !senha || !confirmarSenha) {
+    alert("Preencha todos os campos.");
+    return;
+  }
 
-      if (!nome || !email || !senha || !confirmarSenha) {
-        alert("Preencha todos os campos.");
-        return;
-      }
+  if (senha !== confirmarSenha) {
+    alert("As senhas não coincidem.");
+    return;
+  }
 
-      if (senha !== confirmarSenha) {
-        alert("As senhas não coincidem.");
-        return;
-      }
-
-      createUserWithEmailAndPassword(auth, email, senha)
-        .then(() => {
-          alert("Cadastro realizado com sucesso!");
-          window.location.href = "cadastro-sucesso.html";
-        })
-        .catch(e => {
-          alert("Erro no cadastro: " + e.message);
-        });
-    };
-
-    window.loginComGoogle = function () {
-      const provider = new GoogleAuthProvider();
-      signInWithPopup(auth, provider)
-        .then((result) => {
-          alert("Cadastro com Google realizado!");
-          window.location.href = "cadastro-sucesso.html";
-        })
-        .catch(error => {
-          alert("Erro com Google: " + error.message);
-        });
-    };
-
-    window.logout = function () {
-      signOut(auth).then(() => {
-        alert("Você saiu da sua conta.");
-        document.getElementById("userCircle").style.display = "none";
-        document.getElementById("authText").textContent = "Entrar";
-      });
-    };
-
-    onAuthStateChanged(auth, (user) => {
-      const userCircle = document.getElementById("userCircle");
-      const authText = document.getElementById("authText");
-      if (user) {
-        const nome = user.displayName || user.email;
-        const iniciais = nome.trim().charAt(0).toUpperCase();
-        userCircle.textContent = iniciais;
-        userCircle.style.display = "flex";
-        authText.textContent = "Sair";
-        authText.style.display = "inline";
-      } else {
-        userCircle.style.display = "none";
-        authText.textContent = "Entrar";
-        authText.style.display = "inline";
-      }
+  createUserWithEmailAndPassword(auth, email, senha)
+    .then(() => {
+      alert("Cadastro realizado com sucesso!");
+      window.location.href = "cadastro-sucesso.html";
+    })
+    .catch(e => {
+      alert("Erro no cadastro: " + e.message);
     });
-  </script></body>
+};
+
+window.loginComGoogle = function () {
+  const provider = new GoogleAuthProvider();
+  signInWithPopup(auth, provider)
+    .then(() => {
+      alert("Cadastro com Google realizado!");
+      window.location.href = "cadastro-sucesso.html";
+    })
+    .catch(error => {
+      alert("Erro com Google: " + error.message);
+    });
+};
+
+  </script>
+</body>
 </html>
