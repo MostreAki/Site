@@ -218,6 +218,10 @@
 
       signInWithEmailAndPassword(auth, email, password)
         .then(() => {
+  closeModal();
+  window.location.href = "login-sucesso.html";
+}) 
+        {
           alert("Login realizado com sucesso!");
           closeModal();
         })
