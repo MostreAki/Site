@@ -10,15 +10,26 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
     body {
-      background-image: url("fundo-mobile.png");
-      background-size: cover;
-      background-repeat: no-repeat;
-      background-attachment: fixed;
-    }
-    @media (min-width: 768px) {
-      body { background-image: url("fundo-desktop.png"); }
-    }
-<!-- Modal de Login bonito -->
+    <body>
+  <!-- Modal de Login bonito -->
+  <div id="loginModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:9999;">
+    <div style="background:white; padding:20px; border-radius:8px; width:90%; max-width:400px;">
+      <h2>Entrar no MostreAki</h2>
+      <input type="email" id="email" placeholder="Email" style="width:100%; padding:10px; margin:10px 0;">
+      <div style="position: relative;">
+        <input type="password" id="password" placeholder="Senha" style="width:100%; padding:10px; margin:10px 0;">
+        <span onclick="togglePasswordVisibility('password', this)" style="position:absolute; right:10px; top:18px; cursor:pointer;">👁️</span>
+      </div>
+      <button onclick="login()" style="width:100%; padding:10px; background:#15b0af; color:white; border:none;">Entrar</button>
+      <p style="margin-top:10px; text-align:center;"><a href="#" onclick="resetarSenha()" style="color:#d73e45; text-decoration:none;">Esqueceu sua senha?</a></p>
+      <button onclick="window.location.href='cadastro.html'" style="width:100%; padding:10px; background:#d73e45; color:white; border:none; margin-top:10px;">Cadastrar</button>
+      <button class="google-login" onclick="loginComGoogle()" style="margin-top: 10px;">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google Logo" style="height:20px; vertical-align:middle; margin-right:8px;">
+        Entrar com Google
+      </button>
+      <p style="margin-top:10px; text-align:right;"><a href="#" onclick="closeModal()">Fechar</a></p>
+    </div>
+  </div>
 <div id="loginModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:9999;">
   <div style="background:white; padding:20px; border-radius:8px; width:90%; max-width:400px;">
     <h2>Entrar no MostreAki</h2>
