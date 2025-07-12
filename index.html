@@ -212,23 +212,19 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    window.login = function () {
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
+   window.login = function () {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
 
-      signInWithEmailAndPassword(auth, email, password)
-        .then(() => {
-  closeModal();
-  window.location.href = "login-sucesso.html";
-}) 
-        {
-          alert("Login realizado com sucesso!");
-          closeModal();
-        })
-        .catch(error => {
-          alert("Erro ao fazer login: " + error.message);
-        });
-    };
+  signInWithEmailAndPassword(auth, email, password)
+    .then(() => {
+      closeModal();
+      window.location.href = "login-sucesso.html";
+    })
+    .catch(error => {
+      alert("Erro ao fazer login: " + error.message);
+    });
+};
 
     window.resetarSenha = function () {
       const email = document.getElementById("email").value;
