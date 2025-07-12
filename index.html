@@ -80,7 +80,7 @@
       font-weight: bold;
     }
     footer {
-      background-color: ##c2e7df;
+      background-color: #c2e7df;
       padding: 20px;
       text-align: center;
       color: #555;
@@ -163,11 +163,16 @@
   </div>
   <footer>
     &copy; 2025 MostreAki. Todos os direitos reservados.
-  </footer>  <!-- Modal de Login -->  <div id="loginModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:9999;">
+  </footer>
+  <!-- Modal de Login -->
+  <div id="loginModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:9999;">
     <div style="background:white; padding:20px; border-radius:8px; width:90%; max-width:400px;">
       <h2>Entrar no MostreAki</h2>
       <input type="email" id="email" placeholder="Email" style="width:100%; padding:10px; margin:10px 0;">
-      <input type="password" id="password" placeholder="Senha" style="width:100%; padding:10px; margin:10px 0;">
+      <div style="position: relative;">
+        <input type="password" id="password" placeholder="Senha" style="width:100%; padding:10px; margin:10px 0;">
+        <span onclick="togglePasswordVisibility('password', this)" style="position:absolute; right:10px; top:18px; cursor:pointer;">👁️</span>
+      </div>
       <button onclick="login()" style="width:100%; padding:10px; background:#15b0af; color:white; border:none;">Entrar</button>
       <p style="margin-top:10px; text-align:center;"><a href="#" onclick="resetarSenha()" style="color:#d73e45; text-decoration:none;">Esqueceu sua senha?</a></p>
       <button onclick="window.location.href='cadastro.html'" style="width:100%; padding:10px; background:#d73e45; color:white; border:none; margin-top:10px;">Cadastrar</button>
@@ -177,7 +182,8 @@
       </button>
       <p style="margin-top:10px; text-align:right;"><a href="#" onclick="closeModal()">Fechar</a></p>
     </div>
-  </div>  <script>
+  </div>
+  <script>
     function toggleMenu() {
       const menu = document.getElementById("menu");
       menu.style.display = menu.style.display === "flex" ? "none" : "flex";
@@ -196,23 +202,28 @@
         logout();
       }
     }
-  </script>  <!-- Firebase SDK com MostraKi atualizado -->  <script type="module">
+    function togglePasswordVisibility(fieldId, el) {
+      const input = document.getElementById(fieldId);
+      const isPassword = input.type === "password";
+      input.type = isPassword ? "text" : "password";
+      el.textContent = isPassword ? "🙈" : "👁️";
+    }
+  </script>
+  <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-    import { getAuth, onAuthStateChanged, sendPasswordResetEmail, signOut, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+    import { getAuth, onAuthStateChanged, sendPasswordResetEmail, signOut, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';const firebaseConfig = {
+  apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
+  authDomain: "mostreaki-2025.firebaseapp.com",
+  projectId: "mostreaki-2025",
+  storageBucket: "mostreaki-2025.firebasestorage.app",
+  messagingSenderId: "748712068097",
+  appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
+};
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
-      authDomain: "mostreaki-2025.firebaseapp.com",
-      projectId: "mostreaki-2025",
-      storageBucket: "mostreaki-2025.firebasestorage.app",
-      messagingSenderId: "748712068097",
-      appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
-    };
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-
-   window.login = function () {
+window.login = function () {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
@@ -226,67 +237,69 @@
     });
 };
 
-    window.resetarSenha = function () {
-      const email = document.getElementById("email").value;
-      if (!email) {
-        alert("Digite seu e-mail para redefinir a senha.");
-        return;
-      }
-      sendPasswordResetEmail(auth, email)
-        .then(() => {
-          alert("Enviamos um link para redefinir sua senha. Verifique sua caixa de entrada.");
-        })
-        .catch(error => {
-          alert("Erro ao enviar e-mail de redefinição: " + error.message);
-        });
-    };
+window.resetarSenha = function () {
+  const email = document.getElementById("email").value;
+  if (!email) {
+    alert("Digite seu e-mail para redefinir a senha.");
+    return;
+  }
+  sendPasswordResetEmail(auth, email)
+    .then(() => {
+      alert("Enviamos um link para redefinir sua senha. Verifique sua caixa de entrada.");
+    })
+    .catch(error => {
+      alert("Erro ao enviar e-mail de redefinição: " + error.message);
+    });
+};
 
-    window.loginComGoogle = function () {
-      const provider = new GoogleAuthProvider();
-      signInWithPopup(auth, provider)
-        .then((result) => {
-          const isNewUser = result._tokenResponse?.isNewUser;
-          if (isNewUser) {
-            alert("Cadastro realizado com sua conta Google!");
-          } else {
-            alert("Login realizado com Google!");
-          }
-          closeModal();
-        })
-        .catch((error) => {
-          if (error.code === 'auth/popup-closed-by-user') {
-            alert("O login com Google foi cancelado.");
-          } else {
-            alert("Erro ao fazer login com Google: " + error.message);
-          }
-        });
-    };
-
-    window.logout = function () {
-      signOut(auth).then(() => {
-        alert("Você saiu da sua conta.");
-        document.getElementById("userCircle").style.display = "none";
-        document.getElementById("authText").textContent = "Entrar";
-      }).catch((error) => {
-        alert("Erro ao sair: " + error.message);
-      });
-    };
-
-    onAuthStateChanged(auth, (user) => {
-      const userCircle = document.getElementById("userCircle");
-      const authText = document.getElementById("authText");
-      if (user) {
-        const nome = user.displayName || user.email;
-        const iniciais = nome.trim().charAt(0).toUpperCase();
-        userCircle.textContent = iniciais;
-        userCircle.style.display = "flex";
-        authText.textContent = "Sair";
-        authText.style.display = "inline";
+window.loginComGoogle = function () {
+  const provider = new GoogleAuthProvider();
+  signInWithPopup(auth, provider)
+    .then((result) => {
+      const isNewUser = result._tokenResponse?.isNewUser;
+      if (isNewUser) {
+        alert("Cadastro realizado com sua conta Google!");
       } else {
-        userCircle.style.display = "none";
-        authText.textContent = "Entrar";
-        authText.style.display = "inline";
+        alert("Login realizado com Google!");
+      }
+      closeModal();
+    })
+    .catch((error) => {
+      if (error.code === 'auth/popup-closed-by-user') {
+        alert("O login com Google foi cancelado.");
+      } else {
+        alert("Erro ao fazer login com Google: " + error.message);
       }
     });
-  </script></body>
+};
+
+window.logout = function () {
+  signOut(auth).then(() => {
+    alert("Você saiu da sua conta.");
+    document.getElementById("userCircle").style.display = "none";
+    document.getElementById("authText").textContent = "Entrar";
+  }).catch((error) => {
+    alert("Erro ao sair: " + error.message);
+  });
+};
+
+onAuthStateChanged(auth, (user) => {
+  const userCircle = document.getElementById("userCircle");
+  const authText = document.getElementById("authText");
+  if (user) {
+    const nome = user.displayName || user.email;
+    const iniciais = nome.trim().charAt(0).toUpperCase();
+    userCircle.textContent = iniciais;
+    userCircle.style.display = "flex";
+    authText.textContent = "Sair";
+    authText.style.display = "inline";
+  } else {
+    userCircle.style.display = "none";
+    authText.textContent = "Entrar";
+    authText.style.display = "inline";
+  }
+});
+
+  </script>
+</body>
 </html>
