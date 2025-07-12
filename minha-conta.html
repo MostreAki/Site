@@ -4,9 +4,10 @@
   <title>Minha Conta - MostreAki</title>
   <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
     body {
+      font-family: Arial, sans-serif;
       background: #f0f0f0;
+      padding: 20px;
     }
     header {
       background-color: #c2e7df;
@@ -54,16 +55,22 @@
       border-radius: 50%;
       width: 32px;
       height: 32px;
-      display: none;
+      display: flex;
       align-items: center;
       justify-content: center;
       margin-left: 10px;
       font-size: 0.8rem;
+      overflow: hidden;
+    }
+    .user-circle img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
     .container {
       background: white;
       max-width: 600px;
-      margin: 80px auto 20px;
+      margin: auto;
       padding: 20px;
       border-radius: 10px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
@@ -85,6 +92,15 @@
       padding: 10px;
       border: 1px solid #ccc;
       border-radius: 6px;
+    }
+    #fotoPreview {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin: 10px auto;
+      display: block;
+      border: 2px solid #ccc;
     }
     .buttons {
       display: flex;
@@ -113,12 +129,12 @@
       <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
     </div>
     <div style="display: flex; align-items: center; gap: 10px;">
-      <span id="authText" style="font-weight:bold; color:#15b0af; cursor:pointer; display:none;" onclick="handleAuthAction()"></span>
+      <span id="authText" style="font-weight:bold; color:#15b0af; cursor:pointer; display:none;" onclick="logout()">Sair</span>
       <div id="userCircle" class="user-circle" title="Perfil"></div>
       <div class="menu-icon" onclick="toggleMenu()">&#9776;</div>
     </div>
     <div class="menu-list" id="menu">
-      <a href="/index.html">Página Inicial</a>
+      <a href="/pagina-inicial.html">Página Inicial</a>
       <a href="/sobre.html">Sobre</a>
       <a href="/minhaconta.html">Minha Conta</a>
       <a href="/planos.html">Planos</a>
@@ -131,7 +147,8 @@
     <h2>Minha Conta</h2>
     <div class="form-group">
       <label for="foto">Foto de Perfil</label>
-      <input type="file" id="foto">
+      <input type="file" id="foto" accept="image/*" onchange="previewImagem(event)">
+      <img id="fotoPreview" src="" alt="Preview">
     </div>
     <div class="form-group">
       <label for="instagram">Instagram</label>
@@ -160,73 +177,60 @@
     function toggleMenu() {
       const menu = document.getElementById("menu");
       menu.style.display = menu.style.display === "flex" ? "none" : "flex";
-    }
-    function handleAuthAction() {
-      const text = document.getElementById("authText").textContent;
-      if (text === "Entrar") {
-        window.location.href = "/index.html";
-      } else if (text === "Sair") {
-        logout();
-      }
-    }
-    function salvarDados() {
-      const dados = {
-        instagram: document.getElementById("instagram").value,
-        facebook: document.getElementById("facebook").value,
-        whatsapp: document.getElementById("whatsapp").value,
-        youtube: document.getElementById("youtube").value,
-      };
-      localStorage.setItem("dadosPerfil", JSON.stringify(dados));
-      alert("Alterações salvas com sucesso! ❤️");
-    }
-    window.onload = function() {
-      const dados = JSON.parse(localStorage.getItem("dadosPerfil"));
-      if (dados) {
-        document.getElementById("instagram").value = dados.instagram || "";
-        document.getElementById("facebook").value = dados.facebook || "";
-        document.getElementById("whatsapp").value = dados.whatsapp || "";
-        document.getElementById("youtube").value = dados.youtube || "";
-      }
+    }function previewImagem(event) {
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const src = e.target.result;
+      document.getElementById("fotoPreview").src = src;
+      localStorage.setItem("fotoPerfil", src);
+      atualizarUserCircle();
     };
-  </script>
-  <script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-    import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';const firebaseConfig = {
-  apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
-  authDomain: "mostreaki-2025.firebaseapp.com",
-  projectId: "mostreaki-2025",
-  storageBucket: "mostreaki-2025.firebasestorage.app",
-  messagingSenderId: "748712068097",
-  appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-
-window.logout = function () {
-  signOut(auth).then(() => {
-    alert("Você saiu da sua conta.");
-    document.getElementById("userCircle").style.display = "none";
-    document.getElementById("authText").textContent = "Entrar";
-  });
-};
-
-onAuthStateChanged(auth, (user) => {
-  const userCircle = document.getElementById("userCircle");
-  const authText = document.getElementById("authText");
-  if (user) {
-    const nome = user.displayName || user.email;
-    const iniciais = nome.trim().charAt(0).toUpperCase();
-    userCircle.textContent = iniciais;
-    userCircle.style.display = "flex";
-    authText.textContent = "Sair";
-    authText.style.display = "inline";
-  } else {
-    userCircle.style.display = "none";
-    authText.textContent = "Entrar";
-    authText.style.display = "inline";
+    reader.readAsDataURL(file);
   }
-});
+}
+
+function salvarDados() {
+  const dados = {
+    instagram: document.getElementById("instagram").value,
+    facebook: document.getElementById("facebook").value,
+    whatsapp: document.getElementById("whatsapp").value,
+    youtube: document.getElementById("youtube").value,
+  };
+  localStorage.setItem("dadosPerfil", JSON.stringify(dados));
+  alert("Alterações salvas com sucesso! ❤️");
+}
+
+function atualizarUserCircle() {
+  const circle = document.getElementById("userCircle");
+  const imgSrc = localStorage.getItem("fotoPerfil");
+  if (imgSrc) {
+    circle.innerHTML = `<img src="${imgSrc}" alt="Foto">`;
+  } else {
+    const email = localStorage.getItem("email") || "U";
+    circle.textContent = email.charAt(0).toUpperCase();
+  }
+}
+
+window.onload = function() {
+  const dados = JSON.parse(localStorage.getItem("dadosPerfil"));
+  if (dados) {
+    document.getElementById("instagram").value = dados.instagram || "";
+    document.getElementById("facebook").value = dados.facebook || "";
+    document.getElementById("whatsapp").value = dados.whatsapp || "";
+    document.getElementById("youtube").value = dados.youtube || "";
+  }
+  const foto = localStorage.getItem("fotoPerfil");
+  if (foto) document.getElementById("fotoPreview").src = foto;
+  atualizarUserCircle();
+}
+
+function logout() {
+  localStorage.clear();
+  alert("Você saiu da conta.");
+  window.location.href = "/index.html";
+}
 
   </script>
 </body>
