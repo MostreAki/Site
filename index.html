@@ -141,14 +141,16 @@
   </header>
 
   <div class="banner">
-    <a href="/planos.html">
-      <video autoplay muted loop playsinline preload="auto">
-        <source src="banner-mobile.webm" type="video/webm" media="(max-width: 768px)">
-        <source src="banner-desktop.webm" type="video/webm" media="(min-width: 769px)">
-        Seu navegador não suporta vídeo HTML5.
-      </video>
-    </a>
-  </div>
+  <a href="/planos.html">
+    <video autoplay muted loop playsinline preload="auto" style="width:100%; height:auto;">
+      <!-- Mobile: horizontal 1920x1080 -->
+      <source src="banner-mobile.webm" type="video/webm" media="(max-width: 767px)">
+      <!-- Desktop: vertical 1080x1920 -->
+      <source src="banner-desktop.webm" type="video/webm" media="(min-width: 768px)">
+      Seu navegador não suporta vídeo HTML5.
+    </video>
+  </a>
+</div>
 
   <div class="section">
     <h2>Como Funciona?</h2>
