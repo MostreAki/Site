@@ -138,6 +138,7 @@
       <a href="/contatos.html">Contatos</a>
     </div>
   </header>
+
   <div class="banner">
     <a href="https://www.mostreaki.com.br/planos">
       <video autoplay muted loop playsinline preload="auto">
@@ -147,63 +148,93 @@
       </video>
     </a>
   </div>
+
   <div class="section">
     <h2>Como Funciona?</h2>
     <p>Explicamos de forma clara como usar o MostreAki para divulgar seus produtos e ideias.</p>
     <a href="#" class="btn">Veja Mais</a>
   </div>
+
   <div class="section">
     <h2>Redes Sociais</h2>
     <p>Conecte-se com o público nas redes sociais por meio do MostreAki.</p>
     <a href="#" class="btn">Veja Mais</a>
   </div>
+
   <div class="section">
     <h2>Serviços Adicionais</h2>
     <p>Descubra como potencializar sua presença com nossos serviços extras.</p>
     <a href="#" class="btn">Veja Mais</a>
   </div>
+
   <footer>
     &copy; 2025 MostreAki. Todos os direitos reservados.
   </footer>
+
+  <!-- Firebase -->
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-    import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';const firebaseConfig = {
-  apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
-  authDomain: "mostreaki-2025.firebaseapp.com",
-  projectId: "mostreaki-2025",
-  storageBucket: "mostreaki-2025.appspot.com",
-  messagingSenderId: "748712068097",
-  appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
-};
+    import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+    const firebaseConfig = {
+      apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
+      authDomain: "mostreaki-2025.firebaseapp.com",
+      projectId: "mostreaki-2025",
+      storageBucket: "mostreaki-2025.appspot.com",
+      messagingSenderId: "748712068097",
+      appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
+    };
 
-onAuthStateChanged(auth, (user) => {
-  const userCircle = document.getElementById("userCircle");
-  const authText = document.getElementById("authText");
-  const fotoURL = localStorage.getItem("fotoPerfil");
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
 
-  if (user) {
-    if (fotoURL) {
-      userCircle.style.backgroundImage = `url('${fotoURL}')`;
-      userCircle.textContent = "";
-    } else {
-      const nome = user.displayName || user.email;
-      const iniciais = nome.trim().charAt(0).toUpperCase();
-      userCircle.textContent = iniciais;
-      userCircle.style.backgroundImage = "";
+    onAuthStateChanged(auth, (user) => {
+      const userCircle = document.getElementById("userCircle");
+      const authText = document.getElementById("authText");
+      const fotoURL = localStorage.getItem("fotoPerfil");
+
+      if (user) {
+        if (fotoURL) {
+          userCircle.style.backgroundImage = `url('${fotoURL}')`;
+          userCircle.textContent = "";
+        } else {
+          const nome = user.displayName || user.email;
+          const iniciais = nome.trim().charAt(0).toUpperCase();
+          userCircle.textContent = iniciais;
+          userCircle.style.backgroundImage = "";
+        }
+        userCircle.style.display = "flex";
+        authText.textContent = "Sair";
+        authText.style.display = "inline";
+      } else {
+        userCircle.style.display = "none";
+        authText.textContent = "Entrar";
+        authText.style.display = "inline";
+      }
+    });
+  </script>
+
+  <!-- toggleMenu -->
+  <script>
+    function toggleMenu() {
+      const menu = document.getElementById("menu");
+      menu.style.display = (menu.style.display === "flex") ? "none" : "flex";
     }
-    userCircle.style.display = "flex";
-    authText.textContent = "Sair";
-    authText.style.display = "inline";
-  } else {
-    userCircle.style.display = "none";
-    authText.textContent = "Entrar";
-    authText.style.display = "inline";
-  }
-});
 
+    function handleAuthAction() {
+      const action = document.getElementById("authText").textContent;
+      if (action === "Entrar") {
+        window.location.href = "login.html";
+      } else {
+        import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js').then(({ getAuth, signOut }) => {
+          const auth = getAuth();
+          signOut(auth).then(() => {
+            localStorage.removeItem("fotoPerfil");
+            window.location.reload();
+          });
+        });
+      }
+    }
   </script>
 </body>
 </html>
