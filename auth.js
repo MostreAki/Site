@@ -34,12 +34,16 @@ onAuthStateChanged(auth, (user) => {
   const userCircle = document.getElementById("userCircle");
   const authText = document.getElementById("authText");
 
+  if (!userCircle || !authText) return;
+
   if (user) {
-    const photo = user.photoURL || localStorage.getItem("fotoPerfil");
-    if (photo) {
-      userCircle.style.backgroundImage = `url('${photo}')`;
+    // Tenta pegar a foto do localStorage ou do Google (photoURL)
+    let foto = localStorage.getItem("fotoPerfil") || user.photoURL;
+
+    if (foto) {
+      userCircle.style.backgroundImage = `url('${foto}')`;
       userCircle.textContent = "";
-      localStorage.setItem("fotoPerfil", photo); // Salva/atualiza sempre
+      localStorage.setItem("fotoPerfil", foto); // Salva para reutilizar
     } else {
       const nome = user.displayName || user.email;
       const iniciais = nome.trim().charAt(0).toUpperCase();
