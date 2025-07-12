@@ -1,6 +1,10 @@
 // auth.js
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import {
+  getAuth,
+  onAuthStateChanged,
+  signOut
+} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 
 const firebaseConfig = {
   apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
@@ -29,18 +33,20 @@ window.handleAuthAction = function () {
 onAuthStateChanged(auth, (user) => {
   const userCircle = document.getElementById("userCircle");
   const authText = document.getElementById("authText");
-  const fotoURL = localStorage.getItem("fotoPerfil");
 
   if (user) {
-    if (fotoURL) {
-      userCircle.style.backgroundImage = `url('${fotoURL}')`;
+    const photo = user.photoURL || localStorage.getItem("fotoPerfil");
+    if (photo) {
+      userCircle.style.backgroundImage = `url('${photo}')`;
       userCircle.textContent = "";
+      localStorage.setItem("fotoPerfil", photo); // Salva/atualiza sempre
     } else {
       const nome = user.displayName || user.email;
       const iniciais = nome.trim().charAt(0).toUpperCase();
       userCircle.textContent = iniciais;
       userCircle.style.backgroundImage = "";
     }
+
     userCircle.style.display = "flex";
     authText.textContent = "Sair";
     authText.style.display = "inline";
