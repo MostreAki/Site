@@ -19,7 +19,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
 window.handleAuthAction = function () {
-  const action = document.getElementById("authText").textContent;
+  const action = document.getElementById("authText")?.textContent;
   if (action === "Entrar") {
     document.getElementById("loginModal").style.display = "flex";
   } else {
@@ -37,13 +37,11 @@ onAuthStateChanged(auth, (user) => {
   if (!userCircle || !authText) return;
 
   if (user) {
-    // Tenta pegar a foto do localStorage ou do Google (photoURL)
-    let foto = localStorage.getItem("fotoPerfil") || user.photoURL;
+    const foto = localStorage.getItem("fotoPerfil") || user.photoURL;
 
     if (foto) {
-      userCircle.style.backgroundImage = `url('${foto}')`;
-      userCircle.textContent = "";
-      localStorage.setItem("fotoPerfil", foto); // Salva para reutilizar
+      userCircle.innerHTML = `<img src="${foto}" alt="Foto de Perfil" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">`;
+      localStorage.setItem("fotoPerfil", foto);
     } else {
       const nome = user.displayName || user.email;
       const iniciais = nome.trim().charAt(0).toUpperCase();
@@ -55,6 +53,7 @@ onAuthStateChanged(auth, (user) => {
     authText.textContent = "Sair";
     authText.style.display = "inline";
   } else {
+    userCircle.innerHTML = "";
     userCircle.style.display = "none";
     authText.textContent = "Entrar";
     authText.style.display = "inline";
