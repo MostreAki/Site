@@ -384,13 +384,13 @@ function atualizarUserCircle() {
   const imgSrc = localStorage.getItem("fotoPerfil");
 
   if (imgSrc) {
-    // Evita reprocessar o CSS e mantém o estilo
     const img = document.createElement("img");
     img.src = imgSrc;
     img.style.width = "100%";
     img.style.height = "100%";
     img.style.objectFit = "cover";
     img.style.borderRadius = "50%";
+
     circle.innerHTML = "";
     circle.appendChild(img);
   } else {
@@ -411,11 +411,17 @@ function logout() {
 }
 
 window.onload = function() {
-  setTimeout(() => {
-    const foto = localStorage.getItem("fotoPerfil");
-    if (foto) document.getElementById("fotoPreview").src = foto;
+  const foto = localStorage.getItem("fotoPerfil");
+
+  if (foto) {
+    const fotoPreview = document.getElementById("fotoPreview");
+    if (fotoPreview) fotoPreview.src = foto;
+  }
+
+  // Executar a função assim que o DOM estiver pronto
+  requestAnimationFrame(() => {
     atualizarUserCircle();
-  }, 300); // espera 300ms em vez de 100ms
+  });
 };
 
   </script>
