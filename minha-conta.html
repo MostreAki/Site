@@ -123,15 +123,15 @@
       overflow: hidden;
 
     }
-
-      #userCircle img {
+ 
+  #userCircle img {
     width: 100% !important;
     height: 100% !important;
     object-fit: cover;
     border-radius: 50%;
-
     }
 
+    
     .container {
 
       background: white;
@@ -379,27 +379,25 @@
 }
 
 
-
 function atualizarUserCircle() {
-
   const circle = document.getElementById("userCircle");
-
   const imgSrc = localStorage.getItem("fotoPerfil");
 
   if (imgSrc) {
-
-    circle.innerHTML = `<img src="${imgSrc}" alt="Foto">`;
-
+    // Evita reprocessar o CSS e mantém o estilo
+    const img = document.createElement("img");
+    img.src = imgSrc;
+    img.style.width = "100%";
+    img.style.height = "100%";
+    img.style.objectFit = "cover";
+    img.style.borderRadius = "50%";
+    circle.innerHTML = "";
+    circle.appendChild(img);
   } else {
-
     const email = localStorage.getItem("email") || "U";
-
-    circle.textContent = email.charAt(0).toUpperCase();
-
+    circle.innerHTML = email.charAt(0).toUpperCase();
   }
-
 }
-
 
 
 function logout() {
