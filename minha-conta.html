@@ -1,17 +1,18 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+<!DOCTYPE html><html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Minha Conta - MostreAki</title>
   <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
       background: #f0f0f0;
       padding: 20px;
     }
-
     header {
       background-color: #c2e7df;
       height: 60px;
@@ -22,13 +23,11 @@
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       position: relative;
     }
-
     .logo-container { display: flex; align-items: center; }
     .logo-container img { height: 40px; margin-right: 10px; }
     .logo { font-size: 1.5rem; font-weight: bold; }
     .logo .mostre { color: #00C2BF; }
     .logo .aki { color: #FA1E39; }
-
     .menu-icon { font-size: 1.5rem; cursor: pointer; }
     .menu-list {
       position: absolute;
@@ -42,7 +41,6 @@
       padding: 10px;
       z-index: 1000;
     }
-
     .menu-list a {
       text-decoration: none;
       color: white;
@@ -53,9 +51,7 @@
       margin-bottom: 8px;
       text-align: center;
     }
-
     .menu-list a:hover { background-color: #b8313b; }
-
     .user-circle {
       background-color: #15b0af;
       color: white;
@@ -71,7 +67,6 @@
       overflow: hidden;
       position: relative;
     }
-
     .user-circle img {
       position: absolute;
       top: 0;
@@ -81,7 +76,6 @@
       object-fit: cover;
       border-radius: 50%;
     }
-
     .container {
       background: white;
       max-width: 600px;
@@ -90,27 +84,22 @@
       border-radius: 10px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
-
     h2 {
       text-align: center;
       color: #16807C;
     }
-
     .form-group { margin: 15px 0; }
-
     label {
       display: block;
       margin-bottom: 5px;
       font-weight: bold;
     }
-
     input[type="text"], input[type="file"] {
       width: 100%;
       padding: 10px;
       border: 1px solid #ccc;
       border-radius: 6px;
     }
-
     #fotoPreview {
       width: 100px;
       height: 100px;
@@ -120,14 +109,12 @@
       display: block;
       border: 2px solid #ccc;
     }
-
     .buttons {
       display: flex;
       flex-direction: column;
       gap: 10px;
       margin-top: 20px;
     }
-
     .btn {
       padding: 12px;
       border: none;
@@ -136,7 +123,6 @@
       font-weight: bold;
       cursor: pointer;
     }
-
     .btn-salvar { background-color: #16807C; }
     .btn-assinar { background-color: #28a745; }
     .btn-alterar { background-color: #007bff; }
@@ -163,9 +149,7 @@
       <a href="/crieaki.html">CrieAki</a>
       <a href="/contatos.html">Contatos</a>
     </div>
-  </header>
-
-  <div class="container">
+  </header>  <div class="container">
     <h2>Minha Conta</h2>
     <div class="form-group">
       <label for="foto">Foto de Perfil</label>
@@ -194,63 +178,5 @@
       <button class="btn btn-alterar">Alterar Plano</button>
       <button class="btn btn-cancelar">Cancelar Plano</button>
     </div>
-  </div>
-
-  <script>
-    function toggleMenu() {
-      const menu = document.getElementById("menu");
-      menu.style.display = menu.style.display === "flex" ? "none" : "flex";
-    }
-
-    function previewImagem(event) {
-      const file = event.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          const src = e.target.result;
-          document.getElementById("fotoPreview").src = src;
-          localStorage.setItem("fotoPerfil", src);
-          atualizarUserCircle();
-        };
-        reader.readAsDataURL(file);
-      }
-    }
-
-    function atualizarUserCircle() {
-      const circle = document.getElementById("userCircle");
-      const imgSrc = localStorage.getItem("fotoPerfil");
-      circle.innerHTML = "";
-
-      if (imgSrc) {
-        const img = document.createElement("img");
-        img.src = imgSrc;
-        img.alt = "Foto de Perfil";
-        circle.appendChild(img);
-      } else {
-        const email = localStorage.getItem("email") || "U";
-        circle.textContent = email.charAt(0).toUpperCase();
-      }
-    }
-
-    function logout() {
-      localStorage.clear();
-      alert("Você saiu da conta.");
-      window.location.href = "/index.html";
-    }
-
-    window.onload = function() {
-      const foto = localStorage.getItem("fotoPerfil");
-      if (foto) {
-        const fotoPreview = document.getElementById("fotoPreview");
-        if (fotoPreview) fotoPreview.src = foto;
-      }
-
-      requestAnimationFrame(() => {
-        atualizarUserCircle();
-      });
-    };
-  </script>
-
-  <script type="module" src="auth.js"></script>
-</body>
+  </div>  <script type="module" src="auth.js"></script></body>
 </html>
