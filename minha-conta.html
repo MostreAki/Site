@@ -1,5 +1,4 @@
-<!DOCTYPE html><html lang="pt-BR"><head>
-  <meta charset="UTF-8" />
+<!DOCTYPE html><html lang="pt-BR"><head>  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Minha Conta - MostreAki</title>
   <link rel="icon" href="favicon.ico" type="image/x-icon" />
@@ -191,17 +190,6 @@
   }
 }
 
-function salvarDados() {
-  const dados = {
-    instagram: document.getElementById("instagram").value,
-    facebook: document.getElementById("facebook").value,
-    whatsapp: document.getElementById("whatsapp").value,
-    youtube: document.getElementById("youtube").value,
-  };
-  localStorage.setItem("dadosPerfil", JSON.stringify(dados));
-  alert("Alterações salvas com sucesso! ❤️");
-}
-
 function atualizarUserCircle() {
   const circle = document.getElementById("userCircle");
   const imgSrc = localStorage.getItem("fotoPerfil");
@@ -213,23 +201,16 @@ function atualizarUserCircle() {
   }
 }
 
-window.onload = function() {
-  const dados = JSON.parse(localStorage.getItem("dadosPerfil"));
-  if (dados) {
-    document.getElementById("instagram").value = dados.instagram || "";
-    document.getElementById("facebook").value = dados.facebook || "";
-    document.getElementById("whatsapp").value = dados.whatsapp || "";
-    document.getElementById("youtube").value = dados.youtube || "";
-  }
-  const foto = localStorage.getItem("fotoPerfil");
-  if (foto) document.getElementById("fotoPreview").src = foto;
-  atualizarUserCircle();
-}
-
 function logout() {
   localStorage.clear();
   alert("Você saiu da conta.");
   window.location.href = "/index.html";
+}
+
+window.onload = function() {
+  const foto = localStorage.getItem("fotoPerfil");
+  if (foto) document.getElementById("fotoPreview").src = foto;
+  atualizarUserCircle();
 }
 
   </script>
