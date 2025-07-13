@@ -76,8 +76,8 @@
       position: absolute;
       top: 0;
       left: 0;
-      width: 100%;
-      height: 100%;
+      width: 100% !important;
+      height: 100% !important;
       object-fit: cover;
       border-radius: 50%;
     }
@@ -150,7 +150,7 @@
       <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
     </div>
     <div style="display: flex; align-items: center; gap: 10px;">
-      <span id="authText" style="font-weight:bold; color:#15b0af; cursor:pointer;" onclick="handleAuthAction()">Entrar</span>
+      <span id="authText" style="font-weight:bold; color:#15b0af; cursor:pointer; display:none;" onclick="logout()">Sair</span>
       <div id="userCircle" class="user-circle" title="Perfil"></div>
       <div class="menu-icon" onclick="toggleMenu()">&#9776;</div>
     </div>
@@ -196,11 +196,24 @@
     </div>
   </div>
 
-  <script>
-    function toggleMenu() {
-      const menu = document.getElementById("menu");
-      menu.style.display = menu.style.display === "flex" ? "none" : "flex";
-    }
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+    import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+    import { getFirestore, doc, setDoc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
+      authDomain: "mostreaki-2025.firebaseapp.com",
+      projectId: "mostreaki-2025",
+      storageBucket: "mostreaki-2025.appspot.com",
+      messagingSenderId: "748712068097",
+      appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
     function previewImagem(event) {
       const file = event.target.files[0];
@@ -220,7 +233,6 @@
       const circle = document.getElementById("userCircle");
       const imgSrc = localStorage.getItem("fotoPerfil");
       circle.innerHTML = "";
-
       if (imgSrc) {
         const img = document.createElement("img");
         img.src = imgSrc;
@@ -232,13 +244,9 @@
       }
     }
 
-    function handleAuthAction() {
-      const authText = document.getElementById("authText");
-      if (authText.textContent === "Sair") {
-        logout();
-      } else {
-        window.location.href = "/login.html"; // Redirecionar para login
-      }
+    function toggleMenu() {
+      const menu = document.getElementById("menu");
+      menu.style.display = menu.style.display === "flex" ? "none" : "flex";
     }
 
     function logout() {
@@ -247,24 +255,57 @@
       window.location.href = "/index.html";
     }
 
-    window.onload = function () {
-      const foto = localStorage.getItem("fotoPerfil");
+    async function salvarDados() {
+      const user = auth.currentUser;
+      if (!user) return alert("Você precisa estar logado.");
+
+      const docRef = doc(db, "usuarios", user.uid);
+      await setDoc(docRef, {
+        instagram: document.getElementById("instagram").value,
+        facebook: document.getElementById("facebook").value,
+        whatsapp: document.getElementById("whatsapp").value,
+        youtube: document.getElementById("youtube").value
+      });
+
+      alert("Dados salvos com sucesso!");
+    }
+
+    async function carregarDados() {
+      const user = auth.currentUser;
+      if (!user) return;
+
+      const docRef = doc(db, "usuarios", user.uid);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        document.getElementById("instagram").value = data.instagram || "";
+        document.getElementById("facebook").value = data.facebook || "";
+        document.getElementById("whatsapp").value = data.whatsapp || "";
+        document.getElementById("youtube").value = data.youtube || "";
+      }
+    }
+
+    onAuthStateChanged(auth, (user) => {
       const authText = document.getElementById("authText");
-      if (foto) {
-        document.getElementById("fotoPreview").src = foto;
-      }
-
-      atualizarUserCircle();
-
-      const userEmail = localStorage.getItem("email");
-      if (userEmail) {
-        authText.textContent = "Sair";
-      } else {
+      const userCircle = document.getElementById("userCircle");
+      if (!user) {
         authText.textContent = "Entrar";
+        userCircle.style.display = "none";
+      } else {
+        authText.textContent = "Sair";
+        userCircle.style.display = "flex";
+        atualizarUserCircle();
+        carregarDados();
       }
+      authText.style.display = "inline";
+    });
+
+    window.onload = function() {
+      const foto = localStorage.getItem("fotoPerfil");
+      if (foto) document.getElementById("fotoPreview").src = foto;
+      requestAnimationFrame(() => atualizarUserCircle());
     };
   </script>
-
-  <script type="module" src="auth.js"></script>
 </body>
 </html>
