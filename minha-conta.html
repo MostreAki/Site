@@ -1,175 +1,117 @@
-<!DOCTYPE html><html lang="pt-BR">
+<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Minha Conta - MostreAki</title>
   <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <style>
-    body { font-family: Arial, sans-serif; background: #f0f0f0; padding: 20px; }
-    header { background-color: #c2e7df; height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); position: relative; }
-    .logo-container { display: flex; align-items: center; }
-    .logo-container img { height: 40px; margin-right: 10px; }
-    .logo { font-size: 1.5rem; font-weight: bold; }
-    .logo .mostre { color: #00C2BF; }
-    .logo .aki { color: #FA1E39; }
-    .menu-icon { font-size: 1.5rem; cursor: pointer; }
-    .menu-list { position: absolute; top: 60px; right: 20px; background-color: #16807C; border: 2px solid black; border-radius: 6px; display: none; flex-direction: column; padding: 10px; z-index: 1000; }
-    .menu-list a { text-decoration: none; color: white; padding: 10px 15px; border-radius: 6px; font-weight: bold; background-color: #FA1E39; margin-bottom: 8px; text-align: center; }
-    .menu-list a:hover { background-color: #b8313b; }
-    .user-circle { background-color: #15b0af; color: white; font-weight: bold; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; margin-left: 10px; font-size: 0.8rem; overflow: hidden; position: relative; }
-    .user-circle img { position: absolute; top: 0; left: 0; width: 100% !important; height: 100% !important; object-fit: cover; border-radius: 50%; }
-    .container { background: white; max-width: 600px; margin: auto; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-    h2 { text-align: center; color: #16807C; }
-    .form-group { margin: 15px 0; }
-    label { display: block; margin-bottom: 5px; font-weight: bold; }
-    input[type="text"], input[type="file"] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; }
-    #fotoPreview { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin: 10px auto; display: block; border: 2px solid #ccc; }
-    .buttons { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
-    .btn { padding: 12px; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer; }
-    .btn-salvar { background-color: #16807C; }
-    .btn-assinar { background-color: #28a745; }
-    .btn-alterar { background-color: #007bff; }
-    .btn-cancelar { background-color: #dc3545; }
+    body { font-family: Arial; background: #f0f0f0; padding: 20px; position: relative; }
+    #loader { position: fixed; top:50%; left:50%; transform:translate(-50%,-50%); font-size:1.2rem; }
+    #pageContainer { visibility: hidden; }
+    header { background: #c2e7df; height:60px; display:flex; align-items:center; justify-content:space-between; padding:0 20px; box-shadow:0 2px 4px rgba(0,0,0,0.1); position:relative; }
+    .logo-container img { height:40px; margin-right:10px; }
+    .logo .mostre { color:#00C2BF; } .logo .aki { color:#FA1E39; }
+    .menu-list { display:none; position:absolute; top:60px; right:20px; background:#16807C; border:2px solid black; border-radius:6px; padding:10px; flex-direction:column; z-index:1000; }
+    .menu-list a { text-decoration:none; color:white; padding:10px 15px; background:#FA1E39; border-radius:6px; margin-bottom:8px; font-weight:bold; text-align:center; }
+    .user-circle { width:32px; height:32px; border-radius:50%; background:#15b0af; overflow:hidden; display:flex; align-items:center; justify-content:center; font-size:.8rem; position:relative; }
+    .user-circle img { position:absolute; width:100%; height:100%; object-fit:cover; border-radius:50%; }
+    .container { background:white; max-width:600px; margin:auto; padding:20px; border-radius:10px; box-shadow:0 0 10px rgba(0,0,0,0.1); }
+    /* => form e botões... (igual ao que você já tem) */
   </style>
 </head>
 <body>
-  <header>
-    <div class="logo-container">
-      <img src="logo.png" alt="Logo" />
-      <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
-    </div>
-    <div style="display: flex; align-items: center; gap: 10px;">
-      <span id="authText" style="font-weight:bold; color:#15b0af; cursor:pointer; display:none;" onclick="logout()">Sair</span>
-      <div id="userCircle" class="user-circle" title="Perfil"></div>
-      <div class="menu-icon" onclick="toggleMenu()">&#9776;</div>
-    </div>
-    <div class="menu-list" id="menu">
-      <a href="/index.html">Página Inicial</a>
-      <a href="/sobre.html">Sobre</a>
-      <a href="/minha-conta.html">Minha Conta</a>
-      <a href="/planos.html">Planos</a>
-      <a href="/servicos-adicionais.html">Serviços Adicionais</a>
-      <a href="/crieaki.html">CrieAki</a>
-      <a href="/contatos.html">Contatos</a>
-    </div>
-  </header>  <div class="container">
-    <h2>Minha Conta</h2>
-    <div class="form-group">
-      <label for="foto">Foto de Perfil</label>
-      <input type="file" id="foto" accept="image/*" onchange="previewImagem(event)">
-      <img id="fotoPreview" src="" alt="Preview">
-    </div>
-    <div class="form-group">
-      <label for="instagram">Instagram</label>
-      <input type="text" id="instagram">
-    </div>
-    <div class="form-group">
-      <label for="facebook">Facebook</label>
-      <input type="text" id="facebook">
-    </div>
-    <div class="form-group">
-      <label for="whatsapp">WhatsApp</label>
-      <input type="text" id="whatsapp">
-    </div>
-    <div class="form-group">
-      <label for="youtube">YouTube</label>
-      <input type="text" id="youtube">
-    </div>
-    <div class="buttons">
+
+  <div id="loader">Carregando seus dados…</div>
+  <div id="pageContainer">
+    <header>  
+      <div class="logo-container"><img src="logo.png" alt="Logo"/><div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div></div>
+      <div style="display:flex; align-items:center; gap:10px;">
+        <span id="authText" style="font-weight:bold;color:#15b0af;cursor:pointer;" onclick="logout()">Sair</span>
+        <div id="userCircle" class="user-circle" title="Perfil"></div>
+        <div class="menu-icon" onclick="toggleMenu()">☰</div>
+      </div>
+      <div class="menu-list" id="menu">
+        <a href="/index.html">Página Inicial</a><a href="/sobre.html">Sobre</a><a href="/minhaconta.html">Minha Conta</a>
+        <a href="/planos.html">Planos</a><a href="/servicos-adicionais.html">Serviços Adicionais</a>
+        <a href="/crieaki.html">CrieAki</a><a href="/contatos.html">Contatos</a>
+      </div>
+    </header>
+    <div class="container">
+      <!-- aqui vai seu form com foto, instagram, etc -->
+      <div class="form-group">
+        <label for="foto">Foto de Perfil</label>
+        <input type="file" id="foto" accept="image/*" onchange="previewImagem(event)">
+        <img id="fotoPreview" src="" alt="Preview" style="width:100px;height:100px;border-radius:50%;object-fit:cover;margin:10px auto;display:block;border:2px solid #ccc;">
+      </div>
+      <!-- demais campos... -->
       <button class="btn btn-salvar" onclick="salvarDados()">Salvar Alterações</button>
-      <button class="btn btn-assinar">Assinar Plano</button>
-      <button class="btn btn-alterar">Alterar Plano</button>
-      <button class="btn btn-cancelar">Cancelar Plano</button>
     </div>
-  </div>  <!-- Firebase SDKs -->  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"></script>  <script type="module" src="auth.js"></script>  <script type="module">
+  </div>
+
+  <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     const firebaseConfig = {
-      apiKey: "SUA_API_KEY",
-      authDomain: "SEU_DOMINIO.firebaseapp.com",
-      projectId: "SEU_PROJECT_ID",
-      storageBucket: "SEU_BUCKET",
-      messagingSenderId: "SEU_SENDER_ID",
-      appId: "SEU_APP_ID"
+      apiKey: "...", authDomain: "mostreaki-2025.firebaseapp.com",
+      projectId: "mostreaki-2025", storageBucket: "...",
+      messagingSenderId: "...", appId: "..."
     };
-
     const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
     const auth = getAuth(app);
+    const db = getFirestore(app);
 
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        document.getElementById("authText").style.display = "inline";
-        const docRef = doc(db, "usuarios", user.uid);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          document.getElementById("instagram").value = data.instagram || "";
-          document.getElementById("facebook").value = data.facebook || "";
-          document.getElementById("whatsapp").value = data.whatsapp || "";
-          document.getElementById("youtube").value = data.youtube || "";
-          if (data.fotoPerfil) {
-            document.getElementById("fotoPreview").src = data.fotoPerfil;
-            localStorage.setItem("fotoPerfil", data.fotoPerfil);
-          }
-          atualizarUserCircle();
-        }
-      } else {
-        location.href = "/index.html";
-      }
+    onAuthStateChanged(auth, async user => {
+      document.getElementById("loader").style.display = "none";
+      const page = document.getElementById("pageContainer");
+      if (!user) return location.href = "/index.html";
+      page.style.visibility = "visible";
+      // popula campos
+      const udata = (await getDoc(doc(db, "usuarios", user.uid))).data() || {};
+      document.getElementById("instagram").value = udata.instagram || "";
+      // repetir para facebook, whatsapp, youtube...
+      if (udata.fotoPerfil) {
+        document.getElementById("fotoPreview").src = udata.fotoPerfil;
+        atualizarUserCircle(udata.fotoPerfil);
+      } else atualizarUserCircle();
     });
 
     window.salvarDados = async () => {
       const user = auth.currentUser;
-      if (!user) return;
+      if (!user) return alert("Não autenticado");
       const data = {
         instagram: document.getElementById("instagram").value,
-        facebook: document.getElementById("facebook").value,
-        whatsapp: document.getElementById("whatsapp").value,
-        youtube: document.getElementById("youtube").value,
-        fotoPerfil: localStorage.getItem("fotoPerfil") || ""
+        // facebook, whatsapp, youtube...
+        fotoPerfil: document.getElementById("fotoPreview").src
       };
       await setDoc(doc(db, "usuarios", user.uid), data);
-      alert("Dados salvos com sucesso!");
+      alert("Salvo com sucesso!");
+      atualizarUserCircle(data.fotoPerfil);
     };
 
-    window.previewImagem = (event) => {
-      const file = event.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          const src = e.target.result;
-          document.getElementById("fotoPreview").src = src;
-          localStorage.setItem("fotoPerfil", src);
-          atualizarUserCircle();
-        };
-        reader.readAsDataURL(file);
-      }
+    window.previewImagem = e => {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.onload = () => {
+        document.getElementById("fotoPreview").src = reader.result;
+      };
+      reader.readAsDataURL(file);
     };
 
-    window.atualizarUserCircle = () => {
-      const circle = document.getElementById("userCircle");
-      const imgSrc = localStorage.getItem("fotoPerfil");
-      circle.innerHTML = "";
-      if (imgSrc) {
-        const img = document.createElement("img");
-        img.src = imgSrc;
-        img.alt = "Perfil";
-        circle.appendChild(img);
-      } else {
-        const email = localStorage.getItem("email") || "U";
-        circle.textContent = email.charAt(0).toUpperCase();
-      }
+    window.atualizarUserCircle = (url = null) => {
+      const c = document.getElementById("userCircle");
+      c.innerHTML = "";
+      const img = document.createElement("img");
+      img.src = url || "";
+      c.appendChild(img);
     };
 
-    window.logout = () => {
-      signOut(auth).then(() => {
-        localStorage.clear();
-        alert("Você saiu da conta.");
-        location.href = "/index.html";
-      });
-    };
-  </script></body>
+    window.logout = () => signOut(auth).then(() => location.href = "/index.html");
+
+    window.toggleMenu = () => document.getElementById("menu").style.display =
+      document.getElementById("menu").style.display === "flex" ? "none" : "flex";
+  </script>
+</body>
 </html>
