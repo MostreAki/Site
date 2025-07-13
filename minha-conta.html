@@ -148,7 +148,7 @@ input[type="text"], input[type="file"] {
       <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
     </div>
     <div style="display: flex; align-items: center; gap: 10px;">
-      <span id="authText" style="font-weight:bold; color:#15b0af; cursor:pointer; display:none;" onclick="logout()">Sair</span>
+      <span id="authText" style="font-weight:bold; color:#15b0af; cursor:pointer; display:none;"></span>
       <div id="userCircle" class="user-circle" title="Perfil"></div>
       <div class="menu-icon" onclick="toggleMenu()">&#9776;</div>
     </div>
@@ -210,11 +210,24 @@ input[type="text"], input[type="file"] {
     const db = getFirestore(app);
     const storage = getStorage(app);
 
-    async function previewImagem(event) {
+    window.toggleMenu = function () {
+      const menu = document.getElementById("menu");
+      menu.style.display = menu.style.display === "flex" ? "none" : "flex";
+    };
+
+    window.logout = function () {
+      signOut(auth).then(() => {
+        localStorage.clear();
+        alert("Você saiu da conta.");
+        window.location.href = "/index.html";
+      });
+    };
+
+    window.previewImagem = async function (event) {
       const file = event.target.files[0];
       if (file) {
         const reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = function (e) {
           document.getElementById("fotoPreview").src = e.target.result;
         };
         reader.readAsDataURL(file);
@@ -229,7 +242,7 @@ input[type="text"], input[type="file"] {
         await setDoc(doc(db, "usuarios", user.uid), { fotoPerfil: url }, { merge: true });
         atualizarUserCircle();
       }
-    }
+    };
 
     function atualizarUserCircle() {
       const circle = document.getElementById("userCircle");
@@ -245,20 +258,7 @@ input[type="text"], input[type="file"] {
       }
     }
 
-    function toggleMenu() {
-      const menu = document.getElementById("menu");
-      menu.style.display = menu.style.display === "flex" ? "none" : "flex";
-    }
-
-    function logout() {
-      signOut(auth).then(() => {
-        localStorage.clear();
-        alert("Você saiu da conta.");
-        window.location.href = "/index.html";
-      });
-    }
-
-    async function salvarDados() {
+    window.salvarDados = async function () {
       const user = auth.currentUser;
       if (!user) return alert("Você precisa estar logado.");
 
@@ -271,7 +271,7 @@ input[type="text"], input[type="file"] {
       }, { merge: true });
 
       alert("Dados salvos com sucesso!");
-    }
+    };
 
     async function carregarDados() {
       const user = auth.currentUser;
@@ -298,9 +298,11 @@ input[type="text"], input[type="file"] {
       const userCircle = document.getElementById("userCircle");
       if (!user) {
         authText.textContent = "Entrar";
+        authText.onclick = () => window.location.href = "/index.html";
         userCircle.style.display = "none";
       } else {
         authText.textContent = "Sair";
+        authText.onclick = logout;
         userCircle.style.display = "flex";
         atualizarUserCircle();
         carregarDados();
@@ -308,7 +310,7 @@ input[type="text"], input[type="file"] {
       authText.style.display = "inline";
     });
 
-    window.onload = function() {
+    window.onload = function () {
       const foto = localStorage.getItem("fotoPerfil");
       if (foto) document.getElementById("fotoPreview").src = foto;
       requestAnimationFrame(() => atualizarUserCircle());
