@@ -410,19 +410,13 @@ function logout() {
 
 }
 
-
-
 window.onload = function() {
-
-  const foto = localStorage.getItem("fotoPerfil");
-
-  if (foto) document.getElementById("fotoPreview").src = foto;
-
-  atualizarUserCircle();
-
-}
-
-
+  setTimeout(() => {
+    const foto = localStorage.getItem("fotoPerfil");
+    if (foto) document.getElementById("fotoPreview").src = foto;
+    atualizarUserCircle();
+  }, 300); // espera 300ms em vez de 100ms
+};
 
   </script>
 
