@@ -1,5 +1,4 @@
-<!DOCTYPE html><html lang="pt-BR">
-<head>
+<!DOCTYPE html><html lang="pt-BR"><head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Minha Conta - MostreAki</title>
@@ -9,18 +8,17 @@
       font-family: Arial, sans-serif;
       background: #f0f0f0;
       padding: 20px;
-    }header {
-  background-color: #c2e7df;
-  height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  position: relative;
-}
-
-.logo-container { display: flex; align-items: center; }
+    }
+    header {
+      background-color: #c2e7df;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      position: relative;
+    }.logo-container { display: flex; align-items: center; }
 .logo-container img { height: 40px; margin-right: 10px; }
 .logo { font-size: 1.5rem; font-weight: bold; }
 .logo .mostre { color: #00C2BF; }
@@ -161,11 +159,12 @@ input[type="text"], input[type="file"] {
       <a href="/crieaki.html">CrieAki</a>
       <a href="/contatos.html">Contatos</a>
     </div>
-  </header>  <div class="container">
+  </header>
+  <div class="container">
     <h2>Minha Conta</h2>
     <div class="form-group">
       <label for="foto">Foto de Perfil</label>
-      <input type="file" id="foto" accept="image/*" onchange="previewImagem(event)">
+      <input type="file" id="foto" accept="image/*">
       <img id="fotoPreview" src="" alt="Preview">
     </div>
     <div class="form-group">
@@ -185,135 +184,138 @@ input[type="text"], input[type="file"] {
       <input type="text" id="youtube">
     </div>
     <div class="buttons">
-      <button class="btn btn-salvar" onclick="salvarDados()">Salvar Alterações</button>
+      <button class="btn btn-salvar" id="btnSalvar">Salvar Alterações</button>
       <button class="btn btn-assinar">Assinar Plano</button>
       <button class="btn btn-alterar">Alterar Plano</button>
       <button class="btn btn-cancelar">Cancelar Plano</button>
     </div>
-  </div>  <!-- Firebase SDK com Auth, Firestore e Storage -->  <script type="module">
+  </div>
+  <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
     import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
     import { getFirestore, doc, setDoc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-    import { getStorage, ref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
+    import { getStorage, ref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';const firebaseConfig = {
+  apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
+  authDomain: "mostreaki-2025.firebaseapp.com",
+  projectId: "mostreaki-2025",
+  storageBucket: "mostreaki-2025.appspot.com",
+  messagingSenderId: "748712068097",
+  appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
+};
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
-      authDomain: "mostreaki-2025.firebaseapp.com",
-      projectId: "mostreaki-2025",
-      storageBucket: "mostreaki-2025.appspot.com",
-      messagingSenderId: "748712068097",
-      appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const storage = getStorage(app);
+
+window.toggleMenu = function () {
+  const menu = document.getElementById("menu");
+  menu.style.display = menu.style.display === "flex" ? "none" : "flex";
+};
+
+window.logout = function () {
+  signOut(auth).then(() => {
+    localStorage.clear();
+    alert("Você saiu da conta.");
+    window.location.href = "/index.html";
+  });
+};
+
+window.previewImagem = async function (event) {
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      document.getElementById("fotoPreview").src = e.target.result;
     };
+    reader.readAsDataURL(file);
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-    const storage = getStorage(app);
+    const user = auth.currentUser;
+    if (!user) return alert("Você precisa estar logado para alterar a imagem.");
 
-    window.toggleMenu = function () {
-      const menu = document.getElementById("menu");
-      menu.style.display = menu.style.display === "flex" ? "none" : "flex";
-    };
+    const storageRef = ref(storage, `fotosPerfil/${user.uid}`);
+    await uploadBytes(storageRef, file);
+    const url = await getDownloadURL(storageRef);
+    localStorage.setItem("fotoPerfil", url);
+    await setDoc(doc(db, "usuarios", user.uid), { fotoPerfil: url }, { merge: true });
+    atualizarUserCircle();
+  }
+};
 
-    window.logout = function () {
-      signOut(auth).then(() => {
-        localStorage.clear();
-        alert("Você saiu da conta.");
-        window.location.href = "/index.html";
-      });
-    };
+function atualizarUserCircle() {
+  const circle = document.getElementById("userCircle");
+  const imgSrc = localStorage.getItem("fotoPerfil");
+  circle.innerHTML = "";
+  if (imgSrc) {
+    const img = document.createElement("img");
+    img.src = imgSrc;
+    img.alt = "Foto de Perfil";
+    circle.appendChild(img);
+  } else {
+    circle.textContent = "U";
+  }
+}
 
-    window.previewImagem = async function (event) {
-      const file = event.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          document.getElementById("fotoPreview").src = e.target.result;
-        };
-        reader.readAsDataURL(file);
+async function salvarDados() {
+  const user = auth.currentUser;
+  if (!user) return alert("Você precisa estar logado.");
 
-        const user = auth.currentUser;
-        if (!user) return alert("Você precisa estar logado para alterar a imagem.");
+  const docRef = doc(db, "usuarios", user.uid);
+  await setDoc(docRef, {
+    instagram: document.getElementById("instagram").value,
+    facebook: document.getElementById("facebook").value,
+    whatsapp: document.getElementById("whatsapp").value,
+    youtube: document.getElementById("youtube").value
+  }, { merge: true });
 
-        const storageRef = ref(storage, `fotosPerfil/${user.uid}`);
-        await uploadBytes(storageRef, file);
-        const url = await getDownloadURL(storageRef);
-        localStorage.setItem("fotoPerfil", url);
-        await setDoc(doc(db, "usuarios", user.uid), { fotoPerfil: url }, { merge: true });
-        atualizarUserCircle();
-      }
-    };
+  alert("Dados salvos com sucesso!");
+}
 
-    function atualizarUserCircle() {
-      const circle = document.getElementById("userCircle");
-      const imgSrc = localStorage.getItem("fotoPerfil");
-      circle.innerHTML = "";
-      if (imgSrc) {
-        const img = document.createElement("img");
-        img.src = imgSrc;
-        img.alt = "Foto de Perfil";
-        circle.appendChild(img);
-      } else {
-        circle.textContent = "U";
-      }
+async function carregarDados() {
+  const user = auth.currentUser;
+  if (!user) return;
+
+  const docRef = doc(db, "usuarios", user.uid);
+  const docSnap = await getDoc(docRef);
+
+  if (docSnap.exists()) {
+    const data = docSnap.data();
+    document.getElementById("instagram").value = data.instagram || "";
+    document.getElementById("facebook").value = data.facebook || "";
+    document.getElementById("whatsapp").value = data.whatsapp || "";
+    document.getElementById("youtube").value = data.youtube || "";
+    if (data.fotoPerfil) {
+      document.getElementById("fotoPreview").src = data.fotoPerfil;
+      localStorage.setItem("fotoPerfil", data.fotoPerfil);
     }
+  }
+}
 
-    window.salvarDados = async function () {
-      const user = auth.currentUser;
-      if (!user) return alert("Você precisa estar logado.");
+onAuthStateChanged(auth, (user) => {
+  const authText = document.getElementById("authText");
+  const userCircle = document.getElementById("userCircle");
+  if (!user) {
+    authText.textContent = "Entrar";
+    authText.onclick = () => window.location.href = "/index.html";
+    userCircle.style.display = "none";
+  } else {
+    authText.textContent = "Sair";
+    authText.onclick = logout;
+    userCircle.style.display = "flex";
+    atualizarUserCircle();
+    carregarDados();
+  }
+  authText.style.display = "inline";
+});
 
-      const docRef = doc(db, "usuarios", user.uid);
-      await setDoc(docRef, {
-        instagram: document.getElementById("instagram").value,
-        facebook: document.getElementById("facebook").value,
-        whatsapp: document.getElementById("whatsapp").value,
-        youtube: document.getElementById("youtube").value
-      }, { merge: true });
+window.onload = function () {
+  const foto = localStorage.getItem("fotoPerfil");
+  if (foto) document.getElementById("fotoPreview").src = foto;
+  requestAnimationFrame(() => atualizarUserCircle());
+  document.getElementById("foto").addEventListener("change", previewImagem);
+  document.getElementById("btnSalvar").addEventListener("click", salvarDados);
+};
 
-      alert("Dados salvos com sucesso!");
-    };
-
-    async function carregarDados() {
-      const user = auth.currentUser;
-      if (!user) return;
-
-      const docRef = doc(db, "usuarios", user.uid);
-      const docSnap = await getDoc(docRef);
-
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        document.getElementById("instagram").value = data.instagram || "";
-        document.getElementById("facebook").value = data.facebook || "";
-        document.getElementById("whatsapp").value = data.whatsapp || "";
-        document.getElementById("youtube").value = data.youtube || "";
-        if (data.fotoPerfil) {
-          document.getElementById("fotoPreview").src = data.fotoPerfil;
-          localStorage.setItem("fotoPerfil", data.fotoPerfil);
-        }
-      }
-    }
-
-    onAuthStateChanged(auth, (user) => {
-      const authText = document.getElementById("authText");
-      const userCircle = document.getElementById("userCircle");
-      if (!user) {
-        authText.textContent = "Entrar";
-        authText.onclick = () => window.location.href = "/index.html";
-        userCircle.style.display = "none";
-      } else {
-        authText.textContent = "Sair";
-        authText.onclick = logout;
-        userCircle.style.display = "flex";
-        atualizarUserCircle();
-        carregarDados();
-      }
-      authText.style.display = "inline";
-    });
-
-    window.onload = function () {
-      const foto = localStorage.getItem("fotoPerfil");
-      if (foto) document.getElementById("fotoPreview").src = foto;
-      requestAnimationFrame(() => atualizarUserCircle());
-    };
-  </script></body>
+  </script>
+</body>
 </html>
