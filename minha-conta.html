@@ -1,219 +1,437 @@
 <!DOCTYPE html><html lang="pt-BR"><head>  <meta charset="UTF-8" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>Minha Conta - MostreAki</title>
+
   <link rel="icon" href="favicon.ico" type="image/x-icon" />
+
   <style>
+
     body {
+
       font-family: Arial, sans-serif;
+
       background: #f0f0f0;
+
       padding: 2html
+
     }
+
     header {
+
       background-color: #c2e7df;
+
       height: 60px;
+
       display: flex;
+
       align-items: center;
+
       justify-content: space-between;
+
       padding: 0 20px;
+
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
       position: relative;
+
     }
+
     .logo-container { display: flex; align-items: center; }
+
     .logo-container img { height: 40px; margin-right: 10px; }
+
     .logo { font-size: 1.5rem; font-weight: bold; }
+
     .logo .mostre { color: #00C2BF; }
+
     .logo .aki { color: #FA1E39; }
+
     .menu-icon { font-size: 1.5rem; cursor: pointer; }
+
     .menu-list {
+
       position: absolute;
+
       top: 60px;
+
       right: 20px;
+
       background-color: #16807C;
+
       border: 2px solid black;
+
       border-radius: 6px;
+
       display: none;
+
       flex-direction: column;
+
       padding: 10px;
+
       z-index: 1000;
+
     }
+
     .menu-list a {
+
       text-decoration: none;
+
       color: white;
+
       padding: 10px 15px;
+
       border-radius: 6px;
+
       font-weight: bold;
+
       background-color: #FA1E39;
+
       margin-bottom: 8px;
+
       text-align: center;
+
     }
+
     .menu-list a:hover { background-color: #b8313b; }
+
     .user-circle {
+
       background-color: #15b0af;
+
       color: white;
+
       font-weight: bold;
+
       border-radius: 50%;
+
       width: 32px;
+
       height: 32px;
+
       display: flex;
+
       align-items: center;
+
       justify-content: center;
+
       margin-left: 10px;
+
       font-size: 0.8rem;
+
       overflow: hidden;
+
     }
+
     .user-circle img {
+
       width: 100%;
+
       height: 100%;
+
       object-fit: cover;
+
     }
+
     .container {
+
       background: white;
+
       max-width: 600px;
+
       margin: auto;
+
       padding: 20px;
+
       border-radius: 10px;
+
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
+
     }
+
     h2 {
+
       text-align: center;
+
       color: #16807C;
+
     }
+
     .form-group {
+
       margin: 15px 0;
+
     }
+
     label {
+
       display: block;
+
       margin-bottom: 5px;
+
       font-weight: bold;
+
     }
+
     input[type="text"], input[type="file"] {
+
       width: 100%;
+
       padding: 10px;
+
       border: 1px solid #ccc;
+
       border-radius: 6px;
+
     }
+
     #fotoPreview {
+
       width: 100px;
+
       height: 100px;
+
       border-radius: 50%;
+
       object-fit: cover;
+
       margin: 10px auto;
+
       display: block;
+
       border: 2px solid #ccc;
+
     }
+
     .buttons {
+
       display: flex;
+
       flex-direction: column;
+
       gap: 10px;
+
       margin-top: 20px;
+
     }
+
     .btn {
+
       padding: 12px;
+
       border: none;
+
       border-radius: 5px;
+
       color: white;
+
       font-weight: bold;
+
       cursor: pointer;
+
     }
+
     .btn-salvar { background-color: #16807C; }
+
     .btn-assinar { background-color: #28a745; }
+
     .btn-alterar { background-color: #007bff; }
+
     .btn-cancelar { background-color: #dc3545; }
+
   </style>
+
 </head>
+
 <body>
+
   <header>
+
     <div class="logo-container">
+
       <img src="logo.png" alt="Logo" />
+
       <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
+
     </div>
+
     <div style="display: flex; align-items: center; gap: 10px;">
+
       <span id="authText" style="font-weight:bold; color:#15b0af; cursor:pointer; display:none;" onclick="logout()">Sair</span>
+
       <div id="userCircle" class="user-circle" title="Perfil"></div>
+
       <div class="menu-icon" onclick="toggleMenu()">&#9776;</div>
+
     </div>
+
     <div class="menu-list" id="menu">
+
       <a href="/index.html">Página Inicial</a>
+
       <a href="/sobre.html">Sobre</a>
+
       <a href="/minhaconta.html">Minha Conta</a>
+
       <a href="/planos.html">Planos</a>
+
       <a href="/servicos-adicionais.html">Serviços Adicionais</a>
+
       <a href="/crieaki.html">CrieAki</a>
+
       <a href="/contatos.html">Contatos</a>
+
     </div>
+
   </header>
+
   <div class="container">
+
     <h2>Minha Conta</h2>
+
     <div class="form-group">
+
       <label for="foto">Foto de Perfil</label>
+
       <input type="file" id="foto" accept="image/*" onchange="previewImagem(event)">
+
       <img id="fotoPreview" src="" alt="Preview">
+
     </div>
+
     <div class="form-group">
+
       <label for="instagram">Instagram</label>
+
       <input type="text" id="instagram">
+
     </div>
+
     <div class="form-group">
+
       <label for="facebook">Facebook</label>
+
       <input type="text" id="facebook">
+
     </div>
+
     <div class="form-group">
+
       <label for="whatsapp">WhatsApp</label>
+
       <input type="text" id="whatsapp">
+
     </div>
+
     <div class="form-group">
+
       <label for="youtube">YouTube</label>
+
       <input type="text" id="youtube">
+
     </div>
+
     <div class="buttons">
+
       <button class="btn btn-salvar" onclick="salvarDados()">Salvar Alterações</button>
+
       <button class="btn btn-assinar">Assinar Plano</button>
+
       <button class="btn btn-alterar">Alterar Plano</button>
+
       <button class="btn btn-cancelar">Cancelar Plano</button>
+
     </div>
+
   </div>
+
   <script>
+
     function toggleMenu() {
+
       const menu = document.getElementById("menu");
+
       menu.style.display = menu.style.display === "flex" ? "none" : "flex";
+
     }function previewImagem(event) {
+
   const file = event.target.files[0];
+
   if (file) {
+
     const reader = new FileReader();
+
     reader.onload = function(e) {
+
       const src = e.target.result;
+
       document.getElementById("fotoPreview").src = src;
+
       localStorage.setItem("fotoPerfil", src);
+
       atualizarUserCircle();
+
     };
+
     reader.readAsDataURL(file);
+
   }
+
 }
+
+
 
 function atualizarUserCircle() {
+
   const circle = document.getElementById("userCircle");
+
   const imgSrc = localStorage.getItem("fotoPerfil");
+
   if (imgSrc) {
+
     circle.innerHTML = `<img src="${imgSrc}" alt="Foto">`;
+
   } else {
+
     const email = localStorage.getItem("email") || "U";
+
     circle.textContent = email.charAt(0).toUpperCase();
+
   }
+
 }
+
+
 
 function logout() {
+
   localStorage.clear();
+
   alert("Você saiu da conta.");
+
   window.location.href = "/index.html";
+
 }
+
+
 
 window.onload = function() {
+
   const foto = localStorage.getItem("fotoPerfil");
+
   if (foto) document.getElementById("fotoPreview").src = foto;
+
   atualizarUserCircle();
+
 }
 
+
+
   </script>
+
   <script type="module" src="auth.js"></script>
+
 </body>
+
 </html>
