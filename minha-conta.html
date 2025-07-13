@@ -148,7 +148,7 @@ input[type="text"], input[type="file"] {
       <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
     </div>
     <div style="display: flex; align-items: center; gap: 10px;">
-      <span id="authText" style="font-weight:bold; color:#15b0af; cursor:pointer; display:none;" onclick="handleAuthAction()">Entrar</span>
+      <span id="authText" style="font-weight:bold; color:#15b0af; cursor:pointer; display:none;" onclick="logout()">Sair</span>
       <div id="userCircle" class="user-circle" title="Perfil"></div>
       <div class="menu-icon" onclick="toggleMenu()">&#9776;</div>
     </div>
@@ -190,7 +190,7 @@ input[type="text"], input[type="file"] {
       <button class="btn btn-alterar">Alterar Plano</button>
       <button class="btn btn-cancelar">Cancelar Plano</button>
     </div>
-  </div>  <script type="module" src="auth.js"></script>  <script>
+  </div>  <script>
     function toggleMenu() {
       const menu = document.getElementById("menu");
       menu.style.display = menu.style.display === "flex" ? "none" : "flex";
@@ -214,6 +214,7 @@ input[type="text"], input[type="file"] {
       const circle = document.getElementById("userCircle");
       const imgSrc = localStorage.getItem("fotoPerfil");
       circle.innerHTML = "";
+
       if (imgSrc) {
         const img = document.createElement("img");
         img.src = imgSrc;
@@ -223,6 +224,17 @@ input[type="text"], input[type="file"] {
         const email = localStorage.getItem("email") || "U";
         circle.textContent = email.charAt(0).toUpperCase();
       }
+
+      const authText = document.getElementById("authText");
+      const emailSalvo = localStorage.getItem("email");
+      authText.textContent = emailSalvo ? "Sair" : "Entrar";
+      authText.style.display = "inline";
+    }
+
+    function logout() {
+      localStorage.clear();
+      alert("Você saiu da conta.");
+      window.location.href = "/index.html";
     }
 
     window.onload = function() {
@@ -231,9 +243,7 @@ input[type="text"], input[type="file"] {
         const fotoPreview = document.getElementById("fotoPreview");
         if (fotoPreview) fotoPreview.src = foto;
       }
-      requestAnimationFrame(() => {
-        atualizarUserCircle();
-      });
+      atualizarUserCircle();
     };
-  </script></body>
+  </script>  <script type="module" src="auth.js"></script></body>
 </html>
