@@ -213,23 +213,18 @@
     }
 
     function atualizarUserCircle() {
-      const circle = document.getElementById("userCircle");
-      const imgSrc = localStorage.getItem("fotoPerfil");
+    function atualizarUserCircle() {
+  const circle = document.getElementById("userCircle");
+  const imgSrc = localStorage.getItem("fotoPerfil");
 
-      if (imgSrc) {
-        const img = document.createElement("img");
-        img.src = imgSrc;
-        img.style.width = "100%";
-        img.style.height = "100%";
-        img.style.objectFit = "cover";
-        img.style.borderRadius = "50%";
-        circle.innerHTML = "";
-        circle.appendChild(img);
-      } else {
-        const email = localStorage.getItem("email") || "U";
-        circle.innerHTML = email.charAt(0).toUpperCase();
-      }
-    }
+  if (imgSrc) {
+    circle.innerHTML = `<img src="${imgSrc}" alt="Foto de Perfil"
+      style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;" />`;
+  } else {
+    const email = localStorage.getItem("email") || "U";
+    circle.innerHTML = email.charAt(0).toUpperCase();
+  }
+}
 
     function logout() {
       localStorage.clear();
