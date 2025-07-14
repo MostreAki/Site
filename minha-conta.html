@@ -213,8 +213,8 @@
   const auth = getAuth();
   const db = getFirestore();
   const storage = getStorage();
-
   const $ = (sel) => document.querySelector(sel);
+
   $('#menuBtn').addEventListener('click', () => {
     const menu = $('#menu');
     menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
@@ -231,13 +231,13 @@
     const url = await getDownloadURL(storageRef);
     await setDoc(doc(db, 'usuarios', uid), { fotoPerfil: url }, { merge: true });
     localStorage.setItem('fotoPerfil', url);
-    atualizarUserCircle();
+    atualizarUserCircle(url);
   }
 
-  function atualizarUserCircle() {
+  function atualizarUserCircle(urlFromFirestore = null) {
     const el = $('#userCircle');
     el.innerHTML = '';
-    const url = localStorage.getItem('fotoPerfil');
+    const url = urlFromFirestore || localStorage.getItem('fotoPerfil');
     if (url) {
       const img = new Image();
       img.src = url;
@@ -258,6 +258,7 @@
     if (d.fotoPerfil) {
       $('#fotoPreview').src = d.fotoPerfil;
       localStorage.setItem('fotoPerfil', d.fotoPerfil);
+      atualizarUserCircle(d.fotoPerfil);
     }
   }
 
@@ -282,12 +283,13 @@
       authText.style.display = 'inline';
       authText.onclick = async () => {
         await signOut(auth);
+        localStorage.removeItem('fotoPerfil');
         window.location.href = '/index.html';
       };
       circle.style.display = 'flex';
       carregarDados(user.uid);
-      atualizarUserCircle();
     } else {
+      localStorage.removeItem('fotoPerfil');
       window.location.href = '/index.html';
     }
   });
@@ -295,8 +297,6 @@
   document.addEventListener('DOMContentLoaded', () => {
     $('#foto').addEventListener('change', previewImagem);
     $('#btnSalvar').addEventListener('click', salvar);
-    const cachedFoto = localStorage.getItem('fotoPerfil');
-    if (cachedFoto) $('#fotoPreview').src = cachedFoto;
   });
 </script>
 
