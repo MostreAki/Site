@@ -1,321 +1,201 @@
-<!DOCTYPE html><html lang="pt-BR"><head>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Minha Conta - MostreAki</title>
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <title>Minha Conta – MostreAki</title>
+  <link rel="icon" href="favicon.ico" />
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f0f0f0;
-      padding: 20px;
-    }
-    header {
-      background-color: #c2e7df;
-      height: 60px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 20px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      position: relative;
-    }.logo-container { display: flex; align-items: center; }
-.logo-container img { height: 40px; margin-right: 10px; }
-.logo { font-size: 1.5rem; font-weight: bold; }
-.logo .mostre { color: #00C2BF; }
-.logo .aki { color: #FA1E39; }
-
-.menu-icon { font-size: 1.5rem; cursor: pointer; }
-.menu-list {
-  position: absolute;
-  top: 60px;
-  right: 20px;
-  background-color: #16807C;
-  border: 2px solid black;
-  border-radius: 6px;
-  display: none;
-  flex-direction: column;
-  padding: 10px;
-  z-index: 1000;
-}
-
-.menu-list a {
-  text-decoration: none;
-  color: white;
-  padding: 10px 15px;
-  border-radius: 6px;
-  font-weight: bold;
-  background-color: #FA1E39;
-  margin-bottom: 8px;
-  text-align: center;
-}
-
-.menu-list a:hover { background-color: #b8313b; }
-
-.user-circle {
-  background-color: #15b0af;
-  color: white;
-  font-weight: bold;
-  border-radius: 50%;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-left: 10px;
-  font-size: 0.8rem;
-  overflow: hidden;
-  position: relative;
-}
-
-.user-circle img {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100% !important;
-  height: 100% !important;
-  object-fit: cover;
-  border-radius: 50%;
-}
-
-.container {
-  background: white;
-  max-width: 600px;
-  margin: auto;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
-
-h2 {
-  text-align: center;
-  color: #16807C;
-}
-
-.form-group { margin: 15px 0; }
-
-label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
-}
-
-input[type="text"], input[type="file"] {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-}
-
-#fotoPreview {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  object-fit: cover;
-  margin: 10px auto;
-  display: block;
-  border: 2px solid #ccc;
-}
-
-.buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 20px;
-}
-
-.btn {
-  padding: 12px;
-  border: none;
-  border-radius: 5px;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.btn-salvar { background-color: #16807C; }
-.btn-assinar { background-color: #28a745; }
-.btn-alterar { background-color: #007bff; }
-.btn-cancelar { background-color: #dc3545; }
-
+    /* ======== Estilização mínima ======== */
+    *{box-sizing:border-box}body{font-family:Arial;background:#f0f0f0;margin:0;padding:20px}
+    header{background:#c2e7df;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;position:relative}
+    .logo-container{display:flex;align-items:center}.logo-container img{height:40px;margin-right:10px}
+    .logo{font-size:1.5rem;font-weight:bold}.logo .mostre{color:#00c2bf}.logo .aki{color:#fa1e39}
+    .menu-icon{font-size:1.7rem;cursor:pointer}.menu-list{position:absolute;top:60px;right:20px;background:#16807c;border:2px solid #000;border-radius:6px;display:none;flex-direction:column;padding:10px;z-index:1000}
+    .menu-list a{background:#fa1e39;color:#fff;text-decoration:none;font-weight:bold;border-radius:6px;padding:10px 15px;margin-bottom:8px;text-align:center}
+    .menu-list a:hover{background:#b8313b}
+    .user-circle{background:#15b0af;color:#fff;font-weight:bold;border-radius:50%;width:32px;height:32px;display:none;align-items:center;justify-content:center;overflow:hidden;position:relative;font-size:.8rem}
+    .user-circle img{position:absolute;width:100%;height:100%;object-fit:cover}
+    /* -------- formulário -------- */
+    .container{background:#fff;max-width:600px;margin:auto;padding:20px;border-radius:10px;box-shadow:0 0 10px #0001}
+    h2{text-align:center;color:#16807c}
+    .form-group{margin:15px 0}
+    label{display:block;margin-bottom:5px;font-weight:bold}
+    input[type=text],input[type=file]{width:100%;padding:10px;border:1px solid #ccc;border-radius:6px}
+    #fotoPreview{width:100px;height:100px;border:2px solid #ccc;border-radius:50%;object-fit:cover;margin:10px auto;display:block}
+    .buttons{display:flex;flex-direction:column;gap:10px;margin-top:20px}
+    .btn{padding:12px;border:none;border-radius:5px;font-weight:bold;color:#fff;cursor:pointer}
+    .btn-salvar{background:#16807c}.btn-assinar{background:#28a745}.btn-alterar{background:#007bff}.btn-cancelar{background:#dc3545}
   </style>
 </head>
-  <body>
-  <header>
-    <div class="logo-container">
-      <img src="logo.png" alt="Logo" />
-      <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
-    </div>
-    <div style="display: flex; align-items: center; gap: 10px;">
-      <span id="authText" style="font-weight:bold; color:#15b0af; cursor:pointer; display:none;"></span>
-      <div id="userCircle" class="user-circle" title="Perfil"></div>
-      <div class="menu-icon" onclick="toggleMenu()">&#9776;</div>
-    </div>
-    <div class="menu-list" id="menu">
-      <a href="/index.html">Página Inicial</a>
-      <a href="/sobre.html">Sobre</a>
-      <a href="/minhaconta.html">Minha Conta</a>
-      <a href="/planos.html">Planos</a>
-      <a href="/servicos-adicionais.html">Serviços Adicionais</a>
-      <a href="/crieaki.html">CrieAki</a>
-      <a href="/contatos.html">Contatos</a>
-    </div>
-  </header>
-  <div class="container">
-    <h2>Minha Conta</h2>
-    <div class="form-group">
-      <label for="foto">Foto de Perfil</label>
-      <input type="file" id="foto" accept="image/*">
-      <img id="fotoPreview" src="" alt="Preview">
-    </div>
-    <div class="form-group">
-      <label for="instagram">Instagram</label>
-      <input type="text" id="instagram">
-    </div>
-    <div class="form-group">
-      <label for="facebook">Facebook</label>
-      <input type="text" id="facebook">
-    </div>
-    <div class="form-group">
-      <label for="whatsapp">WhatsApp</label>
-      <input type="text" id="whatsapp">
-    </div>
-    <div class="form-group">
-      <label for="youtube">YouTube</label>
-      <input type="text" id="youtube">
-    </div>
-    <div class="buttons">
-      <button class="btn btn-salvar" id="btnSalvar">Salvar Alterações</button>
-      <button class="btn btn-assinar">Assinar Plano</button>
-      <button class="btn btn-alterar">Alterar Plano</button>
-      <button class="btn btn-cancelar">Cancelar Plano</button>
-    </div>
+<body>
+<header>
+  <div class="logo-container">
+    <img src="logo.png" alt="Logo">
+    <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
   </div>
-  <script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-    import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-    import { getFirestore, doc, setDoc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-    import { getStorage, ref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';const firebaseConfig = {
-  apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
-  authDomain: "mostreaki-2025.firebaseapp.com",
-  projectId: "mostreaki-2025",
-  storageBucket: "mostreaki-2025.appspot.com",
+  <div style="display:flex;align-items:center;gap:10px">
+    <span id="authText" style="font-weight:bold;color:#15b0af;cursor:pointer;display:none"></span>
+    <div id="userCircle" class="user-circle" title="Perfil"></div>
+    <div class="menu-icon" id="menuBtn">&#9776;</div>
+  </div>
+  <div class="menu-list" id="menu">
+    <a href="/index.html">Página Inicial</a>
+    <a href="/sobre.html">Sobre</a>
+    <a href="/minhaconta.html">Minha Conta</a>
+    <a href="/planos.html">Planos</a>
+    <a href="/servicos-adicionais.html">Serviços Adicionais</a>
+    <a href="/crieaki.html">CrieAki</a>
+    <a href="/contatos.html">Contatos</a>
+  </div>
+</header>
+
+<div class="container">
+  <h2>Minha Conta</h2>
+  <div class="form-group">
+    <label for="foto">Foto de Perfil</label>
+    <input type="file" id="foto" accept="image/*">
+    <img id="fotoPreview" src="" alt="Preview">
+  </div>
+  <div class="form-group"><label>Instagram</label><input id="instagram" type="text"></div>
+  <div class="form-group"><label>Facebook</label><input id="facebook" type="text"></div>
+  <div class="form-group"><label>WhatsApp</label><input id="whatsapp" type="text"></div>
+  <div class="form-group"><label>YouTube</label><input id="youtube" type="text"></div>
+
+  <div class="buttons">
+    <button id="btnSalvar"   class="btn btn-salvar">Salvar Alterações</button>
+    <button               class="btn btn-assinar">Assinar Plano</button>
+    <button               class="btn btn-alterar">Alterar Plano</button>
+    <button               class="btn btn-cancelar">Cancelar Plano</button>
+  </div>
+</div>
+
+<!-- ==================== Firebase + Lógica ==================== -->
+<script type="module">
+import { initializeApp }      from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { getAuth,
+         onAuthStateChanged,
+         signOut              } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import { getFirestore,
+         doc, setDoc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+import { getStorage,
+         ref, uploadBytes,
+         getDownloadURL      } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
+
+/* ---------- Config Firebase ---------- */
+const firebaseConfig = {
+  apiKey:            "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
+  authDomain:        "mostreaki-2025.firebaseapp.com",
+  projectId:         "mostreaki-2025",
+  storageBucket:     "mostreaki-2025.appspot.com",
   messagingSenderId: "748712068097",
-  appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
+  appId:             "1:748712068097:web:09cf043fbb45917ef6ec00"
 };
+initializeApp(firebaseConfig);
+const auth     = getAuth();
+const db       = getFirestore();
+const storage  = getStorage();
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-const storage = getStorage(app);
+/* ========== Helpers UI ========== */
+const qs = s => document.querySelector(s);
+const menu = qs('#menu');
 
-window.toggleMenu = function () {
-  const menu = document.getElementById("menu");
-  menu.style.display = menu.style.display === "flex" ? "none" : "flex";
-};
+function toggleMenu(){ menu.style.display = menu.style.display==='flex'?'none':'flex'; }
+qs('#menuBtn').addEventListener('click', toggleMenu);
 
-window.logout = function () {
-  signOut(auth).then(() => {
-    localStorage.clear();
-    alert("Você saiu da conta.");
-    window.location.href = "/index.html";
-  });
-};
+/* ---------- Foto de perfil ---------- */
+async function previewImagem(ev){
+  const file = ev.target.files?.[0];
+  if(!file) return;
 
-window.previewImagem = async function (event) {
-  const file = event.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = function (e) {
-      document.getElementById("fotoPreview").src = e.target.result;
-    };
-    reader.readAsDataURL(file);
+  qs('#fotoPreview').src = URL.createObjectURL(file);
 
-    const user = auth.currentUser;
-    if (!user) return alert("Você precisa estar logado para alterar a imagem.");
+  if(!auth.currentUser){
+    alert('Faça login antes de alterar a imagem.');
+    return;
+  }
+  const uid = auth.currentUser.uid;
+  const storageRef = ref(storage, `fotosPerfil/${uid}`);
+  await uploadBytes(storageRef, file);
+  const url = await getDownloadURL(storageRef);
 
-    const storageRef = ref(storage, `fotosPerfil/${user.uid}`);
-    await uploadBytes(storageRef, file);
-    const url = await getDownloadURL(storageRef);
-    localStorage.setItem("fotoPerfil", url);
-    await setDoc(doc(db, "usuarios", user.uid), { fotoPerfil: url }, { merge: true });
+  localStorage.setItem('fotoPerfil', url);
+  await setDoc(doc(db,'usuarios',uid), {fotoPerfil:url}, {merge:true});
+  atualizarUserCircle();
+}
+
+/* ---------- Atualiza bolinha no topo ---------- */
+function atualizarUserCircle(){
+  const el = qs('#userCircle');
+  const url = localStorage.getItem('fotoPerfil');
+  el.innerHTML='';
+  if(url){
+    const img = new Image(); img.src=url; el.append(img);
+  }else{
+    el.textContent = auth.currentUser?.displayName?.[0]?.toUpperCase() || 'U';
+  }
+}
+
+/* ---------- Salvar dados ---------- */
+async function salvarDados(){
+  const u = auth.currentUser;
+  if(!u){ alert('Espere login carregar.'); return; }
+
+  const data = {
+    instagram: qs('#instagram').value.trim(),
+    facebook : qs('#facebook').value.trim(),
+    whatsapp : qs('#whatsapp').value.trim(),
+    youtube  : qs('#youtube').value.trim()
+  };
+  await setDoc(doc(db,'usuarios',u.uid), data, {merge:true});
+  alert('Dados salvos!');
+}
+
+/* ---------- Carregar dados ---------- */
+async function carregarDados(uid){
+  const snap = await getDoc(doc(db,'usuarios',uid));
+  if(!snap.exists()) return;
+  const d = snap.data();
+  qs('#instagram').value = d.instagram || '';
+  qs('#facebook').value  = d.facebook  || '';
+  qs('#whatsapp').value  = d.whatsapp  || '';
+  qs('#youtube').value   = d.youtube   || '';
+  if(d.fotoPerfil){
+    qs('#fotoPreview').src = d.fotoPerfil;
+    localStorage.setItem('fotoPerfil', d.fotoPerfil);
+  }
+}
+
+/* ---------- Auth state ---------- */
+onAuthStateChanged(auth, user=>{
+  const authText = qs('#authText');
+  const circle   = qs('#userCircle');
+
+  if(user){
+    authText.textContent = 'Sair';
+    authText.onclick = ()=>signOut(auth);
+    circle.style.display='flex';
     atualizarUserCircle();
+    carregarDados(user.uid);
+  }else{
+    authText.textContent = 'Entrar';
+    authText.onclick = ()=>window.location.href='/index.html';
+    circle.style.display='none';
+    localStorage.removeItem('fotoPerfil');
   }
-};
-
-function atualizarUserCircle() {
-  const circle = document.getElementById("userCircle");
-  const imgSrc = localStorage.getItem("fotoPerfil");
-  circle.innerHTML = "";
-  if (imgSrc) {
-    const img = document.createElement("img");
-    img.src = imgSrc;
-    img.alt = "Foto de Perfil";
-    circle.appendChild(img);
-  } else {
-    circle.textContent = "U";
-  }
-}
-
-async function salvarDados() {
-  const user = auth.currentUser;
-  if (!user) return alert("Você precisa estar logado.");
-
-  const docRef = doc(db, "usuarios", user.uid);
-  await setDoc(docRef, {
-    instagram: document.getElementById("instagram").value,
-    facebook: document.getElementById("facebook").value,
-    whatsapp: document.getElementById("whatsapp").value,
-    youtube: document.getElementById("youtube").value
-  }, { merge: true });
-
-  alert("Dados salvos com sucesso!");
-}
-
-async function carregarDados() {
-  const user = auth.currentUser;
-  if (!user) return;
-
-  const docRef = doc(db, "usuarios", user.uid);
-  const docSnap = await getDoc(docRef);
-
-  if (docSnap.exists()) {
-    const data = docSnap.data();
-    document.getElementById("instagram").value = data.instagram || "";
-    document.getElementById("facebook").value = data.facebook || "";
-    document.getElementById("whatsapp").value = data.whatsapp || "";
-    document.getElementById("youtube").value = data.youtube || "";
-    if (data.fotoPerfil) {
-      document.getElementById("fotoPreview").src = data.fotoPerfil;
-      localStorage.setItem("fotoPerfil", data.fotoPerfil);
-    }
-  }
-}
-
-onAuthStateChanged(auth, (user) => {
-  const authText = document.getElementById("authText");
-  const userCircle = document.getElementById("userCircle");
-  if (!user) {
-    authText.textContent = "Entrar";
-    authText.onclick = () => window.location.href = "/index.html";
-    userCircle.style.display = "none";
-  } else {
-    authText.textContent = "Sair";
-    authText.onclick = logout;
-    userCircle.style.display = "flex";
-    atualizarUserCircle();
-    carregarDados();
-  }
-  authText.style.display = "inline";
+  authText.style.display='inline';
 });
 
-window.onload = function () {
-  const foto = localStorage.getItem("fotoPerfil");
-  if (foto) document.getElementById("fotoPreview").src = foto;
-  requestAnimationFrame(() => atualizarUserCircle());
-  document.getElementById("foto").addEventListener("change", previewImagem);
-  document.getElementById("btnSalvar").addEventListener("click", salvarDados);
-};
+/* ---------- Listeners depois do DOM pronto ---------- */
+document.addEventListener('DOMContentLoaded', ()=>{
+  // foto e salvar
+  qs('#foto').addEventListener('change', previewImagem);
+  qs('#btnSalvar').addEventListener('click', salvarDados);
 
-  </script>
+  // mostra preview salvo (caso reload)
+  const fotoLocal = localStorage.getItem('fotoPerfil');
+  if(fotoLocal) qs('#fotoPreview').src = fotoLocal;
+});
+</script>
 </body>
 </html>
