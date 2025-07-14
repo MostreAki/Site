@@ -1,379 +1,300 @@
-<!DOCTYPE html><html lang="pt-BR">
-  <head>
+<!DOCTYPE html><html lang="pt-BR">  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Minha Conta – MostreAki</title>
-    <link rel="icon" href="/favicon.ico" /><!-- ================= Estilos ================= -->
-<style>
-  *, *::before, *::after {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
-
-  body {
-    font-family: Arial, Helvetica, sans-serif;
-    background: #f0f0f0;
-    padding: 20px;
-  }
-
-  /* ---------- HEADER ---------- */
-  header {
-    background: #c2e7df;
-    height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 20px;
-    position: relative;
-    border-radius: 8px;
-    box-shadow: 0 2px 6px #00000015;
-  }
-
-  .logo-container {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-  }
-
-  .logo-container img {
-    height: 40px;
-  }
-
-  .logo {
-    font-size: 1.5rem;
-    font-weight: 700;
-  }
-
-  .logo .mostre {
-    color: #00c2bf;
-  }
-
-  .logo .aki {
-    color: #fa1e39;
-  }
-
-  /* ---------- MENU ---------- */
-  .menu-icon {
-    font-size: 1.7rem;
-    cursor: pointer;
-    user-select: none;
-  }
-
-  #menu {
-    position: absolute;
-    top: 60px;
-    right: 20px;
-    background: #16807c;
-    border: 2px solid #000;
-    border-radius: 6px;
-    display: none;
-    flex-direction: column;
-    width: 180px;
-    padding: 10px;
-    z-index: 100;
-  }
-
-  #menu a {
-    background: #fa1e39;
-    color: #fff;
-    text-decoration: none;
-    font-weight: 600;
-    border-radius: 6px;
-    padding: 10px 0;
-    margin-bottom: 8px;
-    text-align: center;
-    transition: background 0.2s;
-  }
-
-  #menu a:hover {
-    background: #b8313b;
-  }
-
-  /* ---------- User circle ---------- */
-  .user-circle {
-    background: #15b0af;
-    color: #fff;
-    font-weight: 700;
-    border-radius: 50%;
-    width: 32px;
-    height: 32px;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    overflow: hidden;
-    font-size: 0.85rem;
-    user-select: none;
-  }
-
-  .user-circle img {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  /* ---------- Formulário ---------- */
-  .container {
-    background: #fff;
-    max-width: 600px;
-    margin: 40px auto;
-    padding: 24px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px #00000010;
-  }
-
-  h2 {
-    text-align: center;
-    color: #16807c;
-    margin-bottom: 20px;
-  }
-
-  .form-group {
-    margin-bottom: 16px;
-  }
-
-  label {
-    display: block;
-    margin-bottom: 6px;
-    font-weight: 600;
-  }
-
-  input[type="text"],
-  input[type="file"] {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 1rem;
-  }
-
-  #fotoPreview {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin: 12px auto;
-    display: block;
-    border: 2px solid #ccc;
-  }
-
-  .buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 22px;
-  }
-
-  .btn {
-    padding: 12px;
-    border: none;
-    border-radius: 6px;
-    font-weight: 700;
-    color: #fff;
-    cursor: pointer;
-  }
-
-  .btn-salvar { background: #16807c; }
-  .btn-assinar { background: #28a745; }
-  .btn-alterar { background: #007bff; }
-  .btn-cancelar{ background: #dc3545; }
-</style>
-
-  </head>  <body>
-    <!-- ================= HEADER ================= -->
+    <title>Minha Conta – MostreAki</title>
+    <link rel="icon" href="/favicon.ico" />
+    <style>
+      *, *::before, *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: Arial, Helvetica, sans-serif;
+        background: #f0f0f0;
+        padding: 20px;
+      }
+      header {
+        background: #c2e7df;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 20px;
+        position: relative;
+        border-radius: 8px;
+        box-shadow: 0 2px 6px #00000015;
+      }
+      .logo-container {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+      }
+      .logo-container img {
+        height: 40px;
+      }
+      .logo {
+        font-size: 1.5rem;
+        font-weight: 700;
+      }
+      .logo .mostre {
+        color: #00c2bf;
+      }
+      .logo .aki {
+        color: #fa1e39;
+      }
+      .menu-icon {
+        font-size: 1.7rem;
+        cursor: pointer;
+        user-select: none;
+      }
+      #menu {
+        position: absolute;
+        top: 60px;
+        right: 20px;
+        background: #16807c;
+        border: 2px solid #000;
+        border-radius: 6px;
+        display: none;
+        flex-direction: column;
+        width: 180px;
+        padding: 10px;
+        z-index: 100;
+      }
+      #menu a {
+        background: #fa1e39;
+        color: #fff;
+        text-decoration: none;
+        font-weight: 600;
+        border-radius: 6px;
+        padding: 10px 0;
+        margin-bottom: 8px;
+        text-align: center;
+        transition: background 0.2s;
+      }
+      #menu a:hover {
+        background: #b8313b;
+      }
+      .user-circle {
+        background: #15b0af;
+        color: #fff;
+        font-weight: 700;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+        font-size: 0.85rem;
+        user-select: none;
+      }
+      .user-circle img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .container {
+        background: #fff;
+        max-width: 600px;
+        margin: 40px auto;
+        padding: 24px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px #00000010;
+      }
+      h2 {
+        text-align: center;
+        color: #16807c;
+        margin-bottom: 20px;
+      }
+      .form-group {
+        margin-bottom: 16px;
+      }
+      label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: 600;
+      }
+      input[type="text"], input[type="file"] {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 1rem;
+      }
+      #fotoPreview {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin: 12px auto;
+        display: block;
+        border: 2px solid #ccc;
+      }
+      .buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 22px;
+      }
+      .btn {
+        padding: 12px;
+        border: none;
+        border-radius: 6px;
+        font-weight: 700;
+        color: #fff;
+        cursor: pointer;
+      }
+      .btn-salvar { background: #16807c; }
+      .btn-assinar { background: #28a745; }
+      .btn-alterar { background: #007bff; }
+      .btn-cancelar{ background: #dc3545; }
+    </style>
+  </head>
+  <body>
     <header>
       <div class="logo-container" onclick="window.location.href='/'">
         <img src="/logo.png" alt="Logo" />
         <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
-      </div><div style="display: flex; align-items: center; gap: 10px">
-    <span id="authText" style="display: none; font-weight: 700; color: #15b0af; cursor: pointer"></span>
-    <div id="userCircle" class="user-circle" title="Perfil"></div>
-    <div id="menuBtn" class="menu-icon">☰</div>
-  </div>
-
-  <nav id="menu">
-    <a href="/index.html">Página Inicial</a>
-    <a href="/sobre.html">Sobre</a>
-    <a href="/minha-conta.html">Minha Conta</a>
-    <a href="/planos.html">Planos</a>
-    <a href="/servicos-adicionais.html">Serviços Adicionais</a>
-    <a href="/crieaki.html">CrieAki</a>
-    <a href="/contatos.html">Contatos</a>
-  </nav>
-</header>
-
-<!-- ================= CONTEÚDO ================= -->
-<main class="container">
+      </div>
+      <div style="display: flex; align-items: center; gap: 10px">
+        <span id="authText" style="display: none; font-weight: 700; color: #15b0af; cursor: pointer"></span>
+        <div id="userCircle" class="user-circle" title="Perfil"></div>
+        <div id="menuBtn" class="menu-icon">☰</div>
+      </div>
+      <nav id="menu">
+        <a href="/index.html">Página Inicial</a>
+        <a href="/sobre.html">Sobre</a>
+        <a href="/minha-conta.html">Minha Conta</a>
+        <a href="/planos.html">Planos</a>
+        <a href="/servicos-adicionais.html">Serviços Adicionais</a>
+        <a href="/crieaki.html">CrieAki</a>
+        <a href="/contatos.html">Contatos</a>
+      </nav>
+    </header><main class="container">
   <h2>Minha Conta</h2>
-
   <div class="form-group">
     <label for="foto">Foto de Perfil</label>
     <input type="file" id="foto" accept="image/*" />
     <img id="fotoPreview" src="" alt="Preview" />
   </div>
-
-  <div class="form-group">
-    <label for="instagram">Instagram</label>
-    <input type="text" id="instagram" />
-  </div>
-
-  <div class="form-group">
-    <label for="facebook">Facebook</label>
-    <input type="text" id="facebook" />
-  </div>
-
-  <div class="form-group">
-    <label for="whatsapp">WhatsApp</label>
-    <input type="text" id="whatsapp" />
-  </div>
-
-  <div class="form-group">
-    <label for="youtube">YouTube</label>
-    <input type="text" id="youtube" />
-  </div>
-
+  <div class="form-group"><label for="instagram">Instagram</label><input type="text" id="instagram" /></div>
+  <div class="form-group"><label for="facebook">Facebook</label><input type="text" id="facebook" /></div>
+  <div class="form-group"><label for="whatsapp">WhatsApp</label><input type="text" id="whatsapp" /></div>
+  <div class="form-group"><label for="youtube">YouTube</label><input type="text" id="youtube" /></div>
   <div class="buttons">
-    <button id="btnSalvar"   class="btn btn-salvar">Salvar Alterações</button>
-    <button               class="btn btn-assinar">Assinar Plano</button>
-    <button               class="btn btn-alterar">Alterar Plano</button>
-    <button               class="btn btn-cancelar">Cancelar Plano</button>
+    <button id="btnSalvar" class="btn btn-salvar">Salvar Alterações</button>
+    <button class="btn btn-assinar">Assinar Plano</button>
+    <button class="btn btn-alterar">Alterar Plano</button>
+    <button class="btn btn-cancelar">Cancelar Plano</button>
   </div>
 </main>
 
-<!-- ================= Firebase / Lógica ================= -->
 <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-  import {
-    getAuth,
-    onAuthStateChanged,
-    signOut
-  } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-  import {
-    getFirestore,
-    doc, setDoc, getDoc
-  } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-  import {
-    getStorage,
-    ref, uploadBytes, getDownloadURL
-  } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
+  import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+  import { getFirestore, doc, setDoc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+  import { getStorage, ref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
 
-  /* ---------- Config ---------- */
   const firebaseConfig = {
-    apiKey:            'AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE',
-    authDomain:        'mostreaki-2025.firebaseapp.com',
-    projectId:         'mostreaki-2025',
-    storageBucket:     'mostreaki-2025.appspot.com',
+    apiKey: 'AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE',
+    authDomain: 'mostreaki-2025.firebaseapp.com',
+    projectId: 'mostreaki-2025',
+    storageBucket: 'mostreaki-2025.appspot.com',
     messagingSenderId: '748712068097',
-    appId:             '1:748712068097:web:09cf043fbb45917ef6ec00'
+    appId: '1:748712068097:web:09cf043fbb45917ef6ec00'
   };
   initializeApp(firebaseConfig);
 
-  const auth    = getAuth();
-  const db      = getFirestore();
+  const auth = getAuth();
+  const db = getFirestore();
   const storage = getStorage();
 
-  /* ---------- UI helpers ---------- */
-  const $     = (sel) => document.querySelector(sel);
-  const menu  = $('#menu');
+  const $ = (sel) => document.querySelector(sel);
   $('#menuBtn').addEventListener('click', () => {
+    const menu = $('#menu');
     menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
   });
 
-  /* ---------- Foto de perfil ---------- */
-  async function previewImagem (e) {
+  async function previewImagem(e) {
     const file = e.target.files?.[0];
     if (!file) return;
-
-    // preview imediato
     $('#fotoPreview').src = URL.createObjectURL(file);
-
-    if (!auth.currentUser) {
-      alert('Faça login para alterar a imagem.');
-      return;
-    }
+    if (!auth.currentUser) return alert('Faça login para alterar a imagem.');
     const uid = auth.currentUser.uid;
     const storageRef = ref(storage, `fotosPerfil/${uid}`);
     await uploadBytes(storageRef, file);
     const url = await getDownloadURL(storageRef);
-
-    // salva url no Firestore
     await setDoc(doc(db, 'usuarios', uid), { fotoPerfil: url }, { merge: true });
     localStorage.setItem('fotoPerfil', url);
     atualizarUserCircle();
   }
 
-  /* ---------- Atualiza circulo ---------- */
-  function atualizarUserCircle () {
-    const el  = $('#userCircle');
+  function atualizarUserCircle() {
+    const el = $('#userCircle');
     el.innerHTML = '';
     const url = localStorage.getItem('fotoPerfil');
     if (url) {
       const img = new Image();
-      img.src   = url;
+      img.src = url;
       el.append(img);
     } else {
       el.textContent = auth.currentUser?.displayName?.[0]?.toUpperCase() || 'U';
     }
   }
 
-  /* ---------- Carregar dados ---------- */
-  async function carregarDados (uid) {
+  async function carregarDados(uid) {
     const snap = await getDoc(doc(db, 'usuarios', uid));
     if (!snap.exists()) return;
     const d = snap.data();
     $('#instagram').value = d.instagram || '';
-    $('#facebook').value  = d.facebook  || '';
-    $('#whatsapp').value  = d.whatsapp  || '';
-    $('#youtube').value   = d.youtube   || '';
+    $('#facebook').value = d.facebook || '';
+    $('#whatsapp').value = d.whatsapp || '';
+    $('#youtube').value = d.youtube || '';
     if (d.fotoPerfil) {
       $('#fotoPreview').src = d.fotoPerfil;
       localStorage.setItem('fotoPerfil', d.fotoPerfil);
     }
   }
 
-  /* ---------- Salvar ---------- */
-  async function salvar () {
+  async function salvar() {
     if (!auth.currentUser) return alert('Faça login primeiro.');
-    const uid  = auth.currentUser.uid;
+    const uid = auth.currentUser.uid;
     const data = {
       instagram: $('#instagram').value.trim(),
-      facebook : $('#facebook').value.trim(),
-      whatsapp : $('#whatsapp').value.trim(),
-      youtube  : $('#youtube').value.trim()
+      facebook: $('#facebook').value.trim(),
+      whatsapp: $('#whatsapp').value.trim(),
+      youtube: $('#youtube').value.trim()
     };
     await setDoc(doc(db, 'usuarios', uid), data, { merge: true });
     alert('Dados salvos!');
   }
 
-  /* ---------- Auth listener ---------- */
   onAuthStateChanged(auth, user => {
     const authText = $('#authText');
-    const circle   = $('#userCircle');
+    const circle = $('#userCircle');
     if (user) {
       authText.textContent = 'Sair';
       authText.style.display = 'inline';
-      authText.onclick = () => signOut(auth);
+      authText.onclick = async () => {
+        await signOut(auth);
+        window.location.href = '/index.html';
+      };
       circle.style.display = 'flex';
       carregarDados(user.uid);
       atualizarUserCircle();
     } else {
-      authText.textContent = 'Entrar';
-      authText.style.display = 'inline';
-      authText.onclick = () => (window.location.href = '/index.html');
-      circle.style.display = 'none';
-      localStorage.removeItem('fotoPerfil');
+      window.location.href = '/index.html';
     }
   });
 
-  /* ---------- Eventos ---------- */
   document.addEventListener('DOMContentLoaded', () => {
     $('#foto').addEventListener('change', previewImagem);
     $('#btnSalvar').addEventListener('click', salvar);
-
     const cachedFoto = localStorage.getItem('fotoPerfil');
     if (cachedFoto) $('#fotoPreview').src = cachedFoto;
   });
