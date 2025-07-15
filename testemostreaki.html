@@ -1,83 +1,76 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Teste Upload Firebase Storage</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body { font-family: sans-serif; padding: 20px; background: #f5f5f5; }
-    .preview { margin-top: 20px; }
-    img { max-width: 200px; border-radius: 8px; border: 2px solid #ccc; display: block; margin-top: 10px; }
-    button { margin-top: 20px; padding: 10px 20px; background: #16807c; color: #fff; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; }
-    button:hover { background: #0f6a65; }
-  </style>
+<meta charset="utf-8">
+<title>Teste Storage – MostreAki</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+body{font-family:Arial,Helvetica,sans-serif;text-align:center;padding:40px;background:#f5f5f5}
+#preview{margin:20px auto;width:150px;height:150px;border-radius:50%;border:2px solid #ccc;object-fit:cover;display:none}
+input[type=file]{margin:20px auto;display:block}
+a{display:block;margin-top:16px;color:#007bff;word-break:break-all}
+</style>
 </head>
 <body>
-  <h2>Teste Upload de Imagem no Firebase Storage</h2>
-  <input type="file" id="uploadInput" accept="image/*">
-  <div class="preview">
-    <p>Preview:</p>
-    <img id="previewImg" src="" alt="Preview da imagem">
-  </div>
-  <button id="btnUpload">Salvar imagem no Storage</button>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
-    import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+<h1>Teste de Upload no Firebase Storage</h1>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
-      authDomain: "mostreaki-2025.firebaseapp.com",
-      projectId: "mostreaki-2025",
-      storageBucket: "mostreaki-2025.appspot.com",
-      messagingSenderId: "748712068097",
-      appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
-    };
+<input id="arquivo" type="file" accept="image/*">
+<img id="preview" alt="preview">
+<a id="link" href="#" target="_blank"></a>
 
-    const app = initializeApp(firebaseConfig);
-    const storage = getStorage(app);
-    const auth = getAuth(app);
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { getAuth, signInAnonymously, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
 
-    const $ = s => document.querySelector(s);
-    const uploadInput = $('#uploadInput');
-    const previewImg = $('#previewImg');
-    const btnUpload = $('#btnUpload');
+/* --- config do MostreAki --- */
+initializeApp({
+  apiKey:'AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE',
+  authDomain:'mostreaki-2025.firebaseapp.com',
+  projectId:'mostreaki-2025',
+  storageBucket:'mostreaki-2025.appspot.com',
+  messagingSenderId:'748712068097',
+  appId:'1:748712068097:web:09cf043fbb45917ef6ec00'
+});
 
-    let selectedFile = null;
+const auth     = getAuth();
+const storage  = getStorage();
+const $        = s=>document.querySelector(s);
+const arquivo  = $('#arquivo');
+const preview  = $('#preview');
+const link     = $('#link');
 
-    onAuthStateChanged(auth, user => {
-      if (!user) {
-        console.log('🔐 Fazendo login anônimo...');
-        signInAnonymously(auth).catch(console.error);
-      } else {
-        console.log('✅ Logado como UID:', user.uid);
-      }
-    });
+/* --- login anônimo obrigatório para passar na regra allow read/write if request.auth != null --- */
+signInAnonymously(auth).catch(err=>alert('Falha no login anônimo: '+err.message));
 
-    uploadInput.onchange = (e) => {
-      selectedFile = e.target.files[0];
-      if (!selectedFile) return;
-      previewImg.src = URL.createObjectURL(selectedFile);
-    };
+onAuthStateChanged(auth,user=>{
+  if(!user) return;         // só prossegue quando logado
 
-    btnUpload.onclick = async () => {
-      if (!selectedFile) return alert('Escolha uma imagem antes de salvar!');
-      const uid = auth.currentUser?.uid;
-      if (!uid) return alert('Usuário não logado.');
+  arquivo.onchange = async e=>{
+    const file = e.target.files?.[0];
+    if(!file) return;
 
-      const storageRef = ref(storage, `testeUpload/${uid}/${selectedFile.name}`);
-      try {
-        const snapshot = await uploadBytes(storageRef, selectedFile);
-        console.log('✅ Upload realizado:', snapshot.metadata.fullPath);
-        const url = await getDownloadURL(storageRef);
-        alert('✅ Imagem salva com sucesso!\nURL: ' + url);
-        console.log('🌐 URL da imagem:', url);
-      } catch (e) {
-        console.error('❌ Erro no upload:', e);
-        alert('Erro ao fazer upload');
-      }
-    };
-  </script>
+    // preview local imediato
+    preview.src = URL.createObjectURL(file);
+    preview.style.display='block';
+
+    try{
+      const caminho = `testeUploads/${user.uid}/${file.name}`;
+      const storageRef = ref(storage, caminho);
+      const snap = await uploadBytes(storageRef, file);
+      if(!snap) throw new Error('Upload falhou');
+
+      const url = await getDownloadURL(storageRef);
+      link.href = url;
+      link.textContent = '✔ Arquivo enviado – clique para ver';
+    }catch(err){
+      console.error(err);
+      alert('Erro ao enviar: '+err.message);
+    }
+  };
+});
+</script>
+
 </body>
 </html>
