@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Upload Simples Firebase</title>
+</head>
+<body>
+  <h2>Upload direto para Firebase Storage</h2>
+  <input type="file" id="fileInput" accept="image/*" />
+  <button onclick="upload()">Enviar</button>
+  <p id="status"></p>
+  <img id="preview" width="200" style="margin-top: 20px; display: none;" />
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
+      authDomain: "mostreaki-2025.firebaseapp.com",
+      projectId: "mostreaki-2025",
+      storageBucket: "mostreaki-2025.appspot.com",
+      messagingSenderId: "748712068097",
+      appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const storage = getStorage(app);
+
+    window.upload = async () => {
+      const file = document.getElementById('fileInput').files[0];
+      const status = document.getElementById('status');
+      const preview = document.getElementById('preview');
+      if (!file) return alert("Escolha um arquivo primeiro.");
+
+      const fileRef = ref(storage, `testeSimples/${Date.now()}_${file.name}`);
+      status.innerText = "Enviando...";
+
+      try {
+        await uploadBytes(fileRef, file);
+        const url = await getDownloadURL(fileRef);
+        status.innerText = "Upload concluído! URL:";
+        const a = document.createElement('a');
+        a.href = url;
+        a.innerText = url;
+        a.target = "_blank";
+        status.appendChild(document.createElement("br"));
+        status.appendChild(a);
+        preview.src = url;
+        preview.style.display = "block";
+      } catch (e) {
+        console.error(e);
+        status.innerText = "Erro ao enviar imagem.";
+      }
+    };
+  </script>
+</body>
+</html>
