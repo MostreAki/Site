@@ -221,17 +221,30 @@
   });
 
   async function previewImagem(e) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    $('#fotoPreview').src = URL.createObjectURL(file);
-    if (!auth.currentUser) return alert('Faça login para alterar a imagem.');
-    const uid = auth.currentUser.uid;
-    const storageRef = ref(storage, `fotosPerfil/${uid}`);
+  const file = e.target.files?.[0];
+  if (!file) return;
+
+  $('#fotoPreview').src = URL.createObjectURL(file);
+
+  if (!auth.currentUser) {
+    alert('Faça login para alterar a imagem.');
+    return;
+  }
+
+  const uid = auth.currentUser.uid;
+  const storageRef = ref(storage, `fotosPerfil/${uid}`);
+  try {
     await uploadBytes(storageRef, file);
     const url = await getDownloadURL(storageRef);
+
+    console.log("URL DA FOTO:", url); // Debug opcional
     await setDoc(doc(db, 'usuarios', uid), { fotoPerfil: url }, { merge: true });
+
     localStorage.setItem('fotoPerfil', url);
     atualizarUserCircle(url);
+  } catch (erro) {
+    console.error('Erro ao salvar imagem:', erro);
+    alert('Erro ao salvar a imagem. Tente novamente.');
   }
 
   function atualizarUserCircle(urlFromFirestore = null) {
