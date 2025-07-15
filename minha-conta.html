@@ -248,65 +248,45 @@
   }
 
   function atualizarUserCircle(urlFromFirestore = null) {
-    const el = $('#userCircle');
-    el.innerHTML = '';
-    const url = urlFromFirestore || localStorage.getItem('fotoPerfil');
-    if (url) {
-      const img = new Image();
-      img.src = url;
-      el.append(img);
-    } else {
-      el.textContent = auth.currentUser?.displayName?.[0]?.toUpperCase() || 'U';
-    }
+  const el = $('#userCircle');
+  el.innerHTML = '';
+  const url = urlFromFirestore || localStorage.getItem('fotoPerfil');
+  if (url) {
+    const img = new Image();
+    img.src = url;
+    el.append(img);
+  } else {
+    el.textContent = auth.currentUser?.displayName?.[0]?.toUpperCase() || 'U';
+  }
+}
+
+async function previewImagem(e) {
+  const file = e.target.files?.[0];
+  if (!file) return;
+
+  $('#fotoPreview').src = URL.createObjectURL(file);
+
+  if (!auth.currentUser) {
+    alert('Faça login para alterar a imagem.');
+    return;
   }
 
-  async function carregarDados(uid) {
-    const snap = await getDoc(doc(db, 'usuarios', uid));
-    if (!snap.exists()) return;
-    const d = snap.data();
-    $('#instagram').value = d.instagram || '';
-    $('#facebook').value = d.facebook || '';
-    $('#whatsapp').value = d.whatsapp || '';
-    $('#youtube').value = d.youtube || '';
-    if (d.fotoPerfil) {
-      $('#fotoPreview').src = d.fotoPerfil;
-      localStorage.setItem('fotoPerfil', d.fotoPerfil);
-      atualizarUserCircle(d.fotoPerfil);
-    }
+  const uid = auth.currentUser.uid;
+  const storageRef = ref(storage, `fotosPerfil/${uid}`);
+  try {
+    await uploadBytes(storageRef, file);
+    const url = await getDownloadURL(storageRef);
+
+    console.log("URL DA FOTO:", url); // Debug opcional
+    await setDoc(doc(db, 'usuarios', uid), { fotoPerfil: url }, { merge: true });
+
+    localStorage.setItem('fotoPerfil', url);
+    atualizarUserCircle(url);
+  } catch (erro) {
+    console.error('Erro ao salvar imagem:', erro);
+    alert('Erro ao salvar a imagem. Tente novamente.');
   }
-
-  async function salvar() {
-    if (!auth.currentUser) return alert('Faça login primeiro.');
-    const uid = auth.currentUser.uid;
-    const data = {
-      instagram: $('#instagram').value.trim(),
-      facebook: $('#facebook').value.trim(),
-      whatsapp: $('#whatsapp').value.trim(),
-      youtube: $('#youtube').value.trim()
-    };
-    await setDoc(doc(db, 'usuarios', uid), data, { merge: true });
-    alert('Dados salvos!');
-  }
-
-  onAuthStateChanged(auth, user => {
-    const authText = $('#authText');
-    const circle = $('#userCircle');
-    if (user) {
-      authText.textContent = 'Sair';
-      authText.style.display = 'inline';
-      authText.onclick = async () => {
-        await signOut(auth);
-        localStorage.removeItem('fotoPerfil');
-        window.location.href = '/index.html';
-      };
-      circle.style.display = 'flex';
-      carregarDados(user.uid);
-    } else {
-      localStorage.removeItem('fotoPerfil');
-      window.location.href = '/index.html';
-    }
-  });
-
+}
   document.addEventListener('DOMContentLoaded', () => {
     $('#foto').addEventListener('change', previewImagem);
     $('#btnSalvar').addEventListener('click', salvar);
