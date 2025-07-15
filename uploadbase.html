@@ -1,63 +1,80 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Upload Firebase - Base</title>
+<meta charset="UTF-8">
+<title>Upload de Arquivo – MostreAki</title>
+<style>
+  body{font-family:Arial;text-align:center;padding-top:40px;background:#f7f7f7}
+  input,button{padding:10px;font-size:16px;margin:8px}
+  #link{margin-top:20px;word-break:break-all}
+</style>
 </head>
 <body>
-  <h2>Upload de Arquivo</h2>
-  <input type="file" id="arquivo" />
-  <button onclick="enviarImagem()">Enviar</button>
 
-  <div id="previewContainer" style="margin-top: 20px;">
-    <img id="preview" style="max-width: 200px; display: none;" />
-  </div>
+<h1>Upload de Arquivo no Firebase Storage</h1>
 
-  <script type="module">
-    // 1. Importando os SDKs
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+<input id="file" type="file" accept="image/*">
+<button id="btn">Enviar</button>
 
-    // 2. Configuração do seu projeto Firebase
-    const firebaseConfig = {
-      apiKey: "SUA_API_KEY",
-      authDomain: "SUA_AUTH_DOMAIN",
-      projectId: "SUA_PROJECT_ID",
-      storageBucket: "SUA_BUCKET.appspot.com",
-      messagingSenderId: "SEU_MESSAGING_ID",
-      appId: "SEU_APP_ID"
-    };
+<div id="status"></div>
+<div id="link"></div>
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const storage = getStorage(app);
+<!-- SDKs -->
+<script type="module">
+import { initializeApp }          from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getStorage, ref, uploadBytes, getDownloadURL }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
-    // 3. Login anônimo
-    signInAnonymously(auth).catch(error => {
-      alert("Erro ao autenticar: " + error.message);
-    });
+/* ---------- CONFIG DO SEU PROJETO ---------- */
+const firebaseConfig = {
+  apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
+  authDomain: "mostreaki-2025.firebaseapp.com",
+  projectId:  "mostreaki-2025",
+  storageBucket: "mostreaki-2025.appspot.com",
+  messagingSenderId: "748712068097",
+  appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
+};
 
-    function enviarImagem() {
-      const file = document.getElementById("arquivo").files[0];
-      if (!file) return alert("Escolha um arquivo!");
+/* ---------- INIT ---------- */
+initializeApp(firebaseConfig);
+const auth    = getAuth();
+const storage = getStorage();
 
-      const fileName = `teste-${Date.now()}.jpg`; // pode adaptar o nome e o caminho
-      const storageRef = ref(storage, `testes/${fileName}`);
+/* ---------- LOGIN ANÔNIMO ---------- */
+async function loginAnon() {
+  try { await signInAnonymously(auth); }
+  catch (e) { alert("Erro ao autenticar: " + e); throw e; }
+}
 
-      uploadBytes(storageRef, file)
-        .then(snapshot => getDownloadURL(snapshot.ref))
-        .then(url => {
-          document.getElementById("preview").src = url;
-          document.getElementById("preview").style.display = "block";
-          alert("Imagem enviada com sucesso!");
-        })
-        .catch(error => {
-          console.error(error);
-          alert("Erro ao enviar: " + error.message);
-        });
-    }
-  </script>
+/* ---------- UPLOAD ---------- */
+async function enviarArquivo() {
+  const file = document.getElementById('file').files[0];
+  if (!file) { alert("Escolha um arquivo primeiro"); return; }
+
+  document.getElementById('status').textContent = "⌛ Enviando…";
+
+  try {
+    await loginAnon();                         // garante que estamos autenticados
+    const caminho = `testes/${Date.now()}_${file.name}`;
+    const arquivoRef = ref(storage, caminho);
+
+    const snap = await uploadBytes(arquivoRef, file);
+    if (!snap) throw new Error("Falha no upload");
+
+    const url = await getDownloadURL(arquivoRef);
+
+    document.getElementById('status').textContent = "✅ Upload concluído!";
+    document.getElementById('link').innerHTML =
+      `URL pública:<br><a href="${url}" target="_blank">${url}</a>`;
+  } catch (err) {
+    console.error(err);
+    document.getElementById('status').textContent = "❌ Erro: " + err.message;
+  }
+}
+
+/* ---------- EVENTO DO BOTÃO ---------- */
+document.getElementById('btn').onclick = enviarArquivo;
+</script>
 </body>
 </html>
