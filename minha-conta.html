@@ -31,8 +31,8 @@
 </head>
 <body>
   <header>
-    <div class="logo-container" onclick="window.location.href='/'">
-      <img src="/logo.png" alt="Logo" />
+    <div class="logo-container" onclick="location='/'">
+      <img src="/logo.png" alt="Logo">
       <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
     </div>
     <div style="display:flex;align-items:center;gap:10px">
@@ -83,120 +83,85 @@ initializeApp({
   messagingSenderId:'748712068097',
   appId:'1:748712068097:web:09cf043fbb45917ef6ec00'
 });
-const auth=getAuth(),db=getFirestore(),storage=getStorage();
-const $=s=>document.querySelector(s);
+const auth = getAuth(), db = getFirestore(), storage = getStorage();
+const $ = s=>document.querySelector(s);
 
 /* ---------- UI helpers ---------- */
-$('#menuBtn').onclick = () => {
-  $('#menu').style.display = $('#menu').style.display === 'flex' ? 'none' : 'flex';
-};
+$('#menuBtn').onclick=()=>{$('#menu').style.display=$('#menu').style.display==='flex'?'none':'flex';};
 
 function atualizarUserCircle(src){
   const el = $('#userCircle');
-  el.innerHTML = '';
+  el.innerHTML='';
   const url = src || localStorage.getItem('fotoPerfil');
-  if(url){
-    const img = new Image();
-    img.src = url;
-    el.append(img);
-  } else {
-    el.textContent = auth.currentUser?.displayName?.[0]?.toUpperCase() || 'U';
-  }
+  if(url){ const img=new Image(); img.src=url; el.append(img); }
+  else  { el.textContent = auth.currentUser?.displayName?.[0]?.toUpperCase() || 'U'; }
 }
 
 /* ---------- Upload & preview ---------- */
-async function previewImagem(ev){
-  const file = ev.target.files?.[0];
-  if(!file) return;
+async function previewImagem(ev, uid){
+  const file = ev.target.files?.[0]; if(!file) return;
   $('#fotoPreview').src = URL.createObjectURL(file);
-  if(!auth.currentUser) return alert('Faça login.');
 
-  const uid = auth.currentUser.uid;
   const storageRef = ref(storage, `fotosPerfil/${uid}`);
-  try {
+  try{
     await uploadBytes(storageRef, file);
     const url = await getDownloadURL(storageRef);
-    await setDoc(doc(db,'usuarios',uid), { fotoPerfil: url }, { merge: true });
+    await setDoc(doc(db,'usuarios',uid), { fotoPerfil:url }, { merge:true });
     localStorage.setItem('fotoPerfil', url);
     atualizarUserCircle(url);
-  } catch(e){
-    console.error('Erro ao salvar imagem:', e);
-    alert('Erro ao salvar imagem.');
-  }
+  }catch(e){ console.error('Erro upload:',e); alert('Erro ao salvar imagem.'); }
 }
 
 /* ---------- Remover imagem ---------- */
-async function removerFoto(){
-  if(!auth.currentUser) return alert('Faça login.');
-  const uid = auth.currentUser.uid;
-  const fotoRef = ref(storage, `fotosPerfil/${uid}`);
-  try {
+async function removerFoto(uid){
+  const fotoRef = ref(storage,`fotosPerfil/${uid}`);
+  try{
     await deleteObject(fotoRef);
-    await setDoc(doc(db,'usuarios',uid), { fotoPerfil: '' }, { merge: true });
+    await setDoc(doc(db,'usuarios',uid), { fotoPerfil:'' }, { merge:true });
     localStorage.removeItem('fotoPerfil');
-    $('#fotoPreview').src = '';
-    atualizarUserCircle('');
-    alert('Foto de perfil removida.');
-  } catch(e){
-    console.error('Erro ao excluir imagem:', e);
-    alert('Erro ao excluir a imagem.');
-  }
+    $('#fotoPreview').src=''; atualizarUserCircle('');
+    alert('Foto removida.');
+  }catch(e){ console.error('Erro remover:',e); alert('Falha ao remover.'); }
 }
 
 /* ---------- Salvar redes ---------- */
-async function salvar(){
-  if(!auth.currentUser) return alert('Faça login.');
-  const uid = auth.currentUser.uid;
+async function salvar(uid){
   const data = {
-    instagram: $('#instagram').value.trim(),
-    facebook: $('#facebook').value.trim(),
-    whatsapp: $('#whatsapp').value.trim(),
-    youtube: $('#youtube').value.trim()
+    instagram:$('#instagram').value.trim(),
+    facebook :$('#facebook').value.trim(),
+    whatsapp :$('#whatsapp').value.trim(),
+    youtube  :$('#youtube').value.trim()
   };
-  await setDoc(doc(db,'usuarios',uid), data, { merge: true });
+  await setDoc(doc(db,'usuarios',uid), data, { merge:true });
   alert('Dados salvos!');
 }
 
-/* ---------- Carregar dados ---------- */
+/* ---------- Carregar ---------- */
 async function carregar(uid){
-  const snap = await getDoc(doc(db,'usuarios',uid));
-  if(!snap.exists()) return;
-  const d = snap.data();
-  $('#instagram').value = d.instagram || '';
-  $('#facebook').value = d.facebook || '';
-  $('#whatsapp').value = d.whatsapp || '';
-  $('#youtube').value = d.youtube || '';
-  if(d.fotoPerfil){
-    $('#fotoPreview').src = d.fotoPerfil;
-    localStorage.setItem('fotoPerfil', d.fotoPerfil);
-    atualizarUserCircle(d.fotoPerfil);
-  }
+  const snap = await getDoc(doc(db,'usuarios',uid)); if(!snap.exists()) return;
+  const d=snap.data();
+  $('#instagram').value=d.instagram||''; $('#facebook').value=d.facebook||'';
+  $('#whatsapp').value=d.whatsapp||'';   $('#youtube').value=d.youtube||'';
+  if(d.fotoPerfil){ $('#fotoPreview').src=d.fotoPerfil; localStorage.setItem('fotoPerfil',d.fotoPerfil); atualizarUserCircle(d.fotoPerfil); }
 }
 
 /* ---------- Auth ---------- */
-onAuthStateChanged(auth, user => {
-  const a = $('#authText'), c = $('#userCircle');
+onAuthStateChanged(auth, user=>{
+  const a=$('#authText'), c=$('#userCircle');
   if(user){
-    a.textContent = 'Sair';
-    a.style.display = 'inline';
-    a.onclick = async () => {
-      await signOut(auth);
-      localStorage.removeItem('fotoPerfil');
-      location = '/index.html';
-    };
-    c.style.display = 'flex';
-    carregar(user.uid);
-  } else {
-    localStorage.removeItem('fotoPerfil');
-    location = '/index.html';
-  }
-});
+    // listeners só depois que o UID existe
+    $('#foto'          ).addEventListener('change', ev => previewImagem(ev,user.uid));
+    $('#btnSalvar'     ).onclick = () => salvar(user.uid);
+    $('#btnExcluirFoto').onclick = () => removerFoto(user.uid);
 
-/* ---------- DOM ready ---------- */
-document.addEventListener('DOMContentLoaded', () => {
-  $('#foto').addEventListener('change', previewImagem);
-  $('#btnSalvar').addEventListener('click', salvar);
-  $('#btnExcluirFoto').addEventListener('click', removerFoto);
+    a.textContent='Sair'; a.style.display='inline';
+    a.onclick=async()=>{await signOut(auth);localStorage.removeItem('fotoPerfil');location='/index.html';};
+    c.style.display='flex';
+    carregar(user.uid);
+  }else{
+    localStorage.removeItem('fotoPerfil');
+    location='/index.html';
+  }
 });
 </script>
 </body>
