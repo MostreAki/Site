@@ -1,20 +1,18 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Upload Simples Firebase</title>
+  <meta charset="UTF-8">
+  <title>Teste Firebase Storage</title>
 </head>
 <body>
-  <h2>Upload direto para Firebase Storage</h2>
-  <input type="file" id="fileInput" accept="image/*" />
-  <button onclick="upload()">Enviar</button>
+  <h1>Upload direto para Firebase Storage</h1>
+  <input type="file" id="fileInput">
+  <button onclick="enviar()">Enviar</button>
   <p id="status"></p>
-  <img id="preview" width="200" style="margin-top: 20px; display: none;" />
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+    import { getStorage, ref, uploadBytes } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
@@ -28,30 +26,19 @@
     const app = initializeApp(firebaseConfig);
     const storage = getStorage(app);
 
-    window.upload = async () => {
+    window.enviar = async () => {
       const file = document.getElementById('fileInput').files[0];
-      const status = document.getElementById('status');
-      const preview = document.getElementById('preview');
-      if (!file) return alert("Escolha um arquivo primeiro.");
+      if (!file) return alert("Selecione um arquivo!");
 
-      const fileRef = ref(storage, `testeSimples/${Date.now()}_${file.name}`);
-      status.innerText = "Enviando...";
+      document.getElementById('status').innerText = "Enviando...";
 
       try {
-        await uploadBytes(fileRef, file);
-        const url = await getDownloadURL(fileRef);
-        status.innerText = "Upload concluído! URL:";
-        const a = document.createElement('a');
-        a.href = url;
-        a.innerText = url;
-        a.target = "_blank";
-        status.appendChild(document.createElement("br"));
-        status.appendChild(a);
-        preview.src = url;
-        preview.style.display = "block";
+        const storageRef = ref(storage, 'testeUploadDireto/' + file.name);
+        await uploadBytes(storageRef, file);
+        document.getElementById('status').innerText = "✅ Enviado com sucesso!";
       } catch (e) {
         console.error(e);
-        status.innerText = "Erro ao enviar imagem.";
+        document.getElementById('status').innerText = "❌ Erro ao enviar: " + e.message;
       }
     };
   </script>
