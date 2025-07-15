@@ -1,76 +1,73 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8">
-<title>Teste Storage – MostreAki</title>
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<style>
-body{font-family:Arial,Helvetica,sans-serif;text-align:center;padding:40px;background:#f5f5f5}
-#preview{margin:20px auto;width:150px;height:150px;border-radius:50%;border:2px solid #ccc;object-fit:cover;display:none}
-input[type=file]{margin:20px auto;display:block}
-a{display:block;margin-top:16px;color:#007bff;word-break:break-all}
-</style>
+  <meta charset="UTF-8" />
+  <title>Teste de Upload no Firebase Storage</title>
 </head>
 <body>
+  <h2>Teste de Upload no Firebase Storage</h2>
+  <input type="file" id="fileInput" />
+  <button onclick="uploadFile()">Upload</button>
+  <p id="status"></p>
+  <img id="preview" style="max-width:200px; display:none;" />
 
-<h1>Teste de Upload no Firebase Storage</h1>
+  <!-- Firebase SDK -->
+  <script type="module">
+    // SDKs do Firebase
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
-<input id="arquivo" type="file" accept="image/*">
-<img id="preview" alt="preview">
-<a id="link" href="#" target="_blank"></a>
+    // Config do seu projeto Firebase
+    const firebaseConfig = {
+      apiKey: "SUA_API_KEY",
+      authDomain: "mostreaki-2025.firebaseapp.com",
+      projectId: "mostreaki-2025",
+      storageBucket: "mostreaki-2025.appspot.com",
+      messagingSenderId: "SEU_MESSAGING_SENDER_ID",
+      appId: "SEU_APP_ID"
+    };
 
-<script type="module">
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-import { getAuth, signInAnonymously, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-import { getStorage, ref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const storage = getStorage(app);
+    let currentUserUID = null;
 
-/* --- config do MostreAki --- */
-initializeApp({
-  apiKey:'AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE',
-  authDomain:'mostreaki-2025.firebaseapp.com',
-  projectId:'mostreaki-2025',
-  storageBucket:'mostreaki-2025.appspot.com',
-  messagingSenderId:'748712068097',
-  appId:'1:748712068097:web:09cf043fbb45917ef6ec00'
-});
+    signInAnonymously(auth)
+      .then(() => {
+        document.getElementById("status").innerText = "Login anônimo OK!";
+      })
+      .catch((error) => {
+        alert("Erro no login anônimo: " + error.message);
+      });
 
-const auth     = getAuth();
-const storage  = getStorage();
-const $        = s=>document.querySelector(s);
-const arquivo  = $('#arquivo');
-const preview  = $('#preview');
-const link     = $('#link');
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        currentUserUID = user.uid;
+      }
+    });
 
-/* --- login anônimo obrigatório para passar na regra allow read/write if request.auth != null --- */
-signInAnonymously(auth).catch(err=>alert('Falha no login anônimo: '+err.message));
+    window.uploadFile = async () => {
+      const file = document.getElementById("fileInput").files[0];
+      if (!file) {
+        alert("Selecione um arquivo!");
+        return;
+      }
 
-onAuthStateChanged(auth,user=>{
-  if(!user) return;         // só prossegue quando logado
+      const filePath = `testeUploads/${currentUserUID}/${file.name}`;
+      const fileRef = ref(storage, filePath);
 
-  arquivo.onchange = async e=>{
-    const file = e.target.files?.[0];
-    if(!file) return;
-
-    // preview local imediato
-    preview.src = URL.createObjectURL(file);
-    preview.style.display='block';
-
-    try{
-      const caminho = `testeUploads/${user.uid}/${file.name}`;
-      const storageRef = ref(storage, caminho);
-      const snap = await uploadBytes(storageRef, file);
-      if(!snap) throw new Error('Upload falhou');
-
-      const url = await getDownloadURL(storageRef);
-      link.href = url;
-      link.textContent = '✔ Arquivo enviado – clique para ver';
-    }catch(err){
-      console.error(err);
-      alert('Erro ao enviar: '+err.message);
-    }
-  };
-});
-</script>
-
+      try {
+        await uploadBytes(fileRef, file);
+        const url = await getDownloadURL(fileRef);
+        document.getElementById("status").innerText = "Upload feito com sucesso!";
+        const img = document.getElementById("preview");
+        img.src = url;
+        img.style.display = "block";
+      } catch (error) {
+        document.getElementById("status").innerText = "Erro no upload: " + error.message;
+      }
+    };
+  </script>
 </body>
 </html>
