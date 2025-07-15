@@ -83,96 +83,110 @@ initializeApp({
   messagingSenderId:'748712068097',
   appId:'1:748712068097:web:09cf043fbb45917ef6ec00'
 });
-const auth=getAuth(), db=getFirestore(), storage=getStorage();
-const $=s=>document.querySelector(s);
 
-$('#menuBtn').onclick = ()=>{$('#menu').style.display=$('#menu').style.display==='flex'?'none':'flex';};
+const auth = getAuth(), db = getFirestore(), storage = getStorage();
+const $ = s => document.querySelector(s);
 
-function exibirFotoLocal(){
-  const cached=localStorage.getItem('fotoPerfil');
-  if(cached){
-    $('#fotoPreview').src=cached;
-    const el=$('#userCircle'); el.innerHTML=''; el.style.display='flex';
-    el.append(Object.assign(new Image(),{src:cached}));
+$('#menuBtn').onclick = () => {
+  $('#menu').style.display = $('#menu').style.display === 'flex' ? 'none' : 'flex';
+};
+
+function exibirFotoLocal() {
+  const cached = localStorage.getItem('fotoPerfil');
+  if (cached) {
+    $('#fotoPreview').src = cached;
+    const el = $('#userCircle'); el.innerHTML = ''; el.style.display = 'flex';
+    el.append(Object.assign(new Image(), { src: cached }));
   }
 }
 exibirFotoLocal();
 
-function atualizarUserCircle(url){
-  if(!url) return;
-  localStorage.setItem('fotoPerfil',url);
-  $('#fotoPreview').src=url;
-  const el=$('#userCircle'); el.innerHTML=''; el.style.display='flex';
-  el.append(Object.assign(new Image(),{src:url}));
+function atualizarUserCircle(url) {
+  if (!url) return;
+  localStorage.setItem('fotoPerfil', url);
+  $('#fotoPreview').src = url;
+  const el = $('#userCircle'); el.innerHTML = ''; el.style.display = 'flex';
+  el.append(Object.assign(new Image(), { src: url }));
 }
 
-async function previewImagem(ev, uid){
-  const file=ev.target.files?.[0]; if(!file) return;
-  $('#fotoPreview').src=URL.createObjectURL(file);
+async function previewImagem(ev, uid) {
+  const file = ev.target.files?.[0]; if (!file) return;
+  $('#fotoPreview').src = URL.createObjectURL(file);
 
-  const storageRef=ref(storage,`fotosPerfil/${uid}`);
-  try{
-    const snap=await uploadBytes(storageRef,file);
-    if(!snap) throw new Error('Upload falhou');
-    const url=await getDownloadURL(storageRef);
-    await setDoc(doc(db,'usuarios',uid),{fotoPerfil:url},{merge:true});
+  const storageRef = ref(storage, `fotosPerfil/${uid}`);
+  try {
+    console.log("📤 Iniciando upload da imagem...");
+    const snap = await uploadBytes(storageRef, file);
+    console.log("✅ Upload completo:", snap);
+    const url = await getDownloadURL(storageRef);
+    console.log("🌐 URL da imagem:", url);
+    await setDoc(doc(db, 'usuarios', uid), { fotoPerfil: url }, { merge: true });
     atualizarUserCircle(url);
-  }catch(e){
-    console.error(e); alert('Erro ao salvar imagem.');
+  } catch (e) {
+    console.error("❌ Erro no upload:", e);
+    alert('Erro ao salvar imagem.');
   }
 }
 
-async function removerFoto(uid){
-  const fotoRef=ref(storage,`fotosPerfil/${uid}`);
-  try{
+async function removerFoto(uid) {
+  const fotoRef = ref(storage, `fotosPerfil/${uid}`);
+  try {
     await deleteObject(fotoRef);
-    await setDoc(doc(db,'usuarios',uid),{fotoPerfil:''},{merge:true});
+    await setDoc(doc(db, 'usuarios', uid), { fotoPerfil: '' }, { merge: true });
     localStorage.removeItem('fotoPerfil');
-    $('#fotoPreview').src=''; $('#userCircle').style.display='none';
+    $('#fotoPreview').src = ''; $('#userCircle').style.display = 'none';
     alert('Foto removida.');
-  }catch(e){console.error(e); alert('Falha ao remover.');}
+  } catch (e) {
+    console.error("❌ Falha ao remover:", e);
+    alert('Falha ao remover.');
+  }
 }
 
-async function salvar(uid){
-  const data={
-    instagram:$('#instagram').value.trim(),
-    facebook: $('#facebook').value.trim(),
-    whatsapp: $('#whatsapp').value.trim(),
-    youtube : $('#youtube').value.trim()
+async function salvar(uid) {
+  const data = {
+    instagram: $('#instagram').value.trim(),
+    facebook:  $('#facebook').value.trim(),
+    whatsapp:  $('#whatsapp').value.trim(),
+    youtube:   $('#youtube').value.trim()
   };
-  await setDoc(doc(db,'usuarios',uid),data,{merge:true});
+  await setDoc(doc(db, 'usuarios', uid), data, { merge: true });
   alert('Dados salvos!');
 }
 
-async function carregar(uid){
-  const snap=await getDoc(doc(db,'usuarios',uid));
-  if(!snap.exists()) return;
-  const d=snap.data();
-  $('#instagram').value=d.instagram||'';
-  $('#facebook').value =d.facebook ||'';
-  $('#whatsapp').value =d.whatsapp ||'';
-  $('#youtube').value  =d.youtube  ||'';
-  if(d.fotoPerfil) atualizarUserCircle(d.fotoPerfil);
+async function carregar(uid) {
+  const snap = await getDoc(doc(db, 'usuarios', uid));
+  if (!snap.exists()) return;
+  const d = snap.data();
+  $('#instagram').value = d.instagram || '';
+  $('#facebook').value  = d.facebook  || '';
+  $('#whatsapp').value  = d.whatsapp  || '';
+  $('#youtube').value   = d.youtube   || '';
+  if (d.fotoPerfil) atualizarUserCircle(d.fotoPerfil);
 }
 
-onAuthStateChanged(auth,user=>{
-  const a=$('#authText');
-  if(user){
-    $('#foto').onchange=async ev=>{
-      if(!user?.uid) return alert('Erro: usuário não identificado.');
+onAuthStateChanged(auth, user => {
+  const a = $('#authText');
+  if (user) {
+    console.log("🟢 Usuário logado:", user.uid);
+    $('#foto').onchange = async ev => {
       await setDoc(doc(db, 'usuarios', user.uid), { fotoPerfil: 'aguardando_upload' }, { merge: true });
-      await previewImagem(ev,user.uid);
+      await previewImagem(ev, user.uid);
     };
-    $('#btnSalvar').onclick     =()=>salvar(user.uid);
-    $('#btnExcluirFoto').onclick=()=>removerFoto(user.uid);
+    $('#btnSalvar').onclick      = () => salvar(user.uid);
+    $('#btnExcluirFoto').onclick = () => removerFoto(user.uid);
 
-    a.textContent='Sair'; a.style.display='inline';
-    a.onclick=async()=>{await signOut(auth);localStorage.removeItem('fotoPerfil');location='/index.html';};
+    a.textContent = 'Sair'; a.style.display = 'inline';
+    a.onclick = async () => {
+      await signOut(auth);
+      localStorage.removeItem('fotoPerfil');
+      location = '/index.html';
+    };
 
     carregar(user.uid);
-  }else{
+  } else {
+    console.warn("⚠️ Usuário não logado.");
     localStorage.removeItem('fotoPerfil');
-    location='/index.html';
+    location = '/index.html';
   }
 });
 </script>
