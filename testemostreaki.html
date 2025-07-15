@@ -2,68 +2,122 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>Teste de Upload no Firebase Storage</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Upload de Foto com Login</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #f0f0f0;
+    }
+    .container {
+      max-width: 400px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      text-align: center;
+    }
+    input, button {
+      margin-top: 10px;
+      padding: 10px;
+      width: 100%;
+      font-size: 16px;
+    }
+    img {
+      margin-top: 15px;
+      max-width: 100%;
+      border-radius: 10px;
+    }
+  </style>
 </head>
 <body>
-  <h2>Teste de Upload no Firebase Storage</h2>
-  <input type="file" id="fileInput" />
-  <button onclick="uploadFile()">Upload</button>
-  <p id="status"></p>
-  <img id="preview" style="max-width:200px; display:none;" />
+  <div class="container">
+    <h2>Upload de Foto de Perfil</h2>
+
+    <input type="email" id="email" placeholder="Email" />
+    <input type="password" id="password" placeholder="Senha" />
+    <button onclick="login()">Entrar</button>
+
+    <hr/>
+
+    <input type="file" id="fileInput" />
+    <button onclick="uploadImage()">Salvar imagem no Storage</button>
+
+    <p id="status"></p>
+    <img id="preview" style="display:none;" />
+  </div>
 
   <!-- Firebase SDK -->
   <script type="module">
-    // SDKs do Firebase
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
     import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
-    // Config do seu projeto Firebase
     const firebaseConfig = {
-      apiKey: "SUA_API_KEY",
+      apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
       authDomain: "mostreaki-2025.firebaseapp.com",
       projectId: "mostreaki-2025",
       storageBucket: "mostreaki-2025.appspot.com",
-      messagingSenderId: "SEU_MESSAGING_SENDER_ID",
-      appId: "SEU_APP_ID"
+      messagingSenderId: "748712068097",
+      appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
     };
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
+    const db = getFirestore(app);
     const storage = getStorage(app);
-    let currentUserUID = null;
 
-    signInAnonymously(auth)
-      .then(() => {
-        document.getElementById("status").innerText = "Login anônimo OK!";
-      })
-      .catch((error) => {
-        alert("Erro no login anônimo: " + error.message);
-      });
+    let currentUID = null;
 
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        currentUserUID = user.uid;
+        currentUID = user.uid;
+        document.getElementById("status").innerText = "Usuário autenticado!";
+      } else {
+        document.getElementById("status").innerText = "Por favor, faça login.";
       }
     });
 
-    window.uploadFile = async () => {
+    window.login = async () => {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        document.getElementById("status").innerText = "Login feito com sucesso!";
+      } catch (error) {
+        alert("Erro no login: " + error.message);
+      }
+    };
+
+    window.uploadImage = async () => {
+      if (!currentUID) {
+        alert("Você precisa estar logado para fazer upload.");
+        return;
+      }
+
       const file = document.getElementById("fileInput").files[0];
       if (!file) {
         alert("Selecione um arquivo!");
         return;
       }
 
-      const filePath = `testeUploads/${currentUserUID}/${file.name}`;
-      const fileRef = ref(storage, filePath);
+      const fileRef = ref(storage, `fotoPerfil/${currentUID}/foto.jpg`);
 
       try {
         await uploadBytes(fileRef, file);
         const url = await getDownloadURL(fileRef);
-        document.getElementById("status").innerText = "Upload feito com sucesso!";
-        const img = document.getElementById("preview");
-        img.src = url;
-        img.style.display = "block";
+
+        // Salva no Firestore
+        const userRef = doc(db, "usuarios", currentUID);
+        await setDoc(userRef, { fotoPerfil: url }, { merge: true });
+
+        // Atualiza preview
+        document.getElementById("preview").src = url;
+        document.getElementById("preview").style.display = "block";
+        document.getElementById("status").innerText = "Upload e salvamento feitos!";
       } catch (error) {
         document.getElementById("status").innerText = "Erro no upload: " + error.message;
       }
