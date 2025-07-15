@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Upload Firebase - Base</title>
+</head>
+<body>
+  <h2>Upload de Arquivo</h2>
+  <input type="file" id="arquivo" />
+  <button onclick="enviarImagem()">Enviar</button>
+
+  <div id="previewContainer" style="margin-top: 20px;">
+    <img id="preview" style="max-width: 200px; display: none;" />
+  </div>
+
+  <script type="module">
+    // 1. Importando os SDKs
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
+    // 2. Configuração do seu projeto Firebase
+    const firebaseConfig = {
+      apiKey: "SUA_API_KEY",
+      authDomain: "SUA_AUTH_DOMAIN",
+      projectId: "SUA_PROJECT_ID",
+      storageBucket: "SUA_BUCKET.appspot.com",
+      messagingSenderId: "SEU_MESSAGING_ID",
+      appId: "SEU_APP_ID"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const storage = getStorage(app);
+
+    // 3. Login anônimo
+    signInAnonymously(auth).catch(error => {
+      alert("Erro ao autenticar: " + error.message);
+    });
+
+    function enviarImagem() {
+      const file = document.getElementById("arquivo").files[0];
+      if (!file) return alert("Escolha um arquivo!");
+
+      const fileName = `teste-${Date.now()}.jpg`; // pode adaptar o nome e o caminho
+      const storageRef = ref(storage, `testes/${fileName}`);
+
+      uploadBytes(storageRef, file)
+        .then(snapshot => getDownloadURL(snapshot.ref))
+        .then(url => {
+          document.getElementById("preview").src = url;
+          document.getElementById("preview").style.display = "block";
+          alert("Imagem enviada com sucesso!");
+        })
+        .catch(error => {
+          console.error(error);
+          alert("Erro ao enviar: " + error.message);
+        });
+    }
+  </script>
+</body>
+</html>
