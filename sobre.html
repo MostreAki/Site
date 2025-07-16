@@ -1,183 +1,159 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+<!DOCTYPE html><html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sobre – MostreAki</title>
   <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }body {
+  background-image: url("fundo-mobile.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
 
-    body {
-      background-image: url("fundo-mobile.png");
-      background-size: cover;
-      background-repeat: no-repeat;
-      background-attachment: fixed;
-    }
+@media (min-width: 768px) {
+  body { background-image: url("fundo-desktop.png"); }
+}
 
-    @media (min-width: 768px) {
-      body { background-image: url("fundo-desktop.png"); }
-    }
+header {
+  background-color: #c2e7df;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  position: relative;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
 
-    header {
-      background-color: #c2e7df;
-      height: 60px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 20px;
-      position: relative;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
+.logo-container { display: flex; align-items: center; cursor: pointer; }
+.logo-container img { height: 40px; margin-right: 10px; }
+.logo { font-size: 1.5rem; font-weight: bold; }
+.logo .mostre { color: #00C2BF; }
+.logo .aki { color: #FA1E39; }
 
-    .logo-container { display: flex; align-items: center; cursor: pointer; }
-    .logo-container img { height: 40px; margin-right: 10px; }
-    .logo { font-size: 1.5rem; font-weight: bold; }
-    .logo .mostre { color: #00C2BF; }
-    .logo .aki { color: #FA1E39; }
+.menu-icon { font-size: 1.5rem; cursor: pointer; }
+.menu-list {
+  position: absolute;
+  top: 60px;
+  right: 20px;
+  background-color: #16807C;
+  border: 2px solid black;
+  border-radius: 6px;
+  display: none;
+  flex-direction: column;
+  padding: 10px;
+  z-index: 1000;
+}
 
-    .menu-icon { font-size: 1.5rem; cursor: pointer; }
-    .menu-list {
-      position: absolute;
-      top: 60px;
-      right: 20px;
-      background-color: #16807C;
-      border: 2px solid black;
-      border-radius: 6px;
-      display: none;
-      flex-direction: column;
-      padding: 10px;
-      z-index: 1000;
-    }
+.menu-list a {
+  background-color: #FA1E39;
+  color: white;
+  text-decoration: none;
+  padding: 10px;
+  margin-bottom: 8px;
+  border-radius: 6px;
+  text-align: center;
+  font-weight: bold;
+}
 
-    .menu-list a {
-      background-color: #FA1E39;
-      color: white;
-      text-decoration: none;
-      padding: 10px;
-      margin-bottom: 8px;
-      border-radius: 6px;
-      text-align: center;
-      font-weight: bold;
-    }
+.menu-list a:hover { background-color: #b8313b; }
 
-    .menu-list a:hover { background-color: #b8313b; }
+.user-circle {
+  background-color: #15b0af;
+  color: white;
+  font-weight: bold;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background-size: cover;
+  background-position: center;
+  font-size: 0.9rem;
+}
 
-    .user-circle {
-      background-color: #15b0af;
-      color: white;
-      font-weight: bold;
-      border-radius: 50%;
-      width: 32px;
-      height: 32px;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      background-size: cover;
-      background-position: center;
-      font-size: 0.9rem;
-    }
+.section {
+  background: white;
+  margin: 60px auto;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px #0001;
+  max-width: 800px;
+  text-align: center;
+}
 
-    .section {
-      background: white;
-      margin: 60px auto;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px #0001;
-      max-width: 800px;
-      text-align: center;
-    }
+footer {
+  background-color: #c2e7df;
+  padding: 20px;
+  text-align: center;
+  color: #555;
+  font-size: 0.9rem;
+}
 
-    footer {
-      background-color: #c2e7df;
-      padding: 20px;
-      text-align: center;
-      color: #555;
-      font-size: 0.9rem;
-    }
+#loginModal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0,0,0,0.6);
+  justify-content: center;
+  align-items: center;
+}
+#loginModal .modal-content {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  text-align: center;
+  max-width: 350px;
+  width: 90%;
+}
+#loginModal input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+#loginModal button {
+  padding: 10px 20px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  width: 100%;
+}
+#googleLoginBtn {
+  background: white;
+  border: 1px solid #ccc;
+  color: #555;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+#googleLoginBtn img {
+  width: 18px;
+  height: 18px;
+}
+#loginBtn {
+  background-color: #16807c;
+  color: white;
+}
 
-    /* Modal */
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 999;
-      left: 0; top: 0;
-      width: 100%; height: 100%;
-      background-color: rgba(0,0,0,0.6);
-    }
-
-    .modal-content {
-      background-color: white;
-      margin: 10% auto;
-      padding: 20px;
-      border-radius: 10px;
-      max-width: 400px;
-      text-align: center;
-    }
-
-    .modal-content input {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-    }
-
-    .btn-primary {
-      background-color: #16807C;
-      color: white;
-      padding: 10px;
-      border: none;
-      border-radius: 6px;
-      font-weight: bold;
-      width: 100%;
-      cursor: pointer;
-    }
-
-    .btn-google {
-      background-color: white;
-      color: #444;
-      border: 1px solid #ccc;
-      padding: 10px;
-      margin-top: 10px;
-      font-weight: bold;
-      border-radius: 6px;
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      cursor: pointer;
-    }
-
-    .btn-google img {
-      height: 18px;
-    }
-
-    .modal-content a {
-      display: inline-block;
-      margin-top: 10px;
-      color: #16807C;
-      text-decoration: none;
-    }
-
-    .close-modal {
-      margin-top: 10px;
-      display: inline-block;
-      color: #800080;
-      cursor: pointer;
-    }
   </style>
 </head>
-<body>
-
-  <header>
+<body>  <header>
     <div class="logo-container" onclick="location.href='index.html'">
       <img src="logo.png" alt="Logo">
       <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
     </div>
     <div style="display: flex; align-items: center; gap: 10px;">
-      <span id="authText" style="font-weight:bold; color:#15b0af; cursor:pointer; display:none;" onclick="openModal()"></span>
+      <span id="authText" style="font-weight:bold; color:#15b0af; cursor:pointer; display:none;" onclick="handleAuthAction()"></span>
       <div id="userCircle" class="user-circle" title="Perfil"></div>
       <div class="menu-icon" onclick="toggleMenu()">☰</div>
     </div>
@@ -189,39 +165,23 @@
       <a href="/crieaki.html">CrieAki</a>
       <a href="/contatos.html">Contatos</a>
     </div>
-  </header>
-
-  <div class="section">
+  </header>  <div class="section">
     <h2>Sobre o MostreAki</h2>
     <p>O MostreAki nasceu para dar visibilidade a pequenos empreendedores, artistas e criadores. Nosso objetivo é oferecer uma vitrine digital acessível, com ferramentas simples e eficazes para divulgar ideias, produtos e serviços.</p>
     <p>Com planos acessíveis e recursos personalizados, acreditamos que todos merecem um espaço para brilhar na internet.</p>
-  </div>
-
-  <footer>
+  </div>  <footer>
     &copy; 2025 MostreAki. Todos os direitos reservados.
-  </footer>
-
-  <!-- MODAL -->
-  <div class="modal" id="loginModal">
+  </footer>  <div id="loginModal">
     <div class="modal-content">
-      <h2>Entrar no MostreAki</h2>
-      <input type="email" placeholder="Email" />
-      <input type="password" placeholder="Senha" />
-      <button class="btn-primary">Entrar</button>
-      <div class="btn-google" onclick="loginGoogle()">
-        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google logo" />
-        Entrar com Google
-      </div>
-      <a href="#">Esqueceu sua senha?</a> &nbsp;|&nbsp;
-      <a href="#">Cadastrar-se</a>
-      <div class="close-modal" onclick="closeModal()">Fechar</div>
+      <h3>Entrar na sua conta</h3>
+      <input type="email" id="loginEmail" placeholder="E-mail">
+      <input type="password" id="loginSenha" placeholder="Senha">
+      <button id="loginBtn">Entrar</button>
+      <button id="googleLoginBtn"><img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">Entrar com Google</button>
     </div>
-  </div>
-
-  <!-- Firebase -->
-  <script type="module">
+  </div>  <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-    import { getAuth, onAuthStateChanged, signOut, signInWithPopup, GoogleAuthProvider } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 
     const app = initializeApp({
       apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
@@ -238,30 +198,42 @@
     const userCircle = document.getElementById("userCircle");
     const authText = document.getElementById("authText");
 
+    function exibirAlerta(mensagem, cor = '#4CAF50') {
+      const alerta = document.createElement("div");
+      alerta.style.position = "fixed";
+      alerta.style.top = "20px";
+      alerta.style.left = "50%";
+      alerta.style.transform = "translateX(-50%)";
+      alerta.style.backgroundColor = cor;
+      alerta.style.color = "white";
+      alerta.style.padding = "15px 20px";
+      alerta.style.borderRadius = "10px";
+      alerta.style.boxShadow = "0 4px 8px rgba(0,0,0,0.2)";
+      alerta.style.zIndex = "9999";
+      alerta.style.fontWeight = "bold";
+      alerta.textContent = mensagem;
+      document.body.appendChild(alerta);
+      setTimeout(() => alerta.remove(), 3000);
+    }
+
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        if (user.photoURL) {
-          localStorage.setItem("fotoPerfil", user.photoURL);
-          userCircle.style.backgroundImage = `url('${user.photoURL}')`;
+        if (foto) {
+          userCircle.style.backgroundImage = `url('${foto}')`;
           userCircle.textContent = "";
         } else {
-          const letra = user.displayName?.charAt(0)?.toUpperCase() || "?";
+          const nome = user.displayName || user.email;
+          const letra = nome?.charAt(0)?.toUpperCase() || "?";
           userCircle.textContent = letra;
         }
         userCircle.style.display = "flex";
         authText.textContent = "Sair";
-        authText.onclick = () => {
-          signOut(auth).then(() => {
-            localStorage.removeItem("fotoPerfil");
-            location.reload();
-          });
-        };
+        authText.style.display = "inline";
       } else {
         userCircle.style.display = "none";
         authText.textContent = "Entrar";
-        authText.onclick = openModal;
+        authText.style.display = "inline";
       }
-      authText.style.display = "inline";
     });
 
     window.toggleMenu = function () {
@@ -269,26 +241,44 @@
       menu.style.display = menu.style.display === "flex" ? "none" : "flex";
     };
 
-    window.openModal = function () {
-      document.getElementById("loginModal").style.display = "block";
+    window.handleAuthAction = function () {
+      if (authText.textContent === "Sair") {
+        signOut(auth).then(() => {
+          localStorage.removeItem("fotoPerfil");
+          location.reload();
+        });
+      } else {
+        document.getElementById("loginModal").style.display = "flex";
+      }
     };
 
-    window.closeModal = function () {
-      document.getElementById("loginModal").style.display = "none";
-    };
-
-    window.loginGoogle = function () {
+    document.getElementById("googleLoginBtn").addEventListener("click", () => {
       signInWithPopup(auth, provider)
         .then((result) => {
           const user = result.user;
-          if (user.photoURL) localStorage.setItem("fotoPerfil", user.photoURL);
-          location.reload();
+          if (user.photoURL) {
+            localStorage.setItem("fotoPerfil", user.photoURL);
+          }
+          exibirAlerta("✅ Você logou com sucesso!");
+          setTimeout(() => location.reload(), 1500);
         })
         .catch((error) => {
-          console.error("Erro no login:", error.message);
+          exibirAlerta("❌ Erro no login Google", "#e53935");
         });
-    };
-  </script>
+    });
 
-</body>
+    document.getElementById("loginBtn").addEventListener("click", () => {
+      const email = document.getElementById("loginEmail").value;
+      const senha = document.getElementById("loginSenha").value;
+
+      signInWithEmailAndPassword(auth, email, senha)
+        .then(() => {
+          exibirAlerta("✅ Você logou com sucesso!");
+          setTimeout(() => location.reload(), 1500);
+        })
+        .catch((error) => {
+          exibirAlerta("❌ Erro: " + error.message, "#e53935");
+        });
+    });
+  </script></body>
 </html>
