@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+<!DOCTYPE html><html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -54,45 +53,42 @@
       text-align: center;
       font-weight: bold;
     }
-    .menu-list a:hover { background-color: #b8313b; }
+    .menu-list a:hover { background-color: #b8313b; }.user-circle {
+  background-color: #15b0af;
+  color: white;
+  font-weight: bold;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background-size: cover;
+  background-position: center;
+  font-size: 0.9rem;
+}
 
-    .user-circle {
-      background-color: #15b0af;
-      color: white;
-      font-weight: bold;
-      border-radius: 50%;
-      width: 32px;
-      height: 32px;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      background-size: cover;
-      background-position: center;
-      font-size: 0.9rem;
-    }
+.section {
+  background: white;
+  margin: 60px auto;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px #0001;
+  max-width: 800px;
+  text-align: center;
+}
 
-    .section {
-      background: white;
-      margin: 60px auto;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px #0001;
-      max-width: 800px;
-      text-align: center;
-    }
+footer {
+  background-color: #c2e7df;
+  padding: 20px;
+  text-align: center;
+  color: #555;
+  font-size: 0.9rem;
+}
 
-    footer {
-      background-color: #c2e7df;
-      padding: 20px;
-      text-align: center;
-      color: #555;
-      font-size: 0.9rem;
-    }
   </style>
 </head>
-<body>
-
-  <header>
+<body>  <header>
     <div class="logo-container" onclick="location.href='index.html'">
       <img src="logo.png" alt="Logo">
       <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
@@ -110,19 +106,13 @@
       <a href="/crieaki.html">CrieAki</a>
       <a href="/contatos.html">Contatos</a>
     </div>
-  </header>
-
-  <div class="section">
+  </header>  <div class="section">
     <h2>Sobre o MostreAki</h2>
     <p>O MostreAki nasceu para dar visibilidade a pequenos empreendedores, artistas e criadores. Nosso objetivo é oferecer uma vitrine digital acessível, com ferramentas simples e eficazes para divulgar ideias, produtos e serviços.</p>
     <p>Com planos acessíveis e recursos personalizados, acreditamos que todos merecem um espaço para brilhar na internet.</p>
-  </div>
-
-  <footer>
+  </div>  <footer>
     &copy; 2025 MostreAki. Todos os direitos reservados.
-  </footer>
-
-  <script type="module">
+  </footer>  <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
     import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 
@@ -175,7 +165,5 @@
       const menu = document.getElementById("menu");
       menu.style.display = menu.style.display === "flex" ? "none" : "flex";
     };
-  </script>
-
-</body>
+  </script></body>
 </html>
