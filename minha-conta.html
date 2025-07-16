@@ -179,7 +179,8 @@ onAuthStateChanged(auth, user => {
     a.onclick = async () => {
       await signOut(auth);
       localStorage.removeItem('fotoPerfil');
-      location = '/index.html';
+      location = '/index.html?
+      login=obrigatorio';
     };
 
     carregar(user.uid);
