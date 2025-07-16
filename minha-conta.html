@@ -5,104 +5,27 @@
   <title>Minha Conta – MostreAki</title>
   <link rel="icon" href="/favicon.ico" />
   <style>
-    *, *:before, *:after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: Arial, sans-serif; background: #f0f0f0; padding: 20px; }
-    header {
-      background-color: #c2e7df;
-      height: 60px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 20px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      position: relative;
-      border-radius: 8px;
-    }
-    .logo-container { display: flex; align-items: center; gap: 8px; cursor: pointer; }
-    .logo-container img { height: 40px; }
-    .logo { font-size: 1.5rem; font-weight: bold; }
-    .logo .mostre { color: #00C2BF; }
-    .logo .aki { color: #FA1E39; }
-    .menu-icon { font-size: 1.7rem; cursor: pointer; user-select: none; }
-    .menu-list {
-      position: absolute;
-      top: 60px;
-      right: 20px;
-      background-color: #16807C;
-      border: 2px solid black;
-      border-radius: 6px;
-      display: none;
-      flex-direction: column;
-      padding: 10px;
-      z-index: 1000;
-    }
-    .menu-list a {
-      text-decoration: none;
-      color: white;
-      padding: 10px 15px;
-      border-radius: 6px;
-      font-weight: bold;
-      background-color: #FA1E39;
-      margin-bottom: 8px;
-      text-align: center;
-    }
-    .menu-list a:hover { background-color: #b8313b; }
-    .user-circle {
-      background-color: #15b0af;
-      color: white;
-      font-weight: bold;
-      border-radius: 50%;
-      width: 32px;
-      height: 32px;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.8rem;
-      background-size: cover;
-      background-position: center;
-    }
-    .container {
-      background: #fff;
-      max-width: 600px;
-      margin: 40px auto;
-      padding: 24px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    h2 { text-align: center; color: #16807c; margin-bottom: 20px; }
-    .form-group { margin-bottom: 16px; }
-    label { display: block; margin-bottom: 6px; font-weight: 600; }
-    input[type=text], input[type=file] {
-      width: 100%; padding: 10px; border: 1px solid #ccc;
-      border-radius: 6px; font-size: 1rem;
-    }
-    #fotoPreview {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      object-fit: cover;
-      margin: 12px auto;
-      border: 2px solid #ccc;
-      display: block;
-    }
-    .buttons {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-top: 22px;
-    }
-    .btn {
-      padding: 12px;
-      border: none;
-      border-radius: 6px;
-      font-weight: 700;
-      color: white;
-      cursor: pointer;
-    }
-    .btn-salvar { background: #16807c; }
-    .btn-assinar { background: #28a745; }
-    .btn-alterar { background: #007bff; }
-    .btn-cancelar { background: #dc3545; }
+    *,*:before,*:after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:Arial,Helvetica,sans-serif;background:#f0f0f0;padding:20px}
+    header{background:#c2e7df;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;position:relative;border-radius:8px;box-shadow:0 2px 6px #0002}
+    .logo-container{display:flex;align-items:center;gap:8px;cursor:pointer}
+    .logo-container img{height:40px}
+    .logo{font-size:1.5rem;font-weight:700}.logo .mostre{color:#00c2bf}.logo .aki{color:#fa1e39}
+    .menu-icon{font-size:1.7rem;cursor:pointer;user-select:none}
+    #menu{position:absolute;top:60px;right:20px;background:#16807c;border:2px solid #000;border-radius:6px;display:none;flex-direction:column;width:180px;padding:10px;z-index:100}
+    #menu a{background:#fa1e39;color:#fff;text-decoration:none;font-weight:600;border-radius:6px;padding:10px 0;margin-bottom:8px;text-align:center}
+    #menu a:hover{background:#b8313b}
+    .user-circle{background:#15b0af;color:#fff;font-weight:700;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;font-size:.85rem}
+    .user-circle img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+    .container{background:#fff;max-width:600px;margin:40px auto;padding:24px;border-radius:10px;box-shadow:0 0 10px #0001}
+    h2{text-align:center;color:#16807c;margin-bottom:20px}
+    .form-group{margin-bottom:16px}
+    label{display:block;margin-bottom:6px;font-weight:600}
+    input[type=text],input[type=file]{width:100%;padding:10px;border:1px solid #ccc;border-radius:6px;font-size:1rem}
+    #fotoPreview{width:100px;height:100px;border-radius:50%;object-fit:cover;margin:12px auto;border:2px solid #ccc;display:block}
+    .buttons{display:flex;flex-direction:column;gap:10px;margin-top:22px}
+    .btn{padding:12px;border:none;border-radius:6px;font-weight:700;color:#fff;cursor:pointer}
+    .btn-salvar{background:#16807c}.btn-assinar{background:#28a745}.btn-alterar{background:#007bff}.btn-cancelar{background:#dc3545}
   </style>
 </head>
 <body>
@@ -112,19 +35,16 @@
       <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
     </div>
     <div style="display:flex;align-items:center;gap:10px">
-      <span id="authText" style="font-weight:bold; color:#15b0af; cursor:pointer; display:none;"></span>
-      <div id="userCircle" class="user-circle"></div>
-      <div class="menu-icon" onclick="toggleMenu()">☰</div>
+      <span id="authText" style="display:none;font-weight:700;color:#15b0af;cursor:pointer"></span>
+      <div id="userCircle" class="user-circle" style="display:none"></div>
+      <div id="menuBtn" class="menu-icon">☰</div>
     </div>
-    <div class="menu-list" id="menu">
-      <a href="/index.html">Página Inicial</a>
-      <a href="/sobre.html">Sobre</a>
-      <a href="/minha-conta.html">Minha Conta</a>
-      <a href="/planos.html">Planos</a>
-      <a href="/servicos-adicionais.html">Serviços Adicionais</a>
-      <a href="/crieaki.html">CrieAki</a>
+    <nav id="menu">
+      <a href="/index.html">Página Inicial</a><a href="/sobre.html">Sobre</a>
+      <a href="/minha-conta.html">Minha Conta</a><a href="/planos.html">Planos</a>
+      <a href="/servicos-adicionais.html">Serviços Adicionais</a><a href="/crieaki.html">CrieAki</a>
       <a href="/contatos.html">Contatos</a>
-    </div>
+    </nav>
   </header>  <main class="container">
     <h2>Minha Conta</h2>
     <div class="form-group">
@@ -144,113 +64,112 @@
       <button id="btnExcluirFoto" class="btn btn-cancelar">Remover Foto de Perfil</button>
     </div>
   </main><script type="module">
-  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-  import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-  import { getFirestore, doc, setDoc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-  import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import { getFirestore, doc, setDoc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
 
-  const app = initializeApp({
-    apiKey: 'AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE',
-    authDomain: 'mostreaki-2025.firebaseapp.com',
-    projectId: 'mostreaki-2025',
-    storageBucket: 'mostreaki-2025.appspot.com',
-    messagingSenderId: '748712068097',
-    appId: '1:748712068097:web:09cf043fbb45917ef6ec00'
-  });
+const app = initializeApp({
+  apiKey: 'AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE',
+  authDomain: 'mostreaki-2025.firebaseapp.com',
+  projectId: 'mostreaki-2025',
+  storageBucket: 'mostreaki-2025.appspot.com',
+  messagingSenderId: '748712068097',
+  appId: '1:748712068097:web:09cf043fbb45917ef6ec00'
+});
 
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-  const storage = getStorage(app);
+const auth = getAuth(app), db = getFirestore(app), storage = getStorage(app);
+const $ = s => document.querySelector(s);
 
-  const $ = s => document.querySelector(s);
+$('#menuBtn').onclick = () => {
+  $('#menu').style.display = $('#menu').style.display === 'flex' ? 'none' : 'flex';
+};
 
-  function toggleMenu() {
-    const menu = document.getElementById("menu");
-    menu.style.display = menu.style.display === "flex" ? "none" : "flex";
+function exibirFotoLocal() {
+  const cached = localStorage.getItem('fotoPerfil');
+  if (cached) {
+    $('#fotoPreview').src = cached;
+    const el = $('#userCircle'); el.innerHTML = ''; el.style.display = 'flex';
+    el.append(Object.assign(new Image(), { src: cached }));
   }
+}
+exibirFotoLocal();
 
-  function atualizarUserCircle(url) {
-    if (!url) return;
-    localStorage.setItem('fotoPerfil', url);
-    $('#fotoPreview').src = url;
-    const el = $('#userCircle');
-    el.innerHTML = '';
-    el.style.display = 'flex';
-    el.append(Object.assign(new Image(), { src: url }));
+function atualizarUserCircle(url) {
+  if (!url) return;
+  localStorage.setItem('fotoPerfil', url);
+  $('#fotoPreview').src = url;
+  const el = $('#userCircle'); el.innerHTML = ''; el.style.display = 'flex';
+  el.append(Object.assign(new Image(), { src: url }));
+}
+
+async function previewImagem(ev, uid) {
+  const file = ev.target.files?.[0]; if (!file) return;
+  $('#fotoPreview').src = URL.createObjectURL(file);
+
+  const storageRef = ref(storage, `fotosPerfil/${uid}`);
+  try {
+    const snap = await uploadBytes(storageRef, file);
+    const url = await getDownloadURL(storageRef);
+    await setDoc(doc(db, 'usuarios', uid), { fotoPerfil: url }, { merge: true });
+    atualizarUserCircle(url);
+  } catch (e) {
+    alert('Erro ao salvar imagem.');
   }
+}
 
-  async function previewImagem(ev, uid) {
-    const file = ev.target.files?.[0];
-    if (!file) return;
-    $('#fotoPreview').src = URL.createObjectURL(file);
-
-    const storageRef = ref(storage, `fotosPerfil/${uid}`);
-    try {
-      await uploadBytes(storageRef, file);
-      const url = await getDownloadURL(storageRef);
-      await setDoc(doc(db, 'usuarios', uid), { fotoPerfil: url }, { merge: true });
-      atualizarUserCircle(url);
-    } catch (e) {
-      alert('Erro ao salvar imagem.');
-    }
+async function removerFoto(uid) {
+  const fotoRef = ref(storage, `fotosPerfil/${uid}`);
+  try {
+    await deleteObject(fotoRef);
+    await setDoc(doc(db, 'usuarios', uid), { fotoPerfil: '' }, { merge: true });
+    localStorage.removeItem('fotoPerfil');
+    $('#fotoPreview').src = ''; $('#userCircle').style.display = 'none';
+    alert('Foto removida.');
+  } catch (e) {
+    alert('Falha ao remover.');
   }
+}
 
-  async function removerFoto(uid) {
-    const fotoRef = ref(storage, `fotosPerfil/${uid}`);
-    try {
-      await deleteObject(fotoRef);
-      await setDoc(doc(db, 'usuarios', uid), { fotoPerfil: '' }, { merge: true });
+async function salvar(uid) {
+  const data = {
+    instagram: $('#instagram').value.trim(),
+    facebook:  $('#facebook').value.trim(),
+    whatsapp:  $('#whatsapp').value.trim(),
+    youtube:   $('#youtube').value.trim()
+  };
+  await setDoc(doc(db, 'usuarios', uid), data, { merge: true });
+  alert('Dados salvos!');
+}
+
+async function carregar(uid) {
+  const snap = await getDoc(doc(db, 'usuarios', uid));
+  if (!snap.exists()) return;
+  const d = snap.data();
+  $('#instagram').value = d.instagram || '';
+  $('#facebook').value  = d.facebook  || '';
+  $('#whatsapp').value  = d.whatsapp  || '';
+  $('#youtube').value   = d.youtube   || '';
+  if (d.fotoPerfil) atualizarUserCircle(d.fotoPerfil);
+}
+
+onAuthStateChanged(auth, user => {
+  const a = $('#authText');
+  if (user) {
+    $('#foto').onchange = ev => previewImagem(ev, user.uid);
+    $('#btnSalvar').onclick      = () => salvar(user.uid);
+    $('#btnExcluirFoto').onclick = () => removerFoto(user.uid);
+    a.textContent = 'Sair'; a.style.display = 'inline';
+    a.onclick = async () => {
+      await signOut(auth);
       localStorage.removeItem('fotoPerfil');
-      $('#fotoPreview').src = '';
-      $('#userCircle').style.display = 'none';
-      alert('Foto removida.');
-    } catch (e) {
-      alert('Falha ao remover.');
-    }
-  }
-
-  async function salvar(uid) {
-    const data = {
-      instagram: $('#instagram').value.trim(),
-      facebook: $('#facebook').value.trim(),
-      whatsapp: $('#whatsapp').value.trim(),
-      youtube: $('#youtube').value.trim()
+      location.href = '/index.html?login=obrigatorio';
     };
-    await setDoc(doc(db, 'usuarios', uid), data, { merge: true });
-    alert('Dados salvos!');
+    carregar(user.uid);
+  } else {
+    localStorage.removeItem('fotoPerfil');
+    location.href = '/index.html?login=obrigatorio';
   }
-
-  async function carregar(uid) {
-    const snap = await getDoc(doc(db, 'usuarios', uid));
-    if (!snap.exists()) return;
-    const d = snap.data();
-    $('#instagram').value = d.instagram || '';
-    $('#facebook').value = d.facebook || '';
-    $('#whatsapp').value = d.whatsapp || '';
-    $('#youtube').value = d.youtube || '';
-    if (d.fotoPerfil) atualizarUserCircle(d.fotoPerfil);
-  }
-
-  onAuthStateChanged(auth, user => {
-    const a = $('#authText');
-    if (user) {
-      $('#foto').onchange = ev => previewImagem(ev, user.uid);
-      $('#btnSalvar').onclick = () => salvar(user.uid);
-      $('#btnExcluirFoto').onclick = () => removerFoto(user.uid);
-
-      a.textContent = 'Sair';
-      a.style.display = 'inline';
-      a.onclick = async () => {
-        await signOut(auth);
-        localStorage.removeItem('fotoPerfil');
-        location = '/index.html';
-      };
-
-      carregar(user.uid);
-    } else {
-      localStorage.removeItem('fotoPerfil');
-      location = '/index.html?login=obrigatorio';
-    }
-  });
+});
 </script></body>
 </html>
