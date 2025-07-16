@@ -1,387 +1,300 @@
 <!DOCTYPE html>
-
 <html lang="pt-BR">
-
 <head>
-
   <meta charset="UTF-8" />
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <title>Minha Conta – MostreAki</title>
-
-  <link rel="icon" href="/favicon.ico" />
-
+  <title>Cadastro - MostreAki</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
 
-    *,*:before,*:after{box-sizing:border-box;margin:0;padding:0}
+    body {
+      background-image: url("fundo-mobile.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+    }
 
-    body{font-family:Arial,Helvetica,sans-serif;background:#f0f0f0;padding:20px}
+    @media (min-width: 768px) {
+      body {
+        background-image: url("fundo-desktop.png");
+      }
+    }
 
-    header{background:#c2e7df;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;position:relative;border-radius:8px;box-shadow:0 2px 6px #0002}
+    header {
+      background-color: #c2e7df;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
 
-    .logo-container{display:flex;align-items:center;gap:8px;cursor:pointer}
+    .logo-container {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
 
-    .logo-container img{height:40px}
+    .logo-container img {
+      height: 40px;
+      margin-right: 10px;
+    }
 
-    .logo{font-size:1.5rem;font-weight:700}.logo .mostre{color:#00c2bf}.logo .aki{color:#fa1e39}
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
 
-    .menu-icon{font-size:1.7rem;cursor:pointer;user-select:none}
+    .logo .mostre {
+      color: #00C2BF;
+    }
 
-    #menu{position:absolute;top:60px;right:20px;background:#16807c;border:2px solid #000;border-radius:6px;display:none;flex-direction:column;width:180px;padding:10px;z-index:100}
+    .logo .aki {
+      color: #FA1E39;
+    }
 
-    #menu a{background:#fa1e39;color:#fff;text-decoration:none;font-weight:600;border-radius:6px;padding:10px 0;margin-bottom:8px;text-align:center}
+    .voltar-btn {
+      font-weight: bold;
+      color: #007bff;
+      cursor: pointer;
+      text-decoration: underline;
+    }
 
-    #menu a:hover{background:#b8313b}
+    .section {
+      background-color: #ffffff;
+      margin: 40px auto;
+      padding: 20px;
+      width: 90%;
+      max-width: 500px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
 
-    .user-circle{background:#15b0af;color:#fff;font-weight:700;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;font-size:.85rem}
+    .section h2 {
+      color: #008b8b;
+      margin-bottom: 20px;
+    }
 
-    .user-circle img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+    .form-input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
 
-    .container{background:#fff;max-width:600px;margin:40px auto;padding:24px;border-radius:10px;box-shadow:0 0 10px #0001}
+    .input-wrapper {
+      position: relative;
+    }
 
-    h2{text-align:center;color:#16807c;margin-bottom:20px}
+    .toggle-password {
+      position: absolute;
+      top: 38%;
+      right: 15px;
+      transform: translateY(-50%);
+      cursor: pointer;
+      font-size: 1.2rem;
+      user-select: none;
+    }
 
-    .form-group{margin-bottom:16px}
+    .btn {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 10px 20px;
+      background-color: #15b0af;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: bold;
+      width: 100%;
+    }
 
-    label{display:block;margin-bottom:6px;font-weight:600}
+    .google-btn {
+      margin-top: 15px;
+      padding: 10px;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-weight: bold;
+    }
 
-    input[type=text],input[type=file]{width:100%;padding:10px;border:1px solid #ccc;border-radius:6px;font-size:1rem}
+    .required-label::after {
+      content: "*";
+      color: red;
+      margin-left: 3px;
+    }
 
-    #fotoPreview{width:100px;height:100px;border-radius:50%;object-fit:cover;margin:12px auto;border:2px solid #ccc;display:block}
+    .termos {
+      font-size: 0.8rem;
+      margin-top: 10px;
+      color: #555;
+    }
 
-    .buttons{display:flex;flex-direction:column;gap:10px;margin-top:22px}
+    .termos a {
+      color: #007bff;
+      text-decoration: none;
+    }
 
-    .btn{padding:12px;border:none;border-radius:6px;font-weight:700;color:#fff;cursor:pointer}
-
-    .btn-salvar{background:#16807c}.btn-assinar{background:#28a745}.btn-alterar{background:#007bff}.btn-cancelar{background:#dc3545}
-
+    .termos a:hover {
+      text-decoration: underline;
+    }
   </style>
-
 </head>
-
 <body>
-
   <header>
-
-    <div class="logo-container" onclick="location='/'">
-
-      <img src="/logo.png" alt="Logo">
-
+    <div class="logo-container" onclick="location.href='index.html'">
+      <img src="logo.png" alt="Logo" />
       <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
-
     </div>
-
-    <div style="display:flex;align-items:center;gap:10px">
-
-      <span id="authText" style="display:none;font-weight:700;color:#15b0af;cursor:pointer"></span>
-
-      <div id="userCircle" class="user-circle" style="display:none"></div>
-
-      <div id="menuBtn" class="menu-icon">☰</div>
-
-    </div>
-
-    <nav id="menu">
-
-      <a href="/index.html">Página Inicial</a><a href="/sobre.html">Sobre</a>
-
-      <a href="/minha-conta.html">Minha Conta</a><a href="/planos.html">Planos</a>
-
-      <a href="/servicos-adicionais.html">Serviços Adicionais</a><a href="/crieaki.html">CrieAki</a>
-
-      <a href="/contatos.html">Contatos</a>
-
-    </nav>
-
+    <div class="voltar-btn" onclick="location.href='index.html'">Voltar à Página Inicial</div>
   </header>
 
+  <div class="section">
+    <h2>Cadastro</h2>
 
+    <label class="required-label">
+      <input type="text" id="nome" placeholder="Nome completo" class="form-input" />
+    </label>
 
-  <main class="container">
+    <label class="required-label">
+      <input type="email" id="email" placeholder="E-mail" class="form-input" />
+    </label>
 
-    <h2>Minha Conta</h2>
-
-    <div class="form-group">
-
-      <label for="foto">Foto de Perfil</label>
-
-      <input id="foto" type="file" accept="image/*">
-
-      <img id="fotoPreview" alt="Preview">
-
+    <div class="input-wrapper required-label">
+      <input type="password" id="senha" placeholder="Senha" class="form-input" />
+      <span class="toggle-password" onclick="toggleSenha('senha', this)">👁️</span>
     </div>
 
-    <div class="form-group"><label>Instagram</label><input id="instagram" type="text"></div>
-
-    <div class="form-group"><label>Facebook</label><input id="facebook" type="text"></div>
-
-    <div class="form-group"><label>WhatsApp</label><input id="whatsapp" type="text"></div>
-
-    <div class="form-group"><label>YouTube</label><input id="youtube" type="text"></div>
-
-    <div class="buttons">
-
-      <button id="btnSalvar" class="btn btn-salvar">Salvar Alterações</button>
-
-      <button class="btn btn-assinar">Assinar Plano</button>
-
-      <button class="btn btn-alterar">Alterar Plano</button>
-
-      <button class="btn btn-cancelar">Cancelar Plano</button>
-
-      <button id="btnExcluirFoto" class="btn btn-cancelar">Remover Foto de Perfil</button>
-
+    <div class="input-wrapper required-label">
+      <input type="password" id="confirmarSenha" placeholder="Confirmar senha" class="form-input" />
+      <span class="toggle-password" onclick="toggleSenha('confirmarSenha', this)">👁️</span>
     </div>
 
-  </main>
-
-
-
-<!-- =====================  JS Firebase  ===================== -->
-
-<script type="module">
-
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-
-import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-
-import { getFirestore, doc, setDoc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-
-import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
-
-
-
-const app = initializeApp({
-
-  apiKey: 'AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE',
-
-  authDomain: 'mostreaki-2025.firebaseapp.com',
-
-  projectId: 'mostreaki-2025',
-
-  storageBucket: 'mostreaki-2025.appspot.com',
-
-  messagingSenderId: '748712068097',
-
-  appId: '1:748712068097:web:09cf043fbb45917ef6ec00'
-
-});
-
-
-
-const auth = getAuth(app), db = getFirestore(app), storage = getStorage(app, "gs://mostreaki-2025.firebasestorage.app");
-
-const $ = s => document.querySelector(s);
-
-
-
-$('#menuBtn').onclick = () => {
-
-  $('#menu').style.display = $('#menu').style.display === 'flex' ? 'none' : 'flex';
-
-};
-
-
-
-function exibirFotoLocal() {
-
-  const cached = localStorage.getItem('fotoPerfil');
-
-  if (cached) {
-
-    $('#fotoPreview').src = cached;
-
-    const el = $('#userCircle'); el.innerHTML = ''; el.style.display = 'flex';
-
-    el.append(Object.assign(new Image(), { src: cached }));
-
-  }
-
-}
-
-exibirFotoLocal();
-
-
-
-function atualizarUserCircle(url) {
-
-  if (!url) return;
-
-  localStorage.setItem('fotoPerfil', url);
-
-  $('#fotoPreview').src = url;
-
-  const el = $('#userCircle'); el.innerHTML = ''; el.style.display = 'flex';
-
-  el.append(Object.assign(new Image(), { src: url }));
-
-}
-
-
-
-async function previewImagem(ev, uid) {
-
-  const file = ev.target.files?.[0]; if (!file) return;
-
-  $('#fotoPreview').src = URL.createObjectURL(file);
-
-
-
-  const storageRef = ref(storage, `fotosPerfil/${uid}`);
-
-  try {
-
-    console.log("📤 Iniciando upload da imagem...");
-
-    const snap = await uploadBytes(storageRef, file);
-
-    console.log("✅ Upload completo:", snap);
-
-    const url = await getDownloadURL(storageRef);
-
-    console.log("🌐 URL da imagem:", url);
-
-    await setDoc(doc(db, 'usuarios', uid), { fotoPerfil: url }, { merge: true });
-
-    atualizarUserCircle(url);
-
-  } catch (e) {
-
-    console.error("❌ Erro no upload:", e);
-
-    alert('Erro ao salvar imagem.');
-
-  }
-
-}
-
-
-
-async function removerFoto(uid) {
-
-  const fotoRef = ref(storage, `fotosPerfil/${uid}`);
-
-  try {
-
-    await deleteObject(fotoRef);
-
-    await setDoc(doc(db, 'usuarios', uid), { fotoPerfil: '' }, { merge: true });
-
-    localStorage.removeItem('fotoPerfil');
-
-    $('#fotoPreview').src = ''; $('#userCircle').style.display = 'none';
-
-    alert('Foto removida.');
-
-  } catch (e) {
-
-    console.error("❌ Falha ao remover:", e);
-
-    alert('Falha ao remover.');
-
-  }
-
-}
-
-
-
-async function salvar(uid) {
-
-  const data = {
-
-    instagram: $('#instagram').value.trim(),
-
-    facebook:  $('#facebook').value.trim(),
-
-    whatsapp:  $('#whatsapp').value.trim(),
-
-    youtube:   $('#youtube').value.trim()
-
-  };
-
-  await setDoc(doc(db, 'usuarios', uid), data, { merge: true });
-
-  alert('Dados salvos!');
-
-}
-
-
-
-async function carregar(uid) {
-
-  const snap = await getDoc(doc(db, 'usuarios', uid));
-
-  if (!snap.exists()) return;
-
-  const d = snap.data();
-
-  $('#instagram').value = d.instagram || '';
-
-  $('#facebook').value  = d.facebook  || '';
-
-  $('#whatsapp').value  = d.whatsapp  || '';
-
-  $('#youtube').value   = d.youtube   || '';
-
-  if (d.fotoPerfil) atualizarUserCircle(d.fotoPerfil);
-
-}
-
-
-
-onAuthStateChanged(auth, user => {
-
-  const a = $('#authText');
-
-  if (user) {
-
-    console.log("🟢 Usuário logado:", user.uid);
-
-    $('#foto').onchange = async ev => {
-
-      await setDoc(doc(db, 'usuarios', user.uid), { fotoPerfil: 'aguardando_upload' }, { merge: true });
-
-      await previewImagem(ev, user.uid);
-
+    <label class="required-label"><input type="text" id="cpf" placeholder="CPF" class="form-input" /></label>
+    <label class="required-label"><input type="text" id="cep" placeholder="CEP" class="form-input" /></label>
+    <label class="required-label"><input type="text" id="rua" placeholder="Rua" class="form-input" /></label>
+    <label class="required-label"><input type="text" id="numero" placeholder="Número" class="form-input" /></label>
+    <input type="text" id="complemento" placeholder="Complemento (opcional)" class="form-input" />
+    <label class="required-label"><input type="text" id="bairro" placeholder="Bairro" class="form-input" /></label>
+    <label class="required-label"><input type="text" id="cidade" placeholder="Cidade" class="form-input" /></label>
+    <label class="required-label"><input type="text" id="estado" placeholder="Estado" class="form-input" /></label>
+    <input type="text" id="whatsapp" placeholder="WhatsApp (opcional)" class="form-input" />
+
+    <button class="btn" onclick="cadastrar()">Cadastrar</button>
+
+    <button class="google-btn" onclick="loginComGoogle()">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" width="20" />
+      Cadastrar com Google
+    </button>
+
+    <p class="termos">
+      Ao continuar, você concorda com os
+      <a href="https://www.mostreaki.com.br/termos-de-servico.html" target="_blank">Termos de Serviço</a>
+      e a
+      <a href="https://www.mostreaki.com.br/politica-de-privacidade.html" target="_blank">Política de Privacidade</a>
+      do MostreAki e seus parceiros, e aceita receber comunicações do MostreAki.
+    </p>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+    import { getAuth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+    import { getFirestore, doc, setDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
+      authDomain: "mostreaki-2025.firebaseapp.com",
+      projectId: "mostreaki-2025",
+      storageBucket: "mostreaki-2025.appspot.com",
+      messagingSenderId: "748712068097",
+      appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
     };
 
-    $('#btnSalvar').onclick      = () => salvar(user.uid);
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-    $('#btnExcluirFoto').onclick = () => removerFoto(user.uid);
+    window.cadastrar = async function () {
+      const nome = document.getElementById("nome").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const senha = document.getElementById("senha").value;
+      const confirmarSenha = document.getElementById("confirmarSenha").value;
+      const cpf = document.getElementById("cpf").value.trim();
+      const cep = document.getElementById("cep").value.trim();
+      const rua = document.getElementById("rua").value.trim();
+      const numero = document.getElementById("numero").value.trim();
+      const complemento = document.getElementById("complemento").value.trim();
+      const bairro = document.getElementById("bairro").value.trim();
+      const cidade = document.getElementById("cidade").value.trim();
+      const estado = document.getElementById("estado").value.trim();
+      const whatsapp = document.getElementById("whatsapp").value.trim();
 
+      if (!nome || !email || !senha || !confirmarSenha || !cpf || !cep || !rua || !numero || !bairro || !cidade || !estado) {
+        alert("Preencha todos os campos obrigatórios.");
+        return;
+      }
 
+      if (senha !== confirmarSenha) {
+        alert("As senhas não coincidem.");
+        return;
+      }
 
-    a.textContent = 'Sair'; a.style.display = 'inline';
-
-    a.onclick = async () => {
-
-      await signOut(auth);
-
-      localStorage.removeItem('fotoPerfil');
-
-      location = '/index.html';
-
+      try {
+        const cred = await createUserWithEmailAndPassword(auth, email, senha);
+        const uid = cred.user.uid;
+        await setDoc(doc(db, "usuarios", uid), {
+          nome, email, cpf, whatsapp,
+          endereco: { cep, rua, numero, complemento, bairro, cidade, estado },
+          plano: "nenhum"
+        });
+        alert("Cadastro realizado com sucesso!");
+        window.location.href = "minha-conta.html";
+      } catch (e) {
+        alert("Erro no cadastro: " + e.message);
+      }
     };
 
+    window.loginComGoogle = async function () {
+      const provider = new GoogleAuthProvider();
+      try {
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+        await setDoc(doc(db, "usuarios", user.uid), {
+          nome: user.displayName,
+          email: user.email,
+          cpf: "",
+          whatsapp: "",
+          endereco: {},
+          plano: "nenhum"
+        }, { merge: true });
+        alert("Cadastro com Google realizado com sucesso!");
+        window.location.href = "minha-conta.html";
+      } catch (error) {
+        alert("Erro ao autenticar com Google: " + error.message);
+      }
+    }
+  </script>
 
-
-    carregar(user.uid);
-
-  } else {
-
-    console.warn("⚠️ Usuário não logado.");
-
-    localStorage.removeItem('fotoPerfil');
-
-    location = '/index.html';
-
-  }
-
-});
-
-</script>
-
+  <script>
+    function toggleSenha(id, icon) {
+      const input = document.getElementById(id);
+      const isVisible = input.type === "text";
+      input.type = isVisible ? "password" : "text";
+      icon.textContent = isVisible ? "👁️" : "🙈";
+    }
+  </script>
 </body>
-
 </html>
