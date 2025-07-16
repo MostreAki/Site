@@ -5,8 +5,22 @@
   <title>Minha Conta – MostreAki</title>
   <link rel="icon" href="/favicon.ico" />
   <style>
+  	body {
+  font-family: Arial, Helvetica, sans-serif;
+  padding: 20px;
+  background-image: url("fundo-mobile.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
+}
+
+@media (min-width: 768px) {
+  body {
+    background-image: url("fundo-desktop.png");
+  }
+}
     *,*:before,*:after{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:Arial,Helvetica,sans-serif;background:#f0f0f0;padding:20px}
     header{background:#c2e7df;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;position:relative;border-radius:8px;box-shadow:0 2px 6px #0002}
     .logo-container{display:flex;align-items:center;gap:8px;cursor:pointer}
     .logo-container img{height:40px}
