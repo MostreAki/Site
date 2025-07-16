@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+<!DOCTYPE html><html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -116,9 +115,34 @@
       margin-top: 10px;
     }
     .google-login img { height: 20px; }
+    .mensagem {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: #15b0af;
+      color: white;
+      padding: 15px 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      font-weight: bold;
+      z-index: 9999;
+      animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    }
+    .mensagem.erro {
+      background-color: #FA1E39;
+    }
+    @keyframes fadein {
+      from { opacity: 0; top: 0; }
+      to { opacity: 1; top: 20px; }
+    }
+    @keyframes fadeout {
+      from { opacity: 1; }
+      to { opacity: 0; top: 0; }
+    }
   </style>
 </head>
 <body>
+<div id="mensagem" class="mensagem" style="display: none;"></div>
 
   <!-- ✅ AVISO DE LOGIN OBRIGATÓRIO -->
   <div id="avisoLogin" style="display:none;position:fixed;top:10px;left:50%;transform:translateX(-50%);background:#fa1e39;color:white;padding:12px 20px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,0.2);z-index:9999;font-weight:bold;font-size:0.95rem">
@@ -192,7 +216,6 @@
     <p>Descubra como potencializar sua presença com nossos serviços extras.</p>
     <a href="#" class="btn">Veja Mais</a>
   </div>
-
   <footer>
     &copy; 2025 MostreAki. Todos os direitos reservados.
   </footer>
@@ -228,11 +251,10 @@
       signInWithEmailAndPassword(auth, email, password)
         .then(() => {
           closeModal();
-          alert("Login realizado com sucesso!");
+          mostrarMensagem("Login realizado com sucesso!");
           location.reload();
         })
-        .catch(error => alert("Erro ao fazer login: " + error.message));
-    };
+        .catch(error => mostrarMensagem("Erro ao fazer login: " + error.message, "erro"));
 
     window.loginComGoogle = function () {
       const provider = new GoogleAuthProvider();
@@ -287,7 +309,15 @@
       }
     });
   </script>
-
+<script>
+  function mostrarMensagem(texto, tipo = "sucesso") {
+    const div = document.getElementById("mensagem");
+    div.textContent = texto;
+    div.className = "mensagem" + (tipo === "erro" ? " erro" : "");
+    div.style.display = "block";
+    setTimeout(() => { div.style.display = "none"; }, 3000);
+  }
+</script>
   <script>
     function toggleMenu() {
       const menu = document.getElementById("menu");
