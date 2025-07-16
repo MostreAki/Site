@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="pt-BR">
+<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -127,6 +128,7 @@
       font-weight: bold;
       z-index: 9999;
       animation: fadein 0.5s, fadeout 0.5s 2.5s;
+      display: none;
     }
     .mensagem.erro {
       background-color: #FA1E39;
@@ -142,7 +144,7 @@
   </style>
 </head>
 <body>
-<div id="mensagem" class="mensagem" style="display: none;"></div>
+  <div id="mensagem" class="mensagem"></div>
 
   <!-- ✅ AVISO DE LOGIN OBRIGATÓRIO -->
   <div id="avisoLogin" style="display:none;position:fixed;top:10px;left:50%;transform:translateX(-50%);background:#fa1e39;color:white;padding:12px 20px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,0.2);z-index:9999;font-weight:bold;font-size:0.95rem">
@@ -216,6 +218,7 @@
     <p>Descubra como potencializar sua presença com nossos serviços extras.</p>
     <a href="#" class="btn">Veja Mais</a>
   </div>
+
   <footer>
     &copy; 2025 MostreAki. Todos os direitos reservados.
   </footer>
@@ -251,10 +254,11 @@
       signInWithEmailAndPassword(auth, email, password)
         .then(() => {
           closeModal();
-          mostrarMensagem("Login realizado com sucesso!");
+          alert("Login realizado com sucesso!");
           location.reload();
         })
-        .catch(error => mostrarMensagem("Erro ao fazer login: " + error.message, "erro"));
+        .catch(error => alert("Erro ao fazer login: " + error.message));
+    };
 
     window.loginComGoogle = function () {
       const provider = new GoogleAuthProvider();
@@ -309,15 +313,7 @@
       }
     });
   </script>
-<script>
-  function mostrarMensagem(texto, tipo = "sucesso") {
-    const div = document.getElementById("mensagem");
-    div.textContent = texto;
-    div.className = "mensagem" + (tipo === "erro" ? " erro" : "");
-    div.style.display = "block";
-    setTimeout(() => { div.style.display = "none"; }, 3000);
-  }
-</script>
+
   <script>
     function toggleMenu() {
       const menu = document.getElementById("menu");
