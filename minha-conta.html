@@ -1,177 +1,150 @@
-<!DOCTYPE html><html lang="pt-BR"><head>
+<!DOCTYPE html><html lang="pt-BR">
+<head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cadastro - MostreAki</title>
+  <title>Minha Conta - MostreAki</title>
   <link rel="icon" href="favicon.ico" type="image/x-icon" />
-  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
-    body {
-      background-image: url("fundo-mobile.png");
-      background-size: cover;
-      background-repeat: no-repeat;
-      background-attachment: fixed;
-    }
-    @media (min-width: 768px) {
-      body { background-image: url("fundo-desktop.png"); }
-    }
+    body { background-color: #f7f7f7; }
     header {
-      background-color: #c2e7df;
-      height: 60px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 20px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-    .logo-container {
-      display: flex;
-      align-items: center;
-      cursor: pointer;
-    }
-    .logo-container img {
-      height: 40px;
-      margin-right: 10px;
-    }
-    .logo {
+      background-color: #00C2BF;
+      color: white;
+      padding: 16px;
+      text-align: center;
       font-size: 1.5rem;
       font-weight: bold;
     }
-    .logo .mostre { color: #00C2BF; }
-    .logo .aki { color: #FA1E39; }
-    .voltar-btn {
-      font-weight: bold;
-      color: #ffffff;
-      background-color: #00C2BF;
-      padding: 6px 12px;
-      border-radius: 6px;
-      text-decoration: none;
-      cursor: pointer;
-    }
-    .section {
-      background-color: #ffffff;
-      margin: 40px auto;
+    .container {
+      max-width: 600px;
+      margin: 20px auto;
+      background: white;
       padding: 20px;
-      width: 90%;
-      max-width: 500px;
       border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      text-align: center;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
+    .profile-pic {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin: 0 auto 20px;
+      display: block;
+      border: 3px solid #00C2BF;
+    }
+    .input-label { text-align: left; margin: 10px 0 5px; font-weight: bold; }
     .form-input {
       width: 100%;
       padding: 10px;
-      margin: 10px 0;
+      margin-bottom: 10px;
       border: 1px solid #ccc;
-      border-radius: 6px;
-    }
-    .input-wrapper {
-      position: relative;
-    }
-    .toggle-password {
-      position: absolute;
-      top: 38%;
-      right: 10px;
-      transform: translateY(-50%);
-      cursor: pointer;
-      font-size: 1.5rem;
-      user-select: none;
+      border-radius: 5px;
     }
     .btn {
-      display: inline-block;
-      margin-top: 15px;
-      padding: 10px 20px;
-      background-color: #15b0af;
+      width: 100%;
+      background-color: #00C2BF;
       color: white;
+      padding: 10px;
       border: none;
       border-radius: 5px;
-      text-decoration: none;
       font-weight: bold;
-      width: 100%;
-    }
-    .google-btn {
-      margin-top: 15px;
-      padding: 10px;
-      background-color: #fff;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      font-weight: bold;
-    }
-    .required-label::after {
-      content: "*";
-      color: red;
-      margin-left: 3px;
-    }
-    .termos {
-      font-size: 0.8rem;
+      cursor: pointer;
       margin-top: 10px;
-      color: #555;
     }
-    .termos a {
-      color: #007bff;
-      text-decoration: none;
-    }
-    .termos a:hover {
-      text-decoration: underline;
+    .logout {
+      margin-top: 20px;
+      color: red;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <header>
-    <div class="logo-container" onclick="location.href='index.html'">
-      <img src="logo.png" alt="Logo" />
-      <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
-    </div>
-    <div class="voltar-btn" onclick="location.href='index.html'">Página Inicial</div>
-  </header>  <div class="section">
-    <h2>Cadastro</h2><label class="required-label"><input type="text" id="nome" placeholder="Nome completo" class="form-input" /></label>
-<label class="required-label"><input type="email" id="email" placeholder="E-mail" class="form-input" /></label>
+  <header>Minha Conta</header>
+  <div class="container">
+    <img id="profilePic" class="profile-pic" src="default-user.png" alt="Foto de Perfil" /><input type="file" id="profileInput" accept="image/*" class="form-input" />
 
-<div class="input-wrapper required-label">
-  <input type="password" id="senha" placeholder="Senha" class="form-input" />
-  <span class="toggle-password" onclick="toggleSenha('senha', this)">👁</span>
-</div>
+<label class="input-label" for="instagram">Instagram</label>
+<input type="text" id="instagram" class="form-input" placeholder="@seuusuario" />
 
-<div class="input-wrapper required-label">
-  <input type="password" id="confirmarSenha" placeholder="Confirmar senha" class="form-input" />
-  <span class="toggle-password" onclick="toggleSenha('confirmarSenha', this)">👁</span>
-</div>
+<label class="input-label" for="facebook">Facebook</label>
+<input type="text" id="facebook" class="form-input" placeholder="Seu nome no Facebook" />
 
-<label class="required-label"><input type="text" id="cpf" placeholder="CPF" class="form-input" /></label>
-<label class="required-label"><input type="text" id="cep" placeholder="CEP" class="form-input" /></label>
-<label class="required-label"><input type="text" id="rua" placeholder="Rua" class="form-input" /></label>
-<label class="required-label"><input type="text" id="numero" placeholder="Número" class="form-input" /></label>
-<input type="text" id="complemento" placeholder="Complemento (opcional)" class="form-input" />
-<label class="required-label"><input type="text" id="bairro" placeholder="Bairro" class="form-input" /></label>
-<label class="required-label"><input type="text" id="cidade" placeholder="Cidade" class="form-input" /></label>
-<label class="required-label"><input type="text" id="estado" placeholder="Estado" class="form-input" /></label>
-<input type="text" id="whatsapp" placeholder="WhatsApp (opcional)" class="form-input" />
+<label class="input-label" for="whatsapp">WhatsApp</label>
+<input type="text" id="whatsapp" class="form-input" placeholder="(00) 00000-0000" />
 
-<div class="g-recaptcha" data-sitekey="6LdvDYUrAAAAAAmYeoh_pIPFmoQEsjsOijMy7m6P"></div>
-<small>Confirme que você é uma presença viva 🙂</small>
+<button class="btn" onclick="salvarDados()">Salvar Dados</button>
+<button class="logout" onclick="logout()">Sair da Conta</button>
 
-<button class="btn" onclick="cadastrar()">Cadastrar</button>
-<button class="google-btn" onclick="loginComGoogle()">
-  <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" width="20" />
-  Cadastrar com Google
-</button>
+  </div>  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+    import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+    import { getStorage, ref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
+    import { getFirestore, doc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
-<p class="termos">
-  Ao continuar, você concorda com os <a href="https://www.mostreaki.com.br/termos-de-servico.html" target="_blank">Termos de Serviço</a>
-  e a <a href="https://www.mostreaki.com.br/politica-de-privacidade.html" target="_blank">Política de Privacidade</a>
-  do MostreAki e seus parceiros, e aceita receber comunicações do MostreAki.
-</p>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
+      authDomain: "mostreaki-2025.firebaseapp.com",
+      projectId: "mostreaki-2025",
+      storageBucket: "mostreaki-2025.appspot.com",
+      messagingSenderId: "748712068097",
+      appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
+    };
 
-  </div>  <script>
-    function toggleSenha(id, icon) {
-      const input = document.getElementById(id);
-      const isVisible = input.type === "text";
-      input.type = isVisible ? "password" : "text";
-      icon.textContent = isVisible ? "👁" : "👁‍🗨";
-    }
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const storage = getStorage(app, "gs://mostreaki-2025.firebasestorage.app");
+
+    let userUid = null;
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        userUid = user.uid;
+        const docRef = doc(db, "usuarios", userUid);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          document.getElementById("instagram").value = data.instagram || "";
+          document.getElementById("facebook").value = data.facebook || "";
+          document.getElementById("whatsapp").value = data.whatsapp || "";
+          if (data.fotoPerfil) {
+            document.getElementById("profilePic").src = data.fotoPerfil;
+          }
+        }
+      } else {
+        window.location.href = "index.html";
+      }
+    });
+
+    document.getElementById("profileInput").addEventListener("change", async (e) => {
+      const file = e.target.files[0];
+      if (!file || !userUid) return;
+      const storageRef = ref(storage, `usuarios/${userUid}/fotoPerfil.jpg`);
+      await uploadBytes(storageRef, file);
+      const url = await getDownloadURL(storageRef);
+      document.getElementById("profilePic").src = url;
+      await setDoc(doc(db, "usuarios", userUid), { fotoPerfil: url }, { merge: true });
+    });
+
+    window.salvarDados = async function () {
+      if (!userUid) return;
+      const instagram = document.getElementById("instagram").value.trim();
+      const facebook = document.getElementById("facebook").value.trim();
+      const whatsapp = document.getElementById("whatsapp").value.trim();
+      await setDoc(doc(db, "usuarios", userUid), {
+        instagram,
+        facebook,
+        whatsapp
+      }, { merge: true });
+      alert("Dados salvos com sucesso!");
+    };
+
+    window.logout = async function () {
+      await signOut(auth);
+      window.location.href = "index.html";
+    };
   </script></body>
 </html>
