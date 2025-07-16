@@ -6,27 +6,27 @@
   <title>Minha Conta – MostreAki</title>
   <link rel="icon" href="/favicon.ico" />
   <style>
-    *,*:before,*:after{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:Arial,Helvetica,sans-serif;background:#f0f0f0;padding:20px}
-    header{background:#c2e7df;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;position:relative;border-radius:8px;box-shadow:0 2px 6px #0002}
-    .logo-container{display:flex;align-items:center;gap:8px;cursor:pointer}
-    .logo-container img{height:40px}
-    .logo{font-size:1.5rem;font-weight:700}.logo .mostre{color:#00c2bf}.logo .aki{color:#fa1e39}
-    .menu-icon{font-size:1.7rem;cursor:pointer;user-select:none}
-    #menu{position:absolute;top:60px;right:20px;background:#16807c;border:2px solid #000;border-radius:6px;display:none;flex-direction:column;width:180px;padding:10px;z-index:100}
-    #menu a{background:#fa1e39;color:#fff;text-decoration:none;font-weight:600;border-radius:6px;padding:10px 0;margin-bottom:8px;text-align:center}
-    #menu a:hover{background:#b8313b}
-    .user-circle{background:#15b0af;color:#fff;font-weight:700;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;font-size:.85rem}
-    .user-circle img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-    .container{background:#fff;max-width:600px;margin:40px auto;padding:24px;border-radius:10px;box-shadow:0 0 10px #0001}
-    h2{text-align:center;color:#16807c;margin-bottom:20px}
-    .form-group{margin-bottom:16px}
-    label{display:block;margin-bottom:6px;font-weight:600}
-    input[type=text],input[type=file]{width:100%;padding:10px;border:1px solid #ccc;border-radius:6px;font-size:1rem}
-    #fotoPreview{width:100px;height:100px;border-radius:50%;object-fit:cover;margin:12px auto;border:2px solid #ccc;display:block}
-    .buttons{display:flex;flex-direction:column;gap:10px;margin-top:22px}
-    .btn{padding:12px;border:none;border-radius:6px;font-weight:700;color:#fff;cursor:pointer}
-    .btn-salvar{background:#16807c}.btn-assinar{background:#28a745}.btn-alterar{background:#007bff}.btn-cancelar{background:#dc3545}
+    * { box-sizing: border-box; margin: 0; padding: 0 }
+    body { font-family: Arial, Helvetica, sans-serif; background: #f0f0f0; padding: 20px; }
+    header { background: #c2e7df; height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; position: relative; border-radius: 8px; box-shadow: 0 2px 6px #0002; }
+    .logo-container { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+    .logo-container img { height: 40px; }
+    .logo { font-size: 1.5rem; font-weight: 700; }
+    .logo .mostre { color: #00c2bf; }
+    .logo .aki { color: #fa1e39; }
+    #loginWarning { display: none; background: #fa1e39; color: white; padding: 10px; border-radius: 6px; text-align: center; font-weight: 700; margin-bottom: 20px; }
+    .container { background: #fff; max-width: 600px; margin: 40px auto; padding: 24px; border-radius: 10px; box-shadow: 0 0 10px #0001; }
+    h2 { text-align: center; color: #16807c; margin-bottom: 20px; }
+    .form-group { margin-bottom: 16px; }
+    label { display: block; margin-bottom: 6px; font-weight: 600; }
+    input[type="text"], input[type="file"] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 1rem; }
+    #fotoPreview { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin: 12px auto; border: 2px solid #ccc; display: block; }
+    .buttons { display: flex; flex-direction: column; gap: 10px; margin-top: 22px; }
+    .btn { padding: 12px; border: none; border-radius: 6px; font-weight: 700; color: #fff; cursor: pointer; }
+    .btn-salvar { background: #16807c; }
+    .btn-assinar { background: #28a745; }
+    .btn-alterar { background: #007bff; }
+    .btn-cancelar { background: #dc3545; }
   </style>
 </head>
 <body>
@@ -35,18 +35,13 @@
       <img src="/logo.png" alt="Logo">
       <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
     </div>
-    <div style="display:flex;align-items:center;gap:10px">
-      <span id="authText" style="display:none;font-weight:700;color:#15b0af;cursor:pointer"></span>
-      <div id="userCircle" class="user-circle" style="display:none"></div>
-      <div id="menuBtn" class="menu-icon">☰</div>
+    <div style="display: flex; align-items: center; gap: 10px">
+      <span id="authText" style="display: none; font-weight: 700; color: #15b0af; cursor: pointer;"></span>
+      <div id="userCircle" class="user-circle" style="display: none;"></div>
     </div>
-    <nav id="menu">
-      <a href="/index.html">Página Inicial</a><a href="/sobre.html">Sobre</a>
-      <a href="/minha-conta.html">Minha Conta</a><a href="/planos.html">Planos</a>
-      <a href="/servicos-adicionais.html">Serviços Adicionais</a><a href="/crieaki.html">CrieAki</a>
-      <a href="/contatos.html">Contatos</a>
-    </nav>
   </header>
+
+  <div id="loginWarning">Por favor, faça login para acessar esta página.</div>
 
   <main class="container">
     <h2>Minha Conta</h2>
@@ -68,127 +63,62 @@
     </div>
   </main>
 
-<!-- =====================  JS Firebase  ===================== -->
-<script type="module">
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-import { getFirestore, doc, setDoc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+    import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+    import { getFirestore, doc, setDoc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+    import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
 
-const app = initializeApp({
-  apiKey: 'AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE',
-  authDomain: 'mostreaki-2025.firebaseapp.com',
-  projectId: 'mostreaki-2025',
-  storageBucket: 'mostreaki-2025.appspot.com',
-  messagingSenderId: '748712068097',
-  appId: '1:748712068097:web:09cf043fbb45917ef6ec00'
-});
+    const app = initializeApp({
+      apiKey: 'AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE',
+      authDomain: 'mostreaki-2025.firebaseapp.com',
+      projectId: 'mostreaki-2025',
+      storageBucket: 'mostreaki-2025.appspot.com',
+      messagingSenderId: '748712068097',
+      appId: '1:748712068097:web:09cf043fbb45917ef6ec00'
+    });
 
-const auth = getAuth(app), db = getFirestore(app), storage = getStorage(app, "gs://mostreaki-2025.firebasestorage.app");
-const $ = s => document.querySelector(s);
+    const auth = getAuth(app), db = getFirestore(app), storage = getStorage(app, "gs://mostreaki-2025.firebasestorage.app");
+    const $ = s => document.querySelector(s);
 
-$('#menuBtn').onclick = () => {
-  $('#menu').style.display = $('#menu').style.display === 'flex' ? 'none' : 'flex';
-};
+    onAuthStateChanged(auth, user => {
+      const a = $('#authText');
+      const loginWarning = $('#loginWarning');
 
-function exibirFotoLocal() {
-  const cached = localStorage.getItem('fotoPerfil');
-  if (cached) {
-    $('#fotoPreview').src = cached;
-    const el = $('#userCircle'); el.innerHTML = ''; el.style.display = 'flex';
-    el.append(Object.assign(new Image(), { src: cached }));
-  }
-}
-exibirFotoLocal();
+      if (user) {
+        loginWarning.style.display = 'none';
+        a.textContent = 'Sair';
+        a.style.display = 'inline';
+        a.onclick = async () => {
+          await signOut(auth);
+          localStorage.removeItem('fotoPerfil');
+          location = '/index.html';
+        };
+        carregar(user.uid);
+      } else {
+        loginWarning.style.display = 'block';
+        location = '/index.html';
+      }
+    });
 
-function atualizarUserCircle(url) {
-  if (!url) return;
-  localStorage.setItem('fotoPerfil', url);
-  $('#fotoPreview').src = url;
-  const el = $('#userCircle'); el.innerHTML = ''; el.style.display = 'flex';
-  el.append(Object.assign(new Image(), { src: url }));
-}
+    async function carregar(uid) {
+      const snap = await getDoc(doc(db, 'usuarios', uid));
+      if (!snap.exists()) return;
+      const d = snap.data();
+      $('#instagram').value = d.instagram || '';
+      $('#facebook').value  = d.facebook  || '';
+      $('#whatsapp').value  = d.whatsapp  || '';
+      $('#youtube').value   = d.youtube   || '';
+      if (d.fotoPerfil) atualizarUserCircle(d.fotoPerfil);
+    }
 
-async function previewImagem(ev, uid) {
-  const file = ev.target.files?.[0]; if (!file) return;
-  $('#fotoPreview').src = URL.createObjectURL(file);
-
-  const storageRef = ref(storage, `fotosPerfil/${uid}`);
-  try {
-    console.log("📤 Iniciando upload da imagem...");
-    const snap = await uploadBytes(storageRef, file);
-    console.log("✅ Upload completo:", snap);
-    const url = await getDownloadURL(storageRef);
-    console.log("🌐 URL da imagem:", url);
-    await setDoc(doc(db, 'usuarios', uid), { fotoPerfil: url }, { merge: true });
-    atualizarUserCircle(url);
-  } catch (e) {
-    console.error("❌ Erro no upload:", e);
-    alert('Erro ao salvar imagem.');
-  }
-}
-
-async function removerFoto(uid) {
-  const fotoRef = ref(storage, `fotosPerfil/${uid}`);
-  try {
-    await deleteObject(fotoRef);
-    await setDoc(doc(db, 'usuarios', uid), { fotoPerfil: '' }, { merge: true });
-    localStorage.removeItem('fotoPerfil');
-    $('#fotoPreview').src = ''; $('#userCircle').style.display = 'none';
-    alert('Foto removida.');
-  } catch (e) {
-    console.error("❌ Falha ao remover:", e);
-    alert('Falha ao remover.');
-  }
-}
-
-async function salvar(uid) {
-  const data = {
-    instagram: $('#instagram').value.trim(),
-    facebook:  $('#facebook').value.trim(),
-    whatsapp:  $('#whatsapp').value.trim(),
-    youtube:   $('#youtube').value.trim()
-  };
-  await setDoc(doc(db, 'usuarios', uid), data, { merge: true });
-  alert('Dados salvos!');
-}
-
-async function carregar(uid) {
-  const snap = await getDoc(doc(db, 'usuarios', uid));
-  if (!snap.exists()) return;
-  const d = snap.data();
-  $('#instagram').value = d.instagram || '';
-  $('#facebook').value  = d.facebook  || '';
-  $('#whatsapp').value  = d.whatsapp  || '';
-  $('#youtube').value   = d.youtube   || '';
-  if (d.fotoPerfil) atualizarUserCircle(d.fotoPerfil);
-}
-
-onAuthStateChanged(auth, user => {
-  const a = $('#authText');
-  if (user) {
-    console.log("🟢 Usuário logado:", user.uid);
-    $('#foto').onchange = async ev => {
-      await setDoc(doc(db, 'usuarios', user.uid), { fotoPerfil: 'aguardando_upload' }, { merge: true });
-      await previewImagem(ev, user.uid);
-    };
-    $('#btnSalvar').onclick      = () => salvar(user.uid);
-    $('#btnExcluirFoto').onclick = () => removerFoto(user.uid);
-
-    a.textContent = 'Sair'; a.style.display = 'inline';
-    a.onclick = async () => {
-      await signOut(auth);
-      localStorage.removeItem('fotoPerfil');
-      location = '/index.html';
-    };
-
-    carregar(user.uid);
-  } else {
-    console.warn("⚠️ Usuário não logado.");
-    localStorage.removeItem('fotoPerfil');
-    location = '/index.html';
-  }
-});
-</script>
+    function atualizarUserCircle(url) {
+      if (!url) return;
+      localStorage.setItem('fotoPerfil', url);
+      $('#fotoPreview').src = url;
+      const el = $('#userCircle'); el.innerHTML = ''; el.style.display = 'flex';
+      el.append(Object.assign(new Image(), { src: url }));
+    }
+  </script>
 </body>
 </html>
