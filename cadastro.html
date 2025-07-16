@@ -1,310 +1,38 @@
-<!DOCTYPE html>
-
-<html lang="pt-BR">
-
+<!DOCTYPE html><html lang="pt-BR">
 <head>
-
   <meta charset="UTF-8" />
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
   <title>Cadastro - MostreAki</title>
-
   <link rel="icon" href="favicon.ico" type="image/x-icon" />
-
   <style>
-
-    * {
-
-      box-sizing: border-box;
-
-      margin: 0;
-
-      padding: 0;
-
-      font-family: Arial, sans-serif;
-
-    }
-
-
-
-    body {
-
-      background-image: url("fundo-mobile.png");
-
-      background-size: cover;
-
-      background-repeat: no-repeat;
-
-      background-attachment: fixed;
-
-    }
-
-
-
-    @media (min-width: 768px) {
-
-      body {
-
-        background-image: url("fundo-desktop.png");
-
-      }
-
-    }
-
-
-
-    header {
-
-      background-color: #c2e7df;
-
-      height: 60px;
-
-      display: flex;
-
-      align-items: center;
-
-      justify-content: space-between;
-
-      padding: 0 20px;
-
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
-    }
-
-
-
-    .logo-container {
-
-      display: flex;
-
-      align-items: center;
-
-      cursor: pointer;
-
-    }
-
-
-
-    .logo-container img {
-
-      height: 40px;
-
-      margin-right: 10px;
-
-    }
-
-
-
-    .logo {
-
-      font-size: 1.5rem;
-
-      font-weight: bold;
-
-    }
-
-
-
-    .logo .mostre {
-
-      color: #00C2BF;
-
-    }
-
-
-
-    .logo .aki {
-
-      color: #FA1E39;
-
-    }
-
-
-
-    .voltar-btn {
-
-      font-weight: bold;
-
-      color: #007bff;
-
-      cursor: pointer;
-
-      text-decoration: underline;
-
-    }
-
-
-
-    .section {
-
-      background-color: #ffffff;
-
-      margin: 40px auto;
-
-      padding: 20px;
-
-      width: 90%;
-
-      max-width: 500px;
-
-      border-radius: 10px;
-
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-
-      text-align: center;
-
-    }
-
-
-
-    .section h2 {
-
-      color: #008b8b;
-
-      margin-bottom: 20px;
-
-    }
-
-
-
-    .form-input {
-
-      width: 100%;
-
-      padding: 10px;
-
-      margin: 10px 0;
-
-      border: 1px solid #ccc;
-
-      border-radius: 6px;
-
-    }
-
-
-
-    .input-wrapper {
-
-      position: relative;
-
-    }
-
-
-
-    .toggle-password {
-
-      position: absolute;
-
-      top: 38%;
-
-      right: 15px;
-
-      transform: translateY(-50%);
-
-      cursor: pointer;
-
-      font-size: 1.2rem;
-
-      user-select: none;
-
-    }
-
-
-
-    .btn {
-
-      display: inline-block;
-
-      margin-top: 15px;
-
-      padding: 10px 20px;
-
-      background-color: #15b0af;
-
-      color: white;
-
-      border: none;
-
-      border-radius: 5px;
-
-      text-decoration: none;
-
-      font-weight: bold;
-
-      width: 100%;
-
-    }
-
-
-
-    .google-btn {
-
-      margin-top: 15px;
-
-      padding: 10px;
-
-      background-color: #fff;
-
-      border: 1px solid #ccc;
-
-      border-radius: 5px;
-
-      display: flex;
-
-      align-items: center;
-
-      justify-content: center;
-
-      gap: 10px;
-
-      font-weight: bold;
-
-    }
-
-
-
-    .required-label::after {
-
-      content: "*";
-
-      color: red;
-
-      margin-left: 3px;
-
-    }
-
-
-
-    .termos {
-
-      font-size: 0.8rem;
-
-      margin-top: 10px;
-
-      color: #555;
-
-    }
-
-
-
-    .termos a {
-
-      color: #007bff;
-
-      text-decoration: none;
-
-    }
-
-
-
-    .termos a:hover {
-
-      text-decoration: underline;
-
-    }
-
-    .btn-voltar {
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }body {
+  background-image: url("fundo-mobile.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+@media (min-width: 768px) {
+  body { background-image: url("fundo-desktop.png"); }
+}
+
+header {
+  background-color: #c2e7df;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.logo-container { display: flex; align-items: center; cursor: pointer; }
+.logo-container img { height: 40px; margin-right: 10px; }
+.logo { font-size: 1.5rem; font-weight: bold; }
+.logo .mostre { color: #00C2BF; }
+.logo .aki { color: #FA1E39; }
+
+.btn-voltar {
   background-color: #00C2BF;
   color: white;
   border: none;
@@ -314,299 +42,120 @@
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
+.btn-voltar:hover { background-color: #009d9c; }
 
-.btn-voltar:hover {
-  background-color: #009d9c;
+.section {
+  background-color: #ffffff;
+  margin: 40px auto;
+  padding: 20px;
+  width: 90%;
+  max-width: 500px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
 }
+
+.section h2 { color: #008b8b; margin-bottom: 20px; }
+.form-input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 6px; }
+.input-wrapper { position: relative; }
+.toggle-password {
+  position: absolute; top: 38%; right: 15px;
+  transform: translateY(-50%);
+  cursor: pointer; font-size: 1.2rem; user-select: none;
+}
+.btn { margin-top: 15px; padding: 10px 20px; background-color: #15b0af; color: white; border: none; border-radius: 5px; font-weight: bold; width: 100%; }
+.google-btn {
+  margin-top: 15px; padding: 10px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  display: flex; align-items: center;
+  justify-content: center;
+  gap: 10px; font-weight: bold;
+}
+.required-label::after { content: "*"; color: red; margin-left: 3px; }
+.termos { font-size: 0.8rem; margin-top: 10px; color: #555; }
+.termos a { color: #007bff; text-decoration: none; }
+.termos a:hover { text-decoration: underline; }
+.tipo-pessoa {
+  display: flex; justify-content: center;
+  margin-bottom: 15px; gap: 10px;
+}
+.tipo-pessoa input { margin-right: 5px; }
+
   </style>
-
 </head>
-
 <body>
-
   <header>
-
     <div class="logo-container" onclick="location.href='index.html'">
-
       <img src="logo.png" alt="Logo" />
-
       <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
-
     </div>
-
     <button class="btn-voltar" onclick="location.href='index.html'">Página Inicial</button>
-  </header>
-
-
-
-  <div class="section">
-
-    <h2>Cadastro</h2>
-
-
-
-    <label class="required-label">
-
-      <input type="text" id="nome" placeholder="Nome completo" class="form-input" />
-
-    </label>
-
-
-
-    <label class="required-label">
-
-      <input type="email" id="email" placeholder="E-mail" class="form-input" />
-
-    </label>
-
-
-
-    <div class="input-wrapper required-label">
-
-      <input type="password" id="senha" placeholder="Senha" class="form-input" />
-
-      <span class="toggle-password" onclick="toggleSenha('senha', this)">👁️</span>
-
-    </div>
-
-
-
-    <div class="input-wrapper required-label">
-
-      <input type="password" id="confirmarSenha" placeholder="Confirmar senha" class="form-input" />
-
-      <span class="toggle-password" onclick="toggleSenha('confirmarSenha', this)">👁️</span>
-
-    </div>
-
-
-
-    <label class="required-label"><input type="text" id="cpf" placeholder="CPF" class="form-input" /></label>
-
-    <label class="required-label"><input type="text" id="cep" placeholder="CEP" class="form-input" /></label>
-
-    <label class="required-label"><input type="text" id="rua" placeholder="Rua" class="form-input" /></label>
-
-    <label class="required-label"><input type="text" id="numero" placeholder="Número" class="form-input" /></label>
-
-    <input type="text" id="complemento" placeholder="Complemento (opcional)" class="form-input" />
-
-    <label class="required-label"><input type="text" id="bairro" placeholder="Bairro" class="form-input" /></label>
-
-    <label class="required-label"><input type="text" id="cidade" placeholder="Cidade" class="form-input" /></label>
-
-    <label class="required-label"><input type="text" id="estado" placeholder="Estado" class="form-input" /></label>
-
-    <input type="text" id="whatsapp" placeholder="WhatsApp (opcional)" class="form-input" />
-
-
-
-    <button class="btn" onclick="cadastrar()">Cadastrar</button>
-
-
-
-    <button class="google-btn" onclick="loginComGoogle()">
-
-      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" width="20" />
-
-      Cadastrar com Google
-
-    </button>
-
-
-
-    <p class="termos">
-
-      Ao continuar, você concorda com os
-
-      <a href="https://www.mostreaki.com.br/termos-de-servico.html" target="_blank">Termos de Serviço</a>
-
-      e a
-
-      <a href="https://www.mostreaki.com.br/politica-de-privacidade.html" target="_blank">Política de Privacidade</a>
-
-      do MostreAki e seus parceiros, e aceita receber comunicações do MostreAki.
-
-    </p>
-
-  </div>
-
-
-
-  <script type="module">
-
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-
-    import { getAuth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-
-    import { getFirestore, doc, setDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-
-
-
-    const firebaseConfig = {
-
-      apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
-
-      authDomain: "mostreaki-2025.firebaseapp.com",
-
-      projectId: "mostreaki-2025",
-
-      storageBucket: "mostreaki-2025.appspot.com",
-
-      messagingSenderId: "748712068097",
-
-      appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
-
-    };
-
-
-
-    const app = initializeApp(firebaseConfig);
-
-    const auth = getAuth(app);
-
-    const db = getFirestore(app);
-
-
-
-    window.cadastrar = async function () {
-
-      const nome = document.getElementById("nome").value.trim();
-
-      const email = document.getElementById("email").value.trim();
-
-      const senha = document.getElementById("senha").value;
-
-      const confirmarSenha = document.getElementById("confirmarSenha").value;
-
-      const cpf = document.getElementById("cpf").value.trim();
-
-      const cep = document.getElementById("cep").value.trim();
-
-      const rua = document.getElementById("rua").value.trim();
-
-      const numero = document.getElementById("numero").value.trim();
-
-      const complemento = document.getElementById("complemento").value.trim();
-
-      const bairro = document.getElementById("bairro").value.trim();
-
-      const cidade = document.getElementById("cidade").value.trim();
-
-      const estado = document.getElementById("estado").value.trim();
-
-      const whatsapp = document.getElementById("whatsapp").value.trim();
-
-
-
-      if (!nome || !email || !senha || !confirmarSenha || !cpf || !cep || !rua || !numero || !bairro || !cidade || !estado) {
-
-        alert("Preencha todos os campos obrigatórios.");
-
-        return;
-
-      }
-
-
-
-      if (senha !== confirmarSenha) {
-
-        alert("As senhas não coincidem.");
-
-        return;
-
-      }
-
-
-
-      try {
-
-        const cred = await createUserWithEmailAndPassword(auth, email, senha);
-
-        const uid = cred.user.uid;
-
-        await setDoc(doc(db, "usuarios", uid), {
-
-          nome, email, cpf, whatsapp,
-
-          endereco: { cep, rua, numero, complemento, bairro, cidade, estado },
-
-          plano: "nenhum"
-
-        });
-
-        alert("Cadastro realizado com sucesso!");
-
-        window.location.href = "minha-conta.html";
-
-      } catch (e) {
-
-        alert("Erro no cadastro: " + e.message);
-
-      }
-
-    };
-
-
-
-    window.loginComGoogle = async function () {
-
-      const provider = new GoogleAuthProvider();
-
-      try {
-
-        const result = await signInWithPopup(auth, provider);
-
-        const user = result.user;
-
-        await setDoc(doc(db, "usuarios", user.uid), {
-
-          nome: user.displayName,
-
-          email: user.email,
-
-          cpf: "",
-
-          whatsapp: "",
-
-          endereco: {},
-
-          plano: "nenhum"
-
-        }, { merge: true });
-
-        alert("Cadastro com Google realizado com sucesso!");
-
-        window.location.href = "minha-conta.html";
-
-      } catch (error) {
-
-        alert("Erro ao autenticar com Google: " + error.message);
-
-      }
-
+  </header>  <div class="section">
+    <h2>Cadastro</h2><div class="tipo-pessoa">
+  <label><input type="radio" name="tipoPessoa" value="fisica" checked onchange="atualizarTipoPessoa()"> Pessoa Física</label>
+  <label><input type="radio" name="tipoPessoa" value="juridica" onchange="atualizarTipoPessoa()"> Pessoa Jurídica</label>
+</div>
+
+<label class="required-label"><input type="text" id="nome" placeholder="Nome completo ou Razão Social" class="form-input" /></label>
+<label class="required-label"><input type="email" id="email" placeholder="E-mail" class="form-input" /></label>
+
+<div class="input-wrapper required-label">
+  <input type="password" id="senha" placeholder="Senha" class="form-input" />
+  <span class="toggle-password" onclick="toggleSenha('senha', this)">👁️</span>
+</div>
+
+<div class="input-wrapper required-label">
+  <input type="password" id="confirmarSenha" placeholder="Confirmar senha" class="form-input" />
+  <span class="toggle-password" onclick="toggleSenha('confirmarSenha', this)">👁️</span>
+</div>
+
+<div id="cpfContainer" class="required-label">
+  <input type="text" id="cpf" placeholder="CPF" class="form-input" />
+</div>
+
+<div id="cnpjContainer" style="display:none;">
+  <label class="required-label"><input type="text" id="cnpj" placeholder="CNPJ" class="form-input" /></label>
+  <input type="text" id="ie" placeholder="Inscrição Estadual (opcional)" class="form-input" />
+</div>
+
+<label class="required-label"><input type="text" id="cep" placeholder="CEP" class="form-input" /></label>
+<label class="required-label"><input type="text" id="rua" placeholder="Rua" class="form-input" /></label>
+<label class="required-label"><input type="text" id="numero" placeholder="Número" class="form-input" /></label>
+<input type="text" id="complemento" placeholder="Complemento (opcional)" class="form-input" />
+<label class="required-label"><input type="text" id="bairro" placeholder="Bairro" class="form-input" /></label>
+<label class="required-label"><input type="text" id="cidade" placeholder="Cidade" class="form-input" /></label>
+<label class="required-label"><input type="text" id="estado" placeholder="Estado" class="form-input" /></label>
+<input type="text" id="whatsapp" placeholder="WhatsApp (opcional)" class="form-input" />
+
+<button class="btn" onclick="cadastrar()">Cadastrar</button>
+
+<button class="google-btn" onclick="loginComGoogle()">
+  <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" width="20" />
+  Cadastrar com Google
+</button>
+
+<p class="termos">
+  Ao continuar, você concorda com os
+  <a href="https://www.mostreaki.com.br/termos-de-servico.html" target="_blank">Termos de Serviço</a>
+  e a
+  <a href="https://www.mostreaki.com.br/politica-de-privacidade.html" target="_blank">Política de Privacidade</a>
+  do MostreAki e seus parceiros, e aceita receber comunicações do MostreAki.
+</p>
+
+  </div>  <script>
+    function atualizarTipoPessoa() {
+      const tipo = document.querySelector('input[name="tipoPessoa"]:checked').value;
+      document.getElementById('cpfContainer').style.display = tipo === 'fisica' ? 'block' : 'none';
+      document.getElementById('cnpjContainer').style.display = tipo === 'juridica' ? 'block' : 'none';
     }
-
-  </script>
-
-
-
-  <script>
 
     function toggleSenha(id, icon) {
-
       const input = document.getElementById(id);
-
       const isVisible = input.type === "text";
-
       input.type = isVisible ? "password" : "text";
-
       icon.textContent = isVisible ? "👁️" : "🙈";
-
     }
-
-  </script>
-
-</body>
-
+  </script></body>
 </html>
