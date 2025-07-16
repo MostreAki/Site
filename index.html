@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="pt-BR">
+<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -119,6 +120,11 @@
 </head>
 <body>
 
+  <!-- ✅ AVISO DE LOGIN OBRIGATÓRIO -->
+  <div id="avisoLogin" style="display:none;position:fixed;top:10px;left:50%;transform:translateX(-50%);background:#fa1e39;color:white;padding:12px 20px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,0.2);z-index:9999;font-weight:bold;font-size:0.95rem">
+    ⚠️ Você precisa estar logado para acessar sua conta.
+  </div>
+
   <!-- Modal de Login -->
   <div id="loginModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:9999;">
     <div style="background:white; padding:20px; border-radius:8px; width:90%; max-width:400px;">
@@ -191,6 +197,7 @@
     &copy; 2025 MostreAki. Todos os direitos reservados.
   </footer>
 
+  <!-- Firebase + Lógica de Autenticação -->
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
     import {
@@ -311,6 +318,21 @@
       const isPassword = input.type === "password";
       input.type = isPassword ? "text" : "password";
       el.textContent = isPassword ? "🙈" : "👁️";
+    }
+  </script>
+
+  <!-- ✅ SCRIPT DO AVISO FLUTUANTE -->
+  <script>
+    if (location.search.includes('login=obrigatorio')) {
+      const aviso = document.getElementById('avisoLogin');
+      if (aviso) {
+        aviso.style.display = 'block';
+        setTimeout(() => {
+          aviso.style.display = 'none';
+          const urlSemParam = location.origin + location.pathname;
+          history.replaceState(null, '', urlSemParam);
+        }, 4000);
+      }
     }
   </script>
 
