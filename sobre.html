@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sobre – MostreAki</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+    body {
+      background-image: url("fundo-mobile.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+    }
+    @media (min-width: 768px) {
+      body { background-image: url("fundo-desktop.png"); }
+    }
+    header {
+      background-color: #c2e7df;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      position: relative;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .logo-container { display: flex; align-items: center; cursor: pointer; }
+    .logo-container img { height: 40px; margin-right: 10px; }
+    .logo { font-size: 1.5rem; font-weight: bold; }
+    .logo .mostre { color: #00C2BF; }
+    .logo .aki { color: #FA1E39; }
+    .menu-icon { font-size: 1.5rem; cursor: pointer; }
+    .menu-list {
+      position: absolute;
+      top: 60px;
+      right: 20px;
+      background-color: #16807C;
+      border: 2px solid black;
+      border-radius: 6px;
+      display: none;
+      flex-direction: column;
+      padding: 10px;
+      z-index: 1000;
+    }
+    .menu-list a {
+      background-color: #FA1E39;
+      color: white;
+      text-decoration: none;
+      padding: 10px;
+      margin-bottom: 8px;
+      border-radius: 6px;
+      text-align: center;
+      font-weight: bold;
+    }
+    .menu-list a:hover { background-color: #b8313b; }
+
+    .user-circle {
+      background-color: #15b0af;
+      color: white;
+      font-weight: bold;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background-size: cover;
+      background-position: center;
+      font-size: 0.9rem;
+    }
+
+    .section {
+      background: white;
+      margin: 60px auto;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #0001;
+      max-width: 800px;
+      text-align: center;
+    }
+
+    footer {
+      background-color: #c2e7df;
+      padding: 20px;
+      text-align: center;
+      color: #555;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo-container" onclick="location.href='index.html'">
+      <img src="logo.png" alt="Logo">
+      <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <span id="authText" style="font-weight:bold; color:#15b0af; cursor:pointer; display:none;" onclick="handleAuthAction()"></span>
+      <div id="userCircle" class="user-circle" title="Perfil"></div>
+      <div class="menu-icon" onclick="toggleMenu()">☰</div>
+    </div>
+    <div class="menu-list" id="menu">
+      <a href="/index.html">Início</a>
+      <a href="/minha-conta.html">Minha Conta</a>
+      <a href="/planos.html">Planos</a>
+      <a href="/servicos-adicionais.html">Serviços Adicionais</a>
+      <a href="/crieaki.html">CrieAki</a>
+      <a href="/contatos.html">Contatos</a>
+    </div>
+  </header>
+
+  <div class="section">
+    <h2>Sobre o MostreAki</h2>
+    <p>O MostreAki nasceu para dar visibilidade a pequenos empreendedores, artistas e criadores. Nosso objetivo é oferecer uma vitrine digital acessível, com ferramentas simples e eficazes para divulgar ideias, produtos e serviços.</p>
+    <p>Com planos acessíveis e recursos personalizados, acreditamos que todos merecem um espaço para brilhar na internet.</p>
+  </div>
+
+  <footer>
+    &copy; 2025 MostreAki. Todos os direitos reservados.
+  </footer>
+
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+    import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+
+    const app = initializeApp({
+      apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
+      authDomain: "mostreaki-2025.firebaseapp.com",
+      projectId: "mostreaki-2025",
+      storageBucket: "mostreaki-2025.appspot.com",
+      messagingSenderId: "748712068097",
+      appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
+    });
+
+    const auth = getAuth(app);
+    const foto = localStorage.getItem("fotoPerfil");
+    const userCircle = document.getElementById("userCircle");
+    const authText = document.getElementById("authText");
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        if (foto) {
+          userCircle.style.backgroundImage = `url('${foto}')`;
+          userCircle.textContent = "";
+        } else {
+          const nome = user.displayName || user.email;
+          const letra = nome?.charAt(0)?.toUpperCase() || "?";
+          userCircle.textContent = letra;
+        }
+        userCircle.style.display = "flex";
+        authText.textContent = "Sair";
+        authText.style.display = "inline";
+      } else {
+        userCircle.style.display = "none";
+        authText.textContent = "Entrar";
+        authText.style.display = "inline";
+      }
+    });
+
+    window.handleAuthAction = function () {
+      if (authText.textContent === "Sair") {
+        signOut(auth).then(() => {
+          localStorage.removeItem("fotoPerfil");
+          location.reload();
+        });
+      } else {
+        location.href = "/index.html?login=obrigatorio";
+      }
+    };
+
+    window.toggleMenu = function () {
+      const menu = document.getElementById("menu");
+      menu.style.display = menu.style.display === "flex" ? "none" : "flex";
+    };
+  </script>
+
+</body>
+</html>
