@@ -96,34 +96,57 @@ footer {
 #loginModal {
   display: none;
   position: fixed;
-  top: 0; left: 0; width: 100%; height: 100%;
-  background: rgba(0,0,0,0.6);
   z-index: 9999;
-  justify-content: center;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.6);
   align-items: center;
+  justify-content: center;
 }
 
-#loginModal .modal-content {
+.modal-content {
   background: #fff;
   padding: 30px;
-  border-radius: 10px;
-  max-width: 400px;
+  border-radius: 8px;
   width: 90%;
+  max-width: 400px;
   text-align: center;
-  box-shadow: 0 0 10px #0003;
 }
 
-#loginModal button {
-  background-color: #fa1e39;
-  border: none;
-  color: white;
-  padding: 12px;
-  border-radius: 6px;
-  font-weight: bold;
-  font-size: 1rem;
-  cursor: pointer;
-  margin-top: 10px;
+.modal-content input {
   width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.modal-content button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+  background-color: #16807C;
+  color: white;
+  cursor: pointer;
+}
+
+.modal-content .google-btn {
+  background-color: #fa1e39;
+}
+
+.modal-links {
+  margin-top: 10px;
+  font-size: 0.9rem;
+}
+
+.modal-links a {
+  color: #16807C;
+  text-decoration: underline;
+  margin: 0 5px;
+  cursor: pointer;
 }
 
   </style>
@@ -153,14 +176,28 @@ footer {
     <p>Com planos acessíveis e recursos personalizados, acreditamos que todos merecem um espaço para brilhar na internet.</p>
   </div>  <footer>
     &copy; 2025 MostreAki. Todos os direitos reservados.
-  </footer>  <div id="loginModal">
+  </footer>  <!-- Modal de Login -->  <div id="loginModal">
     <div class="modal-content">
-      <h3>Entrar com o Google</h3>
-      <button id="btnGoogle">Entrar com Google</button>
+      <h3>Entrar no MostreAki</h3>
+      <input type="email" placeholder="E-mail" id="emailLogin">
+      <input type="password" placeholder="Senha" id="senhaLogin">
+      <button onclick="loginEmailSenha()">Entrar</button>
+      <button class="google-btn" onclick="loginComGoogle()">Entrar com Google</button>
+      <div class="modal-links">
+        <a onclick="esqueceuSenha()">Esqueceu a senha?</a>
+        <a onclick="cadastroSimples()">Cadastrar-se</a>
+      </div>
     </div>
   </div>  <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-    import { getAuth, onAuthStateChanged, signOut, signInWithPopup, GoogleAuthProvider } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+    import {
+      getAuth, onAuthStateChanged, signOut,
+      signInWithEmailAndPassword,
+      sendPasswordResetEmail,
+      signInWithPopup,
+      GoogleAuthProvider,
+      createUserWithEmailAndPassword
+    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 
     const app = initializeApp({
       apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
@@ -173,17 +210,16 @@ footer {
 
     const auth = getAuth(app);
     const provider = new GoogleAuthProvider();
-    const foto = localStorage.getItem("fotoPerfil");
+
     const userCircle = document.getElementById("userCircle");
     const authText = document.getElementById("authText");
     const loginModal = document.getElementById("loginModal");
-    const btnGoogle = document.getElementById("btnGoogle");
 
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        if (user.photoURL) {
-          userCircle.style.backgroundImage = `url('${user.photoURL}')`;
-          localStorage.setItem("fotoPerfil", user.photoURL);
+        const foto = user.photoURL;
+        if (foto) {
+          userCircle.style.backgroundImage = `url('${foto}')`;
           userCircle.textContent = "";
         } else {
           const nome = user.displayName || user.email;
@@ -203,7 +239,6 @@ footer {
     window.handleAuthAction = function () {
       if (authText.textContent === "Sair") {
         signOut(auth).then(() => {
-          localStorage.removeItem("fotoPerfil");
           location.reload();
         });
       } else {
@@ -211,30 +246,50 @@ footer {
       }
     };
 
-    btnGoogle.onclick = function () {
-      signInWithPopup(auth, provider)
-        .then((result) => {
-          const user = result.user;
-          if (user.photoURL) {
-            localStorage.setItem("fotoPerfil", user.photoURL);
-          }
-          loginModal.style.display = "none";
-          location.reload();
-        })
-        .catch((error) => {
-          console.error("Erro no login:", error.message);
-        });
-    };
-
     window.toggleMenu = function () {
       const menu = document.getElementById("menu");
       menu.style.display = menu.style.display === "flex" ? "none" : "flex";
+    };
+
+    window.loginComGoogle = function () {
+      signInWithPopup(auth, provider)
+        .then(result => {
+          location.reload();
+        })
+        .catch(err => alert("Erro: " + err.message));
+    };
+
+    window.loginEmailSenha = function () {
+      const email = document.getElementById("emailLogin").value;
+      const senha = document.getElementById("senhaLogin").value;
+      signInWithEmailAndPassword(auth, email, senha)
+        .then(() => location.reload())
+        .catch(err => alert("Erro: " + err.message));
+    };
+
+    window.esqueceuSenha = function () {
+      const email = prompt("Digite seu e-mail para redefinir a senha:");
+      if (email) {
+        sendPasswordResetEmail(auth, email)
+          .then(() => alert("Verifique sua caixa de entrada."))
+          .catch(err => alert("Erro: " + err.message));
+      }
+    };
+
+    window.cadastroSimples = function () {
+      const email = prompt("Digite seu e-mail:");
+      const senha = prompt("Digite uma senha com pelo menos 6 caracteres:");
+      if (email && senha) {
+        createUserWithEmailAndPassword(auth, email, senha)
+          .then(() => alert("Cadastro realizado! Faça login."))
+          .catch(err => alert("Erro: " + err.message));
+      }
     };
 
     window.onclick = function (event) {
       if (event.target === loginModal) {
         loginModal.style.display = "none";
       }
-    }
+    };
   </script></body>
 </html>
