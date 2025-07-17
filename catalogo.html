@@ -1,53 +1,66 @@
+<!-- 🟢 HTML com Firebase Storage para catálogo personalizado -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Catálogo do Cliente - MostreAki</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Catálogo do Cliente</title>
   <link rel="icon" href="favicon.ico" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" />
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
-
     body {
-      background-color: var(--cor-fundo, #f0f0f0);
-      color: var(--cor-texto, #333);
+      font-family: 'Inter', sans-serif;
+      background-color: var(--cor-fundo, #f5f5f5);
+      margin: 0;
+      padding: 0;
     }
-
     header {
       background: #c2e7df;
       height: 60px;
       display: flex;
-      align-items: center;
       justify-content: space-between;
+      align-items: center;
       padding: 0 20px;
-      position: relative;
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
-
-    .logo-container { display: flex; align-items: center; cursor: pointer; }
-    .logo-container img { height: 40px; margin-right: 10px; }
-    .logo { font-size: 1.5rem; font-weight: bold; }
+    .logo-container {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+    .logo-container img {
+      height: 40px;
+      margin-right: 10px;
+    }
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
     .logo .mostre { color: #00C2BF; }
     .logo .aki { color: #FA1E39; }
 
-    .menu-icon { font-size: 1.5rem; cursor: pointer; }
+    .menu-icon {
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
     .menu-list {
-      position: absolute; top: 60px; right: 20px;
-      background: #16807C; border: 2px solid #000;
-      border-radius: 6px; display: none;
-      flex-direction: column; padding: 10px; z-index: 1000;
+      position: absolute;
+      top: 60px;
+      right: 20px;
+      background: #16807C;
+      padding: 10px;
+      border-radius: 6px;
+      display: none;
+      flex-direction: column;
+      z-index: 1000;
     }
     .menu-list a {
-      background: #FA1E39; color: #fff; text-decoration: none;
-      padding: 10px; margin-bottom: 8px; border-radius: 6px;
-      text-align: center; font-weight: bold;
-    }
-    .menu-list a:hover { background: #b8313b; }
-
-    .banner {
-      width: 100%;
-      height: auto;
+      background: #FA1E39;
+      color: white;
+      padding: 10px;
+      margin-bottom: 8px;
+      text-align: center;
+      border-radius: 6px;
+      text-decoration: none;
     }
 
     .grid {
@@ -56,46 +69,35 @@
       gap: 1rem;
       padding: 1rem;
     }
-
     .produto {
       background: white;
       border-radius: 8px;
-      box-shadow: 0 0 5px rgba(0,0,0,0.1);
       padding: 1rem;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
       text-align: center;
     }
-
     .produto img {
       width: 100%;
+      height: auto;
       border-radius: 4px;
+      margin-bottom: 10px;
     }
-
     .produto input {
-      margin: 0.5rem 0;
-      padding: 0.4rem;
       width: 100%;
-      border: 1px solid #ccc;
-      border-radius: 4px;
+      padding: 8px;
+      margin-bottom: 8px;
     }
-
-    .btn-whatsapp {
-      background-color: var(--cor-botao, #25D366);
+    .btn {
+      padding: 10px;
+      background-color: #25D366;
       color: white;
-      padding: 0.5rem;
       border: none;
-      border-radius: 4px;
+      border-radius: 6px;
       cursor: pointer;
     }
-
-    .btn-voltar {
-      margin: 1rem;
-      padding: 0.5rem 1rem;
+    .btn-add {
       background-color: #FA1E39;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-weight: bold;
+      margin: 1rem;
     }
 
     footer {
@@ -103,11 +105,6 @@
       padding: 1rem;
       background-color: #c2e7df;
       color: #555;
-      margin-top: 2rem;
-    }
-
-    @media(max-width: 768px) {
-      .grid { grid-template-columns: repeat(2, 1fr); }
     }
   </style>
 </head>
@@ -118,99 +115,88 @@
       <img src="logo.png" alt="Logo">
       <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
     </div>
-    <div style="display:flex;align-items:center;gap:10px;">
-      <span id="authText" style="font-weight:bold;color:#15b0af;cursor:pointer;display:none" onclick="sair()">Sair</span>
-      <div class="menu-icon" onclick="toggleMenu()">☰</div>
-    </div>
+    <div class="menu-icon" onclick="toggleMenu()">☰</div>
     <div class="menu-list" id="menu">
-      <a href="index.html">Página Inicial</a>
       <a href="crieaki.html">Voltar para CrieAki</a>
+      <a href="index.html">Página Inicial</a>
     </div>
   </header>
 
-  <img src="banner-desktop.jpg" alt="Banner Desktop" class="banner" id="bannerDesktop">
-  <img src="banner-mobile.jpg" alt="Banner Mobile" class="banner" id="bannerMobile" style="display: none;">
-
-  <main class="grid">
-    <div class="produto">
-      <img src="produto1.jpg" alt="Produto 1">
-      <label>Preço:</label>
-      <input type="text" placeholder="R$ 25,00">
-      <label>Estoque:</label>
-      <input type="text" placeholder="4 unidades">
-      <button class="btn-whatsapp">Chamar no WhatsApp</button>
-    </div>
-    <div class="produto">
-      <img src="produto2.jpg" alt="Produto 2">
-      <label>Preço:</label>
-      <input type="text" placeholder="R$ 18,00">
-      <label>Estoque:</label>
-      <input type="text" placeholder="10 unidades">
-      <button class="btn-whatsapp">Chamar no WhatsApp</button>
-    </div>
-    <!-- Adicione mais produtos conforme necessário -->
+  <main>
+    <button class="btn btn-add" onclick="adicionarProduto()">Adicionar Produto</button>
+    <div class="grid" id="produtos"></div>
   </main>
 
-  <button class="btn-voltar" onclick="location.href='crieaki.html'">Voltar</button>
-
-  <footer>&copy; 2025 MostreAki - Todos os direitos reservados.</footer>
+  <footer>© 2025 MostreAki – Todos os direitos reservados.</footer>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
     import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
-    const firebaseConfig = {
+    const app = initializeApp({
       apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
       authDomain: "mostreaki-2025.firebaseapp.com",
       projectId: "mostreaki-2025",
       storageBucket: "mostreaki-2025.appspot.com",
       messagingSenderId: "748712068097",
       appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
-    };
+    });
 
-    const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
+    const storage = getStorage(app, "gs://mostreaki-2025.firebasestorage.app");
+
+    let uid = null;
 
     onAuthStateChanged(auth, async (user) => {
-      if (user && user.email === "felipehfagionato2023@gmail.com") {
-        const docRef = doc(db, "usuarios", user.uid);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          document.body.style.backgroundColor = data.corFundo || "#ffffff";
-          document.body.style.color = data.corTexto || "#000000";
-          document.querySelectorAll(".btn-whatsapp").forEach(btn => {
-            btn.style.backgroundColor = data.corBotao || "#25D366";
-          });
-        }
-        document.getElementById("authText").style.display = "inline";
-      } else {
+      if (!user) {
+        alert("Você precisa estar logado.");
         location.href = "index.html";
+        return;
+      }
+      uid = user.uid;
+
+      const snap = await getDoc(doc(db, "usuarios", uid));
+      if (snap.exists()) {
+        const d = snap.data();
+        document.body.style.backgroundColor = d.corFundo || "#f5f5f5";
+        document.body.style.color = d.corTexto || "#000";
+        document.querySelectorAll(".btn").forEach(b => b.style.backgroundColor = d.corBotao || "#25D366");
       }
     });
 
-    window.sair = function () {
-      signOut(auth).then(() => {
-        alert("Você saiu com sucesso!");
-        location.href = "index.html";
-      });
+    window.adicionarProduto = function () {
+      const grid = document.getElementById("produtos");
+      const div = document.createElement("div");
+      div.className = "produto";
+      const index = Date.now();
+
+      div.innerHTML = `
+        <input type="file" accept="image/*" onchange="uploadImagem(event, '${index}')">
+        <img id="preview-${index}" src="" alt="Preview">
+        <input type="text" placeholder="Preço">
+        <input type="text" placeholder="Estoque">
+        <button class="btn">WhatsApp</button>
+      `;
+      grid.appendChild(div);
     };
-  </script>
 
-  <script>
-    function toggleMenu() {
-      const m = document.getElementById("menu");
-      m.style.display = m.style.display === "flex" ? "none" : "flex";
-    }
+    window.uploadImagem = async function (event, id) {
+      const file = event.target.files[0];
+      if (!file || !uid) return;
 
-    const desktopBanner = document.getElementById("bannerDesktop");
-    const mobileBanner = document.getElementById("bannerMobile");
-    if (window.innerWidth <= 768) {
-      desktopBanner.style.display = "none";
-      mobileBanner.style.display = "block";
-    }
+      const refImagem = ref(storage, `fotosCatalogo/${uid}/${id}`);
+      await uploadBytes(refImagem, file);
+      const url = await getDownloadURL(refImagem);
+      document.getElementById("preview-" + id).src = url;
+    };
+
+    window.toggleMenu = function () {
+      const menu = document.getElementById("menu");
+      menu.style.display = menu.style.display === "flex" ? "none" : "flex";
+    };
   </script>
 </body>
 </html>
