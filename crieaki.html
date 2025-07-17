@@ -261,12 +261,21 @@
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
   const auth = getAuth();
 
+  <script type="module">
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  const auth = getAuth();
+
+  const emailAutorizado = "felipehfagionato2023@gmail.com";
+
   onAuthStateChanged(auth, (user) => {
-    const emailAutorizado = "felipehfagionato2023@gmail.com"; // 👈 coloque aqui seu e-mail real
-    if (!user || user.email.trim().toLowerCase() !== emailAutorizado) {
-      window.location.href = "index.html";
-    } else {
-      // Mostra "Sair" no menu (opcional, se ainda não estiver implementado)
+    const bodySite = document.getElementById("bodySite");
+
+    if (
+      user &&
+      user.email &&
+      user.email.trim().toLowerCase() === emailAutorizado
+    ) {
+      bodySite.style.display = "block"; // Mostra o site
       const btnLogin = document.getElementById("btnLogin");
       if (btnLogin) {
         btnLogin.innerText = "Sair";
@@ -276,6 +285,8 @@
           });
         });
       }
+    } else {
+      window.location.href = "index.html"; // Redireciona se não for autorizado
     }
   });
     
