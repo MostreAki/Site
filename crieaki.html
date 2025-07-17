@@ -15,9 +15,7 @@
       background-repeat: no-repeat;
     }
     @media(min-width:768px){
-      body {
-        background-image: url("fundo-desktop.png");
-      }
+      body { background-image: url("fundo-desktop.png"); }
     }
 
     header {
@@ -30,9 +28,7 @@
       position: relative;
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
-    .logo-container {
-      display: flex; align-items: center; cursor: pointer;
-    }
+    .logo-container { display: flex; align-items: center; cursor: pointer; }
     .logo-container img { height: 40px; margin-right: 10px; }
     .logo { font-size: 1.5rem; font-weight: bold; }
     .logo .mostre { color: #00C2BF; }
@@ -159,7 +155,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
     const firebaseConfig = {
-      apiKey: "SUA_API_KEY",
+      apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
       authDomain: "mostreaki-2025.firebaseapp.com",
       projectId: "mostreaki-2025",
       storageBucket: "mostreaki-2025.appspot.com",
@@ -178,6 +174,14 @@
         authText.style.display = "inline";
         userCircle.style.display = "flex";
         userCircle.textContent = user.email[0].toUpperCase();
+
+        // Verifica se é um email permitido
+        const emailsPermitidos = ["felipehfagionato2023@gmail.com"];
+        if (!emailsPermitidos.includes(user.email)) {
+          alert("Acesso restrito a membros assinantes.");
+          location.href = "index.html";
+        }
+
       } else {
         location.href = "index.html";
       }
