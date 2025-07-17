@@ -1,274 +1,198 @@
-<!-- crieaki.html -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CrieAki - MostreAki</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" />
+  <title>CrieAki – MostreAki</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon"/>
   <style>
-    body {
-      margin: 0;
-      font-family: 'Inter', sans-serif;
-      background-color: #ffffff;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
 
-    #bodySite {
-      display: none;
+    body {
+      background-image: url("fundo-mobile.png");
+      background-size: cover;
+      background-attachment: fixed;
+      background-repeat: no-repeat;
+    }
+    @media(min-width:768px){
+      body {
+        background-image: url("fundo-desktop.png");
+      }
     }
 
     header {
-      background-color: #b2ebe1;
+      background: #c2e7df;
+      height: 60px;
       display: flex;
+      align-items: center;
       justify-content: space-between;
-      align-items: center;
-      padding: 10px 20px;
+      padding: 0 20px;
+      position: relative;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .logo-container {
+      display: flex; align-items: center; cursor: pointer;
+    }
+    .logo-container img { height: 40px; margin-right: 10px; }
+    .logo { font-size: 1.5rem; font-weight: bold; }
+    .logo .mostre { color: #00C2BF; }
+    .logo .aki { color: #FA1E39; }
+
+    .menu-icon { font-size: 1.5rem; cursor: pointer; }
+    .menu-list {
+      position: absolute; top: 60px; right: 20px;
+      background: #16807C; border: 2px solid #000;
+      border-radius: 6px; display: none;
+      flex-direction: column; padding: 10px; z-index: 1000;
+    }
+    .menu-list a {
+      background: #FA1E39; color: #fff; text-decoration: none;
+      padding: 10px; margin-bottom: 8px; border-radius: 6px;
+      text-align: center; font-weight: bold;
+    }
+    .menu-list a:hover { background: #b8313b; }
+
+    .user-circle {
+      background: #15b0af; color: #fff; font-weight: bold; border-radius: 50%;
+      width: 32px; height: 32px; display: none; align-items: center;
+      justify-content: center; background-size: cover; background-position: center;
+      font-size: .9rem
     }
 
-    .logo {
-      display: flex;
-      align-items: center;
-    }
-
-    .logo img {
-      height: 40px;
-      margin-right: 10px;
-    }
-
-    .logo span {
-      font-size: 24px;
-      font-weight: bold;
-    }
-
-    .logo .azul { color: #00c2c2; }
-    .logo .vermelho { color: #ec1c24; }
-
-    .menu-toggle {
-      font-size: 24px;
-      cursor: pointer;
-    }
-
-    nav {
-      display: none;
-      flex-direction: column;
-      background-color: #f5f5f5;
-      padding: 10px;
-    }
-
-    nav a {
-      text-decoration: none;
-      padding: 8px;
-      color: #000;
-      font-weight: 600;
-    }
-
-    nav a:hover {
-      background-color: #e0e0e0;
-    }
-
-    .banner-desktop, .banner-mobile {
-      width: 100%;
-      display: none;
-    }
-
-    .banner-desktop img,
-    .banner-mobile img {
-      width: 100%;
-      height: auto;
-    }
-
-    @media (min-width: 768px) {
-      nav {
-        display: flex;
-        flex-direction: row;
-      }
-      .banner-desktop { display: block; }
-    }
-
-    @media (max-width: 767px) {
-      nav.active {
-        display: flex;
-      }
-      .banner-mobile { display: block; }
-    }
-
-    .container {
-      padding: 20px;
-    }
-
-    .galeria {
+    .catalogo {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
       gap: 20px;
+      padding: 20px;
+      max-width: 1200px;
+      margin: 20px auto;
+      grid-template-columns: repeat(2, 1fr);
+    }
+    @media(min-width: 768px){
+      .catalogo {
+        grid-template-columns: repeat(4, 1fr);
+      }
     }
 
     .item {
-      border: 1px solid #ccc;
-      border-radius: 12px;
-      padding: 15px;
-      text-align: center;
-    }
-
-    .item .foto {
-      border: 2px dashed #ccc;
-      height: 120px;
-      margin-bottom: 10px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #0001;
+      overflow: hidden;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
-      color: #888;
-      font-weight: bold;
+      padding: 10px;
     }
 
-    .item label {
-      font-weight: bold;
-      color: #00c2c2;
-      display: block;
-      margin-top: 10px;
-      text-align: left;
+    .item .imagem {
+      width: 100%;
+      aspect-ratio: 1/1;
+      background: #eee;
+      border-radius: 6px;
+      margin-bottom: 10px;
     }
 
     .item input {
-      width: 100%;
-      padding: 6px;
-      border: 1px solid #ccc;
+      width: 90%;
+      margin: 5px 0;
+      padding: 8px;
       border-radius: 6px;
-      margin-bottom: 10px;
+      border: 1px solid #ccc;
     }
 
     .item button {
-      background-color: #ec1c24;
-      color: white;
+      padding: 10px;
+      margin-top: 8px;
+      background: #FA1E39;
+      color: #fff;
       border: none;
       border-radius: 6px;
-      padding: 8px;
-      width: 100%;
       font-weight: bold;
       cursor: pointer;
+      width: 90%;
     }
 
     footer {
-      background-color: #b2ebe1;
-      padding: 15px;
+      background: #c2e7df;
+      padding: 20px;
       text-align: center;
-      font-size: 14px;
-      color: #333;
+      color: #555;
+      font-size: .9rem;
       margin-top: 40px;
-    }
-
-    .logout-btn {
-      background-color: transparent;
-      border: none;
-      font-weight: bold;
-      color: #00c2c2;
-      cursor: pointer;
-      font-size: 16px;
-    }
-
-    .alerta-login {
-      background-color: #fff0f0;
-      border: 2px solid #fa1e39;
-      color: #b30000;
-      padding: 15px;
-      margin: 30px auto;
-      max-width: 500px;
-      border-radius: 8px;
-      text-align: center;
-      font-weight: bold;
-      font-size: 1.1rem;
-      display: none;
     }
   </style>
 </head>
 <body>
-  <div id="bodySite">
-    <header>
-      <div class="logo">
-        <img src="logo.png" alt="Logo" />
-        <span><span class="azul">Mostre</span><span class="vermelho">Aki</span></span>
-      </div>
-      <div>
-        <button id="logout" class="logout-btn">Sair</button>
-        <span class="menu-toggle" onclick="toggleMenu()">☰</span>
-      </div>
-    </header>
 
-    <nav id="menu">
+  <header>
+    <div class="logo-container" onclick="location.href='index.html'">
+      <img src="logo.png" alt="Logo">
+      <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span id="authText" style="font-weight:bold;color:#15b0af;cursor:pointer;display:none" onclick="sair()">Sair</span>
+      <div id="userCircle" class="user-circle" title="Perfil"></div>
+      <div class="menu-icon" onclick="toggleMenu()">☰</div>
+    </div>
+    <div class="menu-list" id="menu">
       <a href="index.html">Página Inicial</a>
       <a href="minha-conta.html">Minha Conta</a>
       <a href="planos.html">Planos</a>
-      <a href="servicos.html">Serviços Adicionais</a>
+      <a href="servicos-adicionais.html">Serviços Adicionais</a>
       <a href="contatos.html">Contatos</a>
-    </nav>
-
-    <!-- Banners -->
-    <div class="banner-desktop">
-      <img src="banner-desktop.jpg" alt="Banner Desktop" width="1920" height="400" />
     </div>
-    <div class="banner-mobile">
-      <img src="banner-mobile.jpg" alt="Banner Mobile" width="1920" height="1080" />
+  </header>
+
+  <!-- Banner substituindo texto -->
+  <picture>
+    <source media="(min-width:768px)" srcset="banner-desktop.png">
+    <img src="banner-mobile.png" alt="Banner CrieAki" style="width:100%;display:block;">
+  </picture>
+
+  <!-- Grade do Catálogo -->
+  <section class="catalogo">
+    <div class="item">
+      <div class="imagem"></div>
+      <input type="text" placeholder="R$ 25,00" />
+      <input type="text" placeholder="4 unidades" />
+      <button>Chamar no WhatsApp</button>
     </div>
-
-    <div class="container">
-      <h2 style="text-align:center">Crie sua Vitrine Personalizada</h2>
-      <p style="text-align:center">Este será o seu espaço exclusivo de catálogo digital. Personalize com suas imagens e informações.</p>
-
-      <div class="galeria">
-        <!-- Catálogo Base -->
-        <div class="item">
-          <div class="foto">+ Foto</div>
-          <label>Preço:</label>
-          <input type="text" placeholder="R$25,00" />
-          <label>Quantidade disponível:</label>
-          <input type="text" placeholder="4 unidades" />
-          <button>Chamar no WhatsApp</button>
-        </div>
-        <!-- Duplicar .item conforme necessário -->
-      </div>
+    <div class="item">
+      <div class="imagem"></div>
+      <input type="text" placeholder="R$ 35,00" />
+      <input type="text" placeholder="2 kg" />
+      <button>Chamar no WhatsApp</button>
     </div>
+    <div class="item">
+      <div class="imagem"></div>
+      <input type="text" placeholder="R$ 15,00" />
+      <input type="text" placeholder="10 pacotes" />
+      <button>Chamar no WhatsApp</button>
+    </div>
+    <div class="item">
+      <div class="imagem"></div>
+      <input type="text" placeholder="R$ 45,00" />
+      <input type="text" placeholder="1 lote" />
+      <button>Chamar no WhatsApp</button>
+    </div>
+  </section>
 
-    <footer>
-      © 2025 MostreAki. Todos os direitos reservados.
-    </footer>
-  </div>
+  <footer>
+    &copy; 2025 MostreAki. Todos os direitos reservados.
+  </footer>
 
-  <div id="alertaLogin" class="alerta-login">⚠️ Você precisa estar logado para acessar esta página. Redirecionando para a página inicial...</div>
+  <script>
+    function toggleMenu() {
+      const m = document.getElementById("menu");
+      m.style.display = m.style.display === "flex" ? "none" : "flex";
+    }
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-    const app = initializeApp({
-      apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
-      authDomain: "mostreaki-2025.firebaseapp.com",
-      projectId: "mostreaki-2025",
-      storageBucket: "mostreaki-2025.appspot.com",
-      messagingSenderId: "748712068097",
-      appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
-    });
-
-    const auth = getAuth(app);
-
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        document.getElementById("bodySite").style.display = "block";
-      } else {
-        document.getElementById("alertaLogin").style.display = "block";
-        setTimeout(() => {
-          window.location.href = "index.html";
-        }, 5000);
-      }
-    });
-
-    document.getElementById("logout").addEventListener("click", () => {
-      signOut(auth).then(() => {
-        window.location.href = "index.html";
-      });
-    });
-
-    window.toggleMenu = function () {
-      document.getElementById("menu").classList.toggle("active");
-    };
+    function sair() {
+      // Redireciona para index após logout
+      alert("Você saiu com sucesso!");
+      location.href = "index.html";
+    }
   </script>
+
 </body>
 </html>
