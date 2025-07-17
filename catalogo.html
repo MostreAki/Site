@@ -1,133 +1,138 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Catálogo</title>
+  <title>Catálogo - MostreAki</title>
   <style>
+    :root {
+      --cor-fundo: #ffffff;
+      --cor-texto: #000000;
+      --cor-botao: #ff5722;
+    }
+
     body {
+      background-color: var(--cor-fundo);
+      color: var(--cor-texto);
       font-family: Arial, sans-serif;
-      background-color: var(--user-bg, #f4f4f4);
-      color: var(--user-text, #333);
       margin: 0;
       padding: 0;
     }
 
-    header {
-      text-align: center;
-      padding: 1rem;
-    }
-
-    .logo {
-      max-width: 200px;
-      height: auto;
-    }
-
-    .banner-desktop {
-      display: none;
-    }
-
-    .banner-mobile {
-      display: block;
-    }
-
-    @media (min-width: 768px) {
-      .banner-desktop {
-        display: block;
-        width: 100%;
-        height: auto;
-      }
-
-      .banner-mobile {
-        display: none;
-      }
-    }
-
     .catalogo-container {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 1rem;
-      padding: 1rem;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      padding: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
     }
 
-    .item {
-      background-color: white;
-      border-radius: 8px;
-      padding: 1rem;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    .item-catalogo {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      padding: 15px;
       text-align: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
 
-    .item img {
+    .item-catalogo img {
       width: 100%;
       height: auto;
-      border-radius: 4px;
+      border-radius: 12px;
+      margin-bottom: 10px;
     }
 
-    .preco, .estoque {
-      margin-top: 0.5rem;
-      font-weight: bold;
+    .item-catalogo input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
     }
 
-    .whatsapp-button {
-      margin-top: 0.8rem;
-      background-color: var(--user-button, #4CAF50);
+    .btn-whatsapp {
+      display: block;
+      width: 100%;
+      background-color: var(--cor-botao);
       color: white;
-      padding: 0.5rem 1rem;
       border: none;
-      border-radius: 4px;
+      padding: 10px;
+      font-size: 1rem;
+      border-radius: 6px;
       cursor: pointer;
-      text-decoration: none;
-      display: inline-block;
     }
 
-    footer {
-      text-align: center;
-      padding: 1rem;
-      font-size: 0.9rem;
-      background-color: #eee;
-      color: #555;
+    .btn-whatsapp:hover {
+      opacity: 0.9;
+    }
+
+    @media (max-width: 768px) {
+      .catalogo-container {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 769px) {
+      .catalogo-container {
+        grid-template-columns: repeat(4, 1fr);
+      }
     }
   </style>
 </head>
 <body>
-  <header>
-    <img src="logotipo_do_usuario.png" alt="Logo do Cliente" class="logo"/>
-  </header>
+  <div class="catalogo-container" id="catalogo">
+    <div class="item-catalogo">
+      <img src="https://via.placeholder.com/300x200" alt="Produto">
+      <input type="text" placeholder="Preço (ex: R$25,00)">
+      <input type="text" placeholder="Quantidade (ex: 2 unidades)">
+      <button class="btn-whatsapp">Chamar no WhatsApp</button>
+    </div>
+    <!-- Repita o bloco acima conforme necessário -->
+  </div>
 
-  <img src="banner_mobile.jpg" alt="Banner Mobile" class="banner-mobile"/>
-  <img src="banner_desktop.jpg" alt="Banner Desktop" class="banner-desktop"/>
+  <!-- Firebase -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  <main class="catalogo-container">
-    <div class="item">
-      <img src="imagem1.jpg" alt="Produto 1"/>
-      <div class="preco">R$ 25,00</div>
-      <div class="estoque">4 unidades</div>
-      <a href="https://wa.me/SEU_NUMERO" class="whatsapp-button">Chamar no WhatsApp</a>
-    </div>
-    <div class="item">
-      <img src="imagem2.jpg" alt="Produto 2"/>
-      <div class="preco">R$ 39,90</div>
-      <div class="estoque">2 unidades</div>
-      <a href="https://wa.me/SEU_NUMERO" class="whatsapp-button">Chamar no WhatsApp</a>
-    </div>
-    <div class="item">
-      <img src="imagem3.jpg" alt="Produto 3"/>
-      <div class="preco">R$ 10,00</div>
-      <div class="estoque">10 unidades</div>
-      <a href="https://wa.me/SEU_NUMERO" class="whatsapp-button">Chamar no WhatsApp</a>
-    </div>
-    <div class="item">
-      <img src="imagem4.jpg" alt="Produto 4"/>
-      <div class="preco">R$ 15,00</div>
-      <div class="estoque">6 unidades</div>
-      <a href="https://wa.me/SEU_NUMERO" class="whatsapp-button">Chamar no WhatsApp</a>
-    </div>
-  </main>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
+      authDomain: "mostreaki-2025.firebaseapp.com",
+      projectId: "mostreaki-2025",
+      storageBucket: "mostreaki-2025.firebasestorage.app",
+      messagingSenderId: "748712068097",
+      appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
+    };
 
-  <footer>
-    &copy; 2025 MostreAki - Todos os direitos reservados.
-  </footer>
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = "index.html";
+      } else {
+        const userRef = doc(db, "usuarios", user.uid);
+        const docSnap = await getDoc(userRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          if (data.cores) {
+            if (data.cores.fundo) {
+              document.documentElement.style.setProperty('--cor-fundo', data.cores.fundo);
+            }
+            if (data.cores.texto) {
+              document.documentElement.style.setProperty('--cor-texto', data.cores.texto);
+            }
+            if (data.cores.botao) {
+              document.documentElement.style.setProperty('--cor-botao', data.cores.botao);
+            }
+          }
+        }
+      }
+    });
+  </script>
 </body>
 </html>
