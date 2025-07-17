@@ -1,67 +1,62 @@
-<!DOCTYPE html><html lang="pt-BR">
+<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Catálogo do Cliente - MostreAki</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="icon" href="favicon.ico" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" />
   <style>
-    :root {
-      --cor-primaria: #6C5CE7;
-      --cor-secundaria: #a29bfe;
-      --cor-fundo: #f0f0f0;
-      --cor-texto: #333;
-    }
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Roboto', sans-serif;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+
     body {
-      background-color: var(--cor-fundo);
-      color: var(--cor-texto);
+      background-color: var(--cor-fundo, #f0f0f0);
+      color: var(--cor-texto, #333);
     }
+
     header {
-      background-color: var(--cor-primaria);
-      color: white;
-      padding: 1rem;
+      background: #c2e7df;
+      height: 60px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      position: relative;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
-    .logo {
-      font-size: 1.5rem;
-      font-weight: bold;
+
+    .logo-container { display: flex; align-items: center; cursor: pointer; }
+    .logo-container img { height: 40px; margin-right: 10px; }
+    .logo { font-size: 1.5rem; font-weight: bold; }
+    .logo .mostre { color: #00C2BF; }
+    .logo .aki { color: #FA1E39; }
+
+    .menu-icon { font-size: 1.5rem; cursor: pointer; }
+    .menu-list {
+      position: absolute; top: 60px; right: 20px;
+      background: #16807C; border: 2px solid #000;
+      border-radius: 6px; display: none;
+      flex-direction: column; padding: 10px; z-index: 1000;
     }
-    .menu-icon {
-      font-size: 1.5rem;
-      cursor: pointer;
+    .menu-list a {
+      background: #FA1E39; color: #fff; text-decoration: none;
+      padding: 10px; margin-bottom: 8px; border-radius: 6px;
+      text-align: center; font-weight: bold;
     }
-    nav {
-      display: none;
-      flex-direction: column;
-      background-color: var(--cor-primaria);
-    }
-    nav a {
-      color: white;
-      padding: 1rem;
-      text-decoration: none;
-      border-top: 1px solid #ffffff44;
-    }
-    nav a:hover {
-      background-color: var(--cor-secundaria);
-    }
+    .menu-list a:hover { background: #b8313b; }
+
     .banner {
       width: 100%;
       height: auto;
     }
+
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
       gap: 1rem;
       padding: 1rem;
     }
+
     .produto {
       background: white;
       border-radius: 8px;
@@ -69,10 +64,12 @@
       padding: 1rem;
       text-align: center;
     }
+
     .produto img {
       width: 100%;
       border-radius: 4px;
     }
+
     .produto input {
       margin: 0.5rem 0;
       padding: 0.4rem;
@@ -80,52 +77,61 @@
       border: 1px solid #ccc;
       border-radius: 4px;
     }
+
     .btn-whatsapp {
-      background-color: #25D366;
+      background-color: var(--cor-botao, #25D366);
       color: white;
       padding: 0.5rem;
       border: none;
       border-radius: 4px;
       cursor: pointer;
     }
+
     .btn-voltar {
       margin: 1rem;
       padding: 0.5rem 1rem;
-      background-color: var(--cor-primaria);
+      background-color: #FA1E39;
       color: white;
       border: none;
       border-radius: 4px;
       cursor: pointer;
+      font-weight: bold;
     }
+
     footer {
       text-align: center;
       padding: 1rem;
-      background-color: var(--cor-primaria);
-      color: white;
+      background-color: #c2e7df;
+      color: #555;
       margin-top: 2rem;
     }
+
     @media(max-width: 768px) {
-      .grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
+      .grid { grid-template-columns: repeat(2, 1fr); }
     }
   </style>
 </head>
 <body>
+
   <header>
-    <div class="logo">MostreAki</div>
-    <div class="menu-icon" onclick="toggleMenu()">
-      <i class="fas fa-bars"></i>
+    <div class="logo-container" onclick="location.href='index.html'">
+      <img src="logo.png" alt="Logo">
+      <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span id="authText" style="font-weight:bold;color:#15b0af;cursor:pointer;display:none" onclick="sair()">Sair</span>
+      <div class="menu-icon" onclick="toggleMenu()">☰</div>
+    </div>
+    <div class="menu-list" id="menu">
+      <a href="index.html">Página Inicial</a>
+      <a href="crieaki.html">Voltar para CrieAki</a>
     </div>
   </header>
-  <nav id="menu">
-    <a href="index.html">Página Inicial</a>
-    <a href="sobre.html">Sobre</a>
-    <a href="planos.html">Planos</a>
-    <a href="contatos.html">Contatos</a>
-    <a href="crieaki.html">Voltar ao CrieAki</a>
-  </nav>  <img src="banner-desktop.jpg" alt="Banner Desktop" class="banner" id="bannerDesktop">
-  <img src="banner-mobile.jpg" alt="Banner Mobile" class="banner" id="bannerMobile" style="display: none;">  <main class="grid">
+
+  <img src="banner-desktop.jpg" alt="Banner Desktop" class="banner" id="bannerDesktop">
+  <img src="banner-mobile.jpg" alt="Banner Mobile" class="banner" id="bannerMobile" style="display: none;">
+
+  <main class="grid">
     <div class="produto">
       <img src="produto1.jpg" alt="Produto 1">
       <label>Preço:</label>
@@ -142,37 +148,69 @@
       <input type="text" placeholder="10 unidades">
       <button class="btn-whatsapp">Chamar no WhatsApp</button>
     </div>
-    <div class="produto">
-      <img src="produto3.jpg" alt="Produto 3">
-      <label>Preço:</label>
-      <input type="text" placeholder="R$ 40,00">
-      <label>Estoque:</label>
-      <input type="text" placeholder="2 lotes">
-      <button class="btn-whatsapp">Chamar no WhatsApp</button>
-    </div>
-    <div class="produto">
-      <img src="produto4.jpg" alt="Produto 4">
-      <label>Preço:</label>
-      <input type="text" placeholder="R$ 55,00">
-      <label>Estoque:</label>
-      <input type="text" placeholder="3 kg">
-      <button class="btn-whatsapp">Chamar no WhatsApp</button>
-    </div>
-  </main><button class="btn-voltar" onclick="location.href='crieaki.html'">Voltar</button>
+    <!-- Adicione mais produtos conforme necessário -->
+  </main>
 
-  <footer>
-    &copy; 2025 MostreAki - Todos os direitos reservados.
-  </footer>  <script>
+  <button class="btn-voltar" onclick="location.href='crieaki.html'">Voltar</button>
+
+  <footer>&copy; 2025 MostreAki - Todos os direitos reservados.</footer>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
+      authDomain: "mostreaki-2025.firebaseapp.com",
+      projectId: "mostreaki-2025",
+      storageBucket: "mostreaki-2025.appspot.com",
+      messagingSenderId: "748712068097",
+      appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user && user.email === "felipehfagionato2023@gmail.com") {
+        const docRef = doc(db, "usuarios", user.uid);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          document.body.style.backgroundColor = data.corFundo || "#ffffff";
+          document.body.style.color = data.corTexto || "#000000";
+          document.querySelectorAll(".btn-whatsapp").forEach(btn => {
+            btn.style.backgroundColor = data.corBotao || "#25D366";
+          });
+        }
+        document.getElementById("authText").style.display = "inline";
+      } else {
+        location.href = "index.html";
+      }
+    });
+
+    window.sair = function () {
+      signOut(auth).then(() => {
+        alert("Você saiu com sucesso!");
+        location.href = "index.html";
+      });
+    };
+  </script>
+
+  <script>
     function toggleMenu() {
-      const menu = document.getElementById('menu');
-      menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+      const m = document.getElementById("menu");
+      m.style.display = m.style.display === "flex" ? "none" : "flex";
     }
 
-    const desktopBanner = document.getElementById('bannerDesktop');
-    const mobileBanner = document.getElementById('bannerMobile');
+    const desktopBanner = document.getElementById("bannerDesktop");
+    const mobileBanner = document.getElementById("bannerMobile");
     if (window.innerWidth <= 768) {
-      desktopBanner.style.display = 'none';
-      mobileBanner.style.display = 'block';
+      desktopBanner.style.display = "none";
+      mobileBanner.style.display = "block";
     }
-  </script></body>
+  </script>
+</body>
 </html>
