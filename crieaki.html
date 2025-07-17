@@ -258,17 +258,24 @@
       });
     });
 
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      const email = user.email.toLowerCase();
-      alert("Usuário logado com: " + email); // 👈 MOSTRA O EMAIL ANTES DE TUDO
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  const auth = getAuth();
 
-      if (email !== "felipehfagionato2023@gmail.com") {
-        window.location.href = "index.html";
-      }
-    } else {
-      alert("Nenhum usuário logado.");
+  onAuthStateChanged(auth, (user) => {
+    const emailAutorizado = "felipehfagionato2023@gmail.com"; // 👈 coloque aqui seu e-mail real
+    if (!user || user.email.trim().toLowerCase() !== emailAutorizado) {
       window.location.href = "index.html";
+    } else {
+      // Mostra "Sair" no menu (opcional, se ainda não estiver implementado)
+      const btnLogin = document.getElementById("btnLogin");
+      if (btnLogin) {
+        btnLogin.innerText = "Sair";
+        btnLogin.addEventListener("click", () => {
+          auth.signOut().then(() => {
+            window.location.href = "index.html";
+          });
+        });
+      }
     }
   });
     
