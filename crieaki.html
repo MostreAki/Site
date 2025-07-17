@@ -259,10 +259,10 @@
     });
 
     onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        window.location.href = "index.html";
-      }
-    });
+  if (!user || user.email !== "nerdolabricks@gmail.com") {
+    window.location.href = "index.html";
+  }
+});
   </script>
 
   <script>
