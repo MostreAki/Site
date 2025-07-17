@@ -1,41 +1,202 @@
-<!-- crieaki.html --><!DOCTYPE html><html lang="pt-BR">
+<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>CrieAki – MostreAki</title>
-  <link rel="stylesheet" href="style.css">
-  <script type="module" src="firebase-config.js"></script>
+  <link rel="icon" href="favicon.ico" type="image/x-icon"/>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+
+    body {
+      background-image: url("fundo-mobile.png");
+      background-size: cover;
+      background-attachment: fixed;
+      background-repeat: no-repeat;
+    }
+    @media(min-width:768px){
+      body {
+        background-image: url("fundo-desktop.png");
+      }
+    }
+
+    header {
+      background: #c2e7df;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      position: relative;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .logo-container {
+      display: flex; align-items: center; cursor: pointer;
+    }
+    .logo-container img { height: 40px; margin-right: 10px; }
+    .logo { font-size: 1.5rem; font-weight: bold; }
+    .logo .mostre { color: #00C2BF; }
+    .logo .aki { color: #FA1E39; }
+
+    .menu-icon { font-size: 1.5rem; cursor: pointer; }
+    .menu-list {
+      position: absolute; top: 60px; right: 20px;
+      background: #16807C; border: 2px solid #000;
+      border-radius: 6px; display: none;
+      flex-direction: column; padding: 10px; z-index: 1000;
+    }
+    .menu-list a {
+      background: #FA1E39; color: #fff; text-decoration: none;
+      padding: 10px; margin-bottom: 8px; border-radius: 6px;
+      text-align: center; font-weight: bold;
+    }
+    .menu-list a:hover { background: #b8313b; }
+
+    .user-circle {
+      background: #15b0af; color: #fff; font-weight: bold; border-radius: 50%;
+      width: 32px; height: 32px; display: none; align-items: center;
+      justify-content: center; background-size: cover; background-position: center;
+      font-size: .9rem
+    }
+
+    main {
+      padding: 20px;
+      max-width: 800px;
+      margin: 20px auto;
+      background: #ffffffcc;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #0002;
+    }
+
+    h1 {
+      font-size: 1.6rem;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .botoes-tipo button {
+      padding: 12px 20px;
+      margin: 0 10px 20px 0;
+      background: #FA1E39;
+      border: none;
+      color: white;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .config-rgb label {
+      display: block;
+      margin: 10px 0 4px;
+      font-weight: bold;
+    }
+
+    .config-rgb input[type="color"] {
+      width: 100%;
+      height: 40px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    footer {
+      background: #c2e7df;
+      padding: 20px;
+      text-align: center;
+      color: #555;
+      font-size: .9rem;
+      margin-top: 40px;
+    }
+  </style>
 </head>
 <body>
+
   <header>
-    <div class="logo-container">
-      <img src="logo.png" alt="Logo MostreAki">
+    <div class="logo-container" onclick="location.href='index.html'">
+      <img src="logo.png" alt="Logo">
       <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
     </div>
-    <div id="user-actions">
-      <button id="logoutBtn" style="display:none">Sair</button>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span id="authText" style="font-weight:bold;color:#15b0af;cursor:pointer;display:none" onclick="sair()">Sair</span>
+      <div id="userCircle" class="user-circle" title="Perfil"></div>
+      <div class="menu-icon" onclick="toggleMenu()">☰</div>
     </div>
-    <div class="menu-icon" id="menu-toggle">☰</div>
-    <nav class="menu-list" id="menu-list">
+    <div class="menu-list" id="menu">
       <a href="index.html">Página Inicial</a>
+      <a href="minha-conta.html">Minha Conta</a>
       <a href="planos.html">Planos</a>
-      <a href="sobre.html">Sobre</a>
+      <a href="servicos-adicionais.html">Serviços Adicionais</a>
       <a href="contatos.html">Contatos</a>
-    </nav>
-  </header>  <section class="section">
-    <h2>Escolha o tipo de página que deseja criar:</h2>
-    <div class="page-options">
-      <button id="escolherCatalogo">Catálogo Digital</button>
-      <button id="escolherNoticias">Site de Notícias</button>
-    </div><div id="opcoesCustomizacao" style="display:none">
-  <h3>Personalize sua página</h3>
-  <label>Cor de fundo: <input type="color" id="corFundo"></label>
-  <label>Cor dos botões: <input type="color" id="corBotoes"></label>
-  <label>Cor dos textos: <input type="color" id="corTextos"></label>
-  <button id="salvarPreferencias">Salvar preferências</button>
-</div>
+    </div>
+  </header>
 
-  </section>  <footer>
-    <p>&copy; 2025 MostreAki. Todos os direitos reservados.</p>
-  </footer>  <script type="module" src="crieaki-script.js"></script></body>
+  <main>
+    <h1>Escolha o tipo de página que deseja criar:</h1>
+    <div class="botoes-tipo">
+      <button onclick="window.location.href='catalogo.html'">Catálogo Digital</button>
+      <button onclick="window.location.href='site.html'">Site de Notícias</button>
+    </div>
+
+    <div class="config-rgb">
+      <h2 style="margin-top:30px;">Paleta de Cores Personalizada</h2>
+      <label for="corFundo">Cor do Fundo:</label>
+      <input type="color" id="corFundo" value="#ffffff">
+
+      <label for="corTexto">Cor do Texto:</label>
+      <input type="color" id="corTexto" value="#000000">
+
+      <label for="corBotao">Cor do Botão:</label>
+      <input type="color" id="corBotao" value="#FA1E39">
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2025 MostreAki. Todos os direitos reservados.
+  </footer>
+
+  <script type="module">
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+    const firebaseConfig = {
+      apiKey: "SUA_API_KEY",
+      authDomain: "mostreaki-2025.firebaseapp.com",
+      projectId: "mostreaki-2025",
+      storageBucket: "mostreaki-2025.appspot.com",
+      messagingSenderId: "748712068097",
+      appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    onAuthStateChanged(auth, (user) => {
+      const authText = document.getElementById("authText");
+      const userCircle = document.getElementById("userCircle");
+
+      if (user && user.email) {
+        authText.style.display = "inline";
+        userCircle.style.display = "flex";
+        userCircle.textContent = user.email[0].toUpperCase();
+      } else {
+        location.href = "index.html";
+      }
+    });
+
+    window.sair = function () {
+      signOut(auth).then(() => {
+        alert("Você saiu com sucesso!");
+        location.href = "index.html";
+      });
+    };
+  </script>
+
+  <script>
+    function toggleMenu() {
+      const m = document.getElementById("menu");
+      m.style.display = m.style.display === "flex" ? "none" : "flex";
+    }
+  </script>
+
+</body>
 </html>
