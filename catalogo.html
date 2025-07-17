@@ -1,138 +1,178 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+<!DOCTYPE html><html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Catálogo - MostreAki</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Catálogo do Cliente - MostreAki</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root {
-      --cor-fundo: #ffffff;
-      --cor-texto: #000000;
-      --cor-botao: #ff5722;
+      --cor-primaria: #6C5CE7;
+      --cor-secundaria: #a29bfe;
+      --cor-fundo: #f0f0f0;
+      --cor-texto: #333;
     }
-
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Roboto', sans-serif;
+    }
     body {
       background-color: var(--cor-fundo);
       color: var(--cor-texto);
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
     }
-
-    .catalogo-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
-      padding: 20px;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .item-catalogo {
-      background: #fff;
-      border: 1px solid #ddd;
-      border-radius: 12px;
-      padding: 15px;
-      text-align: center;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-
-    .item-catalogo img {
-      width: 100%;
-      height: auto;
-      border-radius: 12px;
-      margin-bottom: 10px;
-    }
-
-    .item-catalogo input {
-      width: 100%;
-      padding: 8px;
-      margin-bottom: 10px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-    }
-
-    .btn-whatsapp {
-      display: block;
-      width: 100%;
-      background-color: var(--cor-botao);
+    header {
+      background-color: var(--cor-primaria);
       color: white;
-      border: none;
-      padding: 10px;
-      font-size: 1rem;
-      border-radius: 6px;
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+    .menu-icon {
+      font-size: 1.5rem;
       cursor: pointer;
     }
-
-    .btn-whatsapp:hover {
-      opacity: 0.9;
+    nav {
+      display: none;
+      flex-direction: column;
+      background-color: var(--cor-primaria);
     }
-
-    @media (max-width: 768px) {
-      .catalogo-container {
+    nav a {
+      color: white;
+      padding: 1rem;
+      text-decoration: none;
+      border-top: 1px solid #ffffff44;
+    }
+    nav a:hover {
+      background-color: var(--cor-secundaria);
+    }
+    .banner {
+      width: 100%;
+      height: auto;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+      padding: 1rem;
+    }
+    .produto {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+      padding: 1rem;
+      text-align: center;
+    }
+    .produto img {
+      width: 100%;
+      border-radius: 4px;
+    }
+    .produto input {
+      margin: 0.5rem 0;
+      padding: 0.4rem;
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .btn-whatsapp {
+      background-color: #25D366;
+      color: white;
+      padding: 0.5rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .btn-voltar {
+      margin: 1rem;
+      padding: 0.5rem 1rem;
+      background-color: var(--cor-primaria);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    footer {
+      text-align: center;
+      padding: 1rem;
+      background-color: var(--cor-primaria);
+      color: white;
+      margin-top: 2rem;
+    }
+    @media(max-width: 768px) {
+      .grid {
         grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    @media (min-width: 769px) {
-      .catalogo-container {
-        grid-template-columns: repeat(4, 1fr);
       }
     }
   </style>
 </head>
 <body>
-  <div class="catalogo-container" id="catalogo">
-    <div class="item-catalogo">
-      <img src="https://via.placeholder.com/300x200" alt="Produto">
-      <input type="text" placeholder="Preço (ex: R$25,00)">
-      <input type="text" placeholder="Quantidade (ex: 2 unidades)">
+  <header>
+    <div class="logo">MostreAki</div>
+    <div class="menu-icon" onclick="toggleMenu()">
+      <i class="fas fa-bars"></i>
+    </div>
+  </header>
+  <nav id="menu">
+    <a href="index.html">Página Inicial</a>
+    <a href="sobre.html">Sobre</a>
+    <a href="planos.html">Planos</a>
+    <a href="contatos.html">Contatos</a>
+    <a href="crieaki.html">Voltar ao CrieAki</a>
+  </nav>  <img src="banner-desktop.jpg" alt="Banner Desktop" class="banner" id="bannerDesktop">
+  <img src="banner-mobile.jpg" alt="Banner Mobile" class="banner" id="bannerMobile" style="display: none;">  <main class="grid">
+    <div class="produto">
+      <img src="produto1.jpg" alt="Produto 1">
+      <label>Preço:</label>
+      <input type="text" placeholder="R$ 25,00">
+      <label>Estoque:</label>
+      <input type="text" placeholder="4 unidades">
       <button class="btn-whatsapp">Chamar no WhatsApp</button>
     </div>
-    <!-- Repita o bloco acima conforme necessário -->
-  </div>
+    <div class="produto">
+      <img src="produto2.jpg" alt="Produto 2">
+      <label>Preço:</label>
+      <input type="text" placeholder="R$ 18,00">
+      <label>Estoque:</label>
+      <input type="text" placeholder="10 unidades">
+      <button class="btn-whatsapp">Chamar no WhatsApp</button>
+    </div>
+    <div class="produto">
+      <img src="produto3.jpg" alt="Produto 3">
+      <label>Preço:</label>
+      <input type="text" placeholder="R$ 40,00">
+      <label>Estoque:</label>
+      <input type="text" placeholder="2 lotes">
+      <button class="btn-whatsapp">Chamar no WhatsApp</button>
+    </div>
+    <div class="produto">
+      <img src="produto4.jpg" alt="Produto 4">
+      <label>Preço:</label>
+      <input type="text" placeholder="R$ 55,00">
+      <label>Estoque:</label>
+      <input type="text" placeholder="3 kg">
+      <button class="btn-whatsapp">Chamar no WhatsApp</button>
+    </div>
+  </main><button class="btn-voltar" onclick="location.href='crieaki.html'">Voltar</button>
 
-  <!-- Firebase -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  <footer>
+    &copy; 2025 MostreAki - Todos os direitos reservados.
+  </footer>  <script>
+    function toggleMenu() {
+      const menu = document.getElementById('menu');
+      menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+    }
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
-      authDomain: "mostreaki-2025.firebaseapp.com",
-      projectId: "mostreaki-2025",
-      storageBucket: "mostreaki-2025.firebasestorage.app",
-      messagingSenderId: "748712068097",
-      appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-
-    onAuthStateChanged(auth, async (user) => {
-      if (!user) {
-        window.location.href = "index.html";
-      } else {
-        const userRef = doc(db, "usuarios", user.uid);
-        const docSnap = await getDoc(userRef);
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          if (data.cores) {
-            if (data.cores.fundo) {
-              document.documentElement.style.setProperty('--cor-fundo', data.cores.fundo);
-            }
-            if (data.cores.texto) {
-              document.documentElement.style.setProperty('--cor-texto', data.cores.texto);
-            }
-            if (data.cores.botao) {
-              document.documentElement.style.setProperty('--cor-botao', data.cores.botao);
-            }
-          }
-        }
-      }
-    });
-  </script>
-</body>
+    const desktopBanner = document.getElementById('bannerDesktop');
+    const mobileBanner = document.getElementById('bannerMobile');
+    if (window.innerWidth <= 768) {
+      desktopBanner.style.display = 'none';
+      mobileBanner.style.display = 'block';
+    }
+  </script></body>
 </html>
