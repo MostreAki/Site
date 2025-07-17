@@ -10,6 +10,7 @@
       margin: 0;
       font-family: 'Inter', sans-serif;
       background-color: #ffffff;
+      display: none; /* Só mostra se estiver logado */
     }
 
     header {
@@ -161,7 +162,7 @@
     }
   </style>
 </head>
-<body>
+<body id="bodySite">
 
   <header>
     <div class="logo">
@@ -234,7 +235,7 @@
     © 2025 MostreAki. Todos os direitos reservados.
   </footer>
 
-  <!-- Firebase SDK -->
+  <!-- Firebase e lógica de segurança -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -250,6 +251,20 @@
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
+    const emailAutorizado = "felipehfagionato2023@gmail.com";
+
+    onAuthStateChanged(auth, (user) => {
+      const bodySite = document.getElementById("bodySite");
+      if (
+        user &&
+        user.email &&
+        user.email.trim().toLowerCase() === emailAutorizado
+      ) {
+        bodySite.style.display = "block";
+      } else {
+        window.location.href = "index.html";
+      }
+    });
 
     const logoutBtn = document.getElementById("logout");
     logoutBtn.addEventListener("click", () => {
@@ -257,45 +272,13 @@
         window.location.href = "index.html";
       });
     });
+  </script>
 
-  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  const auth = getAuth();
-
-  <script type="module">
-  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  const auth = getAuth();
-
-  const emailAutorizado = "felipehfagionato2023@gmail.com";
-
-  onAuthStateChanged(auth, (user) => {
-    const bodySite = document.getElementById("bodySite");
-
-    if (
-      user &&
-      user.email &&
-      user.email.trim().toLowerCase() === emailAutorizado
-    ) {
-      bodySite.style.display = "block"; // Mostra o site
-      const btnLogin = document.getElementById("btnLogin");
-      if (btnLogin) {
-        btnLogin.innerText = "Sair";
-        btnLogin.addEventListener("click", () => {
-          auth.signOut().then(() => {
-            window.location.href = "index.html";
-          });
-        });
-      }
-    } else {
-      window.location.href = "index.html"; // Redireciona se não for autorizado
-    }
-  });
-    
   <script>
     function toggleMenu() {
       const menu = document.getElementById("menu");
       menu.classList.toggle("active");
     }
   </script>
-
 </body>
 </html>
