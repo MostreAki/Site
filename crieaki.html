@@ -12,9 +12,11 @@
       font-family: 'Inter', sans-serif;
       background-color: #ffffff;
     }
+
     #bodySite {
       display: none;
     }
+
     header {
       background-color: #b2ebe1;
       display: flex;
@@ -22,48 +24,59 @@
       align-items: center;
       padding: 10px 20px;
     }
+
     .logo {
       display: flex;
       align-items: center;
     }
+
     .logo img {
       height: 40px;
       margin-right: 10px;
     }
+
     .logo span {
       font-size: 24px;
       font-weight: bold;
     }
+
     .logo .azul { color: #00c2c2; }
     .logo .vermelho { color: #ec1c24; }
+
     .menu-toggle {
       font-size: 24px;
       cursor: pointer;
     }
+
     nav {
       display: none;
       flex-direction: column;
       background-color: #f5f5f5;
       padding: 10px;
     }
+
     nav a {
       text-decoration: none;
       padding: 8px;
       color: #000;
       font-weight: 600;
     }
+
     nav a:hover {
       background-color: #e0e0e0;
     }
+
     .banner-desktop, .banner-mobile {
       width: 100%;
       display: none;
     }
+
     .banner-desktop img,
     .banner-mobile img {
       width: 100%;
       height: auto;
     }
+
     @media (min-width: 768px) {
       nav {
         display: flex;
@@ -71,26 +84,31 @@
       }
       .banner-desktop { display: block; }
     }
+
     @media (max-width: 767px) {
       nav.active {
         display: flex;
       }
       .banner-mobile { display: block; }
     }
+
     .container {
       padding: 20px;
     }
+
     .galeria {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
       gap: 20px;
     }
+
     .item {
       border: 1px solid #ccc;
       border-radius: 12px;
       padding: 15px;
       text-align: center;
     }
+
     .item .foto {
       border: 2px dashed #ccc;
       height: 120px;
@@ -101,6 +119,7 @@
       color: #888;
       font-weight: bold;
     }
+
     .item label {
       font-weight: bold;
       color: #00c2c2;
@@ -108,6 +127,7 @@
       margin-top: 10px;
       text-align: left;
     }
+
     .item input {
       width: 100%;
       padding: 6px;
@@ -115,6 +135,7 @@
       border-radius: 6px;
       margin-bottom: 10px;
     }
+
     .item button {
       background-color: #ec1c24;
       color: white;
@@ -125,6 +146,7 @@
       font-weight: bold;
       cursor: pointer;
     }
+
     footer {
       background-color: #b2ebe1;
       padding: 15px;
@@ -133,6 +155,7 @@
       color: #333;
       margin-top: 40px;
     }
+
     .logout-btn {
       background-color: transparent;
       border: none;
@@ -140,6 +163,20 @@
       color: #00c2c2;
       cursor: pointer;
       font-size: 16px;
+    }
+
+    .alerta-login {
+      background-color: #fff0f0;
+      border: 2px solid #fa1e39;
+      color: #b30000;
+      padding: 15px;
+      margin: 30px auto;
+      max-width: 500px;
+      border-radius: 8px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 1.1rem;
+      display: none;
     }
   </style>
 </head>
@@ -177,6 +214,7 @@
       <p style="text-align:center">Este será o seu espaço exclusivo de catálogo digital. Personalize com suas imagens e informações.</p>
 
       <div class="galeria">
+        <!-- Catálogo Base -->
         <div class="item">
           <div class="foto">+ Foto</div>
           <label>Preço:</label>
@@ -185,30 +223,7 @@
           <input type="text" placeholder="4 unidades" />
           <button>Chamar no WhatsApp</button>
         </div>
-        <div class="item">
-          <div class="foto">+ Foto</div>
-          <label>Preço:</label>
-          <input type="text" placeholder="R$30,00" />
-          <label>Quantidade disponível:</label>
-          <input type="text" placeholder="3 KG" />
-          <button>Chamar no WhatsApp</button>
-        </div>
-        <div class="item">
-          <div class="foto">+ Foto</div>
-          <label>Preço:</label>
-          <input type="text" placeholder="R$15,00" />
-          <label>Quantidade disponível:</label>
-          <input type="text" placeholder="10 unidades" />
-          <button>Chamar no WhatsApp</button>
-        </div>
-        <div class="item">
-          <div class="foto">+ Foto</div>
-          <label>Preço:</label>
-          <input type="text" placeholder="R$50,00" />
-          <label>Quantidade disponível:</label>
-          <input type="text" placeholder="1 lote" />
-          <button>Chamar no WhatsApp</button>
-        </div>
+        <!-- Repetir conforme necessário -->
       </div>
     </div>
 
@@ -217,43 +232,42 @@
     </footer>
   </div>
 
-  <!-- Firebase Auth -->
+  <div id="alertaLogin" class="alerta-login">⚠️ Você precisa estar logado para acessar esta página. Redirecionando para a página inicial...</div>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-    const firebaseConfig = {
-      apiKey: "SUA_API_KEY",
+    const app = initializeApp({
+      apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
       authDomain: "mostreaki-2025.firebaseapp.com",
       projectId: "mostreaki-2025",
       storageBucket: "mostreaki-2025.appspot.com",
       messagingSenderId: "748712068097",
       appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
-    };
+    });
 
-    const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    const emailAutorizado = "felipehfagionato2023@gmail.com";
-
     onAuthStateChanged(auth, (user) => {
-      if (user && user.email === emailAutorizado) {
+      if (user) {
         document.getElementById("bodySite").style.display = "block";
       } else {
-        window.location.href = "index.html";
+        document.getElementById("alertaLogin").style.display = "block";
+        setTimeout(() => {
+          window.location.href = "index.html";
+        }, 5000);
       }
     });
 
-    const logoutBtn = document.getElementById("logout");
-    logoutBtn.addEventListener("click", () => {
+    document.getElementById("logout").addEventListener("click", () => {
       signOut(auth).then(() => {
         window.location.href = "index.html";
       });
     });
 
     window.toggleMenu = function () {
-      const menu = document.getElementById("menu");
-      menu.classList.toggle("active");
+      document.getElementById("menu").classList.toggle("active");
     };
   </script>
 </body>
