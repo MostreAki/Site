@@ -1,212 +1,202 @@
-<!DOCTYPE html><html lang="pt-BR">
+<!-- 🟢 HTML com Firebase Storage para catálogo personalizado -->
+<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Minha Conta – MostreAki</title>
-  <link rel="icon" href="/favicon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Catálogo do Cliente</title>
+  <link rel="icon" href="favicon.ico" />
   <style>
-  	body {
-  font-family: Arial, Helvetica, sans-serif;
-  padding: 20px;
-  background-image: url("fundo-mobile.png");
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  background-position: center;
-}
-
-@media (min-width: 768px) {
-  body {
-    background-image: url("fundo-desktop.png");
-  }
-}
-    *,*:before,*:after{box-sizing:border-box;margin:0;padding:0}
-    header{background:#c2e7df;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;position:relative;border-radius:8px;box-shadow:0 2px 6px #0002}
-    .logo-container{display:flex;align-items:center;gap:8px;cursor:pointer}
-    .logo-container img{height:40px}
-    .logo{font-size:1.5rem;font-weight:700}.logo .mostre{color:#00c2bf}.logo .aki{color:#fa1e39}
-    .menu-icon{font-size:1.7rem;cursor:pointer;user-select:none}
-    #menu{position:absolute;top:60px;right:20px;background:#16807c;border:2px solid #000;border-radius:6px;display:none;flex-direction:column;width:180px;padding:10px;z-index:100}
-    #menu a{background:#fa1e39;color:#fff;text-decoration:none;font-weight:600;border-radius:6px;padding:10px 0;margin-bottom:8px;text-align:center}
-    #menu a:hover{background:#b8313b}
-    .user-circle{background:#15b0af;color:#fff;font-weight:700;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;font-size:.85rem}
-    .user-circle img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-    .container{background:#fff;max-width:600px;margin:40px auto;padding:24px;border-radius:10px;box-shadow:0 0 10px #0001}
-    h2{text-align:center;color:#16807c;margin-bottom:20px}
-    .form-group{margin-bottom:16px}
-    label{display:block;margin-bottom:6px;font-weight:600}
-    input[type=text],input[type=file]{width:100%;padding:10px;border:1px solid #ccc;border-radius:6px;font-size:1rem}
-    #fotoPreview{width:100px;height:100px;border-radius:50%;object-fit:cover;margin:12px auto;border:2px solid #ccc;display:block}
-    .buttons{display:flex;flex-direction:column;gap:10px;margin-top:22px}
-    .btn{padding:12px;border:none;border-radius:6px;font-weight:700;color:#fff;cursor:pointer}
-    .btn-salvar{background:#16807c}.btn-assinar{background:#28a745}.btn-alterar{background:#007bff}.btn-cancelar{background:#dc3545}
-    .alerta-login
-    {
-      background-color: #fff0f0;
-      border: 2px solid #fa1e39;
-      color: #b30000;
-      padding: 15px;
-      margin: 30px auto;
-      max-width: 500px;
-      border-radius: 8px;
-      text-align: center;
-      font-weight: bold;
-      font-size: 1.1rem;
-      display: none;
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--cor-fundo, #f5f5f5);
+      margin: 0;
+      padding: 0;
     }
-  
-  footer {
-  background-color: #c2e7df;
-  padding: 20px;
-  text-align: center;
-  color: #555;
-  font-size: 0.9rem;
-  }
-</style>
+    header {
+      background: #c2e7df;
+      height: 60px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .logo-container {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+    .logo-container img {
+      height: 40px;
+      margin-right: 10px;
+    }
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+    .logo .mostre { color: #00C2BF; }
+    .logo .aki { color: #FA1E39; }
+
+    .menu-icon {
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    .menu-list {
+      position: absolute;
+      top: 60px;
+      right: 20px;
+      background: #16807C;
+      padding: 10px;
+      border-radius: 6px;
+      display: none;
+      flex-direction: column;
+      z-index: 1000;
+    }
+    .menu-list a {
+      background: #FA1E39;
+      color: white;
+      padding: 10px;
+      margin-bottom: 8px;
+      text-align: center;
+      border-radius: 6px;
+      text-decoration: none;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+      padding: 1rem;
+    }
+    .produto {
+      background: white;
+      border-radius: 8px;
+      padding: 1rem;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .produto img {
+      width: 100%;
+      height: auto;
+      border-radius: 4px;
+      margin-bottom: 10px;
+    }
+    .produto input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 8px;
+    }
+    .btn {
+      padding: 10px;
+      background-color: #25D366;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .btn-add {
+      background-color: #FA1E39;
+      margin: 1rem;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1rem;
+      background-color: #c2e7df;
+      color: #555;
+    }
+  </style>
 </head>
 <body>
+
   <header>
-    <div class="logo-container" onclick="location='/'">
-      <img src="/logo.png" alt="Logo">
+    <div class="logo-container" onclick="location.href='index.html'">
+      <img src="logo.png" alt="Logo">
       <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
     </div>
-    <div style="display:flex;align-items:center;gap:10px">
-      <span id="authText" style="display:none;font-weight:700;color:#15b0af;cursor:pointer"></span>
-      <div id="userCircle" class="user-circle" style="display:none"></div>
-      <div id="menuBtn" class="menu-icon">☰</div>
+    <div class="menu-icon" onclick="toggleMenu()">☰</div>
+    <div class="menu-list" id="menu">
+      <a href="crieaki.html">Voltar para CrieAki</a>
+      <a href="index.html">Página Inicial</a>
     </div>
-    <nav id="menu">
-      <a href="/index.html">Página Inicial</a><a href="/sobre.html">Sobre</a>
-      <a href="/minha-conta.html">Minha Conta</a><a href="/planos.html">Planos</a>
-      <a href="/servicos-adicionais.html">Serviços Adicionais</a><a href="/crieaki.html">CrieAki</a>
-      <a href="/contatos.html">Contatos</a>
-    </nav>
-  </header>  <div id="alertaLogin" class="alerta-login">⚠️ Você precisa estar logado para acessar a página Minha Conta. Redirecionando para a página inicial...</div>  <main class="container">
-    <h2>Minha Conta</h2>
-    <div class="form-group">
-      <label for="foto">Foto de Perfil</label>
-      <input id="foto" type="file" accept="image/*">
-      <img id="fotoPreview" alt="Preview">
-    </div>
-    <div class="form-group"><label>Instagram</label><input id="instagram" type="text"></div>
-    <div class="form-group"><label>Facebook</label><input id="facebook" type="text"></div>
-    <div class="form-group"><label>WhatsApp</label><input id="whatsapp" type="text"></div>
-    <div class="form-group"><label>YouTube</label><input id="youtube" type="text"></div>
-    <div class="buttons">
-      <button id="btnSalvar" class="btn btn-salvar">Salvar Alterações</button>
-      <button class="btn btn-assinar">Assinar Plano</button>
-      <button class="btn btn-alterar">Alterar Plano</button>
-      <button class="btn btn-cancelar">Cancelar Plano</button>
-      <button id="btnExcluirFoto" class="btn btn-cancelar">Remover Foto de Perfil</button>
-    </div>
-  </main><script type="module">
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-import { getFirestore, doc, setDoc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
+  </header>
 
-const app = initializeApp({
-  apiKey: 'AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE',
-  authDomain: 'mostreaki-2025.firebaseapp.com',
-  projectId: 'mostreaki-2025',
-  storageBucket: 'mostreaki-2025.appspot.com',
-  messagingSenderId: '748712068097',
-  appId: '1:748712068097:web:09cf043fbb45917ef6ec00'
-});
+  <main>
+    <button class="btn btn-add" onclick="adicionarProduto()">Adicionar Produto</button>
+    <div class="grid" id="produtos"></div>
+  </main>
 
-const auth = getAuth(app), db = getFirestore(app), storage = getStorage(app, "gs://mostreaki-2025.firebasestorage.app");
-const $ = s => document.querySelector(s);
+  <footer>© 2025 MostreAki – Todos os direitos reservados.</footer>
 
-$('#menuBtn').onclick = () => {
-  $('#menu').style.display = $('#menu').style.display === 'flex' ? 'none' : 'flex';
-};
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
-function atualizarUserCircle(url) {
-  if (!url) return;
-  localStorage.setItem('fotoPerfil', url);
-  $('#fotoPreview').src = url;
-  const el = $('#userCircle'); el.innerHTML = ''; el.style.display = 'flex';
-  el.append(Object.assign(new Image(), { src: url }));
-}
+    const app = initializeApp({
+      apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
+      authDomain: "mostreaki-2025.firebaseapp.com",
+      projectId: "mostreaki-2025",
+      storageBucket: "mostreaki-2025.appspot.com",
+      messagingSenderId: "748712068097",
+      appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
+    });
 
-function exibirFotoLocal() {
-  const cached = localStorage.getItem('fotoPerfil');
-  if (cached) atualizarUserCircle(cached);
-}
-exibirFotoLocal();
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const storage = getStorage(app, "gs://mostreaki-2025.firebasestorage.app");
 
-async function previewImagem(ev, uid) {
-  const file = ev.target.files?.[0]; if (!file) return;
-  $('#fotoPreview').src = URL.createObjectURL(file);
-  const storageRef = ref(storage, `fotosPerfil/${uid}`);
-  try {
-    const snap = await uploadBytes(storageRef, file);
-    const url = await getDownloadURL(storageRef);
-    await setDoc(doc(db, 'usuarios', uid), { fotoPerfil: url }, { merge: true });
-    atualizarUserCircle(url);
-  } catch (e) {
-    alert('Erro ao salvar imagem.');
-  }
-}
+    let uid = null;
 
-async function removerFoto(uid) {
-  const fotoRef = ref(storage, `fotosPerfil/${uid}`);
-  try {
-    await deleteObject(fotoRef);
-    await setDoc(doc(db, 'usuarios', uid), { fotoPerfil: '' }, { merge: true });
-    localStorage.removeItem('fotoPerfil');
-    $('#fotoPreview').src = ''; $('#userCircle').style.display = 'none';
-    alert('Foto removida.');
-  } catch (e) {
-    alert('Falha ao remover.');
-  }
-}
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        alert("Você precisa estar logado.");
+        location.href = "index.html";
+        return;
+      }
+      uid = user.uid;
 
-async function salvar(uid) {
-  const data = {
-    instagram: $('#instagram').value.trim(),
-    facebook:  $('#facebook').value.trim(),
-    whatsapp:  $('#whatsapp').value.trim(),
-    youtube:   $('#youtube').value.trim()
-  };
-  await setDoc(doc(db, 'usuarios', uid), data, { merge: true });
-  alert('Dados salvos!');
-}
+      const snap = await getDoc(doc(db, "usuarios", uid));
+      if (snap.exists()) {
+        const d = snap.data();
+        document.body.style.backgroundColor = d.corFundo || "#f5f5f5";
+        document.body.style.color = d.corTexto || "#000";
+        document.querySelectorAll(".btn").forEach(b => b.style.backgroundColor = d.corBotao || "#25D366");
+      }
+    });
 
-async function carregar(uid) {
-  const snap = await getDoc(doc(db, 'usuarios', uid));
-  if (!snap.exists()) return;
-  const d = snap.data();
-  $('#instagram').value = d.instagram || '';
-  $('#facebook').value  = d.facebook  || '';
-  $('#whatsapp').value  = d.whatsapp  || '';
-  $('#youtube').value   = d.youtube   || '';
-  if (d.fotoPerfil) atualizarUserCircle(d.fotoPerfil);
-}
+    window.adicionarProduto = function () {
+      const grid = document.getElementById("produtos");
+      const div = document.createElement("div");
+      div.className = "produto";
+      const index = Date.now();
 
-onAuthStateChanged(auth, user => {
-  const a = $('#authText');
-  if (user) {
-    $('#foto').onchange = ev => previewImagem(ev, user.uid);
-    $('#btnSalvar').onclick      = () => salvar(user.uid);
-    $('#btnExcluirFoto').onclick = () => removerFoto(user.uid);
-    a.textContent = 'Sair'; a.style.display = 'inline';
-    a.onclick = async () => {
-      await signOut(auth);
-      localStorage.removeItem('fotoPerfil');
-      location = '/index.html';
+      div.innerHTML = `
+        <input type="file" accept="image/*" onchange="uploadImagem(event, '${index}')">
+        <img id="preview-${index}" src="" alt="Preview">
+        <input type="text" placeholder="Preço">
+        <input type="text" placeholder="Estoque">
+        <button class="btn">WhatsApp</button>
+      `;
+      grid.appendChild(div);
     };
-    carregar(user.uid);
-  } else {
-    $('#alertaLogin').style.display = 'block';
-    document.querySelector('main.container').style.display = 'none';
-    localStorage.removeItem('fotoPerfil');
-    setTimeout(() => location = '/index.html', 5000);
-  }
-});
-</script>
-<footer>
-  © 2025 MostreAki – Todos os direitos reservados.
-  </footer>
+
+    window.uploadImagem = async function (event, id) {
+      const file = event.target.files[0];
+      if (!file || !uid) return;
+
+      const refImagem = ref(storage, `fotosCatalogo/${uid}/${id}`);
+      await uploadBytes(refImagem, file);
+      const url = await getDownloadURL(refImagem);
+      document.getElementById("preview-" + id).src = url;
+    };
+
+    window.toggleMenu = function () {
+      const menu = document.getElementById("menu");
+      menu.style.display = menu.style.display === "flex" ? "none" : "flex";
+    };
+  </script>
 </body>
 </html>
