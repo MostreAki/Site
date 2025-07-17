@@ -1,98 +1,158 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CrieAki - MostreAki</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CrieAki – MostreAki</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon"/>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" />
   <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
     body {
-      font-family: 'Inter', sans-serif;
-      margin: 0;
-      background-color: #fff;
+      background-image: url("fundo-mobile.png");
+      background-size: cover;
+      background-attachment: fixed;
+      background-repeat: no-repeat;
     }
+    @media(min-width:768px){
+      body { background-image: url("fundo-desktop.png"); }
+    }
+
     header {
-      background-color: #FA1E39;
-      color: white;
-      padding: 1rem;
+      background: #c2e7df;
+      height: 60px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      position: relative;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
-    .container {
-      padding: 2rem;
-      text-align: center;
+    .logo-container { display: flex; align-items: center; cursor: pointer; }
+    .logo-container img { height: 40px; margin-right: 10px; }
+    .logo { font-size: 1.5rem; font-weight: bold; }
+    .logo .mostre { color: #00C2BF; }
+    .logo .aki { color: #FA1E39; }
+
+    .menu-icon { font-size: 1.5rem; cursor: pointer; }
+    .menu-list {
+      position: absolute; top: 60px; right: 20px;
+      background: #16807C; border: 2px solid #000;
+      border-radius: 6px; display: none;
+      flex-direction: column; padding: 10px; z-index: 1000;
     }
-    footer {
-      background-color: #FA1E39;
-      color: white;
-      text-align: center;
-      padding: 1rem;
-      position: fixed;
-      width: 100%;
-      bottom: 0;
+    .menu-list a {
+      background: #FA1E39; color: #fff; text-decoration: none;
+      padding: 10px; margin-bottom: 8px; border-radius: 6px;
+      text-align: center; font-weight: bold;
     }
-    .btn-mostreaki {
-      background-color: #FA1E39;
-      color: white;
+    .menu-list a:hover { background: #b8313b; }
+
+    .user-circle {
+      background: #15b0af; color: #fff; font-weight: bold; border-radius: 50%;
+      width: 32px; height: 32px; display: none; align-items: center;
+      justify-content: center; background-size: cover; background-position: center;
+      font-size: .9rem
+    }
+
+    main {
+      padding: 20px;
+      max-width: 800px;
+      margin: 20px auto;
+      background: #ffffffcc;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #0002;
+    }
+
+    h1 {
+      font-size: 1.6rem;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .botoes-tipo button, .btn-mostreaki {
+      padding: 12px 20px;
+      margin: 10px 10px 20px 0;
+      background: #FA1E39;
       border: none;
+      color: white;
       border-radius: 6px;
-      padding: 10px 20px;
-      margin: 10px 5px;
       font-weight: bold;
       cursor: pointer;
-      transition: background-color 0.3s ease;
     }
-    .btn-mostreaki:hover {
-      background-color: #c0172d;
-    }
-    .paleta-container {
-      max-width: 500px;
-      margin: 0 auto;
-    }
-    label {
+
+    .config-rgb label {
       display: block;
-      margin-top: 10px;
-      margin-bottom: 5px;
-      font-weight: 600;
+      margin: 10px 0 4px;
+      font-weight: bold;
     }
-    input[type="color"] {
+
+    .config-rgb input[type="color"] {
       width: 100%;
       height: 40px;
       border: none;
       border-radius: 6px;
-      margin-bottom: 10px;
+      cursor: pointer;
+    }
+
+    footer {
+      background: #c2e7df;
+      padding: 20px;
+      text-align: center;
+      color: #555;
+      font-size: .9rem;
+      margin-top: 40px;
     }
   </style>
 </head>
 <body>
+
   <header>
-    <div><strong>MostreAki</strong></div>
-    <button id="logoutBtn" class="btn-mostreaki" style="display:none;">Sair</button>
+    <div class="logo-container" onclick="location.href='index.html'">
+      <img src="logo.png" alt="Logo">
+      <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span id="authText" style="font-weight:bold;color:#15b0af;cursor:pointer;display:none" onclick="sair()">Sair</span>
+      <div id="userCircle" class="user-circle" title="Perfil"></div>
+      <div class="menu-icon" onclick="toggleMenu()">☰</div>
+    </div>
+    <div class="menu-list" id="menu">
+      <a href="index.html">Página Inicial</a>
+      <a href="minha-conta.html">Minha Conta</a>
+      <a href="planos.html">Planos</a>
+      <a href="servicos-adicionais.html">Serviços Adicionais</a>
+      <a href="contatos.html">Contatos</a>
+    </div>
   </header>
 
-  <div class="container">
-    <h2>Personalize sua Vitrine</h2>
-    <div class="paleta-container">
-      <label for="corFundo">Cor de Fundo:</label>
-      <input type="color" id="corFundo">
-
-      <label for="corBotoes">Cor dos Botões:</label>
-      <input type="color" id="corBotoes">
-
-      <label for="corTextos">Cor dos Textos:</label>
-      <input type="color" id="corTextos">
+  <main>
+    <h1>Escolha o tipo de página que deseja criar:</h1>
+    <div class="botoes-tipo">
+      <button onclick="window.location.href='catalogo.html'">Catálogo Digital</button>
+      <button onclick="window.location.href='site.html'">Site de Notícias</button>
     </div>
-    <button id="salvarCores" class="btn-mostreaki" style="display: none;">Salvar Cores</button>
-    <button id="minhaPagina" class="btn-mostreaki" style="display: none;">Minha Página</button>
-  </div>
+
+    <div class="config-rgb">
+      <h2 style="margin-top:30px;">Paleta de Cores Personalizada</h2>
+      <label for="corFundo">Cor do Fundo:</label>
+      <input type="color" id="corFundo" value="#ffffff">
+
+      <label for="corTexto">Cor do Texto:</label>
+      <input type="color" id="corTexto" value="#000000">
+
+      <label for="corBotao">Cor do Botão:</label>
+      <input type="color" id="corBotao" value="#FA1E39">
+
+      <button id="salvarCores" class="btn-mostreaki" style="display: none;">Salvar Cores</button>
+      <button id="minhaPagina" class="btn-mostreaki" style="display: none;">Minha Página</button>
+    </div>
+  </main>
 
   <footer>
-    &copy; 2025 MostreAki - Todos os direitos reservados.
+    &copy; 2025 MostreAki. Todos os direitos reservados.
   </footer>
 
-  <!-- Firebase SDK -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -111,7 +171,8 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    const logoutBtn = document.getElementById("logoutBtn");
+    const authText = document.getElementById("authText");
+    const userCircle = document.getElementById("userCircle");
     const salvarCoresBtn = document.getElementById("salvarCores");
     const minhaPaginaBtn = document.getElementById("minhaPagina");
 
@@ -120,36 +181,29 @@
     onAuthStateChanged(auth, async (user) => {
       if (user && user.email === "felipehfagionato2023@gmail.com") {
         userId = user.uid;
-        logoutBtn.style.display = "inline-block";
+        authText.style.display = "inline";
+        userCircle.style.display = "flex";
+        userCircle.textContent = user.email[0].toUpperCase();
         salvarCoresBtn.style.display = "inline-block";
 
-        const docRef = doc(db, "usuarios", user.uid);
+        const docRef = doc(db, "usuarios", userId);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists() && docSnap.data().coresSalvas) {
           minhaPaginaBtn.style.display = "inline-block";
         }
       } else {
-        window.location.href = "index.html";
+        location.href = "index.html";
       }
-    });
-
-    logoutBtn.addEventListener("click", () => {
-      signOut(auth).then(() => {
-        window.location.href = "index.html";
-      });
     });
 
     salvarCoresBtn.addEventListener("click", async () => {
       if (!userId) return;
       const corFundo = document.getElementById("corFundo").value;
-      const corBotoes = document.getElementById("corBotoes").value;
-      const corTextos = document.getElementById("corTextos").value;
+      const corBotao = document.getElementById("corBotao").value;
+      const corTexto = document.getElementById("corTexto").value;
 
       await setDoc(doc(db, "usuarios", userId), {
-        corFundo,
-        corBotoes,
-        corTextos,
-        coresSalvas: true
+        corFundo, corBotao, corTexto, coresSalvas: true
       }, { merge: true });
 
       minhaPaginaBtn.style.display = "inline-block";
@@ -159,6 +213,21 @@
     minhaPaginaBtn.addEventListener("click", () => {
       window.location.href = "catalogo.html";
     });
+
+    window.sair = function () {
+      signOut(auth).then(() => {
+        alert("Você saiu com sucesso!");
+        location.href = "index.html";
+      });
+    };
   </script>
+
+  <script>
+    function toggleMenu() {
+      const m = document.getElementById("menu");
+      m.style.display = m.style.display === "flex" ? "none" : "flex";
+    }
+  </script>
+
 </body>
 </html>
