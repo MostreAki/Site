@@ -258,14 +258,20 @@
       });
     });
 
-    onAuthStateChanged(auth, (user) => {
-  if (!user || user.email.toLowerCase() !== "felipehfagionato2023@gmail.com") {
-    window.location.href = "index.html";
-  }
-});
-    
-  </script>
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      const email = user.email.toLowerCase();
+      alert("Usuário logado com: " + email); // 👈 MOSTRA O EMAIL ANTES DE TUDO
 
+      if (email !== "felipehfagionato2023@gmail.com") {
+        window.location.href = "index.html";
+      }
+    } else {
+      alert("Nenhum usuário logado.");
+      window.location.href = "index.html";
+    }
+  });
+    
   <script>
     function toggleMenu() {
       const menu = document.getElementById("menu");
