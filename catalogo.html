@@ -2,214 +2,165 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Catálogo Digital - MostreAki</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Catálogo do Cliente | MostreAki</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap">
   <style>
-    :root {
-      --cor-fundo: #ffffff;
-      --cor-texto: #000000;
-      --cor-botao: #ff5722;
-    }
-
     body {
       margin: 0;
-      font-family: 'Inter', sans-serif;
-      background-color: var(--cor-fundo);
-      color: var(--cor-texto);
+      font-family: 'Montserrat', sans-serif;
+      background-color: #f8f8f8;
     }
-
-    header, footer {
-      background-color: var(--cor-botao);
+    header {
+      background-color: #f65151;
       color: white;
-      padding: 1rem;
-      text-align: center;
-    }
-
-    .menu {
+      padding: 10px 20px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      padding: 1rem;
-      background-color: var(--cor-botao);
+      justify-content: space-between;
     }
-
-    .menu button {
-      background-color: white;
-      color: var(--cor-botao);
-      border: none;
-      padding: 0.5rem 1rem;
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+    .menu-toggle {
+      font-size: 1.5rem;
       cursor: pointer;
     }
-
-    .banner img {
+    nav {
+      display: none;
+      flex-direction: column;
+      background-color: #fff;
+      border-top: 1px solid #ccc;
+    }
+    nav a {
+      padding: 10px 20px;
+      text-decoration: none;
+      color: #333;
+      border-bottom: 1px solid #eee;
+    }
+    nav a:hover {
+      background-color: #f0f0f0;
+    }
+    .banner-desktop, .banner-mobile {
       width: 100%;
       height: auto;
-      max-height: 400px;
-      object-fit: cover;
+      display: none;
     }
-
-    .catalogo {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      gap: 1rem;
-      padding: 2rem;
+    @media (min-width: 768px) {
+      .banner-desktop { display: block; }
     }
-
-    .item {
-      border: 1px solid #ccc;
-      padding: 1rem;
-      text-align: center;
-      border-radius: 8px;
-      background-color: white;
-    }
-
-    .item img {
-      width: 100%;
-      height: 160px;
-      object-fit: cover;
-      border-radius: 4px;
-    }
-
-    .item input, .item button {
-      width: 100%;
-      margin-top: 0.5rem;
-      padding: 0.5rem;
-    }
-
-    .item button {
-      background-color: var(--cor-botao);
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-
-    .acoes {
-      text-align: center;
-      margin: 2rem;
-    }
-
-    .acoes button {
-      margin: 0 1rem;
-      padding: 0.75rem 1.5rem;
-      font-size: 1rem;
-      background-color: var(--cor-botao);
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
+    @media (max-width: 767px) {
+      .banner-mobile { display: block; }
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Meu Catálogo</h1>
-  </header>
 
-  <div class="menu">
-    <span>Bem-vindo ao MostreAki</span>
-    <button onclick="logout()">Sair</button>
-  </div>
+<header>
+  <div class="logo">MostreAki</div>
+  <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+</header>
 
-  <div class="banner">
-    <img id="banner" src="https://via.placeholder.com/1920x400?text=Seu+Banner+Aparece+Aqui" alt="Banner do cliente" />
-  </div>
+<nav id="menu">
+  <a href="index.html">Página Inicial</a>
+  <a href="sobre.html">Sobre</a>
+  <a href="planos.html">Planos</a>
+  <a href="contatos.html">Contatos</a>
+  <a href="crieaki.html">Voltar para CrieAki</a>
+</nav>
 
-  <section class="catalogo" id="catalogo">
-    <div class="item">
-      <input type="file" accept="image/*" onchange="uploadImage(this, 0)" />
-      <img id="img-0" src="https://via.placeholder.com/150" alt="Produto" />
-      <input id="preco-0" type="text" placeholder="Preço (ex: R$25,00)" />
-      <input id="estoque-0" type="text" placeholder="Quantidade (ex: 3 unidades)" />
-      <button onclick="abrirWhatsApp()">Chamar no WhatsApp</button>
-    </div>
-  </section>
+<img src="img/banner-desktop.jpg" alt="Banner Desktop" class="banner-desktop">
+<img src="img/banner-mobile.jpg" alt="Banner Mobile" class="banner-mobile">
 
-  <div class="acoes">
-    <button onclick="salvarCatalogo()">Salvar Minha Página</button>
-    <button onclick="window.location.href='lamaggie.html'">Visualizar Minha Página</button>
-  </div>
+<script>
+  function toggleMenu() {
+    const menu = document.getElementById("menu");
+    menu.style.display = menu.style.display === "flex" ? "none" : "flex";
+  }
+</script>
+<!-- Cabeçalho do cliente -->
+<header style="background-color: #ffffff; padding: 20px; text-align: center;">
+  <input type="file" id="uploadLogo" accept="image/*">
+  <div id="logoPreview" style="margin-top: 10px;"></div>
+  <input type="text" placeholder="Pesquisar no catálogo..." style="margin-top: 10px; padding: 8px; width: 80%; max-width: 400px;">
+</header>
 
-  <footer>
-    <p>&copy; 2025 MostreAki - Todos os direitos reservados</p>
-  </footer>
+<!-- Catálogo de produtos -->
+<main style="padding: 20px;">
+  <div id="catalogoGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px;"></div>
+</main>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
-    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+<!-- Rodapé do cliente -->
+<footer style="background-color: #f0f0f0; text-align: center; padding: 15px;">
+  <input type="text" id="direitosAutorais" placeholder="Seus direitos autorais..." style="width: 80%; max-width: 400px; padding: 8px;">
+</footer>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
-      authDomain: "mostreaki-2025.firebaseapp.com",
-      projectId: "mostreaki-2025",
-      storageBucket: "mostreaki-2025.appspot.com",
-      messagingSenderId: "748712068097",
-      appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
-    };
+<!-- Scripts de Firebase e Upload -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+  import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth();
-    const storage = getStorage(app, "gs://mostreaki-2025.appspot.com");
-    const db = getFirestore(app);
+  const firebaseConfig = {
+    apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
+    authDomain: "mostreaki-2025.firebaseapp.com",
+    projectId: "mostreaki-2025",
+    storageBucket: "mostreaki-2025.appspot.com",
+    messagingSenderId: "748712068097",
+    appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
+  };
 
-    let userId = "";
+  const app = initializeApp(firebaseConfig);
+  const storage = getStorage(app, "gs://mostreaki-2025.firebasestorage.app");
+  const db = getFirestore(app);
+  const auth = getAuth(app);
 
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        userId = user.uid;
-        carregarCoresSalvas();
-      } else {
-        window.location.href = "index.html";
-      }
-    });
+  const uploadLogo = document.getElementById("uploadLogo");
+  const logoPreview = document.getElementById("logoPreview");
+  const catalogoGrid = document.getElementById("catalogoGrid");
 
-    function logout() {
-      signOut(auth).then(() => {
-        window.location.href = "index.html";
-      });
-    }
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      const uid = user.uid;
 
-    async function uploadImage(input, index) {
-      const file = input.files[0];
-      if (!file || file.size > 1024 * 1024) {
-        alert("Imagem muito grande! Máximo 1MB.");
-        return;
-      }
-      const imgRef = ref(storage, `catalogo/${userId}/img${index}`);
-      await uploadBytes(imgRef, file);
-      const url = await getDownloadURL(imgRef);
-      document.getElementById(`img-${index}`).src = url;
-    }
-
-    async function salvarCatalogo() {
-      const preco = document.getElementById("preco-0").value;
-      const estoque = document.getElementById("estoque-0").value;
-
-      await setDoc(doc(db, "catalogos", userId), {
-        preco,
-        estoque,
-        atualizadoEm: new Date()
+      // Carregar logo
+      uploadLogo.addEventListener("change", async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const logoRef = ref(storage, `catalogo/${uid}/logo.jpg`);
+        await uploadBytes(logoRef, file);
+        const url = await getDownloadURL(logoRef);
+        logoPreview.innerHTML = `<img src="${url}" alt="Logo" style="max-height: 100px;">`;
       });
 
-      alert("Catálogo salvo com sucesso!");
-    }
+      // Exemplo de produto fixo (você pode carregar do Firestore)
+      const itemHTML = (imgURL, nome = "Produto", preco = "", qtd = "") => `
+        <div style="background: #fff; border-radius: 10px; padding: 10px; text-align: center;">
+          <img src="${imgURL}" alt="Produto" style="width: 100%; height: 150px; object-fit: cover; border-radius: 8px;">
+          <p><strong>${nome}</strong></p>
+          ${preco ? `<p>Preço: ${preco}</p>` : ""}
+          ${qtd ? `<p>Estoque: ${qtd}</p>` : ""}
+          <a href="https://wa.me/55SEUNUMERO" target="_blank">
+            <button style="padding: 8px 12px; background-color: #f65151; color: #fff; border: none; border-radius: 5px; cursor: pointer;">Chamar no WhatsApp</button>
+          </a>
+        </div>
+      `;
 
-    async function carregarCoresSalvas() {
-      const docRef = doc(db, "usuarios", userId);
-      const snap = await getDoc(docRef);
-      if (snap.exists()) {
-        const data = snap.data();
-        if (data.corFundo) document.documentElement.style.setProperty("--cor-fundo", data.corFundo);
-        if (data.corTexto) document.documentElement.style.setProperty("--cor-texto", data.corTexto);
-        if (data.corBotao) document.documentElement.style.setProperty("--cor-botao", data.corBotao);
-      }
+      // Temporário – adicionar um produto de exemplo
+      catalogoGrid.innerHTML += itemHTML("https://via.placeholder.com/300", "Exemplo", "R$ 25,00", "2 unidades");
+    } else {
+      window.location.href = "index.html";
     }
+  });
+</script>
+<!-- Rodapé institucional do MostreAki -->
+<footer style="background-color: #000; color: #fff; text-align: center; padding: 20px; margin-top: 50px;">
+  <p style="margin: 0;">© 2025 MostreAki. Todos os direitos reservados.</p>
+  <p style="margin: 0;">Feito com 💛 por Felipe Hypolito Fagionato & Gi</p>
+</footer>
 
-    function abrirWhatsApp() {
-      window.open("https://wa.me/5511999999999", "_blank");
-    }
-  </script>
+<!-- Fim do Body e HTML -->
 </body>
 </html>
