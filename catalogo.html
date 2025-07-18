@@ -1,202 +1,121 @@
-<!-- 🟢 HTML com Firebase Storage para catálogo personalizado -->
-<!DOCTYPE html>
-<html lang="pt-BR">
+<!DOCTYPE html><html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Catálogo do Cliente</title>
-  <link rel="icon" href="favicon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Catálogo - MostreAki</title>
   <style>
     body {
-      font-family: 'Inter', sans-serif;
-      background-color: var(--cor-fundo, #f5f5f5);
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
       margin: 0;
       padding: 0;
     }
     header {
-      background: #c2e7df;
-      height: 60px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 20px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-    .logo-container {
-      display: flex;
-      align-items: center;
-      cursor: pointer;
-    }
-    .logo-container img {
-      height: 40px;
-      margin-right: 10px;
-    }
-    .logo {
-      font-size: 1.5rem;
-      font-weight: bold;
-    }
-    .logo .mostre { color: #00C2BF; }
-    .logo .aki { color: #FA1E39; }
-
-    .menu-icon {
-      font-size: 1.5rem;
-      cursor: pointer;
-    }
-    .menu-list {
-      position: absolute;
-      top: 60px;
-      right: 20px;
-      background: #16807C;
-      padding: 10px;
-      border-radius: 6px;
-      display: none;
-      flex-direction: column;
-      z-index: 1000;
-    }
-    .menu-list a {
-      background: #FA1E39;
+      background-color: #ff3366;
       color: white;
       padding: 10px;
-      margin-bottom: 8px;
       text-align: center;
-      border-radius: 6px;
-      text-decoration: none;
     }
-
+    .container {
+      padding: 20px;
+    }
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 1rem;
-      padding: 1rem;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 20px;
     }
-    .produto {
-      background: white;
+    .item {
+      background-color: white;
       border-radius: 8px;
-      padding: 1rem;
+      padding: 10px;
       box-shadow: 0 0 5px rgba(0,0,0,0.1);
       text-align: center;
     }
-    .produto img {
+    .item img {
       width: 100%;
       height: auto;
-      border-radius: 4px;
-      margin-bottom: 10px;
+      border-radius: 5px;
     }
-    .produto input {
-      width: 100%;
+    button, input[type="file"] {
+      margin-top: 10px;
       padding: 8px;
-      margin-bottom: 8px;
-    }
-    .btn {
-      padding: 10px;
-      background-color: #25D366;
-      color: white;
       border: none;
-      border-radius: 6px;
+      background-color: #ff3366;
+      color: white;
+      border-radius: 4px;
       cursor: pointer;
     }
-    .btn-add {
-      background-color: #FA1E39;
-      margin: 1rem;
+    button:hover {
+      background-color: #e52e5f;
     }
-
-    footer {
-      text-align: center;
-      padding: 1rem;
-      background-color: #c2e7df;
-      color: #555;
+    .info {
+      margin-top: 5px;
     }
   </style>
 </head>
 <body>
-
   <header>
-    <div class="logo-container" onclick="location.href='index.html'">
-      <img src="logo.png" alt="Logo">
-      <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
-    </div>
-    <div class="menu-icon" onclick="toggleMenu()">☰</div>
-    <div class="menu-list" id="menu">
-      <a href="crieaki.html">Voltar para CrieAki</a>
-      <a href="index.html">Página Inicial</a>
-    </div>
-  </header>
-
-  <main>
-    <button class="btn btn-add" onclick="adicionarProduto()">Adicionar Produto</button>
-    <div class="grid" id="produtos"></div>
-  </main>
-
-  <footer>© 2025 MostreAki – Todos os direitos reservados.</footer>
-
-  <script type="module">
+    <h1>Catálogo</h1>
+  </header>  <div class="container">
+    <input type="file" id="fileInput" accept="image/*">
+    <button onclick="uploadImage()">Enviar Imagem</button>
+    <div class="grid" id="imageGrid"></div>
+  </div>  <!-- Firebase -->  <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+    import {
+      getStorage,
+      ref,
+      uploadBytes,
+      getDownloadURL,
+      listAll
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
-    const app = initializeApp({
+    const firebaseConfig = {
       apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
       authDomain: "mostreaki-2025.firebaseapp.com",
       projectId: "mostreaki-2025",
       storageBucket: "mostreaki-2025.appspot.com",
       messagingSenderId: "748712068097",
       appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
-    });
+    };
 
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+    const app = initializeApp(firebaseConfig);
     const storage = getStorage(app, "gs://mostreaki-2025.firebasestorage.app");
 
-    let uid = null;
+    const fileInput = document.getElementById("fileInput");
+    const imageGrid = document.getElementById("imageGrid");
 
-    onAuthStateChanged(auth, async (user) => {
-      if (!user) {
-        alert("Você precisa estar logado.");
-        location.href = "index.html";
-        return;
-      }
-      uid = user.uid;
+    async function uploadImage() {
+      const file = fileInput.files[0];
+      if (!file) return alert("Selecione uma imagem primeiro.");
 
-      const snap = await getDoc(doc(db, "usuarios", uid));
-      if (snap.exists()) {
-        const d = snap.data();
-        document.body.style.backgroundColor = d.corFundo || "#f5f5f5";
-        document.body.style.color = d.corTexto || "#000";
-        document.querySelectorAll(".btn").forEach(b => b.style.backgroundColor = d.corBotao || "#25D366");
-      }
-    });
+      const storageRef = ref(storage, `catalogo/${file.name}`);
+      await uploadBytes(storageRef, file);
+      const url = await getDownloadURL(storageRef);
+      displayImage(url);
+    }
 
-    window.adicionarProduto = function () {
-      const grid = document.getElementById("produtos");
-      const div = document.createElement("div");
-      div.className = "produto";
-      const index = Date.now();
-
-      div.innerHTML = `
-        <input type="file" accept="image/*" onchange="uploadImagem(event, '${index}')">
-        <img id="preview-${index}" src="" alt="Preview">
-        <input type="text" placeholder="Preço">
-        <input type="text" placeholder="Estoque">
-        <button class="btn">WhatsApp</button>
+    async function displayImage(url) {
+      const item = document.createElement("div");
+      item.className = "item";
+      item.innerHTML = `
+        <img src="${url}" alt="Imagem" />
+        <div class="info">Preço: <input type="text" placeholder="R$" /></div>
+        <div class="info">Estoque: <input type="text" placeholder="Ex: 3 unidades" /></div>
+        <button onclick="window.open('https://wa.me/SEUNUMERO', '_blank')">Chamar no WhatsApp</button>
       `;
-      grid.appendChild(div);
-    };
+      imageGrid.appendChild(item);
+    }
 
-    window.uploadImagem = async function (event, id) {
-      const file = event.target.files[0];
-      if (!file || !uid) return;
+    async function loadImages() {
+      const catalogoRef = ref(storage, 'catalogo');
+      const result = await listAll(catalogoRef);
+      for (let itemRef of result.items) {
+        const url = await getDownloadURL(itemRef);
+        displayImage(url);
+      }
+    }
 
-      const refImagem = ref(storage, `fotosCatalogo/${uid}/${id}`);
-      await uploadBytes(refImagem, file);
-      const url = await getDownloadURL(refImagem);
-      document.getElementById("preview-" + id).src = url;
-    };
-
-    window.toggleMenu = function () {
-      const menu = document.getElementById("menu");
-      menu.style.display = menu.style.display === "flex" ? "none" : "flex";
-    };
-  </script>
-</body>
+    loadImages();
+  </script></body>
 </html>
