@@ -10,10 +10,24 @@
 <link href="/estilo.css" rel="stylesheet"/>
 </head>
 <body>
-<div id="header-container"></div><video autoplay="True" id="bannerMobile" loop="True" muted="True" playsinline="True" style="width:100%; display:none;"><source src="/banner-planos-mobile.webm" type="video/webm"/></video><video autoplay="True" id="bannerDesktop" loop="True" muted="True" playsinline="True" style="width:100%; display:none;"><source src="/banner-planos-desktop.webm" type="video/webm"/></video>
-<script src="/header-loader.js" type="module"></script>
-<main class="conteudo-principal" style="max-width: 1200px; margin: 40px auto; padding: 20px;">
+<div id="header-container"></div>
+<!-- Modal de Login -->
+<div class="modal" id="modalLogin" style="display:none;">
+<div class="modal-conteudo">
+<span class="fechar" onclick="fecharModal()">×</span>
+<h2>Entrar</h2>
+<input id="email" placeholder="E-mail" type="email"/>
+<input id="senha" placeholder="Senha" type="password"/>
+<button onclick="entrarEmail()">Entrar</button>
+<button onclick="entrarGoogle()">Entrar com Google</button>
+<p><a href="#" onclick="redefinirSenha()">Esqueci minha senha</a></p>
+<p><a href="#" onclick="cadastrarUsuario()">Criar conta</a></p>
+</div>
+</div>
+<div class="mensagem" id="mensagem" style="display:none;"></div>
+<video autoplay="True" id="bannerMobile" loop="True" muted="True" playsinline="True" style="width:100%; display:none;"><source src="/banner-planos-mobile.webm" type="video/webm"/></video><video autoplay="True" id="bannerDesktop" loop="True" muted="True" playsinline="True" style="width:100%; display:none;"><source src="/banner-planos-desktop.webm" type="video/webm"/></video>
 
+<main class="conteudo-principal" style="max-width: 1200px; margin: 40px auto; padding: 20px;">
 <div class="planos-imagens" style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;">
 <a href="/pagamento-plano-1.html"><img alt="Plano Básico" src="/plano-basico.png" style="flex: 1 1 300px; max-width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"/></a>
 <a href="/pagamento-plano-2.html"><img alt="Plano Intermediário" src="/plano-intermediario.png" style="flex: 1 1 300px; max-width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"/></a>
@@ -23,11 +37,8 @@
 <footer>
 <p>© 2025 MostreAki. Todos os direitos reservados.</p>
 </footer>
-<script src="/load-header.js"></script><script type="module">setTimeout(() => import('/auth-e-menu.js'), 200);</script><script>
-function abrirModalLogin() {
-  document.getElementById("modalLogin").style.display = "block";
-}
-</script><script>
+<script src="/load-header.js"></script><script type="module">setTimeout(() => import('/auth-e-menu.js'), 200);</script><script>function abrirModalLogin() { document.getElementById("modalLogin").style.display = "block"; }</script>
+<script>
 document.addEventListener("DOMContentLoaded", function() {
   if (window.innerWidth <= 768) {
     document.getElementById("bannerMobile").style.display = "block";
@@ -35,5 +46,6 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("bannerDesktop").style.display = "block";
   }
 });
-</script></body>
+</script>
+</body>
 </html>
