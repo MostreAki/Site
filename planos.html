@@ -10,51 +10,163 @@
 <link href="/estilo.css" rel="stylesheet"/>
 </head>
 <body>
-<div id="header-container"></div>
+<header>
+<div class="logo-container" onclick="location.href='index.html'">
+<img alt="Logo" src="logo.png"/>
+<div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
+</div>
+<div style="display:flex;align-items:center;gap:10px;">
+<span id="authText" style="font-weight:bold;color:#15b0af;cursor:pointer;display:none">Entrar</span>
+<div class="user-circle" id="userCircle" title="Perfil"></div>
+<div class="menu-icon" onclick="toggleMenu()">â˜°</div>
+</div>
+<div class="menu-list" id="menu">
+<a href="/index.html">InÃ­cio</a>
+<a href="/minha-conta.html">Minha Conta</a>
+<a href="/planos.html">Planos</a>
+<a href="/servicos-adicionais.html">ServiÃ§os Adicionais</a>
+<a href="/crieaki.html">CrieAki</a>
+<a href="/contatos.html">Contatos</a>
+</div>
+</header>
 <!-- Modal de Login -->
-<div class="modal" id="modalLogin" style="display:none;">
-<div class="modal-conteudo">
-<span class="fechar" onclick="fecharModal()">×</span>
-<h2>Entrar</h2>
-<input id="email" placeholder="E-mail" type="email"/>
-<input id="senha" placeholder="Senha" type="password"/>
-<button onclick="entrarEmail()">Entrar</button>
-<button onclick="entrarGoogle()">Entrar com Google</button>
-<p><a href="#" onclick="redefinirSenha()">Esqueci minha senha</a></p>
-<p><a href="#" onclick="cadastrarUsuario()">Criar conta</a></p>
-</div>
-</div>
-<div class="mensagem" id="mensagem" style="display:none;"></div>
+
+
 <video autoplay="True" id="bannerMobile" loop="True" muted="True" playsinline="True" style="width:100%; display:none;"><source src="/banner-planos-mobile.webm" type="video/webm"/></video><video autoplay="True" id="bannerDesktop" loop="True" muted="True" playsinline="True" style="width:100%; display:none;"><source src="/banner-planos-desktop.webm" type="video/webm"/></video>
 <main class="conteudo-principal" style="max-width: 1200px; margin: 40px auto; padding: 20px;">
 <div class="planos-imagens" style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;">
-<a href="/pagamento-plano-1.html"><img alt="Plano Básico" src="/plano-basico.png" style="flex: 1 1 300px; max-width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"/></a>
-<a href="/pagamento-plano-2.html"><img alt="Plano Intermediário" src="/plano-intermediario.png" style="flex: 1 1 300px; max-width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"/></a>
-<a href="/pagamento-plano-3.html"><img alt="Plano Avançado" src="/plano-avancado.png" style="flex: 1 1 300px; max-width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"/></a>
+<a href="/pagamento-plano-1.html"><img alt="Plano BÃ¡sico" src="/plano-basico.png" style="flex: 1 1 300px; max-width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"/></a>
+<a href="/pagamento-plano-2.html"><img alt="Plano IntermediÃ¡rio" src="/plano-intermediario.png" style="flex: 1 1 300px; max-width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"/></a>
+<a href="/pagamento-plano-3.html"><img alt="Plano AvanÃ§ado" src="/plano-avancado.png" style="flex: 1 1 300px; max-width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"/></a>
 </div>
 </main>
-<footer>
-<p>© 2025 MostreAki. Todos os direitos reservados.</p>
+<div class="mensagem" id="mensagem"></div><div class="modal-bg" id="modalLogin">
+<div class="modal">
+<div class="fechar" onclick="fecharModal()">âœ–</div>
+<h2>Entrar</h2>
+<input id="email" placeholder="E-mail" type="email"/>
+<div style="position:relative">
+<input id="senha" placeholder="Senha" type="password"/>
+<span onclick="toggleSenha()" style="position:absolute;top:12px;right:12px;cursor:pointer">ðŸ‘ï¸</span>
+</div>
+<button onclick="entrarEmail()">Entrar</button>
+<button class="btn-google" onclick="entrarGoogle()">
+<img alt="Google logo" src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"/> Entrar com Google
+    </button>
+<a href="#" onclick="redefinirSenha()">Esqueci minha senha</a>
+<a href="#" onclick="cadastrarUsuario()">Cadastrar</a>
+</div>
+</div><footer>
+<p>Â© 2025 MostreAki. Todos os direitos reservados.</p>
 </footer>
-<script src="/load-header.js"></script><script type="module">setTimeout(() => import('/auth-e-menu.js'), 200);</script><script>function abrirModalLogin() { document.getElementById("modalLogin").style.display = "block"; }</script>
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-  if (window.innerWidth <= 768) {
-    document.getElementById("bannerMobile").style.display = "block";
-  } else {
-    document.getElementById("bannerDesktop").style.display = "block";
+
+
+
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+  const app = initializeApp({
+    apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
+    authDomain: "mostreaki-2025.firebaseapp.com",
+    projectId: "mostreaki-2025",
+    storageBucket: "mostreaki-2025.appspot.com",
+    messagingSenderId: "748712068097",
+    appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
+  });
+
+  const auth = getAuth(app);
+  const provider = new GoogleAuthProvider();
+  const authText = document.getElementById("authText");
+  const userCircle = document.getElementById("userCircle");
+
+  function exibirMensagem(texto, erro = false) {
+    const m = document.getElementById("mensagem");
+    m.textContent = texto;
+    m.className = erro ? "mensagem erro" : "mensagem";
+    m.style.display = "block";
+    setTimeout(() => m.style.display = "none", 3000);
   }
-});
-</script>
-<script src="/load-header.js"></script>
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-  if (window.innerWidth <= 768) {
-    document.getElementById("bannerMobile").style.display = "block";
-  } else {
-    document.getElementById("bannerDesktop").style.display = "block";
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      authText.textContent = "Sair";
+      authText.style.display = "inline";
+      authText.onclick = () => {
+        signOut(auth).then(() => {
+          localStorage.removeItem("fotoPerfil");
+          location.reload();
+        });
+      };
+      if (user.photoURL) {
+        userCircle.style.backgroundImage = `url('${user.photoURL}')`;
+        localStorage.setItem("fotoPerfil", user.photoURL);
+        userCircle.textContent = "";
+      } else {
+        userCircle.textContent = user.email.charAt(0).toUpperCase();
+      }
+      userCircle.style.display = "flex";
+    } else {
+      authText.textContent = "Entrar";
+      authText.style.display = "inline";
+      authText.onclick = abrirModal;
+      userCircle.style.display = "none";
+    }
+  });
+
+  window.toggleMenu = () => {
+    const m = document.getElementById("menu");
+    m.style.display = m.style.display === "flex" ? "none" : "flex";
   }
-});
-</script>
-<script type="module">setTimeout(() => import('/auth-e-menu.js'), 200);</script></body>
+
+  window.abrirModal = () => document.getElementById("modalLogin").style.display = "flex";
+  window.fecharModal = () => document.getElementById("modalLogin").style.display = "none";
+  window.toggleSenha = () => {
+    const input = document.getElementById("senha");
+    input.type = input.type === "password" ? "text" : "password";
+  }
+
+  window.entrarEmail = () => {
+    const email = document.getElementById("email").value;
+    const senha = document.getElementById("senha").value;
+    signInWithEmailAndPassword(auth, email, senha)
+      .then(() => {
+        exibirMensagem("VocÃª logou com sucesso!");
+        fecharModal();
+      })
+      .catch(() => exibirMensagem("Erro ao entrar. Verifique os dados.", true));
+  }
+
+  window.entrarGoogle = () => {
+    signInWithPopup(auth, provider)
+      .then(result => {
+        if (result.user.photoURL) {
+          localStorage.setItem("fotoPerfil", result.user.photoURL);
+        }
+        exibirMensagem("Login com Google realizado!");
+        fecharModal();
+      })
+      .catch(() => exibirMensagem("Erro ao entrar com Google.", true));
+  }
+
+  window.redefinirSenha = () => {
+    const email = document.getElementById("email").value;
+    if (!email) return exibirMensagem("Digite o e-mail para redefinir.", true);
+    sendPasswordResetEmail(auth, email)
+      .then(() => exibirMensagem("Email de recuperaÃ§Ã£o enviado!"))
+      .catch(() => exibirMensagem("Erro ao enviar redefiniÃ§Ã£o.", true));
+  }
+
+  window.cadastrarUsuario = () => {
+    const email = document.getElementById("email").value;
+    const senha = document.getElementById("senha").value;
+    createUserWithEmailAndPassword(auth, email, senha)
+      .then(() => {
+        exibirMensagem("Cadastro realizado com sucesso!");
+        fecharModal();
+      })
+      .catch(() => exibirMensagem("Erro ao cadastrar. Tente outro e-mail.", true));
+  }
+</script></body>
 </html>
