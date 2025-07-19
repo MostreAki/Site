@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Planos – MostreAki</title>
+  <title>Planos â€“ MostreAki</title>
   <link rel="icon" href="favicon.ico" type="image/x-icon"/>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif }
@@ -82,27 +82,27 @@
   <div style="display:flex;align-items:center;gap:10px;">
     <span id="authText" style="font-weight:bold;color:#15b0af;cursor:pointer;display:none">Entrar</span>
     <div id="userCircle" class="user-circle" title="Perfil"></div>
-    <div class="menu-icon" onclick="toggleMenu()">☰</div>
+    <div class="menu-icon" onclick="toggleMenu()">â˜°</div>
   </div>
   <div class="menu-list" id="menu">
-    <a href="/index.html">Início</a>
+    <a href="/index.html">InÃ­cio</a>
     <a href="/minha-conta.html">Minha Conta</a>
     <a href="/planos.html">Planos</a>
-    <a href="/servicos-adicionais.html">Serviços Adicionais</a>
+    <a href="/servicos-adicionais.html">ServiÃ§os Adicionais</a>
     <a href="/crieaki.html">CrieAki</a>
     <a href="/contatos.html">Contatos</a>
   </div>
 </header>
 <main class="conteudo-principal" style="max-width: 1200px; margin: 40px auto; padding: 20px;">
   <div class="planos-imagens" style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;">
-    <a href="/pagamento-plano-1.html"><img src="/plano-basico.png" alt="Plano Básico" style="flex: 1 1 300px; max-width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"/></a>
-    <a href="/pagamento-plano-2.html"><img src="/plano-intermediario.png" alt="Plano Intermediário" style="flex: 1 1 300px; max-width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"/></a>
-    <a href="/pagamento-plano-3.html"><img src="/plano-avancado.png" alt="Plano Avançado" style="flex: 1 1 300px; max-width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"/></a>
+    <a href="/pagamento-plano-1.html"><img src="/plano-basico.png" alt="Plano BÃ¡sico" style="flex: 1 1 300px; max-width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"/></a>
+    <a href="/pagamento-plano-2.html"><img src="/plano-intermediario.png" alt="Plano IntermediÃ¡rio" style="flex: 1 1 300px; max-width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"/></a>
+    <a href="/pagamento-plano-3.html"><img src="/plano-avancado.png" alt="Plano AvanÃ§ado" style="flex: 1 1 300px; max-width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"/></a>
   </div>
 </main>
 
 <footer>
-  <p>© 2025 MostreAki. Todos os direitos reservados.</p>
+  <p>Â© 2025 MostreAki. Todos os direitos reservados.</p>
 </footer>
 
 <script type="module">
@@ -121,6 +121,135 @@
       document.getElementById("bannerDesktop").style.display = "block";
     }
   });
+</script>
+
+
+<!-- Modal Login -->
+<div id="modalLogin" class="modal-bg">
+  <div class="modal">
+    <div class="fechar" onclick="fecharModal()">âœ–</div>
+    <h2>Entrar</h2>
+    <input type="email" id="email" placeholder="E-mail">
+    <div style="position:relative">
+      <input type="password" id="senha" placeholder="Senha">
+      <span onclick="toggleSenha()" style="position:absolute;top:12px;right:12px;cursor:pointer">ðŸ‘ï¸</span>
+    </div>
+    <button onclick="entrarEmail()">Entrar</button>
+    <button class="btn-google" onclick="entrarGoogle()">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google logo"> Entrar com Google
+    </button>
+    <a href="#" onclick="redefinirSenha()">Esqueci minha senha</a>
+    <a href="#" onclick="cadastrarUsuario()">Cadastrar</a>
+  </div>
+</div>
+
+<div id="mensagem" class="mensagem"></div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+  const app = initializeApp({
+    apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
+    authDomain: "mostreaki-2025.firebaseapp.com",
+    projectId: "mostreaki-2025",
+    storageBucket: "mostreaki-2025.appspot.com",
+    messagingSenderId: "748712068097",
+    appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
+  });
+
+  const auth = getAuth(app);
+  const provider = new GoogleAuthProvider();
+  const authText = document.getElementById("authText");
+  const userCircle = document.getElementById("userCircle");
+
+  function exibirMensagem(texto, erro = false) {
+    const m = document.getElementById("mensagem");
+    m.textContent = texto;
+    m.className = erro ? "mensagem erro" : "mensagem";
+    m.style.display = "block";
+    setTimeout(() => m.style.display = "none", 3000);
+  }
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      authText.textContent = "Sair";
+      authText.style.display = "inline";
+      authText.onclick = () => {
+        signOut(auth).then(() => {
+          localStorage.removeItem("fotoPerfil");
+          location.reload();
+        });
+      };
+      if (user.photoURL) {
+        userCircle.style.backgroundImage = `url('${user.photoURL}')`;
+        localStorage.setItem("fotoPerfil", user.photoURL);
+        userCircle.textContent = "";
+      } else {
+        userCircle.textContent = user.email.charAt(0).toUpperCase();
+      }
+      userCircle.style.display = "flex";
+    } else {
+      authText.textContent = "Entrar";
+      authText.style.display = "inline";
+      authText.onclick = abrirModal;
+      userCircle.style.display = "none";
+    }
+  });
+
+  window.toggleMenu = () => {
+    const m = document.getElementById("menu");
+    m.style.display = m.style.display === "flex" ? "none" : "flex";
+  }
+
+  window.abrirModal = () => document.getElementById("modalLogin").style.display = "flex";
+  window.fecharModal = () => document.getElementById("modalLogin").style.display = "none";
+  window.toggleSenha = () => {
+    const input = document.getElementById("senha");
+    input.type = input.type === "password" ? "text" : "password";
+  }
+
+  window.entrarEmail = () => {
+    const email = document.getElementById("email").value;
+    const senha = document.getElementById("senha").value;
+    signInWithEmailAndPassword(auth, email, senha)
+      .then(() => {
+        exibirMensagem("VocÃª logou com sucesso!");
+        fecharModal();
+      })
+      .catch(() => exibirMensagem("Erro ao entrar. Verifique os dados.", true));
+  }
+
+  window.entrarGoogle = () => {
+    signInWithPopup(auth, provider)
+      .then(result => {
+        if (result.user.photoURL) {
+          localStorage.setItem("fotoPerfil", result.user.photoURL);
+        }
+        exibirMensagem("Login com Google realizado!");
+        fecharModal();
+      })
+      .catch(() => exibirMensagem("Erro ao entrar com Google.", true));
+  }
+
+  window.redefinirSenha = () => {
+    const email = document.getElementById("email").value;
+    if (!email) return exibirMensagem("Digite o e-mail para redefinir.", true);
+    sendPasswordResetEmail(auth, email)
+      .then(() => exibirMensagem("Email de recuperaÃ§Ã£o enviado!"))
+      .catch(() => exibirMensagem("Erro ao enviar redefiniÃ§Ã£o.", true));
+  }
+
+  window.cadastrarUsuario = () => {
+    const email = document.getElementById("email").value;
+    const senha = document.getElementById("senha").value;
+    createUserWithEmailAndPassword(auth, email, senha)
+      .then(() => {
+        exibirMensagem("Cadastro realizado com sucesso!");
+        fecharModal();
+      })
+      .catch(() => exibirMensagem("Erro ao cadastrar. Tente outro e-mail.", true));
+  }
 </script>
 
 </body>
