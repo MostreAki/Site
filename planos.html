@@ -26,7 +26,6 @@
 </div>
 <div class="mensagem" id="mensagem" style="display:none;"></div>
 <video autoplay="True" id="bannerMobile" loop="True" muted="True" playsinline="True" style="width:100%; display:none;"><source src="/banner-planos-mobile.webm" type="video/webm"/></video><video autoplay="True" id="bannerDesktop" loop="True" muted="True" playsinline="True" style="width:100%; display:none;"><source src="/banner-planos-desktop.webm" type="video/webm"/></video>
-
 <main class="conteudo-principal" style="max-width: 1200px; margin: 40px auto; padding: 20px;">
 <div class="planos-imagens" style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;">
 <a href="/pagamento-plano-1.html"><img alt="Plano Básico" src="/plano-basico.png" style="flex: 1 1 300px; max-width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"/></a>
@@ -37,15 +36,24 @@
 <footer>
 <p>© 2025 MostreAki. Todos os direitos reservados.</p>
 </footer>
-<script src="/load-header.js"></script><script type="module">setTimeout(() => import('/auth-e-menu.js'), 200);</script><script>function abrirModalLogin() { document.getElementById("modalLogin").style.display = "block"; }</script>
+
+
+<script src="/load-header.js"></script><script type="module">setTimeout(() => import("/auth-e-menu.js"), 200);</script>
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-  if (window.innerWidth <= 768) {
-    document.getElementById("bannerMobile").style.display = "block";
-  } else {
-    document.getElementById("bannerDesktop").style.display = "block";
-  }
-});
-</script>
+    function abrirModalLogin() {
+      const modal = document.getElementById("modalLogin");
+      if (modal) modal.style.display = "block";
+    }
+    </script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (window.innerWidth <= 768) {
+        document.getElementById("bannerMobile").style.display = "block";
+      } else {
+        document.getElementById("bannerDesktop").style.display = "block";
+      }
+    });
+    </script>
 </body>
 </html>
