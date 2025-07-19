@@ -30,8 +30,6 @@
 </div>
 </header>
 <!-- Modal de Login -->
-
-
 <video autoplay="True" id="bannerMobile" loop="True" muted="True" playsinline="True" style="width:100%; display:none;"><source src="/banner-planos-mobile.webm" type="video/webm"/></video><video autoplay="True" id="bannerDesktop" loop="True" muted="True" playsinline="True" style="width:100%; display:none;"><source src="/banner-planos-desktop.webm" type="video/webm"/></video>
 <main class="conteudo-principal" style="max-width: 1200px; margin: 40px auto; padding: 20px;">
 <div class="planos-imagens" style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;">
@@ -40,29 +38,9 @@
 <a href="/pagamento-plano-3.html"><img alt="Plano AvanÃ§ado" src="/plano-avancado.png" style="flex: 1 1 300px; max-width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"/></a>
 </div>
 </main>
-<div class="mensagem" id="mensagem"></div><div class="modal-bg" id="modalLogin">
-<div class="modal">
-<div class="fechar" onclick="fecharModal()">âœ–</div>
-<h2>Entrar</h2>
-<input id="email" placeholder="E-mail" type="email"/>
-<div style="position:relative">
-<input id="senha" placeholder="Senha" type="password"/>
-<span onclick="toggleSenha()" style="position:absolute;top:12px;right:12px;cursor:pointer">ðŸ‘ï¸</span>
-</div>
-<button onclick="entrarEmail()">Entrar</button>
-<button class="btn-google" onclick="entrarGoogle()">
-<img alt="Google logo" src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"/> Entrar com Google
-    </button>
-<a href="#" onclick="redefinirSenha()">Esqueci minha senha</a>
-<a href="#" onclick="cadastrarUsuario()">Cadastrar</a>
-</div>
-</div><footer>
+<footer>
 <p>Â© 2025 MostreAki. Todos os direitos reservados.</p>
 </footer>
-
-
-
-
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -168,5 +146,21 @@
       })
       .catch(() => exibirMensagem("Erro ao cadastrar. Tente outro e-mail.", true));
   }
-</script></body>
+</script><div class="mensagem" id="mensagem"></div><div class="modal-bg" id="modalLogin">
+<div class="modal">
+<div class="fechar" onclick="fecharModal()">âœ–</div>
+<h2>Entrar</h2>
+<input id="email" placeholder="E-mail" type="email"/>
+<div style="position:relative">
+<input id="senha" placeholder="Senha" type="password"/>
+<span onclick="toggleSenha()" style="position:absolute;top:12px;right:12px;cursor:pointer">ðŸ‘ï¸</span>
+</div>
+<button onclick="entrarEmail()">Entrar</button>
+<button class="btn-google" onclick="entrarGoogle()">
+<img alt="Google logo" src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"/> Entrar com Google
+    </button>
+<a href="#" onclick="redefinirSenha()">Esqueci minha senha</a>
+<a href="#" onclick="cadastrarUsuario()">Cadastrar</a>
+</div>
+</div></body>
 </html>
