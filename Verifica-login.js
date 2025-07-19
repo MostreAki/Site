@@ -16,11 +16,16 @@ const firebaseConfig = {
 initializeApp(firebaseConfig);
 const auth = getAuth();
 
+const emailsPermitidos = [
+  "mostreaki@mostreaki.com.br",
+  "clientevip@gmail.com",
+  "exemplo@assinante.com"
+];
+
 // Verifica se o usuário está logado
 onAuthStateChanged(auth, (user) => {
-  if (!user) {
-    // Redireciona se não estiver logado
-    alert("⚠️ Você precisa estar logado para acessar esta página.");
+  if (!user || !emailsPermitidos.includes(user.email)) {
+    alert("⚠️ Acesso restrito. Apenas assinantes podem acessar.");
     window.location.href = "/index.html?login=obrigatorio";
   }
 });
