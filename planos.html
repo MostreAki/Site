@@ -11,6 +11,21 @@
 </head>
 <body>
 <div id="header-container"></div>
+<!-- Modal de Login -->
+<div class="modal" id="modalLogin">
+<div class="modal-conteudo">
+<span class="fechar" onclick="fecharModal()">×</span>
+<h2>Entrar</h2>
+<input id="email" placeholder="E-mail" type="email"/>
+<input id="senha" placeholder="Senha" type="password"/>
+<button onclick="entrarEmail()">Entrar</button>
+<button onclick="entrarGoogle()">Entrar com Google</button>
+<p><a href="#" onclick="redefinirSenha()">Esqueci minha senha</a></p>
+<p><a href="#" onclick="cadastrarUsuario()">Criar conta</a></p>
+</div>
+</div>
+<div class="mensagem" id="mensagem" style="display:none;"></div>
+
 <script src="/header-loader.js" type="module"></script>
 <main class="conteudo-principal" style="max-width: 1200px; margin: 40px auto; padding: 20px;">
 <h1 class="titulo" style="text-align:center; margin-bottom: 40px;">Conheça nossos planos</h1>
