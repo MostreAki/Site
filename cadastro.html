@@ -182,6 +182,55 @@ header {
         alert("Erro ao autenticar com Google: " + error.message);
       }
     };
+    window.cadastrar = async function () {
+  const tipoPessoa = document.querySelector('input[name="tipoPessoa"]:checked').value;
+  const nome = document.getElementById("nome").value;
+  const email = document.getElementById("email").value;
+  const senha = document.getElementById("senha").value;
+  const confirmarSenha = document.getElementById("confirmarSenha").value;
+  const cpf = document.getElementById("cpf").value;
+  const cnpj = document.getElementById("cnpj").value;
+  const ie = document.getElementById("ie").value;
+  const cep = document.getElementById("cep").value;
+  const rua = document.getElementById("rua").value;
+  const numero = document.getElementById("numero").value;
+  const complemento = document.getElementById("complemento").value;
+  const bairro = document.getElementById("bairro").value;
+  const cidade = document.getElementById("cidade").value;
+  const estado = document.getElementById("estado").value;
+  const whatsapp = document.getElementById("whatsapp").value;
+
+  if (senha !== confirmarSenha) {
+    alert("As senhas não coincidem.");
+    return;
+  }
+
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, senha);
+    const user = userCredential.user;
+
+    await setDoc(doc(db, "usuarios", user.uid), {
+      nome,
+      email,
+      tipoPessoa,
+      cpf: tipoPessoa === "fisica" ? cpf : "",
+      cnpj: tipoPessoa === "juridica" ? cnpj : "",
+      ie: tipoPessoa === "juridica" ? ie : "",
+      whatsapp,
+      endereco: {
+        cep, rua, numero, complemento, bairro, cidade, estado
+      },
+      plano: "nenhum"
+    });
+
+    alert("Cadastro realizado com sucesso!");
+    window.location.href = "minha-conta.html";
+
+  } catch (error) {
+    alert("Erro ao cadastrar: " + error.message);
+    console.error(error);
+  }
+};
   </script>  <script>
     function atualizarTipoPessoa() {
       const tipo = document.querySelector('input[name="tipoPessoa"]:checked').value;
