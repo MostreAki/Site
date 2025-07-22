@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Cadastro - MostreAki</title>
   <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
     body {
@@ -13,11 +14,9 @@
       background-repeat: no-repeat;
       background-attachment: fixed;
     }
-
     @media (min-width: 768px) {
       body { background-image: url("fundo-desktop.png"); }
     }
-
     header {
       background-color: #c2e7df;
       height: 60px;
@@ -27,13 +26,11 @@
       padding: 0 20px;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
-
     .logo-container { display: flex; align-items: center; cursor: pointer; }
     .logo-container img { height: 40px; margin-right: 10px; }
     .logo { font-size: 1.5rem; font-weight: bold; }
     .logo .mostre { color: #00C2BF; }
     .logo .aki { color: #FA1E39; }
-
     .btn-voltar {
       background-color: #00C2BF;
       color: white;
@@ -45,7 +42,7 @@
       transition: background-color 0.3s ease;
     }
     .btn-voltar:hover { background-color: #009d9c; }
-  .section {
+    .section {
       background-color: #ffffff;
       margin: 40px auto;
       padding: 20px;
@@ -55,7 +52,6 @@
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
       text-align: center;
     }
-
     .section h2 { color: #008b8b; margin-bottom: 20px; }
     .form-input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 6px; }
     .input-wrapper { position: relative; }
@@ -64,11 +60,15 @@
       transform: translateY(-50%);
       cursor: pointer; font-size: 1.2rem; user-select: none;
     }
-    .btn { margin-top: 15px; padding: 10px 20px; background-color: #15b0af; color: white; border: none; border-radius: 5px; font-weight: bold; width: 100%; }
+    .btn {
+      margin-top: 15px; padding: 10px 20px;
+      background-color: #15b0af; color: white;
+      border: none; border-radius: 5px;
+      font-weight: bold; width: 100%;
+    }
     .google-btn {
       margin-top: 15px; padding: 10px;
-      background-color: #fff;
-      border: 1px solid #ccc;
+      background-color: #fff; border: 1px solid #ccc;
       border-radius: 5px;
       display: flex; align-items: center;
       justify-content: center;
@@ -83,8 +83,7 @@
       margin-bottom: 15px; gap: 10px;
     }
     .tipo-pessoa input { margin-right: 5px; }
-  
-</style>
+  </style>
 </head>
 <body>
   <header>
@@ -102,17 +101,17 @@
       <label><input type="radio" name="tipoPessoa" value="juridica" onchange="atualizarTipoPessoa()"> Pessoa Jurídica</label>
     </div>
 
-<label class="required-label"><input type="text" id="nome" placeholder="Nome completo ou Razão Social" class="form-input" /></label>
+    <label class="required-label"><input type="text" id="nome" placeholder="Nome completo ou Razão Social" class="form-input" /></label>
     <label class="required-label"><input type="email" id="email" placeholder="E-mail" class="form-input" /></label>
 
     <div class="input-wrapper required-label">
       <input type="password" id="senha" placeholder="Senha" class="form-input" />
-      <span class="toggle-password" onclick="toggleSenha('senha', this)"></span>
+      <span class="toggle-password" onclick="toggleSenha('senha', this)">👁️</span>
     </div>
 
     <div class="input-wrapper required-label">
       <input type="password" id="confirmarSenha" placeholder="Confirmar senha" class="form-input" />
-      <span class="toggle-password" onclick="toggleSenha('confirmarSenha', this)"></span>
+      <span class="toggle-password" onclick="toggleSenha('confirmarSenha', this)">👁️</span>
     </div>
 
     <div id="cpfContainer" class="required-label">
@@ -145,12 +144,13 @@
       <a href="https://www.mostreaki.com.br/termos-de-servico.html" target="_blank">Termos de Serviço</a>
       e a
       <a href="https://www.mostreaki.com.br/politica-de-privacidade.html" target="_blank">Política de Privacidade</a>
-      do MostreAki e seus parceiros, e aceita receber comunicações do MostreAki.
+      do MostreAki e seus parceiros.
     </p>
   </div>
-<script type="module">
+
+  <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-    import { getAuth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+    import { getAuth, createUserWithEmailAndPassword, signInWithPopup, sendEmailVerification, GoogleAuthProvider } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
     import { getFirestore, doc, setDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
     const firebaseConfig = {
@@ -180,31 +180,15 @@
           endereco: {},
           plano: "nenhum"
         }, { merge: true });
-        alert("Cadastro com Google realizado com sucesso!");
-        window.location.href = "minha-conta.html";
+        Swal.fire("Sucesso!", "Cadastro com Google realizado com sucesso!", "success").then(() => {
+          window.location.href = "minha-conta.html";
+        });
       } catch (error) {
-        alert("Erro ao autenticar com Google: " + error.message);
+        Swal.fire("Erro", error.message, "error");
       }
     };
 
-lwindow.cadastrar = async function () {
-      const nome = document.getElementById('nome').value.trim();
-      const email = document.getElementById('email').value.trim();
-      const senha = document.getElementById('senha').value;
-      const confirmarSenha = document.getElementById('confirmarSenha').value;
-      const tipoPessoa = document.querySelector('input[name="tipoPessoa"]:checked').value;
-      const cpf = document.getElementById('cpf').value.trim();
-      const cnpj = document.getElementById('cnpj').value.trim();
-      const ie = document.getElementById('ie').value.trim();
-      const cep = document.getElementById('cep').value.trim();
-      const rua = document.getElementById('rua').value.trim();
-      const numero = document.getElementById('numero').value.trim();
-      const complemento = document.getElementById('complemento').value.trim();
-      const bairro = document.getElementById('bairro').value.trim();
-      const cidade = document.getElementById('cidade').value.trim();
-      const estado = document.getElementById('estado').value.trim();
-      const whatsapp = document.getElementById('whatsapp').value.trim();
-window.cadastrar = async function () {
+    window.cadastrar = async function () {
       const nome = document.getElementById('nome').value.trim();
       const email = document.getElementById('email').value.trim();
       const senha = document.getElementById('senha').value;
@@ -223,15 +207,17 @@ window.cadastrar = async function () {
       const whatsapp = document.getElementById('whatsapp').value.trim();
 
       if (senha !== confirmarSenha) {
-        alert("As senhas nÃ£o coincidem.");
+        Swal.fire("Erro", "As senhas não coincidem.", "error");
         return;
       }
 
       try {
         const credenciais = await createUserWithEmailAndPassword(auth, email, senha);
-        const uid = credenciais.user.uid;
+        const user = credenciais.user;
 
-        await setDoc(doc(db, "usuarios", uid), {
+        await sendEmailVerification(user);
+
+        await setDoc(doc(db, "usuarios", user.uid), {
           nome,
           email,
           tipo: tipoPessoa,
@@ -243,25 +229,24 @@ window.cadastrar = async function () {
           plano: "nenhum"
         });
 
-        alert("Cadastro realizado com sucesso!");
-        window.location.href = "minha-conta.html";
+        Swal.fire("Verificação enviada", "Enviamos um e-mail para confirmação. Por favor, confirme para concluir o cadastro.", "info");
+
       } catch (erro) {
-        alert("Erro ao cadastrar: " + erro.message);
+        Swal.fire("Erro ao cadastrar", erro.message, "error");
       }
     };
-  </script>
 
-  <script>
-    function atualizarTipoPessoa() {
-      const tipo = document.querySelector('input[name="tipoPessoa"]:checked').value;
-      document.getElementById('cpfContainer').style.display = tipo === 'fisica' ? 'block' : 'none';
-      document.getElementById('cnpjContainer').style.display = tipo === 'juridica' ? 'block' : 'none';
-    }
-window.toggleSenha = function(id, icon) {
+    window.toggleSenha = function (id, icon) {
       const input = document.getElementById(id);
       const isVisible = input.type === "text";
       input.type = isVisible ? "password" : "text";
-      icon.textContent = isVisible ? "ðï¸" : "ð";
+      icon.textContent = isVisible ? "👁️" : "🙈";
+    };
+
+    window.atualizarTipoPessoa = function () {
+      const tipo = document.querySelector('input[name="tipoPessoa"]:checked').value;
+      document.getElementById('cpfContainer').style.display = tipo === 'fisica' ? 'block' : 'none';
+      document.getElementById('cnpjContainer').style.display = tipo === 'juridica' ? 'block' : 'none';
     };
   </script>
 </body>
