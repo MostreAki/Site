@@ -1,57 +1,79 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Confirmando e-mail...</title>
+  <meta charset="UTF-8" />
+  <title>Confirme seu e-mail - MostreAki</title>
   <style>
     body {
-      background: #e0f7f7;
-      font-family: 'Segoe UI', sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      color: #333;
+      padding: 0;
       margin: 0;
     }
-    .box {
-      background: white;
+    .container {
+      max-width: 600px;
+      margin: 40px auto;
+      background-color: #ffffff;
+      border-radius: 8px;
       padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+    .logo {
       text-align: center;
-      max-width: 400px;
+      margin-bottom: 30px;
     }
-    .loader {
-      border: 5px solid #f3f3f3;
-      border-top: 5px solid #15b0af;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      animation: spin 1s linear infinite;
-      margin: 20px auto;
-    }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+    .logo span.mostre { color: #00C2BF; }
+    .logo span.aki { color: #FA1E39; }
+    h1 {
+      text-align: center;
+      color: #00C2BF;
     }
     p {
-      color: #333;
-      font-size: 1rem;
+      font-size: 16px;
+      line-height: 1.5;
+      text-align: center;
+    }
+    .botao {
+      display: block;
+      width: fit-content;
+      margin: 20px auto;
+      background-color: #00C2BF;
+      color: #fff;
+      text-decoration: none;
+      padding: 12px 24px;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+    .footer {
+      font-size: 12px;
+      color: #777;
+      text-align: center;
+      margin-top: 30px;
     }
   </style>
 </head>
 <body>
-  <div class="box">
-    <h2>Estamos confirmando seu e-mail...</h2>
-    <div class="loader"></div>
-    <p>Você será redirecionado em instantes.</p>
-  </div>
+  <div class="container">
+    <div class="logo">
+      <img src="https://www.mostreaki.com.br/logo.png" alt="Logo" height="60" />
+      <div class="logo-text"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
+    </div>
 
-  <script>
-    const params = new URLSearchParams(window.location.search);
-    const redirectUrl = `https://mostreaki-2025.firebaseapp.com/__/auth/action?${params.toString()}`;
-    window.location.href = redirectUrl;
-  </script>
+    <h1>Falta pouco para começar!</h1>
+    <p>
+      Para concluir seu cadastro, confirme seu e-mail clicando no botão abaixo:
+    </p>
+
+    <a href="%LINK%" class="botao">Confirmar meu cadastro</a>
+
+    <p>
+      Se você não solicitou esse cadastro, pode ignorar este e-mail.
+    </p>
+
+    <div class="footer">
+      © 2025 MostreAki. Todos os direitos reservados.
+    </div>
+  </div>
 </body>
 </html>
