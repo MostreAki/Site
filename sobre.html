@@ -6,7 +6,7 @@
   <title>Sobre – MostreAki</title>
   <link rel="icon" href="favicon.ico" type="image/x-icon"/>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
 
     body {
       background-image: url("fundo-mobile.png");
@@ -35,30 +35,30 @@
     .logo .mostre { color: #00C2BF; }
     .logo .aki { color: #FA1E39; }
 
-    .menu-icon { font-size: 1.5rem; cursor: pointer; }  
-    .menu-list {  
-      position: absolute;  
-      top: 60px;  
-      right: 20px;  
-      background-color: #16807C;  
-      border: 2px solid black;  
-      border-radius: 6px;  
-      display: none;  
-      flex-direction: column;  
-      padding: 10px;  
-      z-index: 1000;  
+    .menu-icon { font-size: 1.5rem; cursor: pointer; }
+    .menu-list {
+      position: absolute;
+      top: 60px;
+      right: 20px;
+      background-color: #16807C;
+      border: 2px solid black;
+      border-radius: 6px;
+      display: none;
+      flex-direction: column;
+      padding: 10px;
+      z-index: 1000;
     }
 
-    .menu-list a {  
-      background-color: #FA1E39;  
-      color: white;  
-      text-decoration: none;  
-      padding: 10px;  
-      margin-bottom: 8px;  
-      border-radius: 6px;  
-      text-align: center;  
-      font-weight: bold;  
-    }  
+    .menu-list a {
+      background-color: #FA1E39;
+      color: white;
+      text-decoration: none;
+      padding: 10px;
+      margin-bottom: 8px;
+      border-radius: 6px;
+      text-align: center;
+      font-weight: bold;
+    }
     .menu-list a:hover { background-color: #b8313b; }
 
     .user-circle {
@@ -94,6 +94,51 @@
       font-size: 0.9rem;
     }
 
+    .modal-bg {
+      position: fixed; top: 0; left: 0; width: 100%;
+      height: 100%; background: rgba(0,0,0,0.6);
+      display: none; justify-content: center; align-items: center;
+      z-index: 9999;
+    }
+
+    .modal {
+      background: #fff; padding: 30px; border-radius: 10px;
+      max-width: 400px; width: 90%; position: relative;
+    }
+
+    .modal h2 {
+      margin-bottom: 20px; color: #16807c;
+      font-size: 1.4rem; text-align: center;
+    }
+
+    .modal input {
+      width: 100%; padding: 12px; margin-bottom: 15px;
+      border-radius: 6px; border: 1px solid #ccc;
+    }
+
+    .modal button {
+      width: 100%; padding: 12px; background: #15b0af;
+      border: none; color: #fff; font-weight: bold;
+      border-radius: 6px; margin-bottom: 10px; cursor: pointer;
+    }
+
+    .modal .btn-google {
+      background: #fff; color: #444; border: 1px solid #ccc;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+    }
+
+    .modal .btn-google img { height: 20px; }
+
+    .modal .fechar {
+      position: absolute; top: 10px; right: 15px;
+      font-size: 1.2rem; cursor: pointer; color: #999;
+    }
+
+    .modal a {
+      display: block; text-align: center;
+      margin-top: 10px; color: #16807c; font-size: .9rem;
+    }
+
     .mensagem {
       position: fixed; top: 20px; right: 20px;
       background: #15b0af; color: #fff; padding: 15px 20px;
@@ -101,6 +146,7 @@
       font-weight: bold; z-index: 9999;
       animation: fadein 0.5s, fadeout 0.5s 2.5s; display: none;
     }
+
     .mensagem.erro { background: #FA1E39; }
 
     @keyframes fadein { from {opacity:0} to {opacity:1} }
@@ -139,29 +185,54 @@
   &copy; 2025 MostreAki. Todos os direitos reservados.
 </footer>
 
+<!-- Modal -->
+<div id="modalLogin" class="modal-bg">
+  <div class="modal">
+    <div class="fechar" onclick="fecharModal()">✖</div>
+    <h2>Entrar</h2>
+    <input type="email" id="email" placeholder="E-mail">
+    <div style="position:relative">
+      <input type="password" id="senha" placeholder="Senha">
+      <span onclick="toggleSenha()" style="position:absolute;top:12px;right:12px;cursor:pointer">👁️</span>
+    </div>
+    <button onclick="entrarEmail()">Entrar</button>
+    <button class="btn-google" onclick="entrarGoogle()">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google logo"> Entrar com Google
+    </button>
+    <a href="#" onclick="redefinirSenha()">Esqueci minha senha</a>
+    <a href="#" onclick="cadastrarUsuario()">Cadastrar</a>
+  </div>
+</div>
+
 <div id="mensagem" class="mensagem"></div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { getStorage, ref, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+  import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-  const firebaseConfig = {
+  const app = initializeApp({
     apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
     authDomain: "mostreaki-2025.firebaseapp.com",
     projectId: "mostreaki-2025",
     storageBucket: "mostreaki-2025.appspot.com",
     messagingSenderId: "748712068097",
     appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
-  };
+  });
 
-  const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
-  const storage = getStorage(app);
+  const provider = new GoogleAuthProvider();
   const authText = document.getElementById("authText");
   const userCircle = document.getElementById("userCircle");
 
-  onAuthStateChanged(auth, async (user) => {
+  function exibirMensagem(texto, erro = false) {
+    const m = document.getElementById("mensagem");
+    m.textContent = texto;
+    m.className = erro ? "mensagem erro" : "mensagem";
+    m.style.display = "block";
+    setTimeout(() => m.style.display = "none", 3000);
+  }
+
+  onAuthStateChanged(auth, (user) => {
     if (user) {
       authText.textContent = "Sair";
       authText.style.display = "inline";
@@ -171,20 +242,19 @@
           location.reload();
         });
       };
-
-      try {
-        const fotoRef = ref(storage, `usuarios/${user.uid}/perfil.jpg`);
-        const fotoURL = await getDownloadURL(fotoRef);
-        userCircle.style.backgroundImage = `url('${fotoURL}')`;
+      const foto = user.photoURL || localStorage.getItem("fotoPerfil");
+      if (foto) {
+        userCircle.style.backgroundImage = `url('${foto}')`;
+        localStorage.setItem("fotoPerfil", foto);
         userCircle.textContent = "";
-      } catch (err) {
+      } else {
         userCircle.textContent = user.email.charAt(0).toUpperCase();
       }
       userCircle.style.display = "flex";
     } else {
       authText.textContent = "Entrar";
       authText.style.display = "inline";
-      authText.onclick = () => window.location.href = "index.html#login";
+      authText.onclick = abrirModal;
       userCircle.style.display = "none";
     }
   });
@@ -192,7 +262,56 @@
   window.toggleMenu = () => {
     const m = document.getElementById("menu");
     m.style.display = m.style.display === "flex" ? "none" : "flex";
-  };
+  }
+
+  window.abrirModal = () => document.getElementById("modalLogin").style.display = "flex";
+  window.fecharModal = () => document.getElementById("modalLogin").style.display = "none";
+  window.toggleSenha = () => {
+    const input = document.getElementById("senha");
+    input.type = input.type === "password" ? "text" : "password";
+  }
+
+  window.entrarEmail = () => {
+    const email = document.getElementById("email").value;
+    const senha = document.getElementById("senha").value;
+    signInWithEmailAndPassword(auth, email, senha)
+      .then(() => {
+        exibirMensagem("Você logou com sucesso!");
+        fecharModal();
+      })
+      .catch(() => exibirMensagem("Erro ao entrar. Verifique os dados.", true));
+  }
+
+  window.entrarGoogle = () => {
+    signInWithPopup(auth, provider)
+      .then(result => {
+        if (result.user.photoURL) {
+          localStorage.setItem("fotoPerfil", result.user.photoURL);
+        }
+        exibirMensagem("Login com Google realizado!");
+        fecharModal();
+      })
+      .catch(() => exibirMensagem("Erro ao entrar com Google.", true));
+  }
+
+  window.redefinirSenha = () => {
+    const email = document.getElementById("email").value;
+    if (!email) return exibirMensagem("Digite o e-mail para redefinir.", true);
+    sendPasswordResetEmail(auth, email)
+      .then(() => exibirMensagem("Email de recuperação enviado!"))
+      .catch(() => exibirMensagem("Erro ao enviar redefinição.", true));
+  }
+
+  window.cadastrarUsuario = () => {
+    const email = document.getElementById("email").value;
+    const senha = document.getElementById("senha").value;
+    createUserWithEmailAndPassword(auth, email, senha)
+      .then(() => {
+        exibirMensagem("Cadastro realizado com sucesso!");
+        fecharModal();
+      })
+      .catch(() => exibirMensagem("Erro ao cadastrar. Tente outro e-mail.", true));
+  }
 </script>
 
 </body>
