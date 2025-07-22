@@ -186,7 +186,7 @@
       } catch (error) {
         Swal.fire({
           icon: 'error',
-          title: 'Erro ao autenticar!',
+          title: 'Erro no Google Login',
           text: error.message,
           confirmButtonColor: '#FA1E39'
         });
@@ -214,8 +214,8 @@
       if (senha !== confirmarSenha) {
         Swal.fire({
           icon: 'error',
-          title: 'Erro!',
-          text: 'As senhas não coincidem.',
+          title: 'Ops...',
+          text: 'As senhas não são iguais. Corrija e tente novamente.',
           confirmButtonColor: '#FA1E39'
         });
         return;
@@ -226,6 +226,7 @@
         await sendEmailVerification(credenciais.user);
 
         const uid = credenciais.user.uid;
+
         await setDoc(doc(db, "usuarios", uid), {
           nome,
           email,
@@ -240,8 +241,8 @@
 
         Swal.fire({
           icon: 'success',
-          title: 'Cadastro realizado!',
-          text: 'Verifique seu e-mail para ativar sua conta.',
+          title: 'Tudo certo!',
+          text: 'Seu cadastro foi feito com sucesso. Verifique seu e-mail para ativar sua conta.',
           confirmButtonColor: '#00C2BF'
         }).then(() => {
           window.location.href = "minha-conta.html";
@@ -250,7 +251,7 @@
       } catch (erro) {
         Swal.fire({
           icon: 'error',
-          title: 'Erro ao cadastrar!',
+          title: 'Algo deu errado!',
           text: erro.message,
           confirmButtonColor: '#FA1E39'
         });
