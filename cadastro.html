@@ -94,14 +94,14 @@
       <img src="logo.png" alt="Logo" />
       <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
     </div>
-    <button class="btn-voltar" onclick="location.href='index.html'">PÃ¡gina Inicial</button>
+    <button class="btn-voltar" onclick="location.href='index.html'">Página Inicial</button>
   </header>
 
   <div class="section">
     <h2>Cadastro</h2>
     <div class="tipo-pessoa">
-      <label><input type="radio" name="tipoPessoa" value="fisica" checked onchange="atualizarTipoPessoa()"> Pessoa FÃ­sica</label>
-      <label><input type="radio" name="tipoPessoa" value="juridica" onchange="atualizarTipoPessoa()"> Pessoa JurÃ­dica</label>
+      <label><input type="radio" name="tipoPessoa" value="fisica" checked onchange="atualizarTipoPessoa()"> Pessoa Física</label>
+      <label><input type="radio" name="tipoPessoa" value="juridica" onchange="atualizarTipoPessoa()"> Pessoa Jurídica</label>
     </div>
 
     <label class="required-label"><input type="text" id="nome" placeholder="Nome completo" class="form-input" /></label>
@@ -109,12 +109,12 @@
 
     <div class="input-wrapper required-label">
       <input type="password" id="senha" placeholder="Senha" class="form-input" />
-      <span class="toggle-password" onclick="toggleSenha('senha', this)">ðŸ‘ï¸</span>
+      <span class="toggle-password" onclick="toggleSenha('senha', this)">👁</span>
     </div>
 
     <div class="input-wrapper required-label">
       <input type="password" id="confirmarSenha" placeholder="Confirmar senha" class="form-input" />
-      <span class="toggle-password" onclick="toggleSenha('confirmarSenha', this)">ðŸ‘ï¸</span>
+      <span class="toggle-password" onclick="toggleSenha('confirmarSenha', this)">👁</span>
     </div>
 
     <div id="cpfContainer" class="required-label">
@@ -123,17 +123,16 @@
 
     <div id="cnpjContainer" style="display:none;">
       <label class="required-label"><input type="text" id="cnpj" placeholder="CNPJ" class="form-input" /></label>
-      <input type="text" id="ie" placeholder="InscriÃ§Ã£o Estadual (opcional)" class="form-input" />
+      <input type="text" id="ie" placeholder="Inscrição Estadual (opcional)" class="form-input" />
     </div>
 
     <label class="required-label"><input type="text" id="cep" placeholder="CEP" class="form-input" /></label>
     <label class="required-label"><input type="text" id="rua" placeholder="Rua" class="form-input" /></label>
-    <label class="required-label"><input type="text" id="numero" placeholder="NÃºmero" class="form-input" /></label>
+    <label class="required-label"><input type="text" id="numero" placeholder="Número" class="form-input" /></label>
     <input type="text" id="complemento" placeholder="Complemento (opcional)" class="form-input" />
     <label class="required-label"><input type="text" id="bairro" placeholder="Bairro" class="form-input" /></label>
     <label class="required-label"><input type="text" id="cidade" placeholder="Cidade" class="form-input" /></label>
     <label class="required-label"><input type="text" id="estado" placeholder="Estado" class="form-input" /></label>
-    <input type="text" id="whatsapp" placeholder="WhatsApp (opcional)" class="form-input" />
 
     <button class="btn" onclick="cadastrar()">Cadastrar</button>
     <button class="google-btn" onclick="loginComGoogle()">
@@ -142,10 +141,10 @@
     </button>
 
     <p class="termos">
-      Ao continuar, vocÃª concorda com os
-      <a href="https://www.mostreaki.com.br/termos-de-servico.html" target="_blank">Termos de ServiÃ§o</a>
+      Ao continuar, voce concorda com os
+      <a href="https://www.mostreaki.com.br/termos-de-servico.html" target="_blank">Termos de Serviço</a>
       e a
-      <a href="https://www.mostreaki.com.br/politica-de-privacidade.html" target="_blank">PolÃ­tica de Privacidade</a>
+      <a href="https://www.mostreaki.com.br/politica-de-privacidade.html" target="_blank">Política de Privacidade</a>
       do MostreAki e seus parceiros.
     </p>
   </div>
