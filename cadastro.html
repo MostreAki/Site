@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -6,6 +7,8 @@
   <title>Cadastro - MostreAki</title>
   <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
     body {
@@ -91,27 +94,27 @@
       <img src="logo.png" alt="Logo" />
       <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
     </div>
-    <button class="btn-voltar" onclick="location.href='index.html'">Página Inicial</button>
+    <button class="btn-voltar" onclick="location.href='index.html'">PÃ¡gina Inicial</button>
   </header>
 
   <div class="section">
     <h2>Cadastro</h2>
     <div class="tipo-pessoa">
-      <label><input type="radio" name="tipoPessoa" value="fisica" checked onchange="atualizarTipoPessoa()"> Pessoa Física</label>
-      <label><input type="radio" name="tipoPessoa" value="juridica" onchange="atualizarTipoPessoa()"> Pessoa Jurídica</label>
+      <label><input type="radio" name="tipoPessoa" value="fisica" checked onchange="atualizarTipoPessoa()"> Pessoa FÃ­sica</label>
+      <label><input type="radio" name="tipoPessoa" value="juridica" onchange="atualizarTipoPessoa()"> Pessoa JurÃ­dica</label>
     </div>
 
-    <label class="required-label"><input type="text" id="nome" placeholder="Nome completo ou Razão Social" class="form-input" /></label>
+    <label class="required-label"><input type="text" id="nome" placeholder="Nome completo" class="form-input" /></label>
     <label class="required-label"><input type="email" id="email" placeholder="E-mail" class="form-input" /></label>
 
     <div class="input-wrapper required-label">
       <input type="password" id="senha" placeholder="Senha" class="form-input" />
-      <span class="toggle-password" onclick="toggleSenha('senha', this)">👁️</span>
+      <span class="toggle-password" onclick="toggleSenha('senha', this)">ðŸ‘ï¸</span>
     </div>
 
     <div class="input-wrapper required-label">
       <input type="password" id="confirmarSenha" placeholder="Confirmar senha" class="form-input" />
-      <span class="toggle-password" onclick="toggleSenha('confirmarSenha', this)">👁️</span>
+      <span class="toggle-password" onclick="toggleSenha('confirmarSenha', this)">ðŸ‘ï¸</span>
     </div>
 
     <div id="cpfContainer" class="required-label">
@@ -120,12 +123,12 @@
 
     <div id="cnpjContainer" style="display:none;">
       <label class="required-label"><input type="text" id="cnpj" placeholder="CNPJ" class="form-input" /></label>
-      <input type="text" id="ie" placeholder="Inscrição Estadual (opcional)" class="form-input" />
+      <input type="text" id="ie" placeholder="InscriÃ§Ã£o Estadual (opcional)" class="form-input" />
     </div>
 
     <label class="required-label"><input type="text" id="cep" placeholder="CEP" class="form-input" /></label>
     <label class="required-label"><input type="text" id="rua" placeholder="Rua" class="form-input" /></label>
-    <label class="required-label"><input type="text" id="numero" placeholder="Número" class="form-input" /></label>
+    <label class="required-label"><input type="text" id="numero" placeholder="NÃºmero" class="form-input" /></label>
     <input type="text" id="complemento" placeholder="Complemento (opcional)" class="form-input" />
     <label class="required-label"><input type="text" id="bairro" placeholder="Bairro" class="form-input" /></label>
     <label class="required-label"><input type="text" id="cidade" placeholder="Cidade" class="form-input" /></label>
@@ -133,21 +136,19 @@
     <input type="text" id="whatsapp" placeholder="WhatsApp (opcional)" class="form-input" />
 
     <button class="btn" onclick="cadastrar()">Cadastrar</button>
-
     <button class="google-btn" onclick="loginComGoogle()">
       <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" width="20" />
       Cadastrar com Google
     </button>
 
     <p class="termos">
-      Ao continuar, você concorda com os
-      <a href="https://www.mostreaki.com.br/termos-de-servico.html" target="_blank">Termos de Serviço</a>
+      Ao continuar, vocÃª concorda com os
+      <a href="https://www.mostreaki.com.br/termos-de-servico.html" target="_blank">Termos de ServiÃ§o</a>
       e a
-      <a href="https://www.mostreaki.com.br/politica-de-privacidade.html" target="_blank">Política de Privacidade</a>
+      <a href="https://www.mostreaki.com.br/politica-de-privacidade.html" target="_blank">PolÃ­tica de Privacidade</a>
       do MostreAki e seus parceiros.
     </p>
   </div>
-
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
     import { getAuth, createUserWithEmailAndPassword, signInWithPopup, sendEmailVerification, GoogleAuthProvider } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
@@ -206,6 +207,12 @@
       const estado = document.getElementById('estado').value.trim();
       const whatsapp = document.getElementById('whatsapp').value.trim();
 
+      const documentoValido = tipoPessoa === "fisica" ? validarCPF(cpf) : validarCNPJ(cnpj);
+      if (!documentoValido) {
+        Swal.fire("Documento inválido", `O ${tipoPessoa === "fisica" ? "CPF" : "CNPJ"} inserido é inválido.`, "error");
+        return;
+      }
+
       if (senha !== confirmarSenha) {
         Swal.fire("Erro", "As senhas não coincidem.", "error");
         return;
@@ -214,7 +221,6 @@
       try {
         const credenciais = await createUserWithEmailAndPassword(auth, email, senha);
         const user = credenciais.user;
-
         await sendEmailVerification(user);
 
         await setDoc(doc(db, "usuarios", user.uid), {
@@ -230,7 +236,6 @@
         });
 
         Swal.fire("Verificação enviada", "Enviamos um e-mail para confirmação. Por favor, confirme para concluir o cadastro.", "info");
-
       } catch (erro) {
         Swal.fire("Erro ao cadastrar", erro.message, "error");
       }
@@ -248,6 +253,53 @@
       document.getElementById('cpfContainer').style.display = tipo === 'fisica' ? 'block' : 'none';
       document.getElementById('cnpjContainer').style.display = tipo === 'juridica' ? 'block' : 'none';
     };
+
+    function validarCPF(cpf) {
+      cpf = cpf.replace(/[^\d]+/g,'');
+      if(cpf == '' || cpf.length !== 11 || /^(\d)+$/.test(cpf)) return false;
+      let soma = 0, resto;
+      for (let i = 1; i <= 9; i++) soma += parseInt(cpf.substring(i-1, i)) * (11 - i);
+      resto = (soma * 10) % 11;
+      if ((resto == 10) || (resto == 11)) resto = 0;
+      if (resto != parseInt(cpf.substring(9, 10))) return false;
+      soma = 0;
+      for (let i = 1; i <= 10; i++) soma += parseInt(cpf.substring(i-1, i)) * (12 - i);
+      resto = (soma * 10) % 11;
+      if ((resto == 10) || (resto == 11)) resto = 0;
+      return resto == parseInt(cpf.substring(10, 11));
+    }
+
+    function validarCNPJ(cnpj) {
+      cnpj = cnpj.replace(/[^\d]+/g,'');
+      if(cnpj.length !== 14 || /^(\d)+$/.test(cnpj)) return false;
+      let tamanho = cnpj.length - 2
+      let numeros = cnpj.substring(0, tamanho);
+      let digitos = cnpj.substring(tamanho);
+      let soma = 0;
+      let pos = tamanho - 7;
+      for (let i = tamanho; i >= 1; i--) {
+        soma += numeros.charAt(tamanho - i) * pos--;
+        if (pos < 2) pos = 9;
+      }
+      let resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+      if (resultado != digitos.charAt(0)) return false;
+
+      tamanho = tamanho + 1;
+      numeros = cnpj.substring(0, tamanho);
+      soma = 0;
+      pos = tamanho - 7;
+      for (let i = tamanho; i >= 1; i--) {
+        soma += numeros.charAt(tamanho - i) * pos--;
+        if (pos < 2) pos = 9;
+      }
+      resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+      return resultado == digitos.charAt(1);
+    }
+
+    $(document).ready(function() {
+      $('#cpf').mask('000.000.000-00');
+      $('#cnpj').mask('00.000.000/0000-00');
+    });
   </script>
 </body>
 </html>
