@@ -242,14 +242,43 @@
           location.reload();
         });
       };
-      const foto = user.photoURL || localStorage.getItem("fotoPerfil");
-      if (foto) {
-        userCircle.style.backgroundImage = `url('${foto}')`;
-        localStorage.setItem("fotoPerfil", foto);
-        userCircle.textContent = "";
-      } else {
-        userCircle.textContent = user.email.charAt(0).toUpperCase();
-      }
+      import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const db = getFirestore(app);
+
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    authText.textContent = "Sair";
+    authText.style.display = "inline";
+    authText.onclick = () => {
+      signOut(auth).then(() => {
+        localStorage.removeItem("fotoPerfil");
+        location.reload();
+      });
+    };
+
+    // Buscar do Firestore
+    const snap = await getDoc(doc(db, "usuarios", user.uid));
+    const foto = snap.exists() && snap.data().fotoPerfil 
+      ? snap.data().fotoPerfil 
+      : user.photoURL || localStorage.getItem("fotoPerfil");
+
+    if (foto) {
+      userCircle.style.backgroundImage = `url('${foto}')`;
+      localStorage.setItem("fotoPerfil", foto);
+      userCircle.textContent = "";
+    } else {
+      userCircle.textContent = user.email.charAt(0).toUpperCase();
+    }
+
+    userCircle.style.display = "flex";
+  } else {
+    authText.textContent = "Entrar";
+    authText.style.display = "inline";
+    authText.onclick = abrirModal;
+    userCircle.style.display = "none";
+  }
+});
       userCircle.style.display = "flex";
     } else {
       authText.textContent = "Entrar";
