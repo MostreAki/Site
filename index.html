@@ -120,12 +120,10 @@
 </head>
 <body>
 
-  <!-- ✅ AVISO DE LOGIN OBRIGATÓRIO -->
   <div id="avisoLogin" style="display:none;position:fixed;top:10px;left:50%;transform:translateX(-50%);background:#fa1e39;color:white;padding:12px 20px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,0.2);z-index:9999;font-weight:bold;font-size:0.95rem">
     ⚠️ Você precisa estar logado para acessar sua conta.
   </div>
 
-  <!-- Modal de Login -->
   <div id="loginModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:9999;">
     <div style="background:white; padding:20px; border-radius:8px; width:90%; max-width:400px;">
       <h2>Entrar no MostreAki</h2>
@@ -153,7 +151,7 @@
     <div style="display: flex; align-items: center; gap: 10px;">
       <span id="authText" style="font-weight:bold; color:#15b0af; cursor:pointer; display:none;" onclick="handleAuthAction()"></span>
       <div id="userCircle" class="user-circle" title="Perfil"></div>
-      <div class="menu-icon" onclick="toggleMenu()">&#9776;</div>
+      <div class="menu-icon" onclick="toggleMenu()">☰</div>
     </div>
     <div class="menu-list" id="menu">
       <a href="/sobre.html">Sobre</a>
@@ -197,7 +195,7 @@
     &copy; 2025 MostreAki. Todos os direitos reservados.
   </footer>
 
-  <!-- Firebase + Lógica de Autenticação -->
+  <!-- Firebase + Scripts -->
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
     import {
@@ -210,16 +208,15 @@
       GoogleAuthProvider
     } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 
-    const firebaseConfig = {
+    const app = initializeApp({
       apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
       authDomain: "mostreaki-2025.firebaseapp.com",
       projectId: "mostreaki-2025",
       storageBucket: "mostreaki-2025.appspot.com",
       messagingSenderId: "748712068097",
       appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
-    };
+    });
 
-    const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
     window.login = function () {
@@ -239,6 +236,8 @@
       signInWithPopup(auth, provider)
         .then(result => {
           const isNewUser = result._tokenResponse?.isNewUser;
+          const foto = result.user.photoURL;
+          if (foto) localStorage.setItem("fotoPerfil", foto);
           alert(isNewUser ? "Cadastro realizado com Google!" : "Login com Google realizado!");
           closeModal();
           location.reload();
@@ -254,10 +253,7 @@
 
     window.resetarSenha = function () {
       const email = document.getElementById("email").value;
-      if (!email) {
-        alert("Digite seu e-mail para redefinir a senha.");
-        return;
-      }
+      if (!email) return alert("Digite seu e-mail para redefinir a senha.");
       sendPasswordResetEmail(auth, email)
         .then(() => alert("Verifique seu e-mail para redefinir a senha."))
         .catch(error => alert("Erro: " + error.message));
@@ -319,10 +315,7 @@
       input.type = isPassword ? "text" : "password";
       el.textContent = isPassword ? "🙈" : "👁️";
     }
-  </script>
 
-  <!-- ✅ SCRIPT DO AVISO FLUTUANTE -->
-  <script>
     if (location.search.includes('login=obrigatorio')) {
       const aviso = document.getElementById('avisoLogin');
       if (aviso) {
