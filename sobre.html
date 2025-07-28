@@ -6,7 +6,7 @@
   <title>Sobre â€“ MostreAki</title>
   <link rel="icon" href="favicon.ico" type="image/x-icon"/>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif }
 
     body {
       background-image: url("fundo-mobile.png");
@@ -242,10 +242,9 @@
           location.reload();
         });
       };
-      const foto = user.photoURL || localStorage.getItem("fotoPerfil");
-      if (foto) {
-        userCircle.style.backgroundImage = `url('${foto}')`;
-        localStorage.setItem("fotoPerfil", foto);
+      if (user.photoURL) {
+        userCircle.style.backgroundImage = `url('${user.photoURL}')`;
+        localStorage.setItem("fotoPerfil", user.photoURL);
         userCircle.textContent = "";
       } else {
         userCircle.textContent = user.email.charAt(0).toUpperCase();
