@@ -59,6 +59,7 @@
       text-align: center;
       font-weight: bold;
     }
+
     .menu-list a:hover { background-color: #b8313b; }
 
     .user-circle {
@@ -243,9 +244,10 @@
           location.reload();
         });
       };
-      if (user.photoURL) {
-        userCircle.style.backgroundImage = `url('${user.photoURL}')`;
-        localStorage.setItem("fotoPerfil", user.photoURL);
+
+      let foto = localStorage.getItem("fotoPerfil");
+      if (foto) {
+        userCircle.style.backgroundImage = `url('${foto}')`;
         userCircle.textContent = "";
       } else {
         userCircle.textContent = user.email.charAt(0).toUpperCase();
@@ -262,14 +264,14 @@
   window.toggleMenu = () => {
     const m = document.getElementById("menu");
     m.style.display = m.style.display === "flex" ? "none" : "flex";
-  }
+  };
 
   window.abrirModal = () => document.getElementById("modalLogin").style.display = "flex";
   window.fecharModal = () => document.getElementById("modalLogin").style.display = "none";
   window.toggleSenha = () => {
     const input = document.getElementById("senha");
     input.type = input.type === "password" ? "text" : "password";
-  }
+  };
 
   window.entrarEmail = () => {
     const email = document.getElementById("email").value;
@@ -280,7 +282,7 @@
         fecharModal();
       })
       .catch(() => exibirMensagem("Erro ao entrar. Verifique os dados.", true));
-  }
+  };
 
   window.entrarGoogle = () => {
     signInWithPopup(auth, provider)
@@ -292,7 +294,7 @@
         fecharModal();
       })
       .catch(() => exibirMensagem("Erro ao entrar com Google.", true));
-  }
+  };
 
   window.redefinirSenha = () => {
     const email = document.getElementById("email").value;
@@ -300,7 +302,7 @@
     sendPasswordResetEmail(auth, email)
       .then(() => exibirMensagem("Email de recuperação enviado!"))
       .catch(() => exibirMensagem("Erro ao enviar redefinição.", true));
-  }
+  };
 
   window.cadastrarUsuario = () => {
     const email = document.getElementById("email").value;
@@ -311,7 +313,7 @@
         fecharModal();
       })
       .catch(() => exibirMensagem("Erro ao cadastrar. Tente outro e-mail.", true));
-  }
+  };
 </script>
 
 </body>
