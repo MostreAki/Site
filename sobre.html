@@ -1,12 +1,11 @@
 <!DOCTYPE html>
-
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Sobre â€“ MostreAki</title>
-<link href="favicon.ico" rel="icon" type="image/x-icon"/>
-<style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sobre â€“ MostreAki</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon"/>
+  <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
 
     body {
@@ -155,52 +154,58 @@
   </style>
 </head>
 <body>
+
 <header>
-<div class="logo-container" onclick="location.href='index.html'">
-<img alt="Logo" src="logo.png"/>
-<div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
-</div>
-<div style="display:flex;align-items:center;gap:10px;">
-<span id="authText" style="font-weight:bold;color:#15b0af;cursor:pointer;display:none">Entrar</span>
-<div class="user-circle" id="userCircle" title="Perfil"></div>
-<div class="menu-icon" onclick="toggleMenu()">â˜°</div>
-</div>
-<div class="menu-list" id="menu">
-<a href="/index.html">InÃ­cio</a>
-<a href="/minha-conta.html">Minha Conta</a>
-<a href="/planos.html">Planos</a>
-<a href="/servicos-adicionais.html">ServiÃ§os Adicionais</a>
-<a href="/crieaki.html">CrieAki</a>
-<a href="/contatos.html">Contatos</a>
-</div>
+  <div class="logo-container" onclick="location.href='index.html'">
+    <img src="logo.png" alt="Logo">
+    <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <span id="authText" style="font-weight:bold;color:#15b0af;cursor:pointer;display:none">Entrar</span>
+    <div id="userCircle" class="user-circle" title="Perfil"></div>
+    <div class="menu-icon" onclick="toggleMenu()">â˜°</div>
+  </div>
+  <div class="menu-list" id="menu">
+    <a href="/index.html">InÃ­cio</a>
+    <a href="/minha-conta.html">Minha Conta</a>
+    <a href="/planos.html">Planos</a>
+    <a href="/servicos-adicionais.html">ServiÃ§os Adicionais</a>
+    <a href="/crieaki.html">CrieAki</a>
+    <a href="/contatos.html">Contatos</a>
+  </div>
 </header>
+
 <div class="section">
-<h2>Sobre o MostreAki</h2>
-<p>O MostreAki nasceu para dar visibilidade a pequenos empreendedores, artistas e criadores.</p>
-<p>Nosso objetivo Ã© oferecer uma vitrine digital acessÃ­vel, com ferramentas simples e eficazes para divulgar ideias, produtos e serviÃ§os.</p>
+  <h2>Sobre o MostreAki</h2>
+  <p>O MostreAki nasceu para dar visibilidade a pequenos empreendedores, artistas e criadores.</p>
+  <p>Nosso objetivo Ã© oferecer uma vitrine digital acessÃ­vel, com ferramentas simples e eficazes para divulgar ideias, produtos e serviÃ§os.</p>
 </div>
+
 <footer>
-  Â© 2025 MostreAki. Todos os direitos reservados.
+  &copy; 2025 MostreAki. Todos os direitos reservados.
 </footer>
+
 <!-- Modal -->
-<div class="modal-bg" id="modalLogin">
-<div class="modal">
-<div class="fechar" onclick="fecharModal()">âœ–</div>
-<h2>Entrar</h2>
-<input id="email" placeholder="E-mail" type="email"/>
-<div style="position:relative">
-<input id="senha" placeholder="Senha" type="password"/>
-<span onclick="toggleSenha()" style="position:absolute;top:12px;right:12px;cursor:pointer">ðŸ‘ï¸</span>
-</div>
-<button onclick="entrarEmail()">Entrar</button>
-<button class="btn-google" onclick="entrarGoogle()">
-<img alt="Google logo" src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"/> Entrar com Google
+<div id="modalLogin" class="modal-bg">
+  <div class="modal">
+    <div class="fechar" onclick="fecharModal()">âœ–</div>
+    <h2>Entrar</h2>
+    <input type="email" id="email" placeholder="E-mail">
+    <div style="position:relative">
+      <input type="password" id="senha" placeholder="Senha">
+      <span onclick="toggleSenha()" style="position:absolute;top:12px;right:12px;cursor:pointer">ðŸ‘ï¸</span>
+    </div>
+    <button onclick="entrarEmail()">Entrar</button>
+    <button class="btn-google" onclick="entrarGoogle()">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google logo"> Entrar com Google
     </button>
-<a href="#" onclick="redefinirSenha()">Esqueci minha senha</a>
-<a href="#" onclick="cadastrarUsuario()">Cadastrar</a>
+    <a href="#" onclick="redefinirSenha()">Esqueci minha senha</a>
+    <a href="#" onclick="cadastrarUsuario()">Cadastrar</a>
+  </div>
 </div>
-</div>
-<div class="mensagem" id="mensagem"></div>
+
+<div id="mensagem" class="mensagem"></div>
+
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -308,5 +313,6 @@
       .catch(() => exibirMensagem("Erro ao cadastrar. Tente outro e-mail.", true));
   }
 </script>
+
 </body>
 </html>
