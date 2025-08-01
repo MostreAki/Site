@@ -135,7 +135,7 @@
 
   const auth = getAuth(app);
   const db = getFirestore(app);
-  const storage = getStorage(app);
+  const storage = getStorage(app, "gs://mostreaki-2025.appspot.com");
 
   const userCircle = document.getElementById("userCircle");
   let userUid = null;
@@ -148,9 +148,13 @@
       const snap = await getDoc(doc(db, "usuarios", user.uid));
       if (snap.exists()) {
         const dados = snap.data();
-        if (dados.fotoPerfil) {
-          const url = await getDownloadURL(ref(storage, dados.fotoPerfil));
+        let fotoRef = dados.fotoPerfil;
+        if (fotoRef && !fotoRef.startsWith("http")) {
+          const url = await getDownloadURL(ref(storage, fotoRef));
           userCircle.style.backgroundImage = `url('${url}')`;
+          userCircle.textContent = "";
+        } else if (fotoRef) {
+          userCircle.style.backgroundImage = `url('${fotoRef}')`;
           userCircle.textContent = "";
         } else if (user.photoURL) {
           userCircle.style.backgroundImage = `url('${user.photoURL}')`;
