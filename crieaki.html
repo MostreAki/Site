@@ -1,40 +1,40 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+<!DOCTYPE html><html lang="pt-br">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CrieAki – MostreAki</title>
-  <link rel="icon" href="favicon.ico" type="image/x-icon"/>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" />
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
-    body {
-      background-image: url("fundo-mobile.png");
-      background-size: cover;
-      background-attachment: fixed;
-      background-repeat: no-repeat;
-    }
-    @media(min-width:768px){
-      body { background-image: url("fundo-desktop.png"); }
-    }
-
-    header {
-      background: #c2e7df;
-      height: 60px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 20px;
-      position: relative;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-    .logo-container { display: flex; align-items: center; cursor: pointer; }
-    .logo-container img { height: 40px; margin-right: 10px; }
-    .logo { font-size: 1.5rem; font-weight: bold; }
-    .logo .mostre { color: #00C2BF; }
-    .logo .aki { color: #FA1E39; }
-
-    .menu-icon { font-size: 1.5rem; cursor: pointer; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CrieAki - MostreAki</title>
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="script.js"></script>
+</head>
+<body>
+  <!-- Cabeçalho -->
+  <header class="header">
+    <img src="logo.png" alt="MostreAki Logo" class="logo">
+    <button class="logout-btn" onclick="window.location.href='index.html'">Sair</button>
+    <button class="menu-toggle">☰</button>
+  </header>  <!-- Banner -->  <section class="banner">
+    <video class="banner-desktop" autoplay muted loop>
+      <source src="banner-desktop.webm" type="video/webm">
+    </video>
+    <video class="banner-mobile" autoplay muted loop>
+      <source src="banner-mobile.webm" type="video/webm">
+    </video>
+  </section>  <!-- Corpo -->  <main class="container">
+    <div class="image-toggle">
+      <img src="botao1.png" id="toggleImage" onclick="toggleImage()">
+    </div>
+    <div class="image-select">
+      <img src="cor-seletor.png" onclick="openColorPicker()">
+      <input type="color" id="bgColor" style="display:none">
+      <input type="color" id="btnColor" style="display:none">
+      <input type="color" id="textColor" style="display:none">
+      <button onclick="goToCatalogo()">Avançar</button>
+    </div>
+  </main>  <!-- Rodapé -->  <footer class="footer">
+    <p>&copy; 2025 MostreAki. Todos os direitos reservados.</p>
+  </footer>
+</body>
+</html>    .menu-icon { font-size: 1.5rem; cursor: pointer; }
     .menu-list {
       position: absolute; top: 60px; right: 20px;
       background: #16807C; border: 2px solid #000;
