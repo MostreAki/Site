@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="pt-BR">
+ <!DOCTYPE html><html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -77,7 +77,23 @@
       max-width: 800px;
       text-align: center;
     }
-    .pickr-container { margin: 20px auto; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
+    .pickr-container {
+      margin: 20px auto;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      align-items: flex-start;
+    }
+    .color-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: bold;
+    }
+    .color-row > div {
+      width: 40px;
+      height: 40px;
+    }
     .image-toggle img {
       max-width: 100%;
       width: 100%;
@@ -121,9 +137,9 @@
   <div class="image-toggle">
     <img src="botao3.png" id="toggleImage2" onclick="toggleImage('toggleImage2', 'botao3.png', 'botao4.png')">
   </div>  <div class="pickr-container">
-    <div id="bgColorPicker"></div>
-    <div id="btnColorPicker"></div>
-    <div id="textColorPicker"></div>
+    <div class="color-row"><span>Fundo:</span><div id="bgColorPicker"></div></div>
+    <div class="color-row"><span>Botão:</span><div id="btnColorPicker"></div></div>
+    <div class="color-row"><span>Texto:</span><div id="textColorPicker"></div></div>
   </div><button onclick="goToCatalogo()">Avançar</button>
 
 </section><footer>
@@ -225,4 +241,4 @@
   createPickr('#btnColorPicker', btnColor, val => btnColor = val);
   createPickr('#textColorPicker', textColor, val => textColor = val);
 </script></body>
-</html>
+ </html>
