@@ -134,6 +134,7 @@
   const auth = getAuth(app);
   const db = getFirestore(app);
   const userCircle = document.getElementById("userCircle");
+  let userUid = null;
 
   function redirectIfNotLoggedIn(user) {
     if (!user) window.location.href = "index.html";
@@ -142,16 +143,25 @@
   onAuthStateChanged(auth, async (user) => {
     redirectIfNotLoggedIn(user);
     if (user) {
+      userUid = user.uid;
       let foto = localStorage.getItem("fotoPerfil");
       if (!foto) {
         try {
           const snap = await getDoc(doc(db, "usuarios", user.uid));
-          if (snap.exists() && snap.data().fotoPerfil) {
-            foto = snap.data().fotoPerfil;
-            localStorage.setItem("fotoPerfil", foto);
+          if (snap.exists()) {
+            const dados = snap.data();
+            if (dados.fotoPerfil) {
+              foto = dados.fotoPerfil;
+              localStorage.setItem("fotoPerfil", foto);
+            }
+            if (dados.plano !== "ativo" && dados.plano !== "pago") {
+              localStorage.setItem("assinante", "nao");
+            } else {
+              localStorage.setItem("assinante", "sim");
+            }
           }
         } catch (e) {
-          console.warn("Erro ao buscar foto do Firestore:", e);
+          console.warn("Erro ao buscar dados do Firestore:", e);
         }
       }
       if (!foto && user.photoURL) {
@@ -170,6 +180,7 @@
   window.logout = () => {
     signOut(auth).then(() => {
       localStorage.removeItem("fotoPerfil");
+      localStorage.removeItem("assinante");
       window.location.href = "index.html";
     });
   };
@@ -191,6 +202,10 @@
   };
 
   window.goToCatalogo = () => {
+    if (localStorage.getItem("assinante") !== "sim") {
+      alert("Esta funcionalidade é exclusiva para assinantes. Por favor, ative seu plano.");
+      return;
+    }
     const bg = document.getElementById("bgColor").value;
     const btn = document.getElementById("btnColor").value;
     const text = document.getElementById("textColor").value;
