@@ -100,6 +100,7 @@
       max-height: 250px;
       object-fit: contain;
       margin-bottom: 20px;
+      cursor: pointer;
     }
     footer {
       background-color: #c2e7df;
@@ -132,15 +133,15 @@
 </header><section class="section">
   <video class="banner-desktop" autoplay muted loop style="width:100%;display:none"></video>
   <video class="banner-mobile" autoplay muted loop style="width:100%;display:none"></video>  <div class="image-toggle">
-    <img src="botao1.png" id="toggleImage1" onclick="toggleImage('toggleImage1', 'botao1.png', 'botao2.png')">
+    <img src="botao1.png" id="toggleImage1" onclick="selectOption('catalogo')">
   </div>
   <div class="image-toggle">
-    <img src="botao3.png" id="toggleImage2" onclick="toggleImage('toggleImage2', 'botao3.png', 'botao4.png')">
+    <img src="botao3.png" id="toggleImage2" onclick="selectOption('noticias')">
   </div>  <div class="pickr-container">
     <div class="color-row"><span>Fundo:</span><div id="bgColorPicker"></div></div>
     <div class="color-row"><span>Botão:</span><div id="btnColorPicker"></div></div>
     <div class="color-row"><span>Texto:</span><div id="textColorPicker"></div></div>
-  </div><button onclick="goToCatalogo()">Avançar</button>
+  </div><button onclick="goToPage()">Avançar</button>
 
 </section><footer>
   &copy; 2025 MostreAki. Todos os direitos reservados.
@@ -166,6 +167,7 @@
   const userCircle = document.getElementById("userCircle");
   let userUid = null;
   let bgColor = "#ffffff", btnColor = "#fa1e39", textColor = "#000000";
+  let selectedPage = null;
 
   onAuthStateChanged(auth, async (user) => {
     if (!user) return window.location.href = "index.html";
@@ -211,20 +213,25 @@
     m.style.display = m.style.display === "flex" ? "none" : "flex";
   };
 
-  window.toggleImage = (id, img1, img2) => {
-    const img = document.getElementById(id);
-    img.src = img.src.includes(img1) ? img2 : img1;
+  window.selectOption = (page) => {
+    selectedPage = page;
+    document.getElementById("toggleImage1").src = page === "catalogo" ? "botao2.png" : "botao1.png";
+    document.getElementById("toggleImage2").src = page === "noticias" ? "botao4.png" : "botao3.png";
   };
 
-  window.goToCatalogo = () => {
+  window.goToPage = () => {
     if (localStorage.getItem("assinante") !== "sim") {
       alert("Esta funcionalidade é exclusiva para assinantes.");
+      return;
+    }
+    if (!selectedPage) {
+      alert("Por favor, selecione uma opção antes de avançar.");
       return;
     }
     localStorage.setItem("bgColor", bgColor);
     localStorage.setItem("btnColor", btnColor);
     localStorage.setItem("textColor", textColor);
-    window.location.href = "catalogo.html";
+    window.location.href = selectedPage + ".html";
   };
 
   const createPickr = (el, defaultColor, setter) => {
