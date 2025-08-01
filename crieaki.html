@@ -78,6 +78,13 @@
       text-align: center;
     }
     .pickr-container { margin: 20px auto; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
+    .image-toggle img {
+      max-width: 100%;
+      width: 100%;
+      max-height: 250px;
+      object-fit: contain;
+      margin-bottom: 20px;
+    }
     footer {
       background-color: #c2e7df;
       padding: 20px;
@@ -108,10 +115,10 @@
   </div>
 </header><section class="section">
   <video class="banner-desktop" autoplay muted loop style="width:100%;display:none"></video>
-  <video class="banner-mobile" autoplay muted loop style="width:100%;display:none"></video>  <div class="image-toggle" style="margin:20px 0;">
+  <video class="banner-mobile" autoplay muted loop style="width:100%;display:none"></video>  <div class="image-toggle">
     <img src="botao1.png" id="toggleImage1" onclick="toggleImage('toggleImage1', 'botao1.png', 'botao2.png')">
   </div>
-  <div class="image-toggle" style="margin:20px 0;">
+  <div class="image-toggle">
     <img src="botao3.png" id="toggleImage2" onclick="toggleImage('toggleImage2', 'botao3.png', 'botao4.png')">
   </div>  <div class="pickr-container">
     <div id="bgColorPicker"></div>
