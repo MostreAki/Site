@@ -122,6 +122,7 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
   import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getStorage, ref, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
   const app = initializeApp({
     apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
@@ -134,6 +135,8 @@
 
   const auth = getAuth(app);
   const db = getFirestore(app);
+  const storage = getStorage(app);
+
   const userCircle = document.getElementById("userCircle");
   let userUid = null;
   let bgColor = "#ffffff", btnColor = "#fa1e39", textColor = "#000000";
@@ -141,23 +144,28 @@
   onAuthStateChanged(auth, async (user) => {
     if (!user) return window.location.href = "index.html";
     userUid = user.uid;
-    const snap = await getDoc(doc(db, "usuarios", user.uid));
-    if (snap.exists()) {
-      const dados = snap.data();
-      if (dados.fotoPerfil) {
-        userCircle.style.backgroundImage = `url('${dados.fotoPerfil}')`;
-        userCircle.textContent = "";
-      } else if (user.photoURL) {
-        userCircle.style.backgroundImage = `url('${user.photoURL}')`;
-        userCircle.textContent = "";
-      } else {
-        userCircle.textContent = user.email.charAt(0).toUpperCase();
+    try {
+      const snap = await getDoc(doc(db, "usuarios", user.uid));
+      if (snap.exists()) {
+        const dados = snap.data();
+        if (dados.fotoPerfil) {
+          const url = await getDownloadURL(ref(storage, dados.fotoPerfil));
+          userCircle.style.backgroundImage = `url('${url}')`;
+          userCircle.textContent = "";
+        } else if (user.photoURL) {
+          userCircle.style.backgroundImage = `url('${user.photoURL}')`;
+          userCircle.textContent = "";
+        } else {
+          userCircle.textContent = user.email.charAt(0).toUpperCase();
+        }
+        if (dados.plano === "ativo" || dados.plano === "pago") {
+          localStorage.setItem("assinante", "sim");
+        } else {
+          localStorage.setItem("assinante", "nao");
+        }
       }
-      if (dados.plano === "ativo" || dados.plano === "pago") {
-        localStorage.setItem("assinante", "sim");
-      } else {
-        localStorage.setItem("assinante", "nao");
-      }
+    } catch (e) {
+      console.error("Erro ao carregar dados do usuário:", e);
     }
   });
 
