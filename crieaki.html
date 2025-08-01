@@ -59,12 +59,11 @@
       border-radius: 50%;
       width: 32px;
       height: 32px;
-      display: none;
+      display: flex;
       align-items: center;
       justify-content: center;
-      background-size: cover;
-      background-position: center;
       font-size: 0.9rem;
+      cursor: pointer;
     }
     .section {
       background: white;
@@ -91,8 +90,8 @@
     <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
   </div>
   <div style="display:flex;align-items:center;gap:10px;">
-    <span id="authText" style="font-weight:bold;color:#15b0af;cursor:pointer;display:none">Entrar</span>
-    <div id="userCircle" class="user-circle" title="Perfil"></div>
+    <button onclick="logout()" style="font-weight:bold;color:#FA1E39;border:none;background:none;cursor:pointer">Sair*</button>
+    <div id="userCircle" class="user-circle"></div>
     <div class="menu-icon" onclick="toggleMenu()">☰</div>
   </div>
   <div class="menu-list" id="menu">
@@ -116,5 +115,61 @@
   </div>
 </section><footer>
   &copy; 2025 MostreAki. Todos os direitos reservados.
-</footer><!-- Scripts de autenticação e funcionalidades ainda serão inseridos --></body>
+</footer><script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+  const app = initializeApp({
+    apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
+    authDomain: "mostreaki-2025.firebaseapp.com",
+    projectId: "mostreaki-2025",
+    storageBucket: "mostreaki-2025.appspot.com",
+    messagingSenderId: "748712068097",
+    appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
+  });
+
+  const auth = getAuth(app);
+  const userCircle = document.getElementById("userCircle");
+
+  function redirectIfNotLoggedIn(user) {
+    if (!user) window.location.href = "index.html";
+  }
+
+  onAuthStateChanged(auth, (user) => {
+    redirectIfNotLoggedIn(user);
+    if (user) {
+      userCircle.textContent = user.email.charAt(0).toUpperCase();
+    }
+  });
+
+  window.logout = () => {
+    signOut(auth).then(() => window.location.href = "index.html");
+  };
+
+  window.toggleMenu = () => {
+    const m = document.getElementById("menu");
+    m.style.display = m.style.display === "flex" ? "none" : "flex";
+  };
+
+  window.toggleImage = () => {
+    const img = document.getElementById("toggleImage");
+    img.src = img.src.includes("botao1.png") ? "botao2.png" : "botao1.png";
+  };
+
+  window.openColorPicker = () => {
+    document.getElementById("bgColor").click();
+    document.getElementById("btnColor").click();
+    document.getElementById("textColor").click();
+  };
+
+  window.goToCatalogo = () => {
+    const bg = document.getElementById("bgColor").value;
+    const btn = document.getElementById("btnColor").value;
+    const text = document.getElementById("textColor").value;
+    localStorage.setItem("bgColor", bg);
+    localStorage.setItem("btnColor", btn);
+    localStorage.setItem("textColor", text);
+    window.location.href = "catalogo.html";
+  };
+</script></body>
 </html>
