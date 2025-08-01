@@ -99,18 +99,20 @@
     <div class="menu-icon" onclick="toggleMenu()">☰</div>
   </div>
   <div class="menu-list" id="menu">
-    <a href="/index.html">Página Inicial</a>
+    <a href="/index.html">Início</a>
     <a href="/minha-conta.html">Minha Conta</a>
     <a href="/planos.html">Planos</a>
     <a href="/servicos-adicionais.html">Serviços Adicionais</a>
-    <a href="/sobre.html">Sobre</a>
+    <a href="/crieaki.html">CrieAki</a>
     <a href="/contatos.html">Contatos</a>
   </div>
 </header><section class="section">
   <video class="banner-desktop" autoplay muted loop style="width:100%;display:none"></video>
   <video class="banner-mobile" autoplay muted loop style="width:100%;display:none"></video>  <div class="image-toggle" style="margin:20px 0;">
-    <img src="botao1.png" id="toggleImage" onclick="toggleImage()">
-    <img src="botao3.png" id="toggleImage" onclick="toggleImage()">
+    <img src="botao1.png" id="toggleImage1" onclick="toggleImage('toggleImage1', 'botao1.png', 'botao2.png')">
+  </div>
+  <div class="image-toggle" style="margin:20px 0;">
+    <img src="botao3.png" id="toggleImage2" onclick="toggleImage('toggleImage2', 'botao3.png', 'botao4.png')">
   </div>  <div class="pickr-container">
     <div id="bgColorPicker"></div>
     <div id="btnColorPicker"></div>
@@ -140,7 +142,7 @@
 
   const userCircle = document.getElementById("userCircle");
   let userUid = null;
-  let bgColor = "#f0f0f0", btnColor = "#fa1e39", textColor = "#000000";
+  let bgColor = "#ffffff", btnColor = "#fa1e39", textColor = "#000000";
 
   onAuthStateChanged(auth, async (user) => {
     if (!user) return window.location.href = "index.html";
@@ -186,15 +188,11 @@
     m.style.display = m.style.display === "flex" ? "none" : "flex";
   };
 
-  window.toggleImage = () => {
-    const img = document.getElementById("toggleImage");
-    img.src = img.src.includes("botao1.png") ? "botao2.png" : "botao1.png";
+  window.toggleImage = (id, img1, img2) => {
+    const img = document.getElementById(id);
+    img.src = img.src.includes(img1) ? img2 : img1;
   };
-window.toggleImage = () => {
-    const img = document.getElementById("toggleImage");
-    img.src = img.src.includes("botao3.png") ? "botao4.png" : "botao3.png";
-  };
-  
+
   window.goToCatalogo = () => {
     if (localStorage.getItem("assinante") !== "sim") {
       alert("Esta funcionalidade é exclusiva para assinantes.");
