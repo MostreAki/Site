@@ -4,6 +4,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CrieAki – MostreAki</title>
   <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/classic.min.css" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
     body {
@@ -76,6 +77,7 @@
       max-width: 800px;
       text-align: center;
     }
+    .pickr-container { margin: 20px auto; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
     footer {
       background-color: #c2e7df;
       padding: 20px;
@@ -108,16 +110,15 @@
   <video class="banner-desktop" autoplay muted loop style="width:100%;display:none"></video>
   <video class="banner-mobile" autoplay muted loop style="width:100%;display:none"></video>  <div class="image-toggle" style="margin:20px 0;">
     <img src="botao1.png" id="toggleImage" onclick="toggleImage()">
-  </div>  <div class="image-select">
-    <img src="cor-seletor.png" onclick="openColorPicker()">
-    <input type="color" id="bgColor" style="display:none">
-    <input type="color" id="btnColor" style="display:none">
-    <input type="color" id="textColor" style="display:none">
-    <button onclick="goToCatalogo()">Avançar</button>
-  </div>
+  </div>  <div class="pickr-container">
+    <div id="bgColorPicker"></div>
+    <div id="btnColorPicker"></div>
+    <div id="textColorPicker"></div>
+  </div><button onclick="goToCatalogo()">Avançar</button>
+
 </section><footer>
   &copy; 2025 MostreAki. Todos os direitos reservados.
-</footer><script type="module">
+</footer><script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr"></script><script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
   import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -135,52 +136,34 @@
   const db = getFirestore(app);
   const userCircle = document.getElementById("userCircle");
   let userUid = null;
-
-  function redirectIfNotLoggedIn(user) {
-    if (!user) window.location.href = "index.html";
-  }
+  let bgColor = "#ffffff", btnColor = "#fa1e39", textColor = "#000000";
 
   onAuthStateChanged(auth, async (user) => {
-    redirectIfNotLoggedIn(user);
-    if (user) {
-      userUid = user.uid;
-      let foto = localStorage.getItem("fotoPerfil");
-      if (!foto) {
-        try {
-          const snap = await getDoc(doc(db, "usuarios", user.uid));
-          if (snap.exists()) {
-            const dados = snap.data();
-            if (dados.fotoPerfil) {
-              foto = dados.fotoPerfil;
-              localStorage.setItem("fotoPerfil", foto);
-            }
-            if (dados.plano !== "ativo" && dados.plano !== "pago") {
-              localStorage.setItem("assinante", "nao");
-            } else {
-              localStorage.setItem("assinante", "sim");
-            }
-          }
-        } catch (e) {
-          console.warn("Erro ao buscar dados do Firestore:", e);
-        }
-      }
-      if (!foto && user.photoURL) {
-        foto = user.photoURL;
-        localStorage.setItem("fotoPerfil", foto);
-      }
-      if (foto) {
-        userCircle.style.backgroundImage = `url('${foto}')`;
+    if (!user) return window.location.href = "index.html";
+    userUid = user.uid;
+    const snap = await getDoc(doc(db, "usuarios", user.uid));
+    if (snap.exists()) {
+      const dados = snap.data();
+      if (dados.fotoPerfil) {
+        userCircle.style.backgroundImage = `url('${dados.fotoPerfil}')`;
+        userCircle.textContent = "";
+      } else if (user.photoURL) {
+        userCircle.style.backgroundImage = `url('${user.photoURL}')`;
         userCircle.textContent = "";
       } else {
         userCircle.textContent = user.email.charAt(0).toUpperCase();
+      }
+      if (dados.plano === "ativo" || dados.plano === "pago") {
+        localStorage.setItem("assinante", "sim");
+      } else {
+        localStorage.setItem("assinante", "nao");
       }
     }
   });
 
   window.logout = () => {
     signOut(auth).then(() => {
-      localStorage.removeItem("fotoPerfil");
-      localStorage.removeItem("assinante");
+      localStorage.clear();
       window.location.href = "index.html";
     });
   };
@@ -195,24 +178,29 @@
     img.src = img.src.includes("botao1.png") ? "botao2.png" : "botao1.png";
   };
 
-  window.openColorPicker = () => {
-    document.getElementById("bgColor").click();
-    document.getElementById("btnColor").click();
-    document.getElementById("textColor").click();
-  };
-
   window.goToCatalogo = () => {
     if (localStorage.getItem("assinante") !== "sim") {
-      alert("Esta funcionalidade é exclusiva para assinantes. Por favor, ative seu plano.");
+      alert("Esta funcionalidade é exclusiva para assinantes.");
       return;
     }
-    const bg = document.getElementById("bgColor").value;
-    const btn = document.getElementById("btnColor").value;
-    const text = document.getElementById("textColor").value;
-    localStorage.setItem("bgColor", bg);
-    localStorage.setItem("btnColor", btn);
-    localStorage.setItem("textColor", text);
+    localStorage.setItem("bgColor", bgColor);
+    localStorage.setItem("btnColor", btnColor);
+    localStorage.setItem("textColor", textColor);
     window.location.href = "catalogo.html";
   };
+
+  const createPickr = (el, defaultColor, setter) => {
+    Pickr.create({
+      el, theme: 'classic', default: defaultColor,
+      components: {
+        preview: true, opacity: true, hue: true,
+        interaction: { input: true, save: true }
+      }
+    }).on('save', (color) => setter(color.toHEXA().toString()));
+  };
+
+  createPickr('#bgColorPicker', bgColor, val => bgColor = val);
+  createPickr('#btnColorPicker', btnColor, val => btnColor = val);
+  createPickr('#textColorPicker', textColor, val => textColor = val);
 </script></body>
 </html>
