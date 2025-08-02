@@ -2,8 +2,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Catálogo – MostreAki</title>
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <title>Catálogo do Cliente – MostreAki</title>
   <style>
     :root {
       --header-color: #c2e7df;
@@ -23,95 +22,110 @@
       background-color: var(--header-color);
       padding: 20px;
       text-align: center;
-      font-size: 1.5rem;
-      font-weight: bold;
     }
-    .container {
-      background-color: var(--container-color);
-      margin: 40px auto;
-      max-width: 800px;
-      padding: 20px;
+    #logo {
+      max-height: 80px;
+      cursor: pointer;
+    }
+    .carousel {
+      display: flex;
+      overflow-x: auto;
+      gap: 10px;
+      padding: 10px;
+      scroll-snap-type: x mandatory;
+    }
+    .carousel img {
+      width: 100%;
+      max-width: 300px;
       border-radius: 10px;
-      box-shadow: 0 0 10px #0001;
+      scroll-snap-align: center;
+    }
+    .catalog-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 15px;
+      padding: 20px;
+    }
+    .item {
+      background-color: var(--container-color);
+      border-radius: 8px;
+      padding: 10px;
+      text-align: center;
+      box-shadow: 0 0 8px #0001;
+    }
+    .item img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 6px;
+    }
+    .item h4, .item p {
+      margin: 5px 0;
+    }
+    .item button {
+      background-color: var(--button-color);
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
     }
     footer {
       background-color: var(--footer-color);
-      padding: 20px;
       text-align: center;
+      padding: 15px;
       font-size: 0.9rem;
-      color: #555;
+      color: #444;
     }
-    button.primary {
-      background-color: var(--button-color);
-      color: #fff;
-      border: none;
-      padding: 12px 20px;
-      border-radius: 6px;
+    .actions {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin: 20px;
+    }
+    .actions button {
+      padding: 10px 16px;
       font-weight: bold;
+      background-color: var(--button-color);
+      border: none;
+      color: white;
+      border-radius: 6px;
       cursor: pointer;
-    }
-    .upload-container {
-      margin-bottom: 20px;
-    }
-    .upload-container input {
-      display: block;
-      margin: 10px 0;
-    }
-    .preview {
-      margin-top: 10px;
-    }
-    .preview img {
-      max-width: 100%;
-      max-height: 200px;
-      object-fit: contain;
     }
   </style>
 </head>
 <body>
-  <header>Catálogo do Criador</header>
-  <div class="container">
-    <p>Adicione suas imagens e textos. O estilo já foi definido!</p><!-- Mobile Image Upload -->
-<div class="upload-container">
-  <label for="mobileImage">Imagem Mobile (640x640px):</label>
-  <input type="file" id="mobileImage" accept="image/*" onchange="previewImage('mobileImage')" />
-  <div class="preview" id="mobilePreview"></div>
-</div>
-
-<!-- Desktop Image Upload -->
-<div class="upload-container">
-  <label for="desktopImage">Imagem Desktop (1280x720px):</label>
-  <input type="file" id="desktopImage" accept="image/*" onchange="previewImage('desktopImage')" />
-  <div class="preview" id="desktopPreview"></div>
-</div>
-
-<textarea rows="5" style="width:100%;" placeholder="Digite sua descrição..."></textarea>
-<br><br>
-<button class="primary" onclick="publishContent()">Publicar</button>
-
-  </div>
-  <footer>&copy; 2025 MostreAki. Todos os direitos reservados.</footer>  <script>
-    function previewImage(inputId) {
-      const file = document.getElementById(inputId).files[0];
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const previewId = inputId === 'mobileImage' ? 'mobilePreview' : 'desktopPreview';
-        document.getElementById(previewId).innerHTML = `<img src="${e.target.result}" alt="Preview Image" />`;
-      };
-      reader.readAsDataURL(file);
+  <header>
+    <img id="logo" src="logo.png" alt="Logotipo" />
+  </header>  <div class="carousel">
+    <img src="banner1.png" alt="Banner 1">
+    <img src="banner2.png" alt="Banner 2">
+    <img src="banner3.png" alt="Banner 3">
+  </div>  <div class="catalog-grid" id="catalog">
+    <!-- Os itens do catálogo serão carregados aqui -->
+  </div>  <div class="actions">
+    <button onclick="salvarConteudo()">Salvar</button>
+    <button onclick="visualizarConteudo()">Visualizar</button>
+  </div>  <footer>
+    &copy; 2025 MostreAki. Todos os direitos reservados para <strong><span id="username">[nome-do-cliente]</span></strong>.
+  </footer>  <script>
+    // Placeholder - depois substituímos com Firebase
+    function salvarConteudo() {
+      alert("Conteúdo salvo no Firestore (em breve real)!");
     }
-
-    function publishContent() {
-      const mobileImage = document.getElementById('mobileImage').files[0];
-      const desktopImage = document.getElementById('desktopImage').files[0];
-      if (!mobileImage || !desktopImage) {
-        alert('Por favor, carregue ambas as imagens para o catálogo!');
-        return;
-      }
-
-      // Aqui você pode salvar as imagens no Firebase Storage e atualizar o Firestore
-      // Simulando o upload no Firebase Storage (você vai integrar com o seu Firebase)
-      console.log('Publicando conteúdo...');
-      alert('Conteúdo publicado com sucesso!');
+    function visualizarConteudo() {
+      const nome = document.getElementById('username').textContent;
+      window.open(`/${nome}.html`, '_blank');
     }
+  </script>  <script>
+    function applyColors() {
+      const root = document.documentElement;
+      root.style.setProperty('--bg-color', localStorage.getItem('bgColor') || '#ffffff');
+      root.style.setProperty('--button-color', localStorage.getItem('btnColor') || '#fa1e39');
+      root.style.setProperty('--text-color', localStorage.getItem('textColor') || '#000000');
+      root.style.setProperty('--header-color', localStorage.getItem('headerColor') || '#c2e7df');
+      root.style.setProperty('--footer-color', localStorage.getItem('footerColor') || '#c2e7df');
+      root.style.setProperty('--container-color', localStorage.getItem('containerColor') || '#ffffff');
+    }
+    applyColors();
   </script></body>
 </html>
