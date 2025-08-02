@@ -42,7 +42,7 @@
     }
     .catalog-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
       gap: 15px;
       padding: 20px;
     }
@@ -52,14 +52,22 @@
       padding: 10px;
       text-align: center;
       box-shadow: 0 0 8px #0001;
+      border: 2px dashed #ccc;
     }
     .item img {
       max-width: 100%;
       height: auto;
       border-radius: 6px;
+      margin-bottom: 10px;
     }
-    .item h4, .item p {
+    .item input[type="file"],
+    .item input[type="number"],
+    .item input[type="text"] {
+      width: 90%;
       margin: 5px 0;
+      padding: 6px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
     }
     .item button {
       background-color: var(--button-color);
@@ -68,6 +76,7 @@
       padding: 6px 12px;
       border-radius: 4px;
       cursor: pointer;
+      margin-top: 6px;
     }
     footer {
       background-color: var(--footer-color);
@@ -101,14 +110,45 @@
     <img src="banner2.png" alt="Banner 2">
     <img src="banner3.png" alt="Banner 3">
   </div>  <div class="catalog-grid" id="catalog">
-    <!-- Os itens do catálogo serão carregados aqui -->
+    <!-- Os itens do catálogo serão adicionados aqui dinamicamente -->
   </div>  <div class="actions">
+    <button onclick="adicionarItem()">Adicionar Produto</button>
     <button onclick="salvarConteudo()">Salvar</button>
     <button onclick="visualizarConteudo()">Visualizar</button>
   </div>  <footer>
     &copy; 2025 MostreAki. Todos os direitos reservados para <strong><span id="username">[nome-do-cliente]</span></strong>.
   </footer>  <script>
-    // Placeholder - depois substituímos com Firebase
+    function adicionarItem() {
+      const grid = document.getElementById('catalog');
+      const item = document.createElement('div');
+      item.className = 'item';
+      item.innerHTML = `
+        <input type="file" accept="image/*" onchange="loadPreview(this)"><br>
+        <img style="display:none" />
+        <label>Quantidade:</label><br>
+        <input type="number" placeholder="0"><br>
+        <label>Valor (ex: 99,90):</label><br>
+        <input type="text" placeholder="0,00"><br>
+        <button onclick="chamarWhatsapp()">Chamar no WhatsApp</button>
+      `;
+      grid.appendChild(item);
+    }
+
+    function loadPreview(input) {
+      const file = input.files[0];
+      const reader = new FileReader();
+      const img = input.nextElementSibling;
+      reader.onload = function(e) {
+        img.src = e.target.result;
+        img.style.display = 'block';
+      }
+      if (file) reader.readAsDataURL(file);
+    }
+
+    function chamarWhatsapp() {
+      window.open('https://wa.me/', '_blank');
+    }
+
     function salvarConteudo() {
       alert("Conteúdo salvo no Firestore (em breve real)!");
     }
