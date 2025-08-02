@@ -158,14 +158,44 @@ footer { background-color: var(--footer-color); padding: 20px; text-align: cente
     document.getElementById('toggleImage2').src = page === 'noticias' ? 'botao4.png' : 'botao3.png';
   };
 
-  window.goToPage = () => {
-    if (localStorage.getItem('assinante') !== 'sim') { alert('Esta funcionalidade é exclusiva para assinantes.'); return; }
-    if (!selectedPage) { alert('Por favor, selecione uma opção antes de avançar.'); return; }
-    // salva preferências
-    setLS('bgColor', bgColor); setLS('btnColor', btnColor); setLS('textColor', textColor);
-    setLS('headerColor', headerColor); setLS('footerColor', footerColor); setLS('containerColor', containerColor);
-    window.location.href = selectedPage + '.html';
+  window.goToPage = async () => {
+  if (localStorage.getItem('assinante') !== 'sim') {
+    alert('Esta funcionalidade é exclusiva para assinantes.');
+    return;
+  }
+  if (!selectedPage) {
+    alert('Por favor, selecione uma opção antes de avançar.');
+    return;
+  }
+
+  // salva localmente
+  setLS('bgColor', bgColor);
+  setLS('btnColor', btnColor);
+  setLS('textColor', textColor);
+  setLS('headerColor', headerColor);
+  setLS('footerColor', footerColor);
+  setLS('containerColor', containerColor);
+
+  const user = auth.currentUser;
+  if (!user) return;
+
+  const displayName = user.displayName || user.uid;
+  const usuario = displayName.toLowerCase().replace(/\s+/g, '-');
+
+  const cores = {
+    bgColor, btnColor, textColor,
+    headerColor, footerColor, containerColor,
+    usuario
   };
+
+  try {
+    await setDoc(doc(db, "usuarios", usuario), cores);
+    window.location.href = `${selectedPage}-${usuario}.html`;
+  } catch (e) {
+    console.error('Erro ao salvar dados do usuário:', e);
+    alert('Erro ao salvar configurações. Tente novamente.');
+  }
+};
 
   // Helpers LS
   function setLS(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
@@ -196,3 +226,4 @@ footer { background-color: var(--footer-color); padding: 20px; text-align: cente
   createPickr('#containerColorPicker', containerColor, v => containerColor = v);
 </script></body>
 </html>
+
