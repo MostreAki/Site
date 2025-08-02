@@ -1,166 +1,117 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+<!DOCTYPE html><html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Catálogo do Cliente | MostreAki</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Catálogo – MostreAki</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <style>
+    :root {
+      --header-color: #c2e7df;
+      --footer-color: #c2e7df;
+      --container-color: #ffffff;
+      --text-color: #000000;
+      --button-color: #fa1e39;
+      --bg-color: #ffffff;
+    }
     body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
       margin: 0;
-      font-family: 'Montserrat', sans-serif;
-      background-color: #f8f8f8;
+      font-family: Arial, sans-serif;
     }
     header {
-      background-color: #f65151;
-      color: white;
-      padding: 10px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .logo {
+      background-color: var(--header-color);
+      padding: 20px;
+      text-align: center;
       font-size: 1.5rem;
       font-weight: bold;
     }
-    .menu-toggle {
-      font-size: 1.5rem;
+    .container {
+      background-color: var(--container-color);
+      margin: 40px auto;
+      max-width: 800px;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #0001;
+    }
+    footer {
+      background-color: var(--footer-color);
+      padding: 20px;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #555;
+    }
+    button.primary {
+      background-color: var(--button-color);
+      color: #fff;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 6px;
+      font-weight: bold;
       cursor: pointer;
     }
-    nav {
-      display: none;
-      flex-direction: column;
-      background-color: #fff;
-      border-top: 1px solid #ccc;
+    .upload-container {
+      margin-bottom: 20px;
     }
-    nav a {
-      padding: 10px 20px;
-      text-decoration: none;
-      color: #333;
-      border-bottom: 1px solid #eee;
+    .upload-container input {
+      display: block;
+      margin: 10px 0;
     }
-    nav a:hover {
-      background-color: #f0f0f0;
+    .preview {
+      margin-top: 10px;
     }
-    .banner-desktop, .banner-mobile {
-      width: 100%;
-      height: auto;
-      display: none;
-    }
-    @media (min-width: 768px) {
-      .banner-desktop { display: block; }
-    }
-    @media (max-width: 767px) {
-      .banner-mobile { display: block; }
+    .preview img {
+      max-width: 100%;
+      max-height: 200px;
+      object-fit: contain;
     }
   </style>
 </head>
 <body>
+  <header>Catálogo do Criador</header>
+  <div class="container">
+    <p>Adicione suas imagens e textos. O estilo já foi definido!</p><!-- Mobile Image Upload -->
+<div class="upload-container">
+  <label for="mobileImage">Imagem Mobile (640x640px):</label>
+  <input type="file" id="mobileImage" accept="image/*" onchange="previewImage('mobileImage')" />
+  <div class="preview" id="mobilePreview"></div>
+</div>
 
-<header>
-  <div class="logo">MostreAki</div>
-  <div class="menu-toggle" onclick="toggleMenu()">☰</div>
-</header>
+<!-- Desktop Image Upload -->
+<div class="upload-container">
+  <label for="desktopImage">Imagem Desktop (1280x720px):</label>
+  <input type="file" id="desktopImage" accept="image/*" onchange="previewImage('desktopImage')" />
+  <div class="preview" id="desktopPreview"></div>
+</div>
 
-<nav id="menu">
-  <a href="index.html">Página Inicial</a>
-  <a href="sobre.html">Sobre</a>
-  <a href="planos.html">Planos</a>
-  <a href="contatos.html">Contatos</a>
-  <a href="crieaki.html">Voltar para CrieAki</a>
-</nav>
+<textarea rows="5" style="width:100%;" placeholder="Digite sua descrição..."></textarea>
+<br><br>
+<button class="primary" onclick="publishContent()">Publicar</button>
 
-<img src="img/banner-desktop.jpg" alt="Banner Desktop" class="banner-desktop">
-<img src="img/banner-mobile.jpg" alt="Banner Mobile" class="banner-mobile">
-
-<script>
-  function toggleMenu() {
-    const menu = document.getElementById("menu");
-    menu.style.display = menu.style.display === "flex" ? "none" : "flex";
-  }
-</script>
-<!-- Cabeçalho do cliente -->
-<header style="background-color: #ffffff; padding: 20px; text-align: center;">
-  <input type="file" id="uploadLogo" accept="image/*">
-  <div id="logoPreview" style="margin-top: 10px;"></div>
-  <input type="text" placeholder="Pesquisar no catálogo..." style="margin-top: 10px; padding: 8px; width: 80%; max-width: 400px;">
-</header>
-
-<!-- Catálogo de produtos -->
-<main style="padding: 20px;">
-  <div id="catalogoGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px;"></div>
-</main>
-
-<!-- Rodapé do cliente -->
-<footer style="background-color: #f0f0f0; text-align: center; padding: 15px;">
-  <input type="text" id="direitosAutorais" placeholder="Seus direitos autorais..." style="width: 80%; max-width: 400px; padding: 8px;">
-</footer>
-
-<!-- Scripts de Firebase e Upload -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
-  import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
-    authDomain: "mostreaki-2025.firebaseapp.com",
-    projectId: "mostreaki-2025",
-    storageBucket: "mostreaki-2025.appspot.com",
-    messagingSenderId: "748712068097",
-    appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const storage = getStorage(app, "gs://mostreaki-2025.firebasestorage.app");
-  const db = getFirestore(app);
-  const auth = getAuth(app);
-
-  const uploadLogo = document.getElementById("uploadLogo");
-  const logoPreview = document.getElementById("logoPreview");
-  const catalogoGrid = document.getElementById("catalogoGrid");
-
-  onAuthStateChanged(auth, async (user) => {
-    if (user) {
-      const uid = user.uid;
-
-      // Carregar logo
-      uploadLogo.addEventListener("change", async (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-        const logoRef = ref(storage, `catalogo/${uid}/logo.jpg`);
-        await uploadBytes(logoRef, file);
-        const url = await getDownloadURL(logoRef);
-        logoPreview.innerHTML = `<img src="${url}" alt="Logo" style="max-height: 100px;">`;
-      });
-
-      // Exemplo de produto fixo (você pode carregar do Firestore)
-      const itemHTML = (imgURL, nome = "Produto", preco = "", qtd = "") => `
-        <div style="background: #fff; border-radius: 10px; padding: 10px; text-align: center;">
-          <img src="${imgURL}" alt="Produto" style="width: 100%; height: 150px; object-fit: cover; border-radius: 8px;">
-          <p><strong>${nome}</strong></p>
-          ${preco ? `<p>Preço: ${preco}</p>` : ""}
-          ${qtd ? `<p>Estoque: ${qtd}</p>` : ""}
-          <a href="https://wa.me/55SEUNUMERO" target="_blank">
-            <button style="padding: 8px 12px; background-color: #f65151; color: #fff; border: none; border-radius: 5px; cursor: pointer;">Chamar no WhatsApp</button>
-          </a>
-        </div>
-      `;
-
-      // Temporário – adicionar um produto de exemplo
-      catalogoGrid.innerHTML += itemHTML("https://via.placeholder.com/300", "Exemplo", "R$ 25,00", "2 unidades");
-    } else {
-      window.location.href = "index.html";
+  </div>
+  <footer>&copy; 2025 MostreAki. Todos os direitos reservados.</footer>  <script>
+    function previewImage(inputId) {
+      const file = document.getElementById(inputId).files[0];
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const previewId = inputId === 'mobileImage' ? 'mobilePreview' : 'desktopPreview';
+        document.getElementById(previewId).innerHTML = `<img src="${e.target.result}" alt="Preview Image" />`;
+      };
+      reader.readAsDataURL(file);
     }
-  });
-</script>
-<!-- Rodapé institucional do MostreAki -->
-<footer style="background-color: #000; color: #fff; text-align: center; padding: 20px; margin-top: 50px;">
-  <p style="margin: 0;">© 2025 MostreAki. Todos os direitos reservados.</p>
-  <p style="margin: 0;">Feito com 💛 por Felipe Hypolito Fagionato & Gi</p>
-</footer>
 
-<!-- Fim do Body e HTML -->
-</body>
+    function publishContent() {
+      const mobileImage = document.getElementById('mobileImage').files[0];
+      const desktopImage = document.getElementById('desktopImage').files[0];
+      if (!mobileImage || !desktopImage) {
+        alert('Por favor, carregue ambas as imagens para o catálogo!');
+        return;
+      }
+
+      // Aqui você pode salvar as imagens no Firebase Storage e atualizar o Firestore
+      // Simulando o upload no Firebase Storage (você vai integrar com o seu Firebase)
+      console.log('Publicando conteúdo...');
+      alert('Conteúdo publicado com sucesso!');
+    }
+  </script></body>
 </html>
