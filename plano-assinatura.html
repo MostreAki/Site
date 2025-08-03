@@ -1,0 +1,84 @@
+<!DOCTYPE html><html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plano de Assinatura - MostreAki</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+    header, footer {
+      background-color: #c2e7df;
+      padding: 1rem;
+      text-align: center;
+      color: #333;
+    }
+    main {
+      padding: 2rem;
+      max-width: 900px;
+      margin: auto;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    .pagamentos {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+    .pagamentos img {
+      max-width: 180px;
+      border-radius: 12px;
+    }
+    .confirmar {
+      display: block;
+      margin: 2rem auto;
+      padding: 1rem 2rem;
+      background-color: #fa1e39;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+    .confirmar:hover {
+      background-color: #d31730;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>MostreAki - Plano de Assinatura</h1>
+  </header>  <main>
+    <h2>Assine por apenas R$19,90/mês</h2>
+    <p>Ao assinar, você terá acesso a:</p>
+    <ul>
+      <li>Criação ilimitada de páginas</li>
+      <li>Armazenamento de imagens em nuvem</li>
+      <li>Exibição pública no portal MostreAki</li>
+      <li>Ferramentas de personalização</li>
+    </ul><div class="pagamentos">
+  <img src="imagens/pix-mercadopago.png" alt="Pix Mercado Pago">
+  <img src="imagens/pix-picpay.png" alt="Pix PicPay">
+  <img src="imagens/pix-bancointer.png" alt="Pix Banco Inter">
+</div>
+
+<button class="confirmar" onclick="confirmarPagamento()">Confirmar Pagamento</button>
+
+  </main>  <footer>
+    <p>&copy; 2025 MostreAki. Todos os direitos reservados.</p>
+  </footer>  <script>
+    function confirmarPagamento() {
+      window.location.href = 'contrato.html';
+    }
+  </script></body>
+</html>
