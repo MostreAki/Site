@@ -1,136 +1,96 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+<!DOCTYPE html><html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Plano de Assinatura – MostreAki</title>
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/classic.min.css"/>
+  <link rel="stylesheet" href="estilos.css">
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
   <style>
-    :root {
-      --header-color: #c2e7df;
-      --footer-color: #c2e7df;
-      --container-color: #ffffff;
-      --text-color: #000000;
-      --button-color: #fa1e39;
-      --bg-color: #ffffff;
-    }
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-color);
     }
-    header {
-      background-color: var(--header-color);
+    header, footer {
+      background-color: #c2e7df;
+      padding: 15px;
+      text-align: center;
+    }
+    .container {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+      border-radius: 10px;
+      background-color: #fff;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    #userCircle {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: #fa1e39;
+      color: white;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      cursor: pointer;
+      float: right;
+    }
+    nav {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 10px 20px;
-    }
-    .logo {
-      font-weight: bold;
-      font-size: 1.2rem;
-    }
-    .menu-icon {
-      cursor: pointer;
-      font-size: 1.5rem;
-    }
-    #userCircle {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background-color: #eee;
-      text-align: center;
-      line-height: 36px;
-      font-weight: bold;
-      margin-left: 10px;
-      background-size: cover;
-      background-position: center;
-    }
-    #menu {
-      display: none;
-      flex-direction: column;
-      background: #eee;
-      position: absolute;
-      top: 60px;
-      right: 20px;
-      z-index: 1;
-    }
-    #menu a {
       padding: 10px;
-      text-decoration: none;
-      color: #333;
     }
-    .container {
-      background-color: var(--container-color);
-      max-width: 700px;
-      margin: 30px auto;
+    nav img {
+      height: 40px;
+    }
+    .plano {
+      background-color: #f0f0f0;
       padding: 20px;
       border-radius: 8px;
-      box-shadow: 0 0 10px #0001;
+      margin-top: 20px;
     }
-    .pagamentos img {
-      width: 150px;
+    .formas-pagamento img {
+      width: 100px;
       margin: 10px;
     }
-    button.primary {
-      background-color: var(--button-color);
+    .btn-confirmar {
+      background-color: #fa1e39;
       color: #fff;
       border: none;
-      padding: 12px 20px;
-      border-radius: 6px;
-      font-weight: bold;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 5px;
       cursor: pointer;
-    }
-    footer {
-      background-color: var(--footer-color);
-      padding: 20px;
-      text-align: center;
-      font-size: 0.9rem;
     }
   </style>
 </head>
 <body>
   <header>
-    <div class="logo">MostreAki</div>
-    <div style="display:flex; align-items:center;">
-      <div id="authText"></div>
+    <nav>
+      <img src="logo.png" alt="MostreAki Logo">
       <div id="userCircle"></div>
-      <div class="menu-icon" onclick="toggleMenu()">☰</div>
-    </div>
-  </header>
-  <div id="menu">
-    <a href="index.html">Início</a>
-    <a href="sobre.html">Sobre</a>
-    <a href="contatos.html">Contato</a>
-    <a href="crieaki.html">CrieAki</a>
-    <a href="#" onclick="logout()">Sair</a>
-  </div>
+    </nav>
+  </header>  <div class="container">
+    <h2>Plano MostreAki R$19,90/mês</h2>
+    <div class="plano">
+      <p>✔ Até 30 imagens em seu catálogo pessoal</p>
+      <p>✔ Personalização de cores da página</p>
+      <p>✔ Divulgação de produtos, artes e serviços</p>
+      <p>✔ Integração com WhatsApp</p>
+    </div><h3>Formas de Pagamento</h3>
+<div class="formas-pagamento">
+  <img src="mercadopago.png" alt="Mercado Pago">
+  <img src="picpay.png" alt="PicPay">
+  <img src="interpix.png" alt="Pix Banco Inter">
+</div>
 
-  <div class="container">
-    <h2>Plano MostreAki – R$19,90/mês</h2>
-    <p>Inclui:</p>
-    <ul>
-      <li>Catálogo com até 30 imagens</li>
-      <li>Personalização de cores</li>
-      <li>Acesso a notícias e divulgação</li>
-    </ul>
-    <div class="pagamentos">
-      <img src="pix.png" alt="Pix">
-      <img src="mercadopago.png" alt="Mercado Pago">
-      <img src="picpay.png" alt="PicPay">
-      <img src="inter.png" alt="Banco Inter">
-    </div>
-    <button class="primary" onclick="confirmarPagamento()">Confirmar Pagamento</button>
-  </div>
+<button class="btn-confirmar" onclick="confirmarPagamento()">Confirmar Pagamento</button>
 
-  <footer>&copy; 2025 MostreAki. Todos os direitos reservados.</footer>
-
-  <script type="module">
+  </div>  <footer>&copy; 2025 MostreAki. Todos os direitos reservados.</footer>  <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged, signOut, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
     import { getStorage, ref, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
     const app = initializeApp({
@@ -143,52 +103,37 @@
     });
 
     const auth = getAuth(app);
-    const db = getFirestore(app);
-    const storage = getStorage(app, "gs://mostreaki-2025.appspot.com");
-
+    const provider = new GoogleAuthProvider();
+    const storage = getStorage(app);
     const authText = document.getElementById("authText");
     const userCircle = document.getElementById("userCircle");
 
-    let currentUser = null;
-
     onAuthStateChanged(auth, async (user) => {
       if (user) {
-        currentUser = user;
-        authText.textContent = "Sair";
-        authText.onclick = () => {
-          signOut(auth).then(() => {
-            localStorage.removeItem("fotoPerfil");
-            location.reload();
-          });
-        };
-
-        if (user.photoURL) {
+        const fotoPerfil = localStorage.getItem("fotoPerfil");
+        if (fotoPerfil) {
+          userCircle.style.backgroundImage = `url('${fotoPerfil}')`;
+          userCircle.textContent = "";
+        } else if (user.photoURL) {
           userCircle.style.backgroundImage = `url('${user.photoURL}')`;
+          localStorage.setItem("fotoPerfil", user.photoURL);
           userCircle.textContent = "";
         } else {
           userCircle.textContent = user.email.charAt(0).toUpperCase();
         }
         userCircle.style.display = "flex";
+        userCircle.onclick = () => signOut(auth).then(() => {
+          localStorage.removeItem("fotoPerfil");
+          location.reload();
+        });
       } else {
-        authText.textContent = "Entrar";
-        authText.style.display = "inline";
-        authText.onclick = () => window.location.href = "index.html";
         userCircle.style.display = "none";
       }
     });
 
-    window.toggleMenu = () => {
-      const m = document.getElementById("menu");
-      m.style.display = m.style.display === "flex" ? "none" : "flex";
-    }
-
-    window.logout = () => signOut(auth).then(() => window.location.href = "index.html");
-
-    window.confirmarPagamento = async () => {
-      if (!currentUser) return alert("Você precisa estar logado.");
-      await setDoc(doc(db, "usuarios", currentUser.uid), { plano: "pago" }, { merge: true });
+    window.confirmarPagamento = () => {
+      alert("Redirecionando para contrato legal e confirmação...");
       window.location.href = "contrato.html";
     };
-  </script>
-</body>
+  </script></body>
 </html>
