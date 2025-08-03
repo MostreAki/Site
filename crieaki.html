@@ -1,144 +1,213 @@
-<!DOCTYPE html><html lang="pt-BR">
+<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Plano de Assinatura – MostreAki</title>
-  <link rel="stylesheet" href="estilo.css">
-  <link rel="icon" href="favicon.ico" type="image/x-icon">
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";const firebaseConfig = {
-  apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
-  authDomain: "mostreaki-2025.firebaseapp.com",
-  projectId: "mostreaki-2025",
-  storageBucket: "mostreaki-2025.appspot.com",
-  messagingSenderId: "748712068097",
-  appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-const provider = new GoogleAuthProvider();
-
-const authText = document.getElementById("authText");
-const userCircle = document.getElementById("userCircle");
-
-onAuthStateChanged(auth, user => {
-  if (user) {
-    authText.textContent = "Sair";
-    authText.style.display = "inline";
-    authText.onclick = () => {
-      signOut(auth).then(() => {
-        localStorage.removeItem("fotoPerfil");
-        location.reload();
-      });
-    };
-    if (user.photoURL) {
-      userCircle.style.backgroundImage = `url('${user.photoURL}')`;
-      localStorage.setItem("fotoPerfil", user.photoURL);
-      userCircle.textContent = "";
-    } else {
-      userCircle.textContent = user.email.charAt(0).toUpperCase();
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CrieAki – MostreAki</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/classic.min.css" />
+  <style>
+    :root {
+      --header-color: #c2e7df;
+      --footer-color: #c2e7df;
+      --container-color: #ffffff;
+      --text-color: #000000;
+      --button-color: #fa1e39;
+      --bg-color: #ffffff;
     }
-    userCircle.style.display = "flex";
-  } else {
-    authText.textContent = "Entrar";
-    authText.style.display = "inline";
-    authText.onclick = abrirModal;
-    userCircle.style.display = "none";
-  }
-});
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+    body {
+      background-image: url("fundo-mobile.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      color: var(--text-color);
+    }
+    @media (min-width: 768px) { body { background-image: url("fundo-desktop.png"); } }
 
-window.confirmarPagamento = async () => {
-  const user = auth.currentUser;
-  if (!user) return alert("Faça login para confirmar o pagamento.");
-  await setDoc(doc(db, "usuarios", user.uid), { plano: "pago" }, { merge: true });
-  window.location.href = "contrato.html";
-};
+    header {
+      background-color: var(--header-color);
+      height: 60px; display: flex; align-items: center; justify-content: space-between;
+      padding: 0 20px; position: relative; box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .logo-container { display: flex; align-items: center; cursor: pointer; }
+    .logo-container img { height: 40px; margin-right: 10px; }
+    .logo { font-size: 1.5rem; font-weight: bold; }
+    .logo .mostre { color: #00C2BF; } .logo .aki { color: #FA1E39; }
+    .menu-icon { font-size: 1.5rem; cursor: pointer; }
+    .menu-list {
+      position: absolute; top: 60px; right: 20px; background-color: #16807C; border: 2px solid black;
+      border-radius: 6px; display: none; flex-direction: column; padding: 10px; z-index: 1000;
+    }
+    .menu-list a { background-color: #FA1E39; color: white; text-decoration: none; padding: 10px; margin-bottom: 8px; border-radius: 6px; text-align: center; font-weight: bold; }
+    .menu-list a:hover { background-color: #b8313b; }
 
-window.toggleMenu = () => {
-  const m = document.getElementById("menu");
-  m.style.display = m.style.display === "flex" ? "none" : "flex";
-}
+    .user-circle { background-color: #15b0af; color: white; font-weight: bold; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; cursor: pointer; background-size: cover; background-position: center; }
 
-window.abrirModal = () => document.getElementById("modalLogin").style.display = "flex";
-window.fecharModal = () => document.getElementById("modalLogin").style.display = "none";
-window.toggleSenha = () => {
-  const input = document.getElementById("senha");
-  input.type = input.type === "password" ? "text" : "password";
-}
+    .section { background: var(--container-color); margin: 60px auto; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px #0001; max-width: 800px; text-align: center; }
 
-window.entrarEmail = () => {
-  const email = document.getElementById("email").value;
-  const senha = document.getElementById("senha").value;
-  signInWithEmailAndPassword(auth, email, senha)
-    .then(() => {
-      fecharModal();
-    })
-    .catch(() => alert("Erro ao entrar. Verifique os dados."));
-}
+    .pickr-container { margin: 20px auto; display: flex; flex-direction: column; gap: 12px; align-items: stretch; }
+    .color-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .color-row label { font-weight: bold; min-width: 140px; text-align: left; }
+    .color-row > div { width: 44px; height: 44px; }
 
-window.entrarGoogle = () => {
-  signInWithPopup(auth, provider)
-    .then(result => {
-      if (result.user.photoURL) {
-        localStorage.setItem("fotoPerfil", result.user.photoURL);
-      }
-      fecharModal();
-    })
-    .catch(() => alert("Erro ao entrar com Google."));
-}
+    .image-toggle img { max-width: 100%; width: 100%; max-height: 250px; object-fit: contain; margin-bottom: 20px; cursor: pointer; }
 
-window.redefinirSenha = () => {
-  const email = document.getElementById("email").value;
-  if (!email) return alert("Digite o e-mail para redefinir.");
-  sendPasswordResetEmail(auth, email);
-}
+    button.primary { background: var(--button-color); color: #fff; border: none; border-radius: 8px; padding: 12px 18px; font-weight: bold; cursor: pointer; }
 
-  </script>
+    footer { background-color: var(--footer-color); padding: 20px; text-align: center; color: #555; font-size: 0.9rem; }
+  </style>
 </head>
 <body>
-  <header>
-    <img src="logo.png" alt="Logo MostreAki">
-    <div id="menuIcon" onclick="toggleMenu()">☰</div>
-    <div id="auth">
-      <span id="authText"></span>
-      <div id="userCircle"></div>
-    </div>
-    <nav id="menu">
-      <a href="index.html">Início</a>
-      <a href="sobre.html">Sobre</a>
-      <a href="contatos.html">Contato</a>
-      <a href="crieaki.html">CrieAki</a>
-    </nav>
-  </header>  <main>
-    <h1>Plano MostreAki – R$ 19,90/mês</h1>
-    <ul>
-      <li>Personalização de cores</li>
-      <li>Até 30 imagens no catálogo</li>
-      <li>Página pessoal customizável</li>
-    </ul>
-    <p>Formas de pagamento:</p>
-    <img src="pix.png" alt="Pix">
-    <img src="mercadopago.png" alt="Mercado Pago">
-    <img src="picpay.png" alt="PicPay">
-    <img src="bancointer.png" alt="Banco Inter">
-    <br>
-    <button onclick="confirmarPagamento()">Confirmar Pagamento</button>
-  </main>  <footer>
-    <p>&copy; 2025 MostreAki. Todos os direitos reservados.</p>
-  </footer>  <div id="modalLogin">
-    <div>
-      <h2>Entrar</h2>
-      <input id="email" placeholder="E-mail">
-      <input id="senha" type="password" placeholder="Senha">
-      <button onclick="entrarEmail()">Entrar</button>
-      <button onclick="entrarGoogle()">Entrar com Google</button>
-      <button onclick="redefinirSenha()">Esqueci a senha</button>
-      <button onclick="fecharModal()">Fechar</button>
-    </div>
+<header>
+  <div class="logo-container" onclick="location.href='index.html'">
+    <img src="logo.png" alt="Logo">
+    <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
   </div>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <button onclick="logout()" style="font-weight:bold;color:#FA1E39;border:none;background:none;cursor:pointer">Sair*</button>
+    <div id="userCircle" class="user-circle"></div>
+    <div class="menu-icon" onclick="toggleMenu()">☰</div>
+  </div>
+  <div class="menu-list" id="menu">
+    <a href="/index.html">Início</a>
+    <a href="/minha-conta.html">Minha Conta</a>
+    <a href="/assinatura.html">Assinatura</a>
+    <a href="/servicos-adicionais.html">Serviços Adicionais</a>
+    <a href="/crieaki.html">CrieAki</a>
+    <a href="/contatos.html">Contatos</a>
+  </div>
+</header>
+
+<section class="section">
+  <video class="banner-desktop" autoplay muted loop style="width:100%;display:none"></video>
+  <video class="banner-mobile" autoplay muted loop style="width:100%;display:none"></video>
+
+  <div class="image-toggle">
+    <img src="botao1.png" id="toggleImage1" onclick="selectOption('catalogo')">
+  </div>
+  <div class="image-toggle">
+    <img src="botao3.png" id="toggleImage2" onclick="selectOption('noticias')">
+  </div>
+
+  <div class="pickr-container">
+    <div class="color-row"><label>Fundo:</label><div id="bgColorPicker"></div></div>
+    <div class="color-row"><label>Texto:</label><div id="textColorPicker"></div></div>
+    <div class="color-row"><label>Botão:</label><div id="btnColorPicker"></div></div>
+    <div class="color-row"><label>Cabeçalho:</label><div id="headerColorPicker"></div></div>
+    <div class="color-row"><label>Rodapé:</label><div id="footerColorPicker"></div></div>
+    <div class="color-row"><label>Container:</label><div id="containerColorPicker"></div></div>
+  </div>
+
+  <button class="primary" onclick="goToPage()">Avançar</button>
+</section>
+
+<footer>
+  &copy; 2025 MostreAki. Todos os direitos reservados.
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr"></script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getStorage, ref, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
+  const app = initializeApp({
+    apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
+    authDomain: "mostreaki-2025.firebaseapp.com",
+    projectId: "mostreaki-2025",
+    storageBucket: "mostreaki-2025.appspot.com",
+    messagingSenderId: "748712068097",
+    appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
+  });
+
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const storage = getStorage(app, "gs://mostreaki-2025.appspot.com");
+
+  const userCircle = document.getElementById("userCircle");
+  let bgColor = getLS('bgColor', '#ffffff');
+  let btnColor = getLS('btnColor', '#fa1e39');
+  let textColor = getLS('textColor', '#000000');
+  let headerColor = getLS('headerColor', '#c2e7df');
+  let footerColor = getLS('footerColor', '#c2e7df');
+  let containerColor = getLS('containerColor', '#ffffff');
+  let selectedPage = null;
+
+  // aplica preview inicial
+  applyPreview();
+
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) return window.location.href = "index.html";
+    try {
+      const snap = await getDoc(doc(db, "usuarios", user.uid));
+      if (snap.exists()) {
+        const dados = snap.data();
+        let fotoRef = dados.fotoPerfil;
+        if (fotoRef && !fotoRef.startsWith('http')) {
+          const url = await getDownloadURL(ref(storage, fotoRef));
+          userCircle.style.backgroundImage = `url('${url}')`;
+          userCircle.textContent = '';
+        } else if (fotoRef) {
+          userCircle.style.backgroundImage = `url('${fotoRef}')`;
+          userCircle.textContent = '';
+        } else if (user.photoURL) {
+          userCircle.style.backgroundImage = `url('${user.photoURL}')`;
+          userCircle.textContent = '';
+        } else {
+          userCircle.textContent = user.email.charAt(0).toUpperCase();
+        }
+        localStorage.setItem('assinante', (dados.plano === 'ativo' || dados.plano === 'pago') ? 'sim' : 'nao');
+      }
+    } catch (e) { console.error('Erro ao carregar dados do usuário:', e); }
+  });
+
+  window.logout = () => { signOut(auth).then(() => { localStorage.clear(); window.location.href = 'index.html'; }); };
+  window.toggleMenu = () => { const m = document.getElementById('menu'); m.style.display = m.style.display === 'flex' ? 'none' : 'flex'; };
+
+  window.selectOption = (page) => {
+    selectedPage = page;
+    document.getElementById('toggleImage1').src = page === 'catalogo' ? 'botao2.png' : 'botao1.png';
+    document.getElementById('toggleImage2').src = page === 'noticias' ? 'botao4.png' : 'botao3.png';
+  };
+
+  window.goToPage = () => {
+    if (localStorage.getItem('assinante') !== 'sim') { alert('Esta funcionalidade é exclusiva para assinantes.'); return; }
+    if (!selectedPage) { alert('Por favor, selecione uma opção antes de avançar.'); return; }
+    // salva preferências
+    setLS('bgColor', bgColor); setLS('btnColor', btnColor); setLS('textColor', textColor);
+    setLS('headerColor', headerColor); setLS('footerColor', footerColor); setLS('containerColor', containerColor);
+    window.location.href = selectedPage + '.html';
+  };
+
+  // Helpers LS
+  function setLS(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+  function getLS(k,def){ try{ return localStorage.getItem(k) || def; }catch(e){ return def; } }
+
+  // Preview aplicando CSS vars
+  function applyPreview(){
+    document.documentElement.style.setProperty('--bg-color', bgColor);
+    document.documentElement.style.setProperty('--button-color', btnColor);
+    document.documentElement.style.setProperty('--text-color', textColor);
+    document.documentElement.style.setProperty('--header-color', headerColor);
+    document.documentElement.style.setProperty('--footer-color', footerColor);
+    document.documentElement.style.setProperty('--container-color', containerColor);
+  }
+
+  const createPickr = (el, defaultColor, setter) => {
+    Pickr.create({ el, theme: 'classic', default: defaultColor,
+      components: { preview: true, opacity: true, hue: true, interaction: { input: true, save: true } }
+    }).on('save', (color) => { const v = color.toHEXA().toString(); setter(v); applyPreview(); });
+  };
+
+  // Instâncias
+  createPickr('#bgColorPicker', bgColor, v => bgColor = v);
+  createPickr('#textColorPicker', textColor, v => textColor = v);
+  createPickr('#btnColorPicker', btnColor, v => btnColor = v);
+  createPickr('#headerColorPicker', headerColor, v => headerColor = v);
+  createPickr('#footerColorPicker', footerColor, v => footerColor = v);
+  createPickr('#containerColorPicker', containerColor, v => containerColor = v);
+</script>
 </body>
 </html>
