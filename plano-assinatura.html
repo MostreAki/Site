@@ -1,20 +1,24 @@
 <!DOCTYPE html><html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Plano de Assinatura – MostreAki</title>
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif }
-    body { background-color: #f7f7f7; }
+    body { margin: 0; font-family: Arial, sans-serif; background: #f0f0f0; }
     header, footer {
       background-color: #c2e7df;
-      padding: 20px;
+      color: black;
       text-align: center;
-      font-weight: bold;
+      padding: 20px;
       position: relative;
     }
-    .logo { position: absolute; top: 20px; left: 20px; height: 40px; }
+    header img {
+      position: absolute;
+      top: 10px;
+      left: 20px;
+      height: 40px;
+    }
     #userCircle {
       position: absolute;
       top: 15px;
@@ -36,32 +40,30 @@
       position: absolute;
       top: 20px;
       right: 20px;
+      font-size: 1.5em;
       cursor: pointer;
-      font-size: 1.5rem;
     }
     .menu-list {
+      display: none;
+      flex-direction: column;
+      background-color: #16807C;
       position: absolute;
       top: 60px;
       right: 20px;
-      background: #16807C;
-      border: 2px solid black;
-      border-radius: 6px;
-      display: none;
-      flex-direction: column;
       padding: 10px;
-      z-index: 1000;
+      border-radius: 8px;
+      z-index: 10;
     }
     .menu-list a {
-      background-color: #FA1E39;
       color: white;
       text-decoration: none;
       padding: 10px;
+      background: #FA1E39;
       margin-bottom: 8px;
       border-radius: 6px;
       text-align: center;
       font-weight: bold;
     }
-    .menu-list a:hover { background-color: #b8313b; }
     .section {
       max-width: 800px;
       margin: 40px auto;
@@ -71,28 +73,24 @@
       box-shadow: 0 0 10px #0001;
       text-align: center;
     }
-    .section h2 { color: #16807c; margin-bottom: 20px; }
-    .section ul { text-align: left; margin-bottom: 30px; }
-    .section ul li { margin: 10px 0; }
     .payment-methods img {
       width: 100px;
       margin: 10px;
     }
     .btn-confirmar {
-      background: #15b0af;
+      background-color: #15b0af;
       color: white;
-      padding: 12px 20px;
       border: none;
-      border-radius: 6px;
+      padding: 12px 20px;
       font-weight: bold;
+      border-radius: 6px;
       cursor: pointer;
-      font-size: 1rem;
     }
   </style>
 </head>
 <body>
   <header>
-    <img src="logo.png" alt="Logo MostreAki" class="logo" />
+    <img src="logo.png" alt="Logo">
     <div id="userCircle">?</div>
     <div class="menu-icon" onclick="toggleMenu()">☰</div>
     <div class="menu-list" id="menu">
@@ -104,29 +102,26 @@
       <a href="#" onclick="logout()">Sair</a>
     </div>
     Plano de Assinatura – MostreAki
-  </header>
-  <div class="section">
+  </header>  <div class="section">
     <h2>Assine por apenas R$19,90/mês</h2>
-    <p>Com o plano MostreAki, você tem direito a:</p>
-    <ul>
-      <li>Escolha de cores do site (fundo, textos, botões, cabeçalho e rodapé)</li>
+    <p>Você terá acesso a:</p>
+    <ul style="text-align:left;">
+      <li>Personalização total de cores</li>
       <li>Inserção de logotipo e banner</li>
       <li>Catálogo com até 30 imagens</li>
-      <li>Descrição dos produtos com valor e quantidade</li>
       <li>Botão de contato via WhatsApp</li>
       <li>Endereço público personalizado</li>
     </ul>
-    <p>Escolha uma forma de pagamento:</p>
+    <p>Formas de pagamento:</p>
     <div class="payment-methods">
-      <img src="pix.png" alt="Pix" />
-      <img src="mercadopago.png" alt="Mercado Pago" />
-      <img src="picpay.png" alt="PicPay" />
-      <img src="bancointer.png" alt="Banco Inter" />
+      <img src="pix.png" alt="Pix">
+      <img src="mercadopago.png" alt="Mercado Pago">
+      <img src="picpay.png" alt="PicPay">
+      <img src="bancointer.png" alt="Banco Inter">
     </div>
     <br>
     <button class="btn-confirmar" onclick="confirmarPagamento()">Confirmar Pagamento</button>
-  </div>
-  <footer>
+  </div>  <footer>
     &copy; 2025 MostreAki. Todos os direitos reservados.
   </footer>  <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
@@ -151,7 +146,6 @@
 
     onAuthStateChanged(auth, async (user) => {
       if (!user) return window.location.href = 'index.html';
-      const docRef = doc(db, "usuarios", user.uid);
       const fotoRef = `fotos_perfil/${user.uid}`;
       try {
         const url = await getDownloadURL(ref(storage, fotoRef));
@@ -167,8 +161,7 @@
     window.confirmarPagamento = async () => {
       const user = auth.currentUser;
       if (!user) return;
-      const docRef = doc(db, "usuarios", user.uid);
-      await updateDoc(docRef, { plano: "pago" });
+      await updateDoc(doc(db, "usuarios", user.uid), { plano: "pago" });
       window.location.href = "contrato.html";
     }
   </script>  <script>
