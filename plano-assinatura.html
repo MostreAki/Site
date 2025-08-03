@@ -1,123 +1,137 @@
-<!DOCTYPE html><html lang="pt-BR">
+<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Plano de Assinatura – MostreAki</title>
-  <link rel="icon" href="favicon.ico" type="image/x-icon"/>
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/classic.min.css"/>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif }
-    body {
-      background-image: url("fundo-mobile.png");
-      background-size: cover;
-      background-repeat: no-repeat;
-      background-attachment: fixed;
+    :root {
+      --header-color: #c2e7df;
+      --footer-color: #c2e7df;
+      --container-color: #ffffff;
+      --text-color: #000000;
+      --button-color: #fa1e39;
+      --bg-color: #ffffff;
     }
-    @media (min-width: 768px) {
-      body { background-image: url("fundo-desktop.png"); }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
     }
     header {
-      background-color: #c2e7df;
-      height: 60px;
+      background-color: var(--header-color);
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      padding: 0 20px;
-      position: relative;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-    .logo-container { display: flex; align-items: center; cursor: pointer; }
-    .logo-container img { height: 40px; margin-right: 10px; }
-    .logo { font-size: 1.5rem; font-weight: bold; }
-    .logo .mostre { color: #00C2BF; }
-    .logo .aki { color: #FA1E39; }
-    .menu-icon { font-size: 1.5rem; cursor: pointer; }
-    .menu-list {
-      position: absolute; top: 60px; right: 20px;
-      background-color: #16807C;
-      border: 2px solid black;
-      border-radius: 6px;
-      display: none;
-      flex-direction: column;
-      padding: 10px;
-      z-index: 1000;
-    }
-    .menu-list a {
-      background-color: #FA1E39;
-      color: white;
-      text-decoration: none;
-      padding: 10px;
-      margin-bottom: 8px;
-      border-radius: 6px;
-      text-align: center;
-      font-weight: bold;
-    }
-    .menu-list a:hover { background-color: #b8313b; }
-    .user-circle {
-      background-color: #15b0af;
-      color: white;
-      font-weight: bold;
-      border-radius: 50%;
-      width: 32px;
-      height: 32px;
-      display: none;
       align-items: center;
-      justify-content: center;
+      padding: 10px 20px;
+    }
+    .logo {
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+    .menu-icon {
+      cursor: pointer;
+      font-size: 1.5rem;
+    }
+    #userCircle {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background-color: #eee;
+      text-align: center;
+      line-height: 36px;
+      font-weight: bold;
+      margin-left: 10px;
       background-size: cover;
       background-position: center;
-      font-size: 0.9rem;
     }
-    .section {
-      background: white;
-      margin: 60px auto;
-      padding: 30px;
-      border-radius: 10px;
+    #menu {
+      display: none;
+      flex-direction: column;
+      background: #eee;
+      position: absolute;
+      top: 60px;
+      right: 20px;
+      z-index: 1;
+    }
+    #menu a {
+      padding: 10px;
+      text-decoration: none;
+      color: #333;
+    }
+    .container {
+      background-color: var(--container-color);
+      max-width: 700px;
+      margin: 30px auto;
+      padding: 20px;
+      border-radius: 8px;
       box-shadow: 0 0 10px #0001;
-      max-width: 800px;
-      text-align: center;
+    }
+    .pagamentos img {
+      width: 150px;
+      margin: 10px;
+    }
+    button.primary {
+      background-color: var(--button-color);
+      color: #fff;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
     }
     footer {
-      background-color: #c2e7df;
+      background-color: var(--footer-color);
       padding: 20px;
       text-align: center;
-      color: #555;
       font-size: 0.9rem;
     }
   </style>
 </head>
 <body>
   <header>
-    <div class="logo-container" onclick="location.href='index.html'">
-      <img src="logo.png" alt="Logo">
-      <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
-    </div>
-    <div style="display:flex;align-items:center;gap:10px;">
-      <span id="authText" style="font-weight:bold;color:#15b0af;cursor:pointer;display:none">Entrar</span>
-      <div id="userCircle" class="user-circle" title="Perfil"></div>
+    <div class="logo">MostreAki</div>
+    <div style="display:flex; align-items:center;">
+      <div id="authText"></div>
+      <div id="userCircle"></div>
       <div class="menu-icon" onclick="toggleMenu()">☰</div>
     </div>
-    <div class="menu-list" id="menu">
-      <a href="index.html">Início</a>
-      <a href="minha-conta.html">Minha Conta</a>
-      <a href="planos.html">Planos</a>
-      <a href="servicos-adicionais.html">Serviços Adicionais</a>
-      <a href="crieaki.html">CrieAki</a>
-      <a href="contatos.html">Contatos</a>
+  </header>
+  <div id="menu">
+    <a href="index.html">Início</a>
+    <a href="sobre.html">Sobre</a>
+    <a href="contatos.html">Contato</a>
+    <a href="crieaki.html">CrieAki</a>
+    <a href="#" onclick="logout()">Sair</a>
+  </div>
+
+  <div class="container">
+    <h2>Plano MostreAki – R$19,90/mês</h2>
+    <p>Inclui:</p>
+    <ul>
+      <li>Catálogo com até 30 imagens</li>
+      <li>Personalização de cores</li>
+      <li>Acesso a notícias e divulgação</li>
+    </ul>
+    <div class="pagamentos">
+      <img src="pix.png" alt="Pix">
+      <img src="mercadopago.png" alt="Mercado Pago">
+      <img src="picpay.png" alt="PicPay">
+      <img src="inter.png" alt="Banco Inter">
     </div>
-  </header>  <div class="section">
-    <h2>Plano MostreAki – R$ 19,90/mês</h2>
-    <p>Inclui personalização completa, catálogo digital com até 30 imagens, botão direto para WhatsApp e muito mais.</p>
-    <br>
-    <img src="pagamento-mercadopago.png" alt="Pagamento Mercado Pago" style="max-width:200px; margin: 10px;">
-    <img src="pagamento-picpay.png" alt="Pagamento PicPay" style="max-width:200px; margin: 10px;">
-    <img src="pagamento-pix.png" alt="Pagamento Pix" style="max-width:200px; margin: 10px;">
-    <br><br>
-    <button onclick="confirmarPagamento()" style="padding:12px 24px;background-color:#FA1E39;color:white;font-weight:bold;border:none;border-radius:8px;cursor:pointer">Confirmar Pagamento</button>
-  </div>  <footer>
-    &copy; 2025 MostreAki. Todos os direitos reservados.
-  </footer>  <script type="module">
+    <button class="primary" onclick="confirmarPagamento()">Confirmar Pagamento</button>
+  </div>
+
+  <footer>&copy; 2025 MostreAki. Todos os direitos reservados.</footer>
+
+  <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { getFirestore, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getStorage, ref, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
     const app = initializeApp({
       apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
@@ -130,16 +144,23 @@
 
     const auth = getAuth(app);
     const db = getFirestore(app);
-    const userCircle = document.getElementById("userCircle");
-    const authText = document.getElementById("authText");
-    let userId = null;
+    const storage = getStorage(app, "gs://mostreaki-2025.appspot.com");
 
-    onAuthStateChanged(auth, (user) => {
+    const authText = document.getElementById("authText");
+    const userCircle = document.getElementById("userCircle");
+
+    let currentUser = null;
+
+    onAuthStateChanged(auth, async (user) => {
       if (user) {
-        userId = user.uid;
+        currentUser = user;
         authText.textContent = "Sair";
-        authText.style.display = "inline";
-        authText.onclick = () => signOut(auth).then(() => location.reload());
+        authText.onclick = () => {
+          signOut(auth).then(() => {
+            localStorage.removeItem("fotoPerfil");
+            location.reload();
+          });
+        };
 
         if (user.photoURL) {
           userCircle.style.backgroundImage = `url('${user.photoURL}')`;
@@ -151,7 +172,7 @@
       } else {
         authText.textContent = "Entrar";
         authText.style.display = "inline";
-        authText.onclick = () => location.href = "index.html";
+        authText.onclick = () => window.location.href = "index.html";
         userCircle.style.display = "none";
       }
     });
@@ -161,11 +182,13 @@
       m.style.display = m.style.display === "flex" ? "none" : "flex";
     }
 
+    window.logout = () => signOut(auth).then(() => window.location.href = "index.html");
+
     window.confirmarPagamento = async () => {
-      if (!userId) return alert("Faça login primeiro.");
-      await updateDoc(doc(db, "usuarios", userId), { plano: "pago" });
-      alert("Pagamento confirmado! Sua conta foi atualizada.");
-      window.location.href = "confirmacao.html";
-    }
-  </script></body>
+      if (!currentUser) return alert("Você precisa estar logado.");
+      await setDoc(doc(db, "usuarios", currentUser.uid), { plano: "pago" }, { merge: true });
+      window.location.href = "contrato.html";
+    };
+  </script>
+</body>
 </html>
