@@ -1,84 +1,180 @@
 <!DOCTYPE html><html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Plano de Assinatura - MostreAki</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Plano de Assinatura – MostreAki</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <style>
-    body {
-      font-family: 'Arial', sans-serif;
-      background-color: #f4f4f4;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif }
+    body { background-color: #f7f7f7; }
     header, footer {
       background-color: #c2e7df;
-      padding: 1rem;
+      padding: 20px;
       text-align: center;
-      color: #333;
+      font-weight: bold;
+      position: relative;
     }
-    main {
-      padding: 2rem;
-      max-width: 900px;
-      margin: auto;
-      background: white;
-      border-radius: 16px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    h1, h2 {
-      text-align: center;
-    }
-    .pagamentos {
-      display: flex;
-      justify-content: space-around;
-      flex-wrap: wrap;
-      gap: 1rem;
-      margin-top: 2rem;
-    }
-    .pagamentos img {
-      max-width: 180px;
-      border-radius: 12px;
-    }
-    .confirmar {
-      display: block;
-      margin: 2rem auto;
-      padding: 1rem 2rem;
-      background-color: #fa1e39;
+    .logo { position: absolute; top: 20px; left: 20px; height: 40px; }
+    #userCircle {
+      position: absolute;
+      top: 15px;
+      right: 60px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #16807C;
       color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 1.2rem;
-      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      overflow: hidden;
+      background-size: cover;
+      background-position: center;
     }
-    .confirmar:hover {
-      background-color: #d31730;
+    .menu-icon {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      cursor: pointer;
+      font-size: 1.5rem;
+    }
+    .menu-list {
+      position: absolute;
+      top: 60px;
+      right: 20px;
+      background: #16807C;
+      border: 2px solid black;
+      border-radius: 6px;
+      display: none;
+      flex-direction: column;
+      padding: 10px;
+      z-index: 1000;
+    }
+    .menu-list a {
+      background-color: #FA1E39;
+      color: white;
+      text-decoration: none;
+      padding: 10px;
+      margin-bottom: 8px;
+      border-radius: 6px;
+      text-align: center;
+      font-weight: bold;
+    }
+    .menu-list a:hover { background-color: #b8313b; }
+    .section {
+      max-width: 800px;
+      margin: 40px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #0001;
+      text-align: center;
+    }
+    .section h2 { color: #16807c; margin-bottom: 20px; }
+    .section ul { text-align: left; margin-bottom: 30px; }
+    .section ul li { margin: 10px 0; }
+    .payment-methods img {
+      width: 100px;
+      margin: 10px;
+    }
+    .btn-confirmar {
+      background: #15b0af;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 1rem;
     }
   </style>
 </head>
 <body>
   <header>
-    <h1>MostreAki - Plano de Assinatura</h1>
-  </header>  <main>
+    <img src="logo.png" alt="Logo MostreAki" class="logo" />
+    <div id="userCircle">?</div>
+    <div class="menu-icon" onclick="toggleMenu()">☰</div>
+    <div class="menu-list" id="menu">
+      <a href="index.html">Início</a>
+      <a href="minha-conta.html">Minha Conta</a>
+      <a href="servicos-adicionais.html">Serviços Adicionais</a>
+      <a href="crieaki.html">CrieAki</a>
+      <a href="contatos.html">Contatos</a>
+      <a href="#" onclick="logout()">Sair</a>
+    </div>
+    Plano de Assinatura – MostreAki
+  </header>
+  <div class="section">
     <h2>Assine por apenas R$19,90/mês</h2>
-    <p>Ao assinar, você terá acesso a:</p>
+    <p>Com o plano MostreAki, você tem direito a:</p>
     <ul>
-      <li>Criação ilimitada de páginas</li>
-      <li>Armazenamento de imagens em nuvem</li>
-      <li>Exibição pública no portal MostreAki</li>
-      <li>Ferramentas de personalização</li>
-    </ul><div class="pagamentos">
-  <img src="imagens/pix-mercadopago.png" alt="Pix Mercado Pago">
-  <img src="imagens/pix-picpay.png" alt="Pix PicPay">
-  <img src="imagens/pix-bancointer.png" alt="Pix Banco Inter">
-</div>
+      <li>Escolha de cores do site (fundo, textos, botões, cabeçalho e rodapé)</li>
+      <li>Inserção de logotipo e banner</li>
+      <li>Catálogo com até 30 imagens</li>
+      <li>Descrição dos produtos com valor e quantidade</li>
+      <li>Botão de contato via WhatsApp</li>
+      <li>Endereço público personalizado</li>
+    </ul>
+    <p>Escolha uma forma de pagamento:</p>
+    <div class="payment-methods">
+      <img src="pix.png" alt="Pix" />
+      <img src="mercadopago.png" alt="Mercado Pago" />
+      <img src="picpay.png" alt="PicPay" />
+      <img src="bancointer.png" alt="Banco Inter" />
+    </div>
+    <br>
+    <button class="btn-confirmar" onclick="confirmarPagamento()">Confirmar Pagamento</button>
+  </div>
+  <footer>
+    &copy; 2025 MostreAki. Todos os direitos reservados.
+  </footer>  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+    import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+    import { getFirestore, doc, updateDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+    import { getStorage, ref, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
 
-<button class="confirmar" onclick="confirmarPagamento()">Confirmar Pagamento</button>
+    const app = initializeApp({
+      apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
+      authDomain: "mostreaki-2025.firebaseapp.com",
+      projectId: "mostreaki-2025",
+      storageBucket: "mostreaki-2025.appspot.com",
+      messagingSenderId: "748712068097",
+      appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
+    });
 
-  </main>  <footer>
-    <p>&copy; 2025 MostreAki. Todos os direitos reservados.</p>
-  </footer>  <script>
-    function confirmarPagamento() {
-      window.location.href = 'contrato.html';
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+
+    const userCircle = document.getElementById('userCircle');
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) return window.location.href = 'index.html';
+      const docRef = doc(db, "usuarios", user.uid);
+      const fotoRef = `fotos_perfil/${user.uid}`;
+      try {
+        const url = await getDownloadURL(ref(storage, fotoRef));
+        userCircle.style.backgroundImage = `url('${url}')`;
+        userCircle.textContent = '';
+      } catch {
+        userCircle.textContent = user.email.charAt(0).toUpperCase();
+      }
+    });
+
+    window.logout = () => signOut(auth).then(() => { window.location.href = 'index.html'; });
+
+    window.confirmarPagamento = async () => {
+      const user = auth.currentUser;
+      if (!user) return;
+      const docRef = doc(db, "usuarios", user.uid);
+      await updateDoc(docRef, { plano: "pago" });
+      window.location.href = "contrato.html";
+    }
+  </script>  <script>
+    function toggleMenu() {
+      const m = document.getElementById("menu");
+      m.style.display = m.style.display === "flex" ? "none" : "flex";
     }
   </script></body>
 </html>
