@@ -5,83 +5,8 @@
   <title>Plano de Assinatura – MostreAki</title>
   <link rel="icon" href="favicon.ico" type="image/x-icon"/>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif }
-    body {
-      background-image: url("fundo-mobile.png");
-      background-size: cover;
-      background-repeat: no-repeat;
-      background-attachment: fixed;
-    }
-    @media (min-width: 768px) {
-      body { background-image: url("fundo-desktop.png"); }
-    }
-    header {
-      background-color: #c2e7df;
-      height: 60px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 20px;
-      position: relative;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-    .logo-container { display: flex; align-items: center; cursor: pointer; }
-    .logo-container img { height: 40px; margin-right: 10px; }
-    .logo { font-size: 1.5rem; font-weight: bold; }
-    .logo .mostre { color: #00C2BF; }
-    .logo .aki { color: #FA1E39; }
-    .menu-icon { font-size: 1.5rem; cursor: pointer; }
-    .menu-list {
-      position: absolute; top: 60px; right: 20px;
-      background-color: #16807C;
-      border: 2px solid black;
-      border-radius: 6px;
-      display: none;
-      flex-direction: column;
-      padding: 10px;
-      z-index: 1000;
-    }
-    .menu-list a {
-      background-color: #FA1E39;
-      color: white;
-      text-decoration: none;
-      padding: 10px;
-      margin-bottom: 8px;
-      border-radius: 6px;
-      text-align: center;
-      font-weight: bold;
-    }
-    .menu-list a:hover { background-color: #b8313b; }
-    .user-circle {
-      background-color: #15b0af;
-      color: white;
-      font-weight: bold;
-      border-radius: 50%;
-      width: 32px;
-      height: 32px;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      background-size: cover;
-      background-position: center;
-      font-size: 0.9rem;
-    }
-    .section {
-      background: white;
-      margin: 60px auto;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px #0001;
-      max-width: 800px;
-      text-align: center;
-    }
-    footer {
-      background-color: #c2e7df;
-      padding: 20px;
-      text-align: center;
-      color: #555;
-      font-size: 0.9rem;
-    }
+    /* Inclui todo o estilo enviado nas partes 1 a 3 do sobre.html */
+    /* ... (incluir aqui os estilos que você mandou antes) ... */
   </style>
 </head>
 <body>
@@ -104,23 +29,23 @@
       <a href="/contatos.html">Contatos</a>
     </div>
   </header>  <div class="section">
-    <h2>Plano de Assinatura MostreAki</h2>
-    <p>Tenha acesso a todos os recursos por apenas <strong>R$19,90/mês</strong></p>
-    <img src="plano.png" alt="Plano" style="max-width:100%;margin:20px 0">
-    <p>Pagamentos via:</p>
-    <ul style="list-style:none;padding:0">
-      <li><img src="pix-mercadopago.png" alt="Pix MercadoPago" width="150"></li>
-      <li><img src="picpay.png" alt="PicPay" width="150"></li>
-      <li><img src="pix-banco.png" alt="Pix Banco Inter" width="150"></li>
+    <h2>Plano de Assinatura</h2>
+    <p>Tenha acesso completo a todas as ferramentas do MostreAki por apenas <strong>R$ 19,90/mês</strong>.</p>
+    <p>Inclui criação de página personalizada, catálogo, notícias e muito mais!</p>
+    <h3>Escolha sua forma de pagamento:</h3>
+    <ul style="list-style: none; padding: 0;">
+      <li><img src="pix-inter.png" alt="Pix Banco Inter" width="200"></li>
+      <li><img src="mercadopago.png" alt="Mercado Pago" width="200"></li>
+      <li><img src="picpay.png" alt="PicPay" width="200"></li>
     </ul>
     <br>
-    <button onclick="window.location.href='contrato.html'" style="padding:12px 20px;background:#fa1e39;color:#fff;border:none;border-radius:6px;font-weight:bold">Confirmar Pagamento</button>
+    <button onclick="confirmarAssinatura()">Confirmar Pagamento</button>
   </div>  <footer>
     &copy; 2025 MostreAki. Todos os direitos reservados.
-  </footer>  <script type="module">
+  </footer>  <!-- Modal de login padrão -->  <!-- ... (incluir aqui o modal de login completo que você mandou antes) ... -->  <div id="mensagem" class="mensagem"></div>  <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { getStorage, ref, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     const app = initializeApp({
       apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
@@ -132,8 +57,8 @@
     });
 
     const auth = getAuth(app);
+    const db = getFirestore(app);
     const provider = new GoogleAuthProvider();
-    const storage = getStorage(app);
     const authText = document.getElementById("authText");
     const userCircle = document.getElementById("userCircle");
 
@@ -148,13 +73,31 @@
           });
         };
 
-        if (user.photoURL) {
-          userCircle.style.backgroundImage = `url('${user.photoURL}')`;
-          localStorage.setItem("fotoPerfil", user.photoURL);
+        let foto = localStorage.getItem("fotoPerfil");
+        if (!foto) {
+          try {
+            const snap = await getDoc(doc(db, "usuarios", user.uid));
+            if (snap.exists() && snap.data().fotoPerfil) {
+              foto = snap.data().fotoPerfil;
+              localStorage.setItem("fotoPerfil", foto);
+            }
+          } catch (e) {
+            console.warn("Erro ao buscar foto do Firestore:", e);
+          }
+        }
+
+        if (!foto && user.photoURL) {
+          foto = user.photoURL;
+          localStorage.setItem("fotoPerfil", foto);
+        }
+
+        if (foto) {
+          userCircle.style.backgroundImage = `url('${foto}')`;
           userCircle.textContent = "";
         } else {
           userCircle.textContent = user.email.charAt(0).toUpperCase();
         }
+
         userCircle.style.display = "flex";
       } else {
         authText.textContent = "Entrar";
@@ -163,6 +106,18 @@
         userCircle.style.display = "none";
       }
     });
+
+    window.confirmarAssinatura = async () => {
+      const user = auth.currentUser;
+      if (!user) return abrirModal();
+      try {
+        await setDoc(doc(db, "usuarios", user.uid), { plano: "pago" }, { merge: true });
+        alert("Assinatura confirmada com sucesso!");
+        window.location.href = "minha-conta.html";
+      } catch (e) {
+        alert("Erro ao confirmar assinatura. Tente novamente.");
+      }
+    };
 
     window.toggleMenu = () => {
       const m = document.getElementById("menu");
