@@ -1,12 +1,86 @@
 <!DOCTYPE html><html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Plano de Assinatura – MostreAki</title>
-  <link rel="icon" href="favicon.ico" type="image/x-icon"/>
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <style>
-    /* Inclui todo o estilo enviado nas partes 1 a 3 do sobre.html */
-    /* ... (incluir aqui os estilos que você mandou antes) ... */
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+    body {
+      background-image: url("fundo-mobile.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+    }
+    @media (min-width: 768px) {
+      body { background-image: url("fundo-desktop.png"); }
+    }
+    header {
+      background-color: #c2e7df;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .logo-container { display: flex; align-items: center; cursor: pointer; }
+    .logo-container img { height: 40px; margin-right: 10px; }
+    .logo { font-size: 1.5rem; font-weight: bold; }
+    .logo .mostre { color: #00C2BF; }
+    .logo .aki { color: #FA1E39; }
+    .menu-icon { font-size: 1.5rem; cursor: pointer; }
+    .menu-list {
+      position: absolute; top: 60px; right: 20px;
+      background-color: #16807C;
+      border: 2px solid black;
+      border-radius: 6px;
+      display: none;
+      flex-direction: column;
+      padding: 10px;
+      z-index: 1000;
+    }
+    .menu-list a {
+      background-color: #FA1E39;
+      color: white;
+      text-decoration: none;
+      padding: 10px;
+      margin-bottom: 8px;
+      border-radius: 6px;
+      text-align: center;
+      font-weight: bold;
+    }
+    .menu-list a:hover { background-color: #b8313b; }
+    .user-circle {
+      background-color: #15b0af;
+      color: white;
+      font-weight: bold;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background-size: cover;
+      background-position: center;
+      font-size: 0.9rem;
+    }
+    .section {
+      background: white;
+      margin: 60px auto;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #0001;
+      max-width: 800px;
+      text-align: center;
+    }
+    footer {
+      background-color: #c2e7df;
+      padding: 20px;
+      text-align: center;
+      color: #555;
+      font-size: 0.9rem;
+    }
   </style>
 </head>
 <body>
@@ -29,23 +103,20 @@
       <a href="/contatos.html">Contatos</a>
     </div>
   </header>  <div class="section">
-    <h2>Plano de Assinatura</h2>
-    <p>Tenha acesso completo a todas as ferramentas do MostreAki por apenas <strong>R$ 19,90/mês</strong>.</p>
-    <p>Inclui criação de página personalizada, catálogo, notícias e muito mais!</p>
-    <h3>Escolha sua forma de pagamento:</h3>
-    <ul style="list-style: none; padding: 0;">
-      <li><img src="pix-inter.png" alt="Pix Banco Inter" width="200"></li>
-      <li><img src="mercadopago.png" alt="Mercado Pago" width="200"></li>
-      <li><img src="picpay.png" alt="PicPay" width="200"></li>
-    </ul>
-    <br>
-    <button onclick="confirmarAssinatura()">Confirmar Pagamento</button>
+    <h2>Assine o MostreAki</h2>
+    <p>Tenha acesso a todas as funcionalidades por apenas R$19,90/mês.</p>
+    <p>Escolha uma forma de pagamento:</p>
+    <img src="pix-mercadopago.png" alt="Pix Mercado Pago" style="max-width: 200px; margin: 10px">
+    <img src="pix-picpay.png" alt="Pix PicPay" style="max-width: 200px; margin: 10px">
+    <img src="pix-bancointer.png" alt="Pix Banco Inter" style="max-width: 200px; margin: 10px">
+    <br><br>
+    <button onclick="confirmarPagamento()">Confirmar Pagamento</button>
   </div>  <footer>
     &copy; 2025 MostreAki. Todos os direitos reservados.
-  </footer>  <!-- Modal de login padrão -->  <!-- ... (incluir aqui o modal de login completo que você mandou antes) ... -->  <div id="mensagem" class="mensagem"></div>  <script type="module">
+  </footer>  <div id="mensagem" class="mensagem"></div>  <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     const app = initializeApp({
       apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
@@ -61,6 +132,19 @@
     const provider = new GoogleAuthProvider();
     const authText = document.getElementById("authText");
     const userCircle = document.getElementById("userCircle");
+
+    function exibirMensagem(texto, erro = false) {
+      const m = document.getElementById("mensagem");
+      m.textContent = texto;
+      m.className = erro ? "mensagem erro" : "mensagem";
+      m.style.display = "block";
+      setTimeout(() => m.style.display = "none", 3000);
+    }
+
+    window.toggleMenu = () => {
+      const m = document.getElementById("menu");
+      m.style.display = m.style.display === "flex" ? "none" : "flex";
+    }
 
     onAuthStateChanged(auth, async (user) => {
       if (user) {
@@ -97,31 +181,25 @@
         } else {
           userCircle.textContent = user.email.charAt(0).toUpperCase();
         }
-
         userCircle.style.display = "flex";
       } else {
         authText.textContent = "Entrar";
         authText.style.display = "inline";
-        authText.onclick = abrirModal;
+        authText.onclick = () => document.getElementById("modalLogin").style.display = "flex";
         userCircle.style.display = "none";
       }
     });
 
-    window.confirmarAssinatura = async () => {
+    window.confirmarPagamento = async () => {
       const user = auth.currentUser;
-      if (!user) return abrirModal();
+      if (!user) return exibirMensagem("Você precisa estar logado para confirmar.", true);
       try {
-        await setDoc(doc(db, "usuarios", user.uid), { plano: "pago" }, { merge: true });
-        alert("Assinatura confirmada com sucesso!");
-        window.location.href = "minha-conta.html";
+        await updateDoc(doc(db, "usuarios", user.uid), { plano: "pago" });
+        exibirMensagem("Plano ativado com sucesso!");
+        setTimeout(() => window.location.href = "index.html", 1500);
       } catch (e) {
-        alert("Erro ao confirmar assinatura. Tente novamente.");
+        exibirMensagem("Erro ao confirmar pagamento.", true);
       }
-    };
-
-    window.toggleMenu = () => {
-      const m = document.getElementById("menu");
-      m.style.display = m.style.display === "flex" ? "none" : "flex";
     }
   </script></body>
 </html>
