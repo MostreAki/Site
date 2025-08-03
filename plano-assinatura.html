@@ -1,133 +1,123 @@
 <!DOCTYPE html><html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Plano de Assinatura – MostreAki</title>
-  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="icon" href="favicon.ico" type="image/x-icon"/>
   <style>
-    body { margin: 0; font-family: Arial, sans-serif; background: #f0f0f0; }
-    header, footer {
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif }
+    body {
+      background-image: url("fundo-mobile.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+    }
+    @media (min-width: 768px) {
+      body { background-image: url("fundo-desktop.png"); }
+    }
+    header {
       background-color: #c2e7df;
-      color: black;
-      text-align: center;
-      padding: 20px;
-      position: relative;
-    }
-    header img {
-      position: absolute;
-      top: 10px;
-      left: 20px;
-      height: 40px;
-    }
-    #userCircle {
-      position: absolute;
-      top: 15px;
-      right: 60px;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: #16807C;
-      color: white;
+      height: 60px;
       display: flex;
       align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      overflow: hidden;
-      background-size: cover;
-      background-position: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      position: relative;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
-    .menu-icon {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      font-size: 1.5em;
-      cursor: pointer;
-    }
+    .logo-container { display: flex; align-items: center; cursor: pointer; }
+    .logo-container img { height: 40px; margin-right: 10px; }
+    .logo { font-size: 1.5rem; font-weight: bold; }
+    .logo .mostre { color: #00C2BF; }
+    .logo .aki { color: #FA1E39; }
+    .menu-icon { font-size: 1.5rem; cursor: pointer; }
     .menu-list {
+      position: absolute; top: 60px; right: 20px;
+      background-color: #16807C;
+      border: 2px solid black;
+      border-radius: 6px;
       display: none;
       flex-direction: column;
-      background-color: #16807C;
-      position: absolute;
-      top: 60px;
-      right: 20px;
       padding: 10px;
-      border-radius: 8px;
-      z-index: 10;
+      z-index: 1000;
     }
     .menu-list a {
+      background-color: #FA1E39;
       color: white;
       text-decoration: none;
       padding: 10px;
-      background: #FA1E39;
       margin-bottom: 8px;
       border-radius: 6px;
       text-align: center;
       font-weight: bold;
     }
+    .menu-list a:hover { background-color: #b8313b; }
+    .user-circle {
+      background-color: #15b0af;
+      color: white;
+      font-weight: bold;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background-size: cover;
+      background-position: center;
+      font-size: 0.9rem;
+    }
     .section {
-      max-width: 800px;
-      margin: 40px auto;
       background: white;
+      margin: 60px auto;
       padding: 30px;
       border-radius: 10px;
       box-shadow: 0 0 10px #0001;
+      max-width: 800px;
       text-align: center;
     }
-    .payment-methods img {
-      width: 100px;
-      margin: 10px;
-    }
-    .btn-confirmar {
-      background-color: #15b0af;
-      color: white;
-      border: none;
-      padding: 12px 20px;
-      font-weight: bold;
-      border-radius: 6px;
-      cursor: pointer;
+    footer {
+      background-color: #c2e7df;
+      padding: 20px;
+      text-align: center;
+      color: #555;
+      font-size: 0.9rem;
     }
   </style>
 </head>
 <body>
   <header>
-    <img src="logo.png" alt="Logo">
-    <div id="userCircle">?</div>
-    <div class="menu-icon" onclick="toggleMenu()">☰</div>
+    <div class="logo-container" onclick="location.href='index.html'">
+      <img src="logo.png" alt="Logo">
+      <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span id="authText" style="font-weight:bold;color:#15b0af;cursor:pointer;display:none">Entrar</span>
+      <div id="userCircle" class="user-circle" title="Perfil"></div>
+      <div class="menu-icon" onclick="toggleMenu()">☰</div>
+    </div>
     <div class="menu-list" id="menu">
       <a href="index.html">Início</a>
       <a href="minha-conta.html">Minha Conta</a>
+      <a href="planos.html">Planos</a>
       <a href="servicos-adicionais.html">Serviços Adicionais</a>
       <a href="crieaki.html">CrieAki</a>
       <a href="contatos.html">Contatos</a>
-      <a href="#" onclick="logout()">Sair</a>
     </div>
-    Plano de Assinatura – MostreAki
   </header>  <div class="section">
-    <h2>Assine por apenas R$19,90/mês</h2>
-    <p>Você terá acesso a:</p>
-    <ul style="text-align:left;">
-      <li>Personalização total de cores</li>
-      <li>Inserção de logotipo e banner</li>
-      <li>Catálogo com até 30 imagens</li>
-      <li>Botão de contato via WhatsApp</li>
-      <li>Endereço público personalizado</li>
-    </ul>
-    <p>Formas de pagamento:</p>
-    <div class="payment-methods">
-      <img src="pix.png" alt="Pix">
-      <img src="mercadopago.png" alt="Mercado Pago">
-      <img src="picpay.png" alt="PicPay">
-      <img src="bancointer.png" alt="Banco Inter">
-    </div>
+    <h2>Plano MostreAki – R$ 19,90/mês</h2>
+    <p>Inclui personalização completa, catálogo digital com até 30 imagens, botão direto para WhatsApp e muito mais.</p>
     <br>
-    <button class="btn-confirmar" onclick="confirmarPagamento()">Confirmar Pagamento</button>
+    <img src="pagamento-mercadopago.png" alt="Pagamento Mercado Pago" style="max-width:200px; margin: 10px;">
+    <img src="pagamento-picpay.png" alt="Pagamento PicPay" style="max-width:200px; margin: 10px;">
+    <img src="pagamento-pix.png" alt="Pagamento Pix" style="max-width:200px; margin: 10px;">
+    <br><br>
+    <button onclick="confirmarPagamento()" style="padding:12px 24px;background-color:#FA1E39;color:white;font-weight:bold;border:none;border-radius:8px;cursor:pointer">Confirmar Pagamento</button>
   </div>  <footer>
     &copy; 2025 MostreAki. Todos os direitos reservados.
   </footer>  <script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-    import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-    import { getFirestore, doc, updateDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-    import { getStorage, ref, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     const app = initializeApp({
       apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
@@ -140,34 +130,42 @@
 
     const auth = getAuth(app);
     const db = getFirestore(app);
-    const storage = getStorage(app);
+    const userCircle = document.getElementById("userCircle");
+    const authText = document.getElementById("authText");
+    let userId = null;
 
-    const userCircle = document.getElementById('userCircle');
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        userId = user.uid;
+        authText.textContent = "Sair";
+        authText.style.display = "inline";
+        authText.onclick = () => signOut(auth).then(() => location.reload());
 
-    onAuthStateChanged(auth, async (user) => {
-      if (!user) return window.location.href = 'index.html';
-      const fotoRef = `fotos_perfil/${user.uid}`;
-      try {
-        const url = await getDownloadURL(ref(storage, fotoRef));
-        userCircle.style.backgroundImage = `url('${url}')`;
-        userCircle.textContent = '';
-      } catch {
-        userCircle.textContent = user.email.charAt(0).toUpperCase();
+        if (user.photoURL) {
+          userCircle.style.backgroundImage = `url('${user.photoURL}')`;
+          userCircle.textContent = "";
+        } else {
+          userCircle.textContent = user.email.charAt(0).toUpperCase();
+        }
+        userCircle.style.display = "flex";
+      } else {
+        authText.textContent = "Entrar";
+        authText.style.display = "inline";
+        authText.onclick = () => location.href = "index.html";
+        userCircle.style.display = "none";
       }
     });
 
-    window.logout = () => signOut(auth).then(() => { window.location.href = 'index.html'; });
-
-    window.confirmarPagamento = async () => {
-      const user = auth.currentUser;
-      if (!user) return;
-      await updateDoc(doc(db, "usuarios", user.uid), { plano: "pago" });
-      window.location.href = "contrato.html";
-    }
-  </script>  <script>
-    function toggleMenu() {
+    window.toggleMenu = () => {
       const m = document.getElementById("menu");
       m.style.display = m.style.display === "flex" ? "none" : "flex";
+    }
+
+    window.confirmarPagamento = async () => {
+      if (!userId) return alert("Faça login primeiro.");
+      await updateDoc(doc(db, "usuarios", userId), { plano: "pago" });
+      alert("Pagamento confirmado! Sua conta foi atualizada.");
+      window.location.href = "confirmacao.html";
     }
   </script></body>
 </html>
