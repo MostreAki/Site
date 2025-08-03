@@ -1,41 +1,121 @@
 <!DOCTYPE html><html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Plano de Assinatura – MostreAki</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="icon" href="favicon.ico" type="image/x-icon"/>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif }
+    body {
+      background-image: url("fundo-mobile.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+    }
+    @media (min-width: 768px) {
+      body { background-image: url("fundo-desktop.png"); }
+    }
+    header {
+      background-color: #c2e7df;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      position: relative;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .logo-container { display: flex; align-items: center; cursor: pointer; }
+    .logo-container img { height: 40px; margin-right: 10px; }
+    .logo { font-size: 1.5rem; font-weight: bold; }
+    .logo .mostre { color: #00C2BF; }
+    .logo .aki { color: #FA1E39; }
+    .menu-icon { font-size: 1.5rem; cursor: pointer; }
+    .menu-list {
+      position: absolute; top: 60px; right: 20px;
+      background-color: #16807C;
+      border: 2px solid black;
+      border-radius: 6px;
+      display: none;
+      flex-direction: column;
+      padding: 10px;
+      z-index: 1000;
+    }
+    .menu-list a {
+      background-color: #FA1E39;
+      color: white;
+      text-decoration: none;
+      padding: 10px;
+      margin-bottom: 8px;
+      border-radius: 6px;
+      text-align: center;
+      font-weight: bold;
+    }
+    .menu-list a:hover { background-color: #b8313b; }
+    .user-circle {
+      background-color: #15b0af;
+      color: white;
+      font-weight: bold;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background-size: cover;
+      background-position: center;
+      font-size: 0.9rem;
+    }
+    .section {
+      background: white;
+      margin: 60px auto;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #0001;
+      max-width: 800px;
+      text-align: center;
+    }
+    footer {
+      background-color: #c2e7df;
+      padding: 20px;
+      text-align: center;
+      color: #555;
+      font-size: 0.9rem;
+    }
+  </style>
 </head>
 <body>
-  <header style="background-color: #c2e7df; padding: 10px; display: flex; justify-content: space-between; align-items: center;">
-    <img src="logo.png" alt="Logo" style="height: 40px;">
-    <div>
-      <span id="authText" style="cursor:pointer; font-weight: bold;">Entrar</span>
-      <div id="userCircle" style="width: 32px; height: 32px; background-color: #ccc; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: bold;"></div>
+  <header>
+    <div class="logo-container" onclick="location.href='index.html'">
+      <img src="logo.png" alt="Logo">
+      <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
     </div>
-  </header>  <nav id="menu" style="display: none; background-color: #eee; padding: 10px;">
-    <a href="index.html">Início</a>
-    <a href="sobre.html">Sobre</a>
-    <a href="contato.html">Contato</a>
-  </nav>
-  <button onclick="toggleMenu()">☰</button>  <main style="padding: 20px;">
-    <h1>Assinatura do Plano</h1>
-    <p>Por apenas R$19,90/mês, você terá acesso a:</p>
-    <ul>
-      <li>Personalização de cores da página (fundo, textos, botões, cabeçalho, rodapé, container)</li>
-      <li>Criação de catálogo com até 30 imagens</li>
-      <li>Vinculação de notícias</li>
-      <li>Botão de contato via WhatsApp</li>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span id="authText" style="font-weight:bold;color:#15b0af;cursor:pointer;display:none">Entrar</span>
+      <div id="userCircle" class="user-circle" title="Perfil"></div>
+      <div class="menu-icon" onclick="toggleMenu()">☰</div>
+    </div>
+    <div class="menu-list" id="menu">
+      <a href="/index.html">Início</a>
+      <a href="/minha-conta.html">Minha Conta</a>
+      <a href="/planos.html">Planos</a>
+      <a href="/servicos-adicionais.html">Serviços Adicionais</a>
+      <a href="/crieaki.html">CrieAki</a>
+      <a href="/contatos.html">Contatos</a>
+    </div>
+  </header>  <div class="section">
+    <h2>Plano de Assinatura MostreAki</h2>
+    <p>Tenha acesso a todos os recursos por apenas <strong>R$19,90/mês</strong></p>
+    <img src="plano.png" alt="Plano" style="max-width:100%;margin:20px 0">
+    <p>Pagamentos via:</p>
+    <ul style="list-style:none;padding:0">
+      <li><img src="pix-mercadopago.png" alt="Pix MercadoPago" width="150"></li>
+      <li><img src="picpay.png" alt="PicPay" width="150"></li>
+      <li><img src="pix-banco.png" alt="Pix Banco Inter" width="150"></li>
     </ul>
-    <p>Escolha sua forma de pagamento:</p>
-    <div style="display: flex; gap: 20px;">
-      <img src="pix-mercadopago.png" alt="Pix Mercado Pago" style="width: 100px;">
-      <img src="pix-picpay.png" alt="Pix PicPay" style="width: 100px;">
-      <img src="pix-bancointer.png" alt="Pix Banco Inter" style="width: 100px;">
-    </div>
     <br>
-    <button onclick="confirmarPagamento()" class="btnConfirmar">Confirmar Pagamento</button>
-  </main>  <footer style="background-color: #c2e7df; padding: 20px; text-align: center; font-size: 0.9rem; color: #555;">
+    <button onclick="window.location.href='contrato.html'" style="padding:12px 20px;background:#fa1e39;color:#fff;border:none;border-radius:6px;font-weight:bold">Confirmar Pagamento</button>
+  </div>  <footer>
     &copy; 2025 MostreAki. Todos os direitos reservados.
   </footer>  <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -57,16 +137,6 @@
     const authText = document.getElementById("authText");
     const userCircle = document.getElementById("userCircle");
 
-    function exibirMensagem(texto, erro = false) {
-      const m = document.getElementById("mensagem") || document.createElement("div");
-      m.id = "mensagem";
-      m.textContent = texto;
-      m.className = erro ? "mensagem erro" : "mensagem";
-      m.style.display = "block";
-      document.body.appendChild(m);
-      setTimeout(() => m.style.display = "none", 3000);
-    }
-
     onAuthStateChanged(auth, async (user) => {
       if (user) {
         authText.textContent = "Sair";
@@ -77,6 +147,7 @@
             location.reload();
           });
         };
+
         if (user.photoURL) {
           userCircle.style.backgroundImage = `url('${user.photoURL}')`;
           localStorage.setItem("fotoPerfil", user.photoURL);
@@ -96,11 +167,6 @@
     window.toggleMenu = () => {
       const m = document.getElementById("menu");
       m.style.display = m.style.display === "flex" ? "none" : "flex";
-    }
-
-    function confirmarPagamento() {
-      alert("Pagamento confirmado! Você será redirecionado para o contrato.");
-      window.location.href = "contrato.html";
     }
   </script></body>
 </html>
