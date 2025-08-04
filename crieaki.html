@@ -6,18 +6,25 @@
   <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/classic.min.css" />
   <style>
+    :root {
+      --header-color: #c2e7df;
+      --footer-color: #c2e7df;
+      --container-color: #ffffff;
+      --text-color: #000000;
+      --button-color: #fa1e39;
+      --bg-color: #ffffff;
+    }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
     body {
       background-image: url("fundo-mobile.png");
       background-size: cover;
       background-repeat: no-repeat;
       background-attachment: fixed;
+      color: var(--text-color);
     }
-    @media (min-width: 768px) {
-      body { background-image: url("fundo-desktop.png"); }
-    }
+    @media (min-width: 768px) { body { background-image: url("fundo-desktop.png"); } }
     header {
-      background-color: #c2e7df;
+      background-color: var(--header-color);
       height: 60px; display: flex; align-items: center; justify-content: space-between;
       padding: 0 20px; position: relative; box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
@@ -30,33 +37,36 @@
       position: absolute; top: 60px; right: 20px; background-color: #16807C; border: 2px solid black;
       border-radius: 6px; display: none; flex-direction: column; padding: 10px; z-index: 1000;
     }
-    .menu-list a {
-      background-color: #FA1E39; color: white; text-decoration: none; padding: 10px; margin-bottom: 8px;
-      border-radius: 6px; text-align: center; font-weight: bold;
-    }
+    .menu-list a { background-color: #FA1E39; color: white; text-decoration: none; padding: 10px; margin-bottom: 8px; border-radius: 6px; text-align: center; font-weight: bold; }
     .menu-list a:hover { background-color: #b8313b; }
-    .user-circle {
-      background-color: #15b0af; color: white; font-weight: bold; border-radius: 50%;
-      width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
-      font-size: 0.9rem; cursor: pointer; background-size: cover; background-position: center;
-    }
-    .section {
-      background: #ffffff; margin: 60px auto; padding: 30px; border-radius: 10px;
-      box-shadow: 0 0 10px #0001; max-width: 800px; text-align: center;
-    }
+    .user-circle { background-color: #15b0af; color: white; font-weight: bold; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; cursor: pointer; background-size: cover; background-position: center; }
+    .section { background: var(--container-color); margin: 60px auto; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px #0001; max-width: 800px; text-align: center; }
     .pickr-container { margin: 20px auto; display: flex; flex-direction: column; gap: 12px; align-items: stretch; }
     .color-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
     .color-row label { font-weight: bold; min-width: 140px; text-align: left; }
     .color-row > div { width: 44px; height: 44px; }
     .image-toggle img { max-width: 100%; width: 100%; max-height: 250px; object-fit: contain; margin-bottom: 20px; cursor: pointer; }
-    button.primary {
-      background: #fa1e39; color: #fff; border: none; border-radius: 8px;
-      padding: 12px 18px; font-weight: bold; cursor: pointer;
+    button.primary { background: var(--button-color); color: #fff; border: none; border-radius: 8px; padding: 12px 18px; font-weight: bold; cursor: pointer; }
+    footer { background-color: var(--footer-color); padding: 20px; text-align: center; color: #555; font-size: 0.9rem; }
+    #avisoLogin {
+      display: none;
+      position: fixed;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #fa1e39;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      z-index: 9999;
+      font-weight: bold;
+      font-size: 0.95rem;
     }
-    footer { background-color: #c2e7df; padding: 20px; text-align: center; color: #555; font-size: 0.9rem; }
   </style>
 </head>
 <body>
+<div id="avisoLogin">⚠️ Você precisa estar logado para acessar o CrieAki.</div>
 <header>
   <div class="logo-container" onclick="location.href='index.html'">
     <img src="logo.png" alt="Logo">
@@ -70,8 +80,6 @@
   <div class="menu-list" id="menu">
     <a href="/index.html">Página Inicial</a>
     <a href="/minha-conta.html">Minha Conta</a>
-    <a href="/plano-assinatura.html">Plano de Assinatura</a>
-    <a href="/servicos-adicionais.html">Serviços Adicionais</a>
     <a href="/sobre.html">Sobre</a>
     <a href="/contatos.html">Contatos</a>
   </div>
@@ -110,7 +118,7 @@
 
   const auth = getAuth(app);
   const db = getFirestore(app);
-  const storage = getStorage(app);
+  const storage = getStorage(app, "gs://mostreaki-2025.appspot.com");
 
   const userCircle = document.getElementById("userCircle");
   let bgColor = getLS('bgColor', '#ffffff');
@@ -121,8 +129,15 @@
   let containerColor = getLS('containerColor', '#ffffff');
   let selectedPage = null;
 
+  applyPreview();
+
   onAuthStateChanged(auth, async (user) => {
-    if (!user) return window.location.href = "index.html";
+    if (!user) {
+      const aviso = document.getElementById('avisoLogin');
+      aviso.style.display = 'block';
+      setTimeout(() => window.location.href = 'index.html', 3000);
+      return;
+    }
     try {
       const snap = await getDoc(doc(db, "usuarios", user.uid));
       if (snap.exists()) {
@@ -141,7 +156,6 @@
         } else {
           userCircle.textContent = user.email.charAt(0).toUpperCase();
         }
-        localStorage.setItem('assinante', (dados.plano === 'ativo' || dados.plano === 'pago') ? 'sim' : 'nao');
       }
     } catch (e) { console.error('Erro ao carregar dados do usuário:', e); }
   });
@@ -156,7 +170,6 @@
   };
 
   window.goToPage = () => {
-    if (localStorage.getItem('assinante') !== 'sim') { alert('Esta funcionalidade é exclusiva para assinantes.'); return; }
     if (!selectedPage) { alert('Por favor, selecione uma opção antes de avançar.'); return; }
     setLS('bgColor', bgColor); setLS('btnColor', btnColor); setLS('textColor', textColor);
     setLS('headerColor', headerColor); setLS('footerColor', footerColor); setLS('containerColor', containerColor);
@@ -166,10 +179,19 @@
   function setLS(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
   function getLS(k,def){ try{ return localStorage.getItem(k) || def; }catch(e){ return def; } }
 
+  function applyPreview(){
+    document.documentElement.style.setProperty('--bg-color', bgColor);
+    document.documentElement.style.setProperty('--button-color', btnColor);
+    document.documentElement.style.setProperty('--text-color', textColor);
+    document.documentElement.style.setProperty('--header-color', headerColor);
+    document.documentElement.style.setProperty('--footer-color', footerColor);
+    document.documentElement.style.setProperty('--container-color', containerColor);
+  }
+
   const createPickr = (el, defaultColor, setter) => {
     Pickr.create({ el, theme: 'classic', default: defaultColor,
       components: { preview: true, opacity: true, hue: true, interaction: { input: true, save: true } }
-    }).on('save', (color) => { const v = color.toHEXA().toString(); setter(v); });
+    }).on('save', (color) => { const v = color.toHEXA().toString(); setter(v); applyPreview(); });
   };
 
   createPickr('#bgColorPicker', bgColor, v => bgColor = v);
