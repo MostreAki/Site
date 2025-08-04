@@ -78,6 +78,88 @@
     }
     .user-circle {
       background-color: #15b0af;
+<!DOCTYPE html><html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MostreAki</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#ffffff" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+    body {
+      background-image: url("fundo-mobile.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+    }
+    @media (min-width: 768px) {
+      body { background-image: url("fundo-desktop.png"); }
+    }
+    header {
+      background-color: #c2e7df;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      position: relative;
+    }
+    .logo-container { display: flex; align-items: center; }
+    .logo-container img { height: 40px; margin-right: 10px; }
+    .logo { font-size: 1.5rem; font-weight: bold; }
+    .logo .mostre { color: #00C2BF; }
+    .logo .aki { color: #FA1E39; }
+    .menu-icon { font-size: 1.5rem; cursor: pointer; }
+    .menu-list {
+      position: absolute;
+      top: 60px;
+      right: 20px;
+      background-color: #16807C;
+      border: 2px solid black;
+      border-radius: 6px;
+      display: none;
+      flex-direction: column;
+      padding: 10px;
+      z-index: 1000;
+    }
+    .menu-list a {
+      text-decoration: none;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 6px;
+      font-weight: bold;
+      background-color: #FA1E39;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+    .menu-list a:hover { background-color: #b8313b; }
+    .banner video { width: 100%; height: auto; }
+    .section {
+      background-color: #ffffff;
+      margin: 40px auto;
+      padding: 20px;
+      width: 80%;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+    .section h2 { color: #008b8b; margin-bottom: 10px; }
+    .btn {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 10px 20px;
+      background-color: #d73e45;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .user-circle {
+      background-color: #15b0af;
       color: white;
       font-weight: bold;
       border-radius: 50%;
@@ -90,7 +172,17 @@
       background-position: center;
       font-size: 0.9rem;
     }
+    footer {
+      background-color: #c2e7df;
+      padding: 20px;
+      text-align: center;
+      color: #555;
+      font-size: 0.9rem;
+    }
   </style>
+</head>
+<body>
+<!-- Restante do HTML permanece o mesmo -->
 </head>
 <body>
   <div id="avisoLogin" style="display:none;position:fixed;top:10px;left:50%;transform:translateX(-50%);background:#fa1e39;color:white;padding:12px 20px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,0.2);z-index:9999;font-weight:bold;font-size:0.95rem">
@@ -204,3 +296,4 @@
     }
   </script></body>
 </html>
+
