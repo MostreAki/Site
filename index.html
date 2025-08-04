@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+<!DOCTYPE html><html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -35,9 +34,7 @@
     .logo .aki { color: #FA1E39; }
     .menu-icon { font-size: 1.5rem; cursor: pointer; }
     .menu-list {
-      position: absolute;
-      top: 60px;
-      right: 20px;
+      position: absolute; top: 60px; right: 20px;
       background-color: #16807C;
       border: 2px solid black;
       border-radius: 6px;
@@ -79,13 +76,6 @@
       text-decoration: none;
       font-weight: bold;
     }
-    footer {
-      background-color: #c2e7df;
-      padding: 20px;
-      text-align: center;
-      color: #555;
-      font-size: 0.9rem;
-    }
     .user-circle {
       background-color: #15b0af;
       color: white;
@@ -96,54 +86,16 @@
       display: none;
       align-items: center;
       justify-content: center;
-      margin-left: 10px;
-      font-size: 0.8rem;
       background-size: cover;
       background-position: center;
+      font-size: 0.9rem;
     }
-    .google-login {
-      width: 100%;
-      padding: 10px;
-      background: white;
-      color: black;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-weight: bold;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      margin-top: 10px;
-    }
-    .google-login img { height: 20px; }
   </style>
 </head>
 <body>
-
   <div id="avisoLogin" style="display:none;position:fixed;top:10px;left:50%;transform:translateX(-50%);background:#fa1e39;color:white;padding:12px 20px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,0.2);z-index:9999;font-weight:bold;font-size:0.95rem">
     ⚠️ Você precisa estar logado para acessar sua conta.
-  </div>
-
-  <div id="loginModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:9999;">
-    <div style="background:white; padding:20px; border-radius:8px; width:90%; max-width:400px;">
-      <h2>Entrar no MostreAki</h2>
-      <input type="email" id="email" placeholder="Email" style="width:100%; padding:10px; margin:10px 0;">
-      <div style="position: relative;">
-        <input type="password" id="password" placeholder="Senha" style="width:100%; padding:10px; margin:10px 0;">
-        <span onclick="togglePasswordVisibility('password', this)" style="position:absolute; right:10px; top:18px; cursor:pointer;">👁️</span>
-      </div>
-      <button onclick="login()" style="width:100%; padding:10px; background:#15b0af; color:white; border:none;">Entrar</button>
-      <button class="google-login" onclick="loginComGoogle()">
-        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google Logo">
-        Entrar com Google
-      </button>
-      <p style="margin-top:10px; text-align:center;"><a href="#" onclick="resetarSenha()" style="color:#d73e45; text-decoration:none;">Esqueceu sua senha?</a></p>
-      <button onclick="window.location.href='cadastro.html'" style="width:100%; padding:10px; background:#d73e45; color:white; border:none; margin-top:10px;">Cadastrar</button>
-      <p style="margin-top:10px; text-align:right;"><a href="#" onclick="closeModal()">Fechar</a></p>
-    </div>
-  </div>
-
-  <header>
+  </div>  <header>
     <div class="logo-container">
       <img src="logo.png" alt="Logo" />
       <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
@@ -159,9 +111,7 @@
       <a href="/crieaki.html">CrieAki</a>
       <a href="/contatos.html">Contatos</a>
     </div>
-  </header>
-
-  <div class="banner">
+  </header>  <div class="banner">
     <a href="/planos.html">
       <video autoplay muted loop playsinline preload="auto" style="width:100%; height:auto;">
         <source src="banner-mobile.webm" type="video/webm" media="(max-width: 767px)">
@@ -169,41 +119,24 @@
         Seu navegador não suporta vídeo HTML5.
       </video>
     </a>
-  </div>
-
-  <div class="section">
+  </div>  <div class="section">
     <h2>Como Funciona?</h2>
     <p>Explicamos de forma clara como usar o MostreAki para divulgar seus produtos e ideias.</p>
     <a href="#" class="btn">Veja Mais</a>
-  </div>
-
-  <div class="section">
+  </div>  <div class="section">
     <h2>Redes Sociais</h2>
     <p>Conecte-se com o público nas redes sociais por meio do MostreAki.</p>
     <a href="#" class="btn">Veja Mais</a>
-  </div>
-
-  <div class="section">
+  </div>  <div class="section">
     <h2>Serviços Adicionais</h2>
     <p>Descubra como potencializar sua presença com nossos serviços extras.</p>
     <a href="#" class="btn">Veja Mais</a>
-  </div>
-
-  <footer>
+  </div>  <footer>
     &copy; 2025 MostreAki. Todos os direitos reservados.
-  </footer>
-
-  <!-- Firebase + Scripts -->
-  <script type="module">
+  </footer>  <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
     import {
-      getAuth,
-      onAuthStateChanged,
-      sendPasswordResetEmail,
-      signOut,
-      signInWithEmailAndPassword,
-      signInWithPopup,
-      GoogleAuthProvider
+      getAuth, onAuthStateChanged, signOut, signInWithPopup, GoogleAuthProvider
     } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 
     const app = initializeApp({
@@ -216,102 +149,46 @@
     });
 
     const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
 
-    window.login = function () {
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-      signInWithEmailAndPassword(auth, email, password)
-        .then(() => {
-          closeModal();
-          alert("Login realizado com sucesso!");
-          location.reload();
-        })
-        .catch(error => alert("Erro ao fazer login: " + error.message));
-    };
-
-    window.loginComGoogle = function () {
-      const provider = new GoogleAuthProvider();
-      signInWithPopup(auth, provider)
-        .then(result => {
-          const isNewUser = result._tokenResponse?.isNewUser;
-          const foto = result.user.photoURL;
-          if (foto) localStorage.setItem("fotoPerfil", foto);
-          alert(isNewUser ? "Cadastro realizado com Google!" : "Login com Google realizado!");
-          closeModal();
-          location.reload();
-        })
-        .catch(error => {
-          if (error.code === "auth/popup-closed-by-user") {
-            alert("Login com Google foi cancelado.");
-          } else {
-            alert("Erro: " + error.message);
-          }
-        });
-    };
-
-    window.resetarSenha = function () {
-      const email = document.getElementById("email").value;
-      if (!email) return alert("Digite seu e-mail para redefinir a senha.");
-      sendPasswordResetEmail(auth, email)
-        .then(() => alert("Verifique seu e-mail para redefinir a senha."))
-        .catch(error => alert("Erro: " + error.message));
-    };
+    const authText = document.getElementById("authText");
+    const userCircle = document.getElementById("userCircle");
 
     onAuthStateChanged(auth, (user) => {
-      const userCircle = document.getElementById("userCircle");
-      const authText = document.getElementById("authText");
-      const fotoURL = localStorage.getItem("fotoPerfil");
       if (user) {
-        if (fotoURL) {
-          userCircle.style.backgroundImage = `url('${fotoURL}')`;
+        authText.textContent = "Sair";
+        authText.onclick = () => signOut(auth).then(() => location.reload());
+        const foto = user.photoURL;
+        if (foto) {
+          userCircle.style.backgroundImage = `url('${foto}')`;
           userCircle.textContent = "";
         } else {
-          const nome = user.displayName || user.email;
-          const iniciais = nome.trim().charAt(0).toUpperCase();
-          userCircle.textContent = iniciais;
-          userCircle.style.backgroundImage = "";
+          userCircle.textContent = user.email.charAt(0).toUpperCase();
         }
         userCircle.style.display = "flex";
-        authText.textContent = "Sair";
         authText.style.display = "inline";
       } else {
-        userCircle.style.display = "none";
         authText.textContent = "Entrar";
+        authText.onclick = () => loginComGoogle();
         authText.style.display = "inline";
+        userCircle.style.display = "none";
       }
     });
-  </script>
 
-  <script>
-    function toggleMenu() {
-      const menu = document.getElementById("menu");
-      menu.style.display = menu.style.display === "flex" ? "none" : "flex";
+    window.loginComGoogle = function () {
+      signInWithPopup(auth, provider)
+        .then(result => {
+          const foto = result.user.photoURL;
+          if (foto) localStorage.setItem("fotoPerfil", foto);
+          alert("Login com Google realizado!");
+          location.reload();
+        })
+        .catch(() => alert("Erro ao entrar com Google."));
     }
 
-    function handleAuthAction() {
-      const action = document.getElementById("authText").textContent;
-      if (action === "Entrar") {
-        document.getElementById("loginModal").style.display = "flex";
-      } else {
-        import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js').then(({ getAuth, signOut }) => {
-          const auth = getAuth();
-          signOut(auth).then(() => {
-            localStorage.removeItem("fotoPerfil");
-            window.location.reload();
-          });
-        });
-      }
-    }
-
-    function closeModal() {
-      document.getElementById("loginModal").style.display = "none";
-    }
-
-    function togglePasswordVisibility(fieldId, el) {
-      const input = document.getElementById(fieldId);
-      const isPassword = input.type === "password";
-      input.type = isPassword ? "text" : "password";
-      el.textContent = isPassword ? "🙈" : "👁️";
+    window.toggleMenu = () => {
+      const m = document.getElementById("menu");
+      m.style.display = m.style.display === "flex" ? "none" : "flex";
     }
 
     if (location.search.includes('login=obrigatorio')) {
@@ -325,8 +202,5 @@
         }, 4000);
       }
     }
-  </script>
-
-</body>
+  </script></body>
 </html>
-
