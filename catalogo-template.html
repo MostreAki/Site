@@ -1,0 +1,88 @@
+<!DOCTYPE html><html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Catálogo - Cliente</title>
+  <style>
+    :root {
+      --bg-color: #ffffff;
+      --text-color: #000000;
+      --button-color: #fa1e39;
+      --header-color: #c2e7df;
+      --footer-color: #c2e7df;
+      --container-color: #ffffff;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+    }
+    header {
+      background-color: var(--header-color);
+      padding: 20px;
+      text-align: center;
+    }
+    main {
+      padding: 30px;
+    }
+    section {
+      background-color: var(--container-color);
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 2px 10px #00000010;
+      text-align: center;
+    }
+    button {
+      background-color: var(--button-color);
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    footer {
+      background-color: var(--footer-color);
+      text-align: center;
+      padding: 15px;
+      font-size: 0.9rem;
+      color: var(--text-color);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1 id="tituloCliente">Bem-vindo(a)</h1>
+  </header>  <main>
+    <section>
+      <h2 id="tipoPagina">Catálogo</h2>
+      <p>Este é o seu espaço para exibir produtos, serviços ou novidades personalizadas.</p>
+      <button>Ação do Cliente</button>
+    </section>
+  </main>  <footer>
+    &copy; 2025 MostreAki – Página personalizada para cliente
+  </footer>  <script>
+    const ls = localStorage;
+    const cssVar = (k, v) => document.documentElement.style.setProperty(k, v);
+
+    cssVar('--bg-color', ls.getItem('bgColor') || '#ffffff');
+    cssVar('--text-color', ls.getItem('textColor') || '#000000');
+    cssVar('--button-color', ls.getItem('btnColor') || '#fa1e39');
+    cssVar('--header-color', ls.getItem('headerColor') || '#c2e7df');
+    cssVar('--footer-color', ls.getItem('footerColor') || '#c2e7df');
+    cssVar('--container-color', ls.getItem('containerColor') || '#ffffff');
+
+    const path = window.location.pathname;
+    const nomeCliente = path.split('-')[1]?.replace('.html', '') || 'Cliente';
+    const tipo = path.includes('noticias') ? 'Notícias' : 'Catálogo';
+
+    document.getElementById('tituloCliente').textContent = `Bem-vindo(a), ${nomeCliente}`;
+    document.getElementById('tipoPagina').textContent = tipo;
+  </script></body>
+</html>
