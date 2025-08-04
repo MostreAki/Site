@@ -13,6 +13,9 @@
       background-size: cover;
       background-repeat: no-repeat;
       background-attachment: fixed;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
     }
     @media (min-width: 768px) {
       body { background-image: url("fundo-desktop.png"); }
@@ -34,7 +37,203 @@
     .logo .aki { color: #FA1E39; }
     .menu-icon { font-size: 1.5rem; cursor: pointer; }
     .menu-list {
-      position: absolute; top: 60px; right: 20px;
+      position: absolute;
+      top: 60px;
+      right: 20px;
+      background-color: #16807C;
+      border: 2px solid black;
+      border-radius: 6px;
+      display: none;
+      flex-direction: column;
+      padding: 10px;
+      z-index: 1000;
+    }
+    .menu-list a {
+      text-decoration: none;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 6px;
+      font-weight: bold;
+      background-color: #FA1E39;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+    .menu-list a:hover { background-color: #b8313b; }
+    .banner video { width: 100%; height: auto; }
+    .section {
+      background-color: #ffffff;
+      margin: 40px auto;
+      padding: 20px;
+      width: 80%;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+    .section h2 { color: #008b8b; margin-bottom: 10px; }
+    .btn {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 10px 20px;
+      background-color: #d73e45;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .user-circle {
+      background-color: #15b0af;
+      color: white;
+      font-weight: bold;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background-size: cover;
+      background-position: center;
+      font-size: 0.9rem;
+    }
+    footer {
+      background-color: #c2e7df;
+      padding: 20px;
+      text-align: center;
+      color: #555;
+      font-size: 0.9rem;
+      margin-top: auto;
+    }
+  </style>
+</head>
+<body>
+  <div id="loginModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:9999;">
+    <div style="background:white; padding:20px; border-radius:8px; width:90%; max-width:400px; text-align: center;">
+      <h2>Entrar no MostreAki</h2>
+      <button class="google-login" onclick="loginComGoogle()" style="margin-top:10px;padding:10px;background:white;border:1px solid #ccc;width:100%;">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google Logo"> Entrar com Google
+      </button>
+      <p style="margin-top:10px;"><a href="#" onclick="closeModal()" style="color:#d73e45; text-decoration:none;">Fechar</a></p>
+    </div>
+  </div>  <header>
+    <div class="logo-container">
+      <img src="logo.png" alt="Logo" />
+      <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <span id="authText" style="font-weight:bold; color:#15b0af; cursor:pointer; display:none;" onclick="handleAuthAction()"></span>
+      <div id="userCircle" class="user-circle" title="Perfil"></div>
+      <div class="menu-icon" onclick="toggleMenu()">☰</div>
+    </div>
+    <div class="menu-list" id="menu">
+      <a href="/sobre.html">Sobre</a>
+      <a href="/minha-conta.html">Minha Conta</a>
+      <a href="/crieaki.html">CrieAki</a>
+      <a href="/contatos.html">Contatos</a>
+    </div>
+  </header>  <div class="banner">
+    <a href="/planos.html">
+      <video autoplay muted loop playsinline preload="auto" style="width:100%; height:auto;">
+        <source src="banner-mobile.webm" type="video/webm" media="(max-width: 767px)">
+        <source src="banner-desktop.webm" type="video/webm" media="(min-width: 768px)">
+        Seu navegador não suporta vídeo HTML5.
+      </video>
+    </a>
+  </div>  <div class="section">
+    <h2>Como Funciona?</h2>
+    <p>Explicamos de forma clara como usar o MostreAki para divulgar seus produtos e ideias.</p>
+    <a href="#" class="btn">Veja Mais</a>
+  </div>  <div class="section">
+    <h2>Redes Sociais</h2>
+    <p>Conecte-se com o público nas redes sociais por meio do MostreAki.</p>
+    <a href="#" class="btn">Veja Mais</a>
+  </div>  <div class="section">
+    <h2>Serviços Adicionais</h2>
+    <p>Descubra como potencializar sua presença com nossos serviços extras.</p>
+    <a href="#" class="btn">Veja Mais</a>
+  </div>  <footer>
+    &copy; 2025 MostreAki. Todos os direitos reservados.
+  </footer>  <!-- Firebase + Scripts -->  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+    import {
+      getAuth,
+      onAuthStateChanged,
+      signOut,
+      signInWithPopup,
+      GoogleAuthProvider
+    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+
+    const app = initializeApp({
+      apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
+      authDomain: "mostreaki-2025.firebaseapp.com",
+      projectId: "mostreaki-2025",
+      storageBucket: "mostreaki-2025.appspot.com",
+      messagingSenderId: "748712068097",
+      appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
+    });
+
+    const auth = getAuth(app);
+
+    window.loginComGoogle = function () {
+      const provider = new GoogleAuthProvider();
+      signInWithPopup(auth, provider)
+        .then(result => {
+          const foto = result.user.photoURL;
+          if (foto) localStorage.setItem("fotoPerfil", foto);
+          closeModal();
+          location.reload();
+        })
+        .catch(error => alert("Erro ao entrar com Google: " + error.message));
+    };
+
+    onAuthStateChanged(auth, (user) => {
+      const userCircle = document.getElementById("userCircle");
+      const authText = document.getElementById("authText");
+      const fotoURL = localStorage.getItem("fotoPerfil");
+      if (user) {
+        if (fotoURL) {
+          userCircle.style.backgroundImage = `url('${fotoURL}')`;
+          userCircle.textContent = "";
+        } else {
+          const nome = user.displayName || user.email;
+          const iniciais = nome.trim().charAt(0).toUpperCase();
+          userCircle.textContent = iniciais;
+          userCircle.style.backgroundImage = "";
+        }
+        userCircle.style.display = "flex";
+        authText.textContent = "Sair";
+        authText.style.display = "inline";
+      } else {
+        userCircle.style.display = "none";
+        authText.textContent = "Entrar";
+        authText.style.display = "inline";
+      }
+    });
+  </script>  <script>
+    function toggleMenu() {
+      const menu = document.getElementById("menu");
+      menu.style.display = menu.style.display === "flex" ? "none" : "flex";
+    }
+
+    function handleAuthAction() {
+      const action = document.getElementById("authText").textContent;
+      if (action === "Entrar") {
+        document.getElementById("loginModal").style.display = "flex";
+      } else {
+        import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js').then(({ getAuth, signOut }) => {
+          const auth = getAuth();
+          signOut(auth).then(() => {
+            localStorage.removeItem("fotoPerfil");
+            window.location.reload();
+          });
+        });
+      }
+    }
+
+    function closeModal() {
+      document.getElementById("loginModal").style.display = "none";
+    }
+  </script></body>
+</html>      position: absolute; top: 60px; right: 20px;
       background-color: #16807C;
       border: 2px solid black;
       border-radius: 6px;
@@ -296,4 +495,5 @@
     }
   </script></body>
 </html>
+
 
