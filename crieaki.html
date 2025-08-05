@@ -37,37 +37,36 @@
   border-radius: 6px; display: none; flex-direction: column; padding: 10px; z-index: 1000;
 }
 .menu-list a {
-  background-color: #FA1E39; color: white; text-decoration: none; padding: 10px; margin-bottom: 8px;
-  border-radius: 6px; text-align: center; font-weight: bold;
+  background-color: #FA1E39; color: white; text-decoration: none; padding: 10px;
+  margin-bottom: 8px; border-radius: 6px; text-align: center; font-weight: bold;
 }
 .menu-list a:hover { background-color: #b8313b; }
-
 .user-circle {
-  background-color: #15b0af; color: white; font-weight: bold; border-radius: 50%; width: 32px;
-  height: 32px; display: flex; align-items: center; justify-content: center;
+  background-color: #15b0af; color: white; font-weight: bold; border-radius: 50%;
+  width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
   font-size: 0.9rem; cursor: pointer; background-size: cover; background-position: center;
 }
-
 .section {
   background: var(--container-color); margin: 60px auto; padding: 30px;
   border-radius: 10px; box-shadow: 0 0 10px #0001; max-width: 800px; text-align: center;
 }
-
 .pickr-container { margin: 20px auto; display: flex; flex-direction: column; gap: 12px; align-items: stretch; }
 .color-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .color-row label { font-weight: bold; min-width: 140px; text-align: left; }
 .color-row > div { width: 44px; height: 44px; }
-
 .image-toggle img { max-width: 100%; width: 100%; max-height: 250px; object-fit: contain; margin-bottom: 20px; cursor: pointer; }
-
-button.primary { background: var(--button-color); color: #fff; border: none; border-radius: 8px;
-  padding: 12px 18px; font-weight: bold; cursor: pointer; }
-
+button.primary { background: var(--button-color); color: #fff; border: none; border-radius: 8px; padding: 12px 18px; font-weight: bold; cursor: pointer; }
 footer { background-color: var(--footer-color); padding: 20px; text-align: center; color: #555; font-size: 0.9rem; }
+#loginAviso {
+  position: fixed; top: 10px; left: 50%; transform: translateX(-50%);
+  background: #fa1e39; color: white; padding: 12px 20px; border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2); z-index: 9999; font-weight: bold; font-size: 0.95rem;
+}
 
   </style>
 </head>
 <body>
+<div id="loginAviso" style="display:none">⚠️ Você precisa estar logado para acessar esta página.</div>
 <header>
   <div class="logo-container" onclick="location.href='index.html'">
     <img src="logo.png" alt="Logo">
@@ -85,8 +84,7 @@ footer { background-color: var(--footer-color); padding: 20px; text-align: cente
     <a href="/contatos.html">Contatos</a>
   </div>
 </header><section class="section">
-  <video class="banner-desktop" autoplay muted loop style="width:100%;display:none"></video>
-  <video class="banner-mobile" autoplay muted loop style="width:100%;display:none"></video>  <div class="image-toggle">
+  <div class="image-toggle">
     <img src="botao1.png" id="toggleImage1" onclick="selectOption('catalogo')">
   </div>
   <div class="image-toggle">
@@ -120,23 +118,47 @@ footer { background-color: var(--footer-color); padding: 20px; text-align: cente
   const auth = getAuth(app);
   const db = getFirestore(app);
   const storage = getStorage(app);
-
   const userCircle = document.getElementById("userCircle");
-  let bgColor = '#ffffff';
-  let btnColor = '#fa1e39';
-  let textColor = '#000000';
-  let headerColor = '#c2e7df';
-  let footerColor = '#c2e7df';
-  let containerColor = '#ffffff';
+  const avisoLogin = document.getElementById("loginAviso");
+
+  let bgColor = getLS('bgColor', '#ffffff');
+  let btnColor = getLS('btnColor', '#fa1e39');
+  let textColor = getLS('textColor', '#000000');
+  let headerColor = getLS('headerColor', '#c2e7df');
+  let footerColor = getLS('footerColor', '#c2e7df');
+  let containerColor = getLS('containerColor', '#ffffff');
   let selectedPage = null;
-  let currentUser = null;
+
+  function getLS(k, def) { try { return localStorage.getItem(k) || def; } catch (e) { return def; } }
+  function setLS(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  function applyPreview() {}
+
+  window.selectOption = (page) => {
+    selectedPage = page;
+    document.getElementById('toggleImage1').src = page === 'catalogo' ? 'botao2.png' : 'botao1.png';
+    document.getElementById('toggleImage2').src = page === 'noticias' ? 'botao4.png' : 'botao3.png';
+  };
+
+  window.goToPage = () => {
+    if (!selectedPage || !window.userName || !window.userUid) {
+      alert('Você precisa estar logado e escolher uma opção antes de avançar.');
+      return;
+    }
+    setLS('bgColor', bgColor); setLS('btnColor', btnColor); setLS('textColor', textColor);
+    setLS('headerColor', headerColor); setLS('footerColor', footerColor); setLS('containerColor', containerColor);
+    window.location.href = `${selectedPage}-${window.userName}-${window.userUid}.html`;
+  };
 
   onAuthStateChanged(auth, async (user) => {
     if (!user) {
-      alert("⚠️ Você precisa estar logado para acessar a página CrieAki.");
-      return window.location.href = 'index.html';
+      avisoLogin.style.display = 'block';
+      setTimeout(() => window.location.href = 'index.html', 4000);
+      return;
     }
-    currentUser = user;
+    window.userUid = user.uid;
+    const nome = user.displayName || user.email.split('@')[0];
+    window.userName = nome.toLowerCase().replace(/[^a-z0-9]/gi, '-');
+
     try {
       const snap = await getDoc(doc(db, "usuarios", user.uid));
       if (snap.exists()) {
@@ -153,7 +175,7 @@ footer { background-color: var(--footer-color); padding: 20px; text-align: cente
           userCircle.style.backgroundImage = `url('${user.photoURL}')`;
           userCircle.textContent = '';
         } else {
-          userCircle.textContent = user.email.charAt(0).toUpperCase();
+          userCircle.textContent = nome.charAt(0).toUpperCase();
         }
       }
     } catch (e) { console.error('Erro ao carregar dados do usuário:', e); }
@@ -162,33 +184,11 @@ footer { background-color: var(--footer-color); padding: 20px; text-align: cente
   window.logout = () => { signOut(auth).then(() => { localStorage.clear(); window.location.href = 'index.html'; }); };
   window.toggleMenu = () => { const m = document.getElementById('menu'); m.style.display = m.style.display === 'flex' ? 'none' : 'flex'; };
 
-  window.selectOption = (page) => {
-    selectedPage = page;
-    document.getElementById('toggleImage1').src = page === 'catalogo' ? 'botao2.png' : 'botao1.png';
-    document.getElementById('toggleImage2').src = page === 'noticias' ? 'botao4.png' : 'botao3.png';
-  };
-
-  window.goToPage = () => {
-    if (!selectedPage || !currentUser) return alert('Selecione uma opção antes de avançar.');
-    const username = currentUser.displayName?.split(' ')[0].toLowerCase() || currentUser.email.split('@')[0];
-    const nextPage = `${selectedPage}-${username}.html`;
-
-    localStorage.setItem('bgColorNext', bgColor);
-    localStorage.setItem('btnColorNext', btnColor);
-    localStorage.setItem('textColorNext', textColor);
-    localStorage.setItem('headerColorNext', headerColor);
-    localStorage.setItem('footerColorNext', footerColor);
-    localStorage.setItem('containerColorNext', containerColor);
-
-    window.location.href = nextPage;
-  };
-
-  function createPickr(el, defaultColor, setter) {
+  const createPickr = (el, defaultColor, setter) => {
     Pickr.create({ el, theme: 'classic', default: defaultColor,
       components: { preview: true, opacity: true, hue: true, interaction: { input: true, save: true } }
     }).on('save', (color) => { const v = color.toHEXA().toString(); setter(v); });
-  }
-
+  };
   createPickr('#bgColorPicker', bgColor, v => bgColor = v);
   createPickr('#textColorPicker', textColor, v => textColor = v);
   createPickr('#btnColorPicker', btnColor, v => btnColor = v);
