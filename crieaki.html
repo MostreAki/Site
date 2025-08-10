@@ -100,12 +100,14 @@ footer { background-color: var(--footer-color); padding: 20px; text-align: cente
 
 </section><footer>
   &copy; 2025 MostreAki. Todos os direitos reservados.
-</footer><script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr"></script><script type="module">
+</footer>
+  <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
   import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
   import { getStorage, ref, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
+  // === Firebase (seu projeto) ===
   const app = initializeApp({
     apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
     authDomain: "mostreaki-2025.firebaseapp.com",
@@ -118,84 +120,88 @@ footer { background-color: var(--footer-color); padding: 20px; text-align: cente
   const auth = getAuth(app);
   const db = getFirestore(app);
   const storage = getStorage(app);
+
+  // === DOM refs ===
   const userCircle = document.getElementById("userCircle");
   const avisoLogin = document.getElementById("loginAviso");
 
-  let bgColor = getLS('bgColor', '#ffffff');
-  let btnColor = getLS('btnColor', '#fa1e39');
-  let textColor = getLS('textColor', '#000000');
-  let headerColor = getLS('headerColor', '#c2e7df');
-  let footerColor = getLS('footerColor', '#c2e7df');
-  let containerColor = getLS('containerColor', '#ffffff');
-  let selectedPage = null;
+  // === LS helpers ===
+  function getLS(k, def) { try { return localStorage.getItem(k) ?? def; } catch { return def; } }
+  function setLS(k, v) { try { localStorage.setItem(k, v); } catch {} }
 
-  function getLS(k, def) { try { return localStorage.getItem(k) || def; } catch (e) { return def; } }
-  function setLS(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
-  function applyPreview() {}
+  // === Estado global (fica em window pra ser visto pelo goToPage.js) ===
+  window.bgColor        = getLS('bgColor', '#ffffff');
+  window.btnColor       = getLS('btnColor', '#fa1e39');
+  window.textColor      = getLS('textColor', '#000000');
+  window.headerColor    = getLS('headerColor', '#c2e7df');
+  window.footerColor    = getLS('footerColor', '#c2e7df');
+  window.containerColor = getLS('containerColor', '#ffffff');
+  window.selectedPage   = null;        // "catalogo" ou "noticias"
+  window.userUid        = null;
+  window.userName       = null;        // slug do nome
 
+  // === Seleção dos botões de opção (Catálogo/Notícias) ===
   window.selectOption = (page) => {
-    selectedPage = page;
+    window.selectedPage = page;
     document.getElementById('toggleImage1').src = page === 'catalogo' ? 'botao2.png' : 'botao1.png';
     document.getElementById('toggleImage2').src = page === 'noticias' ? 'botao4.png' : 'botao3.png';
   };
 
-  window.goToPage = () => {
-    if (!selectedPage || !window.userName || !window.userUid) {
-      alert('Você precisa estar logado e escolher uma opção antes de avançar.');
-      return;
-    }
-    setLS('bgColor', bgColor); setLS('btnColor', btnColor); setLS('textColor', textColor);
-    setLS('headerColor', headerColor); setLS('footerColor', footerColor); setLS('containerColor', containerColor);
-    window.location.href = `${selectedPage}-${window.userName}-${window.userUid}.html`;
+  // === Pickr (cores) -> sempre atualiza window.* ===
+  const createPickr = (el, defaultColor, setter) => {
+    Pickr.create({
+      el, theme: 'classic', default: defaultColor,
+      components: { preview: true, opacity: true, hue: true, interaction: { input: true, save: true } }
+    }).on('save', (color) => { setter(color.toHEXA().toString()); });
   };
+  createPickr('#bgColorPicker',        window.bgColor,        v => window.bgColor = v);
+  createPickr('#textColorPicker',      window.textColor,      v => window.textColor = v);
+  createPickr('#btnColorPicker',       window.btnColor,       v => window.btnColor = v);
+  createPickr('#headerColorPicker',    window.headerColor,    v => window.headerColor = v);
+  createPickr('#footerColorPicker',    window.footerColor,    v => window.footerColor = v);
+  createPickr('#containerColorPicker', window.containerColor, v => window.containerColor = v);
 
+  // === Auth + foto de perfil no círculo ===
   onAuthStateChanged(auth, async (user) => {
     if (!user) {
       avisoLogin.style.display = 'block';
       setTimeout(() => window.location.href = 'index.html', 4000);
       return;
     }
-    window.userUid = user.uid;
-    const nome = user.displayName || user.email.split('@')[0];
-    window.userName = nome.toLowerCase().replace(/[^a-z0-9]/gi, '-');
+
+    window.userUid  = user.uid;
+    const nomeBase  = user.displayName || (user.email ? user.email.split('@')[0] : 'usuario');
+    window.userName = nomeBase.toLowerCase().replace(/[^a-z0-9]/gi, '-');
 
     try {
+      // tenta buscar foto em Firestore -> storage -> photoURL -> inicial
       const snap = await getDoc(doc(db, "usuarios", user.uid));
-      if (snap.exists()) {
-        const dados = snap.data();
-        let fotoRef = dados.fotoPerfil;
-        if (fotoRef && !fotoRef.startsWith('http')) {
-          const url = await getDownloadURL(ref(storage, fotoRef));
-          userCircle.style.backgroundImage = `url('${url}')`;
-          userCircle.textContent = '';
-        } else if (fotoRef) {
-          userCircle.style.backgroundImage = `url('${fotoRef}')`;
-          userCircle.textContent = '';
-        } else if (user.photoURL) {
-          userCircle.style.backgroundImage = `url('${user.photoURL}')`;
-          userCircle.textContent = '';
-        } else {
-          userCircle.textContent = nome.charAt(0).toUpperCase();
-        }
+      let fotoRef = snap.exists() ? (snap.data().fotoPerfil || null) : null;
+
+      if (fotoRef && !/^https?:\/\//i.test(fotoRef)) {
+        const url = await getDownloadURL(ref(storage, fotoRef));
+        userCircle.style.backgroundImage = `url('${url}')`;
+        userCircle.textContent = '';
+      } else if (fotoRef) {
+        userCircle.style.backgroundImage = `url('${fotoRef}')`;
+        userCircle.textContent = '';
+      } else if (user.photoURL) {
+        userCircle.style.backgroundImage = `url('${user.photoURL}')`;
+        userCircle.textContent = '';
+      } else {
+        userCircle.textContent = nomeBase.charAt(0).toUpperCase();
       }
-    } catch (e) { console.error('Erro ao carregar dados do usuário:', e); }
+    } catch (e) {
+      console.error('Erro ao carregar dados do usuário:', e);
+      userCircle.textContent = nomeBase.charAt(0).toUpperCase();
+    }
   });
 
+  // === Ações do header ===
   window.logout = () => { signOut(auth).then(() => { localStorage.clear(); window.location.href = 'index.html'; }); };
   window.toggleMenu = () => { const m = document.getElementById('menu'); m.style.display = m.style.display === 'flex' ? 'none' : 'flex'; };
-
-  const createPickr = (el, defaultColor, setter) => {
-    Pickr.create({ el, theme: 'classic', default: defaultColor,
-      components: { preview: true, opacity: true, hue: true, interaction: { input: true, save: true } }
-    }).on('save', (color) => { const v = color.toHEXA().toString(); setter(v); });
-  };
-  createPickr('#bgColorPicker', bgColor, v => bgColor = v);
-  createPickr('#textColorPicker', textColor, v => textColor = v);
-  createPickr('#btnColorPicker', btnColor, v => btnColor = v);
-  createPickr('#headerColorPicker', headerColor, v => headerColor = v);
-  createPickr('#footerColorPicker', footerColor, v => footerColor = v);
-  createPickr('#containerColorPicker', containerColor, v => containerColor = v);
-  <script src="goToPage.js"></script>
+  </script>
 </body>
 </html>
+
 
