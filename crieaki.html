@@ -121,13 +121,14 @@ footer { background-color: var(--footer-color); padding: 20px; text-align: cente
   const db = getFirestore(app);
   const storage = getStorage(app);
 
-  // === DOM refs ===
+  // === DOM ===
   const userCircle = document.getElementById("userCircle");
-  const avisoLogin = document.getElementById("loginAviso");
+  const avisoLogin  = document.getElementById("loginAviso");
+  const btnAvancar  = document.getElementById("btnAvancar") || document.querySelector("button.primary");
 
-  // === LS helpers ===
+  // === helpers LS ===
   function getLS(k, def) { try { return localStorage.getItem(k) ?? def; } catch { return def; } }
-  function setLS(k, v) { try { localStorage.setItem(k, v); } catch {} }
+  function setLS(k, v)   { try { localStorage.setItem(k, v); } catch {} }
 
   // === Estado global (fica em window pra ser visto pelo goToPage.js) ===
   window.bgColor        = getLS('bgColor', '#ffffff');
@@ -136,32 +137,36 @@ footer { background-color: var(--footer-color); padding: 20px; text-align: cente
   window.headerColor    = getLS('headerColor', '#c2e7df');
   window.footerColor    = getLS('footerColor', '#c2e7df');
   window.containerColor = getLS('containerColor', '#ffffff');
-  window.selectedPage   = null;        // "catalogo" ou "noticias"
+  window.selectedPage   = null; // "catalogo" | "noticias"
   window.userUid        = null;
-  window.userName       = null;        // slug do nome
+  window.userName       = null; // slug do nome
 
-  // === Seleção dos botões de opção (Catálogo/Notícias) ===
+  // === Seleção de opção (Catálogo/Notícias) ===
   window.selectOption = (page) => {
     window.selectedPage = page;
-    document.getElementById('toggleImage1').src = page === 'catalogo' ? 'botao2.png' : 'botao1.png';
-    document.getElementById('toggleImage2').src = page === 'noticias' ? 'botao4.png' : 'botao3.png';
+    const img1 = document.getElementById('toggleImage1');
+    const img2 = document.getElementById('toggleImage2');
+    if (img1) img1.src = page === 'catalogo' ? 'botao2.png' : 'botao1.png';
+    if (img2) img2.src = page === 'noticias' ? 'botao4.png' : 'botao3.png';
   };
 
-  // === Pickr (cores) -> sempre atualiza window.* ===
+  // === Pickr (cores) → sempre atualiza window.* ===
   const createPickr = (el, defaultColor, setter) => {
     Pickr.create({
       el, theme: 'classic', default: defaultColor,
       components: { preview: true, opacity: true, hue: true, interaction: { input: true, save: true } }
     }).on('save', (color) => { setter(color.toHEXA().toString()); });
   };
-  createPickr('#bgColorPicker',        window.bgColor,        v => window.bgColor = v);
-  createPickr('#textColorPicker',      window.textColor,      v => window.textColor = v);
-  createPickr('#btnColorPicker',       window.btnColor,       v => window.btnColor = v);
-  createPickr('#headerColorPicker',    window.headerColor,    v => window.headerColor = v);
-  createPickr('#footerColorPicker',    window.footerColor,    v => window.footerColor = v);
-  createPickr('#containerColorPicker', window.containerColor, v => window.containerColor = v);
+  if (window.Pickr) {
+    createPickr('#bgColorPicker',        window.bgColor,        v => window.bgColor = v);
+    createPickr('#textColorPicker',      window.textColor,      v => window.textColor = v);
+    createPickr('#btnColorPicker',       window.btnColor,       v => window.btnColor = v);
+    createPickr('#headerColorPicker',    window.headerColor,    v => window.headerColor = v);
+    createPickr('#footerColorPicker',    window.footerColor,    v => window.footerColor = v);
+    createPickr('#containerColorPicker', window.containerColor, v => window.containerColor = v);
+  }
 
-  // === Auth + foto de perfil no círculo ===
+  // === Auth + foto de perfil ===
   onAuthStateChanged(auth, async (user) => {
     if (!user) {
       avisoLogin.style.display = 'block';
@@ -174,15 +179,16 @@ footer { background-color: var(--footer-color); padding: 20px; text-align: cente
     window.userName = nomeBase.toLowerCase().replace(/[^a-z0-9]/gi, '-');
 
     try {
-      // tenta buscar foto em Firestore -> storage -> photoURL -> inicial
       const snap = await getDoc(doc(db, "usuarios", user.uid));
       let fotoRef = snap.exists() ? (snap.data().fotoPerfil || null) : null;
 
       if (fotoRef && !/^https?:\/\//i.test(fotoRef)) {
+        // caminho no Storage, exemplo: "usuarios/<uid>/profile.jpg"
         const url = await getDownloadURL(ref(storage, fotoRef));
         userCircle.style.backgroundImage = `url('${url}')`;
         userCircle.textContent = '';
       } else if (fotoRef) {
+        // já é URL http(s)
         userCircle.style.backgroundImage = `url('${fotoRef}')`;
         userCircle.textContent = '';
       } else if (user.photoURL) {
@@ -197,11 +203,18 @@ footer { background-color: var(--footer-color); padding: 20px; text-align: cente
     }
   });
 
-  // === Ações do header ===
+  // === Header actions ===
   window.logout = () => { signOut(auth).then(() => { localStorage.clear(); window.location.href = 'index.html'; }); };
-  window.toggleMenu = () => { const m = document.getElementById('menu'); m.style.display = m.style.display === 'flex' ? 'none' : 'flex'; };
+  window.toggleMenu = () => { const m = document.getElementById('menu'); if (m) m.style.display = m.style.display === 'flex' ? 'none' : 'flex'; };
+
+  // === Garante o clique do Avançar por JS (evita problemas de escopo do onclick) ===
+  if (btnAvancar) {
+    btnAvancar.id = 'btnAvancar';
+    btnAvancar.addEventListener('click', () => window.goToPage && window.goToPage());
+  }
   </script>
 </body>
 </html>
+
 
 
