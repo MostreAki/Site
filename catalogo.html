@@ -1,171 +1,165 @@
-<!DOCTYPE html><html lang="pt-BR">
+<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Catálogo do Cliente – MostreAki</title>
-  <style>
-    :root {
-      --header-color: #c2e7df;
-      --footer-color: #c2e7df;
-      --container-color: #ffffff;
-      --text-color: #000000;
-      --button-color: #fa1e39;
-      --bg-color: #ffffff;
-    }
-    body {
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      margin: 0;
-      font-family: Arial, sans-serif;
-    }
-    header {
-      background-color: var(--header-color);
-      padding: 20px;
-      text-align: center;
-    }
-    #logo {
-      max-height: 80px;
-      cursor: pointer;
-    }
-    .carousel {
-      display: flex;
-      overflow-x: auto;
-      gap: 10px;
-      padding: 10px;
-      scroll-snap-type: x mandatory;
-    }
-    .carousel img {
-      width: 100%;
-      max-width: 300px;
-      border-radius: 10px;
-      scroll-snap-align: center;
-    }
-    .catalog-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 15px;
-      padding: 20px;
-    }
-    .item {
-      background-color: var(--container-color);
-      border-radius: 8px;
-      padding: 10px;
-      text-align: center;
-      box-shadow: 0 0 8px #0001;
-      border: 2px dashed #ccc;
-    }
-    .item img {
-      max-width: 100%;
-      height: auto;
-      border-radius: 6px;
-      margin-bottom: 10px;
-    }
-    .item input[type="file"],
-    .item input[type="number"],
-    .item input[type="text"] {
-      width: 90%;
-      margin: 5px 0;
-      padding: 6px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-    .item button {
-      background-color: var(--button-color);
-      color: white;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 4px;
-      cursor: pointer;
-      margin-top: 6px;
-    }
-    footer {
-      background-color: var(--footer-color);
-      text-align: center;
-      padding: 15px;
-      font-size: 0.9rem;
-      color: #444;
-    }
-    .actions {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      margin: 20px;
-    }
-    .actions button {
-      padding: 10px 16px;
-      font-weight: bold;
-      background-color: var(--button-color);
-      border: none;
-      color: white;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Catálogo • MostreAki</title>
+<style>
+  :root{
+    --header:#e9e3dc;
+    --paper:#fdfcfb;
+    --ink:#222;
+    --muted:#6b7280;
+    --accent:#fa1e39;
+    --container:#ffffff;
+    --btn:#fa1e39;
+    --text:#000000;
+    --bg:#ffffff;
+  }
+  html,body{margin:0;padding:0}
+  body{background:var(--paper);color:var(--ink);font-family:Arial,Helvetica,sans-serif}
+  header{background:var(--header);padding:10px 16px;display:flex;align-items:center;justify-content:space-between}
+  .logo{font-weight:800}
+  .who{opacity:.7;font-size:.9rem}
+  .wrap{max-width:1200px;margin:0 auto;padding:16px}
+  .grid{display:grid;gap:20px;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+  .tile{background:#fff;border-radius:14px;box-shadow:0 6px 18px rgba(0,0,0,.06);overflow:hidden;display:flex;flex-direction:column}
+  .tile img{width:100%;height:200px;object-fit:cover;display:block;background:#f3f3f3}
+  .meta{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;color:#6b7280;font-size:.8rem}
+  .info{padding:12px;display:grid;gap:8px}
+  .title{font-weight:800;letter-spacing:.02em}
+  .swatches{display:flex;gap:6px}
+  .sw{width:14px;height:14px;border-radius:4px;border:1px solid rgba(0,0,0,.08)}
+  .price{font-weight:900}
+  .edit{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .edit input{padding:8px 10px;border:1px solid #e5e7eb;border-radius:8px;font-size:.95rem}
+  .edit .save{padding:8px 12px;border:none;border-radius:8px;background:var(--btn);color:#fff;font-weight:800;cursor:pointer}
+  .muted{background:#fff;border:1px solid #eee;color:#555;border-radius:8px;padding:6px 10px;cursor:pointer}
+  .danger{border-color:#fecaca;color:#b91c1c}
+  /* add tile */
+  .add-tile{height:200px;border:2px dashed #d6d3d1;border-radius:14px;display:flex;align-items:center;justify-content:center;background:#fffaf3;box-shadow:0 6px 18px rgba(0,0,0,.04);cursor:pointer;transition:transform .06s,border-color .15s}
+  .add-tile:hover{border-color:#c8b6a6}
+  .add-tile:active{transform:scale(.99)}
+  .add-inner{text-align:center;color:#7c6f64}
+  .add-inner .plus{font-size:42px;line-height:1}
+  .add-inner small{display:block;margin-top:6px;color:#9a9088}
+  .add-tile.dragover{background:#fff4e6;border-color:#c58f5c}
+  .uploading::after{content:"Enviando...";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.5);color:#fff;font-weight:800;border-radius:14px}
+  footer{background:var(--header);padding:14px;text-align:center;color:#555}
+  .badge{font-size:.8rem;padding:4px 8px;border-radius:999px;background:#fff;border:1px solid #eee}
+</style>
 </head>
 <body>
-  <header>
-    <img id="logo" src="logo.png" alt="Logotipo" />
-  </header>  <div class="carousel">
-    <img src="banner1.png" alt="Banner 1">
-    <img src="banner2.png" alt="Banner 2">
-    <img src="banner3.png" alt="Banner 3">
-  </div>  <div class="catalog-grid" id="catalog">
-    <!-- Os itens do catálogo serão adicionados aqui dinamicamente -->
-  </div>  <div class="actions">
-    <button onclick="adicionarItem()">Adicionar Produto</button>
-    <button onclick="salvarConteudo()">Salvar</button>
-    <button onclick="visualizarConteudo()">Visualizar</button>
-  </div>  <footer>
-    &copy; 2025 MostreAki. Todos os direitos reservados para <strong><span id="username">[nome-do-cliente]</span></strong>.
-  </footer>  <script>
-    function adicionarItem() {
-      const grid = document.getElementById('catalog');
-      const item = document.createElement('div');
-      item.className = 'item';
-      item.innerHTML = `
-        <input type="file" accept="image/*" onchange="loadPreview(this)"><br>
-        <img style="display:none" />
-        <label>Quantidade:</label><br>
-        <input type="number" placeholder="0"><br>
-        <label>Valor (ex: 99,90):</label><br>
-        <input type="text" placeholder="0,00"><br>
-        <button onclick="chamarWhatsapp()">Chamar no WhatsApp</button>
-      `;
-      grid.appendChild(item);
-    }
+<header>
+  <div class="logo">MostreAki • Catálogo</div>
+  <div class="who">
+    <span id="modeBadge" class="badge">Carregando…</span>
+  </div>
+</header>
 
-    function loadPreview(input) {
-      const file = input.files[0];
-      const reader = new FileReader();
-      const img = input.nextElementSibling;
-      reader.onload = function(e) {
-        img.src = e.target.result;
-        img.style.display = 'block';
-      }
-      if (file) reader.readAsDataURL(file);
-    }
+<main class="wrap">
+  <div id="notice" style="display:none;margin:10px 0;padding:10px;border:1px solid #fde68a;background:#fef9c3;border-radius:8px;color:#7c6f64"></div>
+  <div class="grid" id="grid"></div>
+</main>
 
-    function chamarWhatsapp() {
-      window.open('https://wa.me/', '_blank');
-    }
+<footer>© <span id="year"></span> MostreAki</footer>
 
-    function salvarConteudo() {
-      alert("Conteúdo salvo no Firestore (em breve real)!");
-    }
-    function visualizarConteudo() {
-      const nome = document.getElementById('username').textContent;
-      window.open(`/${nome}.html`, '_blank');
-    }
-  </script>  <script>
-    function applyColors() {
-      const root = document.documentElement;
-      root.style.setProperty('--bg-color', localStorage.getItem('bgColor') || '#ffffff');
-      root.style.setProperty('--button-color', localStorage.getItem('btnColor') || '#fa1e39');
-      root.style.setProperty('--text-color', localStorage.getItem('textColor') || '#000000');
-      root.style.setProperty('--header-color', localStorage.getItem('headerColor') || '#c2e7df');
-      root.style.setProperty('--footer-color', localStorage.getItem('footerColor') || '#c2e7df');
-      root.style.setProperty('--container-color', localStorage.getItem('containerColor') || '#ffffff');
-    }
-    applyColors();
-  </script></body>
-</html>
+<script>
+  // aplica tema vindo do CrieAki (localStorage)
+  (function applyTheme(){
+    try{
+      const root=document.documentElement.style;
+      const bg=localStorage.getItem('bgColor')||'#ffffff';
+      const text=localStorage.getItem('textColor')||'#000000';
+      const header=localStorage.getItem('headerColor')||'#e9e3dc';
+      const footer=localStorage.getItem('footerColor')||'#e9e3dc';
+      const cont=localStorage.getItem('containerColor')||'#ffffff';
+      const btn=localStorage.getItem('btnColor')||'#fa1e39';
+      root.setProperty('--bg',bg);
+      root.setProperty('--text',text);
+      root.setProperty('--header',header);
+      root.setProperty('--btn',btn);
+      root.setProperty('--container',cont);
+    }catch(e){}
+    document.getElementById('year').textContent=new Date().getFullYear();
+  })();
+
+  // parse #uid=...&name=...
+  function parseHash(){
+    const h=(location.hash||'').replace(/^#/,'');
+    const params=new URLSearchParams(h);
+    return { uid: params.get('uid')||null, name: params.get('name')||null };
+  }
+</script>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getFirestore, collection, addDoc, serverTimestamp, query, orderBy, getDocs, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
+  // >>> Firebase do seu projeto
+  const app = initializeApp({
+    apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
+    authDomain: "mostreaki-2025.firebaseapp.com",
+    projectId: "mostreaki-2025",
+    storageBucket: "mostreaki-2025.appspot.com",
+    messagingSenderId: "748712068097",
+    appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
+  });
+
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const storage = getStorage(app);
+
+  const grid = document.getElementById('grid');
+  const notice = document.getElementById('notice');
+  const modeBadge = document.getElementById('modeBadge');
+
+  const moneyToNumber = (v)=> {
+    if(typeof v==='number') return v;
+    return Number(String(v).replace(/[^0-9,.-]/g,'').replace(/\./g,'').replace(',','.'))||0;
+  };
+  const numberToBRL = (n)=>{
+    try{ return (+n).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});}
+    catch{ return `R$ ${( +n || 0).toFixed(2)}`;}
+  };
+
+  // input file invisível
+  const picker = document.createElement('input');
+  picker.type='file'; picker.accept='image/*'; picker.multiple=true; document.body.appendChild(picker);
+
+  function readContext(){
+    const { uid, name } = parseHash();
+    return { pageUid: uid, pageName: name };
+  }
+
+  function setModeBadge(canEdit, name){
+    modeBadge.textContent = canEdit ? 'Modo edição' : 'Modo público';
+    modeBadge.style.background = canEdit ? '#eef6ff' : '#fff';
+    modeBadge.style.borderColor = canEdit ? '#bfdbfe' : '#eee';
+    const who = name ? ` • ${name}` : '';
+    modeBadge.title = (canEdit?'Você pode editar este catálogo':'Visualização pública') + who;
+  }
+
+  async function uploadSingle(file, userId){
+    return new Promise((resolve, reject)=>{
+      const path = `catalog/${userId}/images/${Date.now()}-${file.name}`;
+      const r = ref(storage, path);
+      const t = uploadBytesResumable(r, file, {contentType:file.type});
+      t.on('state_changed', ()=>{}, reject, async ()=>{
+        const url = await getDownloadURL(t.snapshot.ref);
+        await addDoc(collection(db, 'catalogos', userId, 'imagens'), {
+          url, path, createdAt: serverTimestamp(), titulo:'', preco:0, quantidade:1
+        });
+        resolve();
+      });
+    });
+  }
+
+  async function handleUploads(files, userId){
+    const tile = document.querySelector('.add-tile');
+    if(tile) tile.classList.add('uploading');
+    for(const f of files){ await uploadSingle(f, userId); }
+    if(tile) tile.classList.remove('uploading');
+    await
