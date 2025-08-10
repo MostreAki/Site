@@ -1,10 +1,14 @@
-<!DOCTYPE html><html lang="pt-BR">
+<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CrieAki – MostreAki</title>
   <link rel="icon" href="favicon.ico" type="image/x-icon" />
+
+  <!-- 🎨 CSS do Pickr -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/classic.min.css" />
+
   <style>
     :root {
       --header-color: #c2e7df;
@@ -15,6 +19,7 @@
       --bg-color: #ffffff;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+
     body {
       background-image: url("fundo-mobile.png");
       background-size: cover;
@@ -45,35 +50,7 @@
       background-color: #FA1E39; color: white; text-decoration: none; padding: 10px;
       margin-bottom: 8px; border-radius: 6px; text-align: center; font-weight: bold;
     }
-
-    /* ---------- Paletas (Pickr) ---------- */
-    .pickr-container {
-      margin: 20px auto;
-      display: flex; flex-direction: column; gap: 12px;
-      max-width: 520px;
-    }
-    .color-row {
-      display: flex; align-items: center; justify-content: space-between; gap: 12px;
-    }
-    .color-row label { font-weight: bold; min-width: 140px; text-align: left; }
-    .color-row > div { width: 44px; height: 44px; }
-
-    /* ---------- Imagens de opção ---------- */
-    .image-toggle img {
-      max-width: 100%; width: 100%; max-height: 250px;
-      object-fit: contain; margin-bottom: 20px; cursor: pointer;
-    }
-
-    /* ---------- Aviso de login ---------- */
-    #loginAviso {
-      position: fixed; top: 10px; left: 50%; transform: translateX(-50%);
-      background: #fa1e39; color: white; padding: 12px 20px; border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2); z-index: 9999; font-weight: bold; font-size: 0.95rem;
-      display: none;
-    }
-  </style>
-
-.menu-list a:hover { background-color: #b8313b; }
+    .menu-list a:hover { background-color: #b8313b; }
 
     /* ---------- Perfil ---------- */
     .user-circle {
@@ -88,6 +65,24 @@
       border-radius: 10px; box-shadow: 0 0 10px #0001; max-width: 800px; text-align: center;
     }
 
+    /* ---------- Imagens de opção ---------- */
+    .image-toggle img {
+      max-width: 100%; width: 100%; max-height: 250px;
+      object-fit: contain; margin-bottom: 20px; cursor: pointer;
+    }
+
+    /* ---------- Paletas (Pickr) ---------- */
+    .pickr-container {
+      margin: 20px auto;
+      display: flex; flex-direction: column; gap: 12px;
+      max-width: 520px;
+    }
+    .color-row {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    }
+    .color-row label { font-weight: bold; min-width: 140px; text-align: left; }
+    .color-row > div { width: 44px; height: 44px; }
+
     /* ---------- Botões ---------- */
     button.primary {
       background: var(--button-color); color: #fff; border: none;
@@ -99,12 +94,18 @@
       background-color: var(--footer-color); padding: 20px;
       text-align: center; color: #555; font-size: 0.9rem;
     }
+
+    /* ---------- Aviso de login ---------- */
+    #loginAviso {
+      position: fixed; top: 10px; left: 50%; transform: translateX(-50%);
+      background: #fa1e39; color: white; padding: 12px 20px; border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2); z-index: 9999; font-weight: bold; font-size: 0.95rem;
+      display: none;
+    }
   </style>
 </head>
 <body>
-<div id="loginAviso" style="display:none">
-  ⚠️ Você precisa estar logado para acessar esta página.
-</div>
+<div id="loginAviso">⚠️ Você precisa estar logado para acessar esta página.</div>
 
 <header>
   <div class="logo-container" onclick="location.href='index.html'">
@@ -112,14 +113,12 @@
     <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
   </div>
   <div style="display:flex;align-items:center;gap:10px;">
-    <button onclick="logout()" style="font-weight:bold;color:#FA1E39;border:none;background:none;cursor:pointer">
-      Sair*
-    </button>
+    <button onclick="logout()" style="font-weight:bold;color:#FA1E39;border:none;background:none;cursor:pointer">Sair*</button>
     <div id="userCircle" class="user-circle"></div>
     <div class="menu-icon" onclick="toggleMenu()">☰</div>
   </div>
 
-<div class="menu-list" id="menu">
+  <div class="menu-list" id="menu">
     <a href="/index.html">Página Inicial</a>
     <a href="/minha-conta.html">Minha Conta</a>
     <a href="/sobre.html">Sobre</a>
@@ -135,7 +134,7 @@
     <img src="botao3.png" id="toggleImage2" onclick="selectOption('noticias')" alt="Criar Notícias">
   </div>
 
-  <!-- 🎨 Paletas de cores (um único bloco) -->
+  <!-- 🎨 Paletas de cores -->
   <div class="pickr-container">
     <div class="color-row"><label>Fundo:</label><div id="bgColorPicker"></div></div>
     <div class="color-row"><label>Texto:</label><div id="textColorPicker"></div></div>
@@ -153,23 +152,10 @@
   &copy; 2025 MostreAki. Todos os direitos reservados.
 </footer>
 
-<div class="color-row" style="display:flex;align-items:center;justify-content:space-between;gap:12px">
-  <label style="font-weight:bold;min-width:140px;text-align:left">Cabeçalho:</label>
-  <div id="headerColorPicker" style="width:44px;height:44px"></div>
-</div>
-<div class="color-row" style="display:flex;align-items:center;justify-content:space-between;gap:12px">
-  <label style="font-weight:bold;min-width:140px;text-align:left">Rodapé:</label>
-  <div id="footerColorPicker" style="width:44px;height:44px"></div>
-</div>
-<div class="color-row" style="display:flex;align-items:center;justify-content:space-between;gap:12px">
-  <label style="font-weight:bold;min-width:140px;text-align:left">Container:</label>
-  <div id="containerColorPicker" style="width:44px;height:44px"></div>
-</div>
-</div>
-
-<!-- 🎨 JS do Pickr (deve vir ANTES do type=module) -->
+<!-- 🎨 JS do Pickr (antes do módulo) -->
 <script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr"></script>
 
+<!-- ======= SEU SCRIPT PRINCIPAL (type=module) ======= -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -190,16 +176,15 @@
   const db = getFirestore(app);
   const storage = getStorage(app);
 
-  // === DOM ===
+  // DOM
   const userCircle = document.getElementById("userCircle");
   const avisoLogin = document.getElementById("loginAviso");
-  const btnAvancar = document.getElementById("btnAvancar") || document.querySelector("button.primary");
 
-  // === helpers LS ===
+  // helpers LS
   function getLS(k, def){ try{ return localStorage.getItem(k) ?? def; }catch{ return def; } }
   function setLS(k, v){ try{ localStorage.setItem(k, v); }catch{} }
 
-  // === Estado global (visível pro goToPage.js) ===
+  // Estado global (visível pro goToPage.js)
   window.bgColor        = getLS('bgColor', '#ffffff');
   window.btnColor       = getLS('btnColor', '#fa1e39');
   window.textColor      = getLS('textColor', '#000000');
@@ -210,7 +195,7 @@
   window.userUid        = null;
   window.userName       = null;  // slug
 
-  // === Seleção de opção (Catálogo / Notícias)
+  // Seleção de opção (Catálogo / Notícias)
   window.selectOption = (page) => {
     window.selectedPage = page;
     const img1 = document.getElementById('toggleImage1');
@@ -219,7 +204,7 @@
     if (img2) img2.src = page === 'noticias' ? 'botao4.png' : 'botao3.png';
   };
 
-  // === Pickr (usa o script carregado acima) ===
+  // Pickr (usa o script carregado acima)
   const createPickr = (el, def, setter) => {
     if (!window.Pickr) return;
     Pickr.create({
@@ -234,7 +219,7 @@
   createPickr('#footerColorPicker',    window.footerColor,    v => window.footerColor = v);
   createPickr('#containerColorPicker', window.containerColor, v => window.containerColor = v);
 
-  // === Auth + foto de perfil ===
+  // Auth + foto de perfil
   onAuthStateChanged(auth, async (user) => {
     if (!user) {
       avisoLogin.style.display = 'block';
@@ -268,11 +253,12 @@
     }
   });
 
-  // === Header actions ===
+  // Header actions
   window.logout = () => { signOut(auth).then(()=>{ localStorage.clear(); window.location.href='index.html'; }); };
   window.toggleMenu = () => { const m = document.getElementById('menu'); if (m) m.style.display = m.style.display === 'flex' ? 'none' : 'flex'; };
 
-  // === Clique do Avançar via JS (sem onclick no HTML) ===
+  // Clique do Avançar via JS (sem onclick no HTML)
+  const btnAvancar = document.getElementById('btnAvancar');
   if (btnAvancar) {
     btnAvancar.addEventListener('click', () => {
       if (window.goToPage) window.goToPage();
@@ -281,27 +267,7 @@
   }
 </script>
 
-// === Header actions ===
-  window.logout = () => { signOut(auth).then(() => { localStorage.clear(); window.location.href = 'index.html'; }); };
-  window.toggleMenu = () => {
-    const m = document.getElementById('menu');
-    if (m) m.style.display = m.style.display === 'flex' ? 'none' : 'flex';
-  };
-
-  // === Clique do Avançar (liga o botão por JS; sem onclick no HTML) ===
-  const btnAvancar = document.getElementById('btnAvancar');
-  if (btnAvancar) {
-    btnAvancar.addEventListener('click', () => {
-      if (typeof window.goToPage === 'function') {
-        window.goToPage();
-      } else {
-        console.error('goToPage() não carregada');
-      }
-    });
-  }
-</script>
-
-<!-- IMPORTANTE: o JS externo vem DEPOIS do módulo -->
+<!-- Importa a função global do Avançar (depois do módulo) -->
 <script src="goToPage.js?v=6"></script>
 </body>
 </html>
