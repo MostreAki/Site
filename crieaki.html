@@ -101,6 +101,39 @@ footer { background-color: var(--footer-color); padding: 20px; text-align: cente
 </section><footer>
   &copy; 2025 MostreAki. Todos os direitos reservados.
 </footer>
+  <!-- 🎨 CSS do Pickr -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/classic.min.css" />
+
+<!-- 🎨 Container das paletas de cores -->
+<div class="pickr-container" style="margin:20px auto;display:flex;flex-direction:column;gap:12px;max-width:520px">
+  <div class="color-row" style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+    <label style="font-weight:bold;min-width:140px;text-align:left">Fundo:</label>
+    <div id="bgColorPicker" style="width:44px;height:44px"></div>
+  </div>
+  <div class="color-row" style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+    <label style="font-weight:bold;min-width:140px;text-align:left">Texto:</label>
+    <div id="textColorPicker" style="width:44px;height:44px"></div>
+  </div>
+  <div class="color-row" style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+    <label style="font-weight:bold;min-width:140px;text-align:left">Botão:</label>
+    <div id="btnColorPicker" style="width:44px;height:44px"></div>
+  </div>
+  <div class="color-row" style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+    <label style="font-weight:bold;min-width:140px;text-align:left">Cabeçalho:</label>
+    <div id="headerColorPicker" style="width:44px;height:44px"></div>
+  </div>
+  <div class="color-row" style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+    <label style="font-weight:bold;min-width:140px;text-align:left">Rodapé:</label>
+    <div id="footerColorPicker" style="width:44px;height:44px"></div>
+  </div>
+  <div class="color-row" style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+    <label style="font-weight:bold;min-width:140px;text-align:left">Container:</label>
+    <div id="containerColorPicker" style="width:44px;height:44px"></div>
+  </div>
+</div>
+
+<!-- 🎨 JS do Pickr -->
+<script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr"></script>
   <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -215,6 +248,7 @@ footer { background-color: var(--footer-color); padding: 20px; text-align: cente
   </script>
 </body>
 </html>
+
 
 
 
