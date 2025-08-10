@@ -1,79 +1,159 @@
 <!DOCTYPE html><html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Catálogo do Cliente</title>
-  <style>
-    :root {
-      --bg-color: #ffffff;
-      --button-color: #fa1e39;
-      --text-color: #000000;
-      --header-color: #c2e7df;
-      --footer-color: #c2e7df;
-      --container-color: #ffffff;
-    }
-    body {
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      margin: 0;
-      font-family: Arial, sans-serif;
-    }
-    header {
-      background-color: var(--header-color);
-      padding: 20px;
-      text-align: center;
-      font-size: 1.5rem;
-      font-weight: bold;
-    }
-    .container {
-      background-color: var(--container-color);
-      margin: 40px auto;
-      padding: 20px;
-      width: 90%;
-      max-width: 800px;
-      border-radius: 10px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    }
-    button {
-      background-color: var(--button-color);
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    footer {
-      background-color: var(--footer-color);
-      padding: 10px;
-      text-align: center;
-      font-size: 0.9rem;
-      color: #333;
-    }
-  </style>
-</head>
-<body>
-  <header>
-    Catálogo Personalizado
-  </header>
-  <div class="container">
-    <p>Bem-vindo ao seu catálogo personalizado!</p>
-    <p>Em breve, seu conteúdo estará aqui com seu próprio estilo 😍</p>
-  </div>
-  <footer>
-    &copy; 2025 MostreAki. Todos os direitos reservados.
-  </footer>
-  <script>
-    function applyThemeFromLocalStorage() {
-      const keys = ['bgColor', 'buttonColor', 'textColor', 'headerColor', 'footerColor', 'containerColor'];
-      const vars = ['--bg-color', '--button-color', '--text-color', '--header-color', '--footer-color', '--container-color'];
-      keys.forEach((key, i) => {
-        const value = localStorage.getItem(key);
-        if (value) {
-          document.documentElement.style.setProperty(vars[i], value);
-        }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Catálogo do Cliente • MostreAki</title>
+<style>
+  :root{ --beige:#e9e3dc; --paper:#fdfcfb; --ink:#222; --muted:#6b7280; --accent:#fa1e39; }
+  body { font-family: Arial, sans-serif; background: var(--paper); margin: 0; padding: 0; color: var(--ink); }
+  header { background: var(--beige); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; }
+  .logo { font-size: 1.4rem; font-weight: bold; color: #444; }.grid-wrap{ padding: 20px; max-width: 1200px; margin: 0 auto; } .grid { display: grid; gap: 20px; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
+
+/* Card de produto */ .item { background: #fff; border-radius: 14px; overflow: hidden; box-shadow: 0 6px 18px rgba(0,0,0,0.06); display: flex; flex-direction: column; } .item img { width: 100%; height: 200px; object-fit: cover; display:block; } .info { padding: 15px; display: grid; gap: 8px; } .nome { font-size: 1rem; font-weight: bold; } .swatches { display: flex; gap: 6px; } .swatch { width: 14px; height: 14px; border-radius: 4px; border: 1px solid rgba(0,0,0,.08); } .preco { font-weight: bold; color: #222; } .edit { display: flex; gap: 8px; flex-wrap: wrap; } .edit input { padding: 6px 8px; border: 1px solid #ddd; border-radius: 6px; font-size: 0.9rem; } .edit button { background: var(--accent); color: #fff; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; } .edit .del{ background:#fff; color:#b91c1c; border:1px solid #fecaca; }
+
+/* Tile de adicionar (estilo álbum) */ .add-tile{ position:relative; display:flex; align-items:center; justify-content:center; height: 200px; border: 2px dashed #d6d3d1; border-radius: 14px; background: #fffaf3; box-shadow: 0 6px 18px rgba(0,0,0,.04); cursor: pointer; transition: border-color .15s, transform .06s; } .add-tile:hover{ border-color:#c8b6a6; } .add-tile:active{ transform: scale(.99); } .add-inner{ text-align:center; color:#7c6f64; } .add-inner .plus{ font-size: 42px; line-height: 1; } .add-inner small{ display:block; margin-top:6px; color:#9a9088; } .add-tile.dragover{ background:#fff4e6; border-color:#c58f5c; } .uploading::after{ content: "Enviando..."; position:absolute; inset:0; background:rgba(0,0,0,.5); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:bold; border-radius:14px; }
+
+footer { text-align: center; padding: 20px; background: var(--beige); font-size: 0.9rem; color: #555; } </style>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, collection, addDoc, serverTimestamp, query, orderBy, getDocs, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
+const app = initializeApp({
+  apiKey: "SUA_API_KEY",
+  authDomain: "SUA_AUTH_DOMAIN",
+  projectId: "SEU_PROJECT_ID",
+  storageBucket: "SEU_BUCKET",
+  messagingSenderId: "",
+  appId: ""
+});
+
+const auth = getAuth(app);
+const db = getFirestore(app);
+const storage = getStorage(app);
+let currentUser = null;
+
+function moneyToNumber(v){ if(typeof v==='number') return v; return Number(String(v).replace(/[^0-9,.-]/g,'').replace('.', '').replace(',','.'))||0; }
+function numberToBRL(n){ try{ return (+n).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});}catch{return `R$ ${(+n||0).toFixed(2)}`;}}
+
+const picker = document.createElement('input');
+picker.type='file'; picker.accept='image/*'; picker.multiple=true; document.body.appendChild(picker);
+
+picker.addEventListener('change', async ()=>{
+  const files=[...picker.files]; if(!files.length||!currentUser) return; await handleUploads(files);
+  picker.value='';
+});
+
+async function handleUploads(files){
+  const tile = document.querySelector('.add-tile');
+  if(tile){ tile.classList.add('uploading'); }
+  for(const file of files){ await uploadSingle(file); }
+  if(tile){ tile.classList.remove('uploading'); }
+  await loadCatalog();
+}
+
+function uploadSingle(file){
+  return new Promise((resolve, reject)=>{
+    const path = `catalog/${currentUser.uid}/images/${Date.now()}-${file.name}`;
+    const r = ref(storage, path);
+    const t = uploadBytesResumable(r, file, { contentType:file.type });
+    t.on('state_changed', ()=>{}, reject, async ()=>{
+      const url = await getDownloadURL(t.snapshot.ref);
+      await addDoc(collection(db, 'catalogos', currentUser.uid, 'imagens'), {
+        url, path, createdAt: serverTimestamp(), titulo:'', preco:0, quantidade:1
       });
-    }
-    applyThemeFromLocalStorage();
-  </script>
+      resolve();
+    });
+  });
+}
+
+async function loadCatalog(){
+  const q = query(collection(db, 'catalogos', currentUser.uid, 'imagens'), orderBy('createdAt','desc'));
+  const snap = await getDocs(q);
+  const grid = document.querySelector('.grid');
+  grid.innerHTML = '';
+
+  // Primeiro: tile de adicionar (estilo álbum)
+  const add = document.createElement('div');
+  add.className='add-tile';
+  add.innerHTML = `<div class="add-inner"><div class="plus">＋</div>Adicionar fotos<small>Toque ou arraste aqui</small></div>`;
+  add.addEventListener('click', ()=> picker.click());
+  ;['dragenter','dragover'].forEach(evt=> add.addEventListener(evt, (e)=>{ e.preventDefault(); add.classList.add('dragover'); }));
+  ;['dragleave','drop'].forEach(evt=> add.addEventListener(evt, (e)=>{ e.preventDefault(); add.classList.remove('dragover'); }));
+  add.addEventListener('drop', (e)=>{
+    const files=[...e.dataTransfer.files].filter(f=>/^image\//.test(f.type));
+    if(files.length&&currentUser) handleUploads(files);
+  });
+  grid.appendChild(add);
+
+  // Depois: itens
+  snap.forEach(docSnap => {
+    const data = docSnap.data();
+    const card = document.createElement('div');
+    card.className = 'item';
+    card.innerHTML = `
+      <img src="${data.url}" alt="Produto" />
+      <div class="info">
+        <div class="nome">${data.titulo || 'Sem nome'}</div>
+        <div class="swatches">
+          <span class="swatch" style="background:#bda089"></span>
+          <span class="swatch" style="background:#e5ddd5"></span>
+          <span class="swatch" style="background:#8b8b8b"></span>
+        </div>
+        <div class="preco">${numberToBRL(data.preco || 0)}</div>
+        <div class="edit">
+          <input class="titulo" type="text" value="${data.titulo||''}" placeholder="Nome" />
+          <input class="preco" type="text" value="${numberToBRL(data.preco||0)}" placeholder="Preço" />
+          <input class="quantidade" type="number" min="0" value="${data.quantidade||1}" placeholder="Qtd" />
+          <button data-id="${docSnap.id}" data-path="${data.path}">Salvar</button>
+          <button class="del" data-id="${docSnap.id}" data-path="${data.path}">Excluir</button>
+        </div>
+      </div>`;
+    grid.appendChild(card);
+  });
+
+  // binds salvar
+  document.querySelectorAll('.edit button:not(.del)').forEach(btn => {
+    btn.addEventListener('click', async ()=>{
+      const card = btn.closest('.item');
+      const titulo = card.querySelector('.titulo').value.trim();
+      const preco = moneyToNumber(card.querySelector('.preco').value);
+      const quantidade = parseInt(card.querySelector('.quantidade').value||'0',10);
+      await updateDoc(doc(db, 'catalogos', currentUser.uid, 'imagens', btn.dataset.id), { titulo, preco, quantidade });
+      btn.textContent='Salvo!'; setTimeout(()=>btn.textContent='Salvar',1200);
+    });
+  });
+
+  // binds excluir
+  document.querySelectorAll('.edit .del').forEach(btn => {
+    btn.addEventListener('click', async ()=>{
+      if(!confirm('Excluir este item?')) return;
+      await deleteDoc(doc(db, 'catalogos', currentUser.uid, 'imagens', btn.dataset.id));
+      await deleteObject(ref(storage, btn.dataset.path));
+      loadCatalog();
+    });
+  });
+}
+
+onAuthStateChanged(auth, user => {
+  if(user){ currentUser = user; loadCatalog(); }
+  else { alert('Faça login para acessar.'); }
+});
+</script></head>
+<body>
+<header>
+  <div class="logo">MostreAki • Catálogo</div>
+</header>
+<main>
+  <div class="grid-wrap">
+    <div class="grid"></div>
+  </div>
+</main>
+<footer>
+  © <span id="year"></span> MostreAki — Catálogo do Cliente
+</footer>
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 </body>
 </html>
