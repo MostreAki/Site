@@ -6,25 +6,20 @@
   <title>Catálogo Digital – MostreAki</title>
   <style>
     :root{
-      --bg: #0b0c10;          /* fundo */
-      --panel: #111318;       /* cartões */
-      --ink: #eaf0f6;         /* texto principal */
-      --ink-dim:#9aa7b2;      /* texto secundário */
-      --brand:#26c281;        /* cor do botão */
+      --bg: #0b0c10;
+      --panel: #111318;
+      --ink: #eaf0f6;
+      --ink-dim:#9aa7b2;
+      --brand:#26c281;
       --brand-ink:#002b1a;
-      --accent:#ffd166;       /* destaque */
+      --accent:#ffd166;
       --danger:#ff6b6b;
       --muted:#22262f;
       --radius:18px;
       --shadow: 0 10px 30px rgba(0,0,0,.35);
     }
     *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background:linear-gradient(120deg,#0b0c10,#0e1016 30%,#0b0c10 70%);
-      color:var(--ink)
-    }
+    body{margin:0; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background:linear-gradient(120deg,#0b0c10,#0e1016 30%,#0b0c10 70%); color:var(--ink)}
     .wrap{max-width:1100px; margin:40px auto; padding:0 20px}
     header{display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:24px}
     .brand{display:flex; align-items:center; gap:12px}
@@ -69,8 +64,8 @@
     .accent{color:var(--accent)}
   </style>
 
-  <!-- APLICA TEMA (cores do MostreAki) -->
   <script>
+    // ===== THEME (aplica cores vindas do CrieAki) =====
     (function applyTheme(){
       const params = new URLSearchParams(location.search);
       const pick = (k, fallback) => (params.get(k) || localStorage.getItem(k) || fallback);
@@ -90,26 +85,6 @@
       try{ document.body.style.background = theme.bgColor; }catch{}
     })();
   </script>
-
-  <!-- LÊ name/uid/wapp e preenche -->
-  <script>
-    (function initIdentity(){
-      const qs = new URLSearchParams(location.search);
-      const get = (k, lsK) => qs.get(k) || localStorage.getItem(lsK || k) || '';
-      const name = get('name','userName') || 'Minha Loja';
-      const uid  = get('uid','userUid');
-      const wapp = get('wapp','whatsNumber') || '5599999999999';
-
-      try {
-        localStorage.setItem('userName', name);
-        if (uid)  localStorage.setItem('userUid', uid);
-        if (wapp) localStorage.setItem('whatsNumber', wapp);
-      } catch(e){}
-
-      // Deixa disponível pro script principal
-      window.__MOSTREAKI__ = { name, uid, wapp };
-    })();
-  </script>
 </head>
 <body>
   <div class="wrap">
@@ -120,10 +95,7 @@
         </div>
         <div>
           <h1>Catálogo Digital <span class="accent">MostreAki</span></h1>
-          <div class="sub">
-            Template base – imagens, preço, quantidade e botão WhatsApp
-            <span id="uidBadge"></span>
-          </div>
+          <div class="sub">Template base – imagens, preço, quantidade e botão WhatsApp</div>
         </div>
       </div>
       <div class="toolbar">
@@ -132,7 +104,6 @@
       </div>
     </header>
 
-    <!-- Configurações rápidas -->
     <section class="config" aria-label="Configurações do catálogo">
       <label>Nome da loja
         <input id="storeName" type="text" value="Minha Loja" />
@@ -142,7 +113,6 @@
       </label>
     </section>
 
-    <!-- Grade de produtos -->
     <section class="grid" id="grid"></section>
 
     <p class="foot">Dica: clique na imagem de cada item para <strong>enviar uma foto</strong>. O botão de WhatsApp monta a mensagem automaticamente.</p>
@@ -175,22 +145,12 @@
   </template>
 
   <script>
-    // ===== Config =====
+    // ===== Config local do template =====
     const grid = document.getElementById('grid');
     const tpl = document.getElementById('cardTpl');
     const storeNameEl = document.getElementById('storeName');
     const whatsEl = document.getElementById('whatsNumber');
-    const uidBadge = document.getElementById('uidBadge');
 
-    // Usa dados vindos do goToPage (query/localStorage)
-    (function hydrateHeader(){
-      const data = window.__MOSTREAKI__ || {};
-      if (data.name) storeNameEl.value = data.name;
-      if (data.wapp) whatsEl.value = (''+data.wapp).replace(/\D/g,'');
-      if (data.uid)  uidBadge.innerHTML = ` · UID: <span style="color:#9aa7b2">${data.uid}</span>`;
-    })();
-
-    // Utils
     const fmtBRL = new Intl.NumberFormat('pt-BR', { style:'currency', currency:'BRL' });
     const toCents = (str) => {
       if (!str) return 0;
@@ -199,7 +159,6 @@
     }
     const centsToBRL = (c) => fmtBRL.format((c||0)/100);
 
-    // Cria um card
     function newCard(prefill={}){
       const node = tpl.content.firstElementChild.cloneNode(true);
       const file = node.querySelector('[data-file]');
@@ -211,17 +170,17 @@
       const btnWa = node.querySelector('[data-wa]');
       const btnRemove = node.querySelector('[data-remove]');
 
-      // Preenche
       name.value = prefill.name || 'Produto';
       const cents = prefill.cents ?? 0;
       price.value = centsToBRL(cents);
       qty.value = prefill.qty || 1;
 
-      // Upload preview
       node.querySelector('.media').addEventListener('click', () => file.click());
-      file.addEventListener('change', (e)=>{
+
+      file.addEventListener('change', async (e)=>{
         const f = e.target.files?.[0];
         if(!f) return;
+        // preview rápido
         const reader = new FileReader();
         reader.onload = () => {
           img.src = reader.result;
@@ -229,16 +188,22 @@
           fallback.hidden = true;
         };
         reader.readAsDataURL(f);
+
+        // sobe pro Storage e troca pela URL final
+        try {
+          const url = await window.MOSTREAKI_UPLOAD?.(f);
+          if (url) img.src = url;
+        } catch (err) {
+          console.error('Falha no upload:', err);
+        }
       });
 
-      // Máscara de preço simples
       price.addEventListener('input', (e)=>{
         const cents = toCents(e.target.value);
         e.target.value = centsToBRL(cents);
       });
 
-      // WhatsApp action
-      btnWa.addEventListener('click', ()=>{
+      btnWa.addEventListener('click', async ()=>{
         const n = name.value.trim()||'Produto';
         const c = toCents(price.value);
         const q = parseInt(qty.value||'1',10);
@@ -252,16 +217,27 @@
                     `Total: *${encodeURIComponent(total)}*`;
         const url = `https://wa.me/${waNumber}?text=${msg}`;
         window.open(url, '_blank');
+
+        // salva item no Firestore
+        try {
+          await window.MOSTREAKI_SAVE_ITEM?.({
+            name: n,
+            price_cents: c,
+            qty: q,
+            image_url: img?.src || null
+          });
+        } catch (err) {
+          console.error('Falha ao salvar item:', err);
+        }
       });
 
-      // Remover
       btnRemove.addEventListener('click', ()=> node.remove());
 
       grid.appendChild(node);
     }
 
-    // Botões principais
     document.getElementById('btnAdd').addEventListener('click', ()=> newCard());
+
     document.getElementById('btnExport').addEventListener('click', ()=>{
       const data = [...grid.querySelectorAll('[data-card]')].map(card=>{
         const name = card.querySelector('[data-name]').value.trim();
@@ -283,12 +259,78 @@
       URL.revokeObjectURL(a.href);
     });
 
-    // Sementes de exemplo
+    // Sementes
     [
       { name:'Pôster Espiral', cents: 6900, qty:1 },
       { name:'Camisa MostreAki', cents: 9900, qty:1 },
       { name:'Adesivo Hiperbóreo', cents: 1900, qty:2 }
     ].forEach(seed=> newCard(seed));
+  </script>
+
+  <!-- Firebase (CDN modular) + integração MostreAki -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, doc, getDoc, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
+    // === CONFIG DO TEU PROJETO ===
+    const firebaseConfig = {
+      apiKey: "AIzaSyBrkUtwP4T77oXE22OjOFVhfEUlJ7yctiE",
+      authDomain: "mostreaki-2025.firebaseapp.com",
+      projectId: "mostreaki-2025",
+      storageBucket: "mostreaki-2025.appspot.com",
+      messagingSenderId: "748712068097",
+      appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db   = getFirestore(app);
+    const storage = getStorage(app);
+
+    await signInAnonymously(auth);
+
+    const uid = new URLSearchParams(location.search).get('uid') || localStorage.getItem('userUid') || null;
+    if (uid) localStorage.setItem('userUid', uid);
+
+    // hidrata perfil
+    if (uid) {
+      try {
+        const snap = await getDoc(doc(db, "usuarios", uid));
+        if (snap.exists()) {
+          const data = snap.data();
+          const storeNameEl = document.getElementById('storeName');
+          const whatsEl     = document.getElementById('whatsNumber');
+
+          if (data?.nome) {
+            storeNameEl.value = data.nome;
+            localStorage.setItem('userName', data.nome);
+          }
+          if (data?.whatsapp) {
+            whatsEl.value = String(data.whatsapp).replace(/\D/g,'');
+            localStorage.setItem('whatsNumber', whatsEl.value);
+          }
+        }
+      } catch (e) {
+        console.error("Erro ao buscar perfil:", e);
+      }
+    }
+
+    // helpers globais
+    window.MOSTREAKI_UPLOAD = async function(file) {
+      const who = uid || 'public';
+      const path = `usuarios/${who}/catalog/${Date.now()}-${file.name}`;
+      const ref = sRef(storage, path);
+      await uploadBytes(ref, file);
+      return await getDownloadURL(ref);
+    };
+
+    window.MOSTREAKI_SAVE_ITEM = async function(fields) {
+      const who = uid || 'public';
+      const col = collection(db, 'usuarios', who, 'items');
+      await addDoc(col, { ...fields, createdAt: serverTimestamp() });
+    };
   </script>
 </body>
 </html>
