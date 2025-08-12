@@ -1,26 +1,41 @@
-// goToPage.js – navegação do CrieAki para o catálogo/notícias com o tema escolhido // Este arquivo é carregado em crieaki.html após o <script type="module">. // Ele lê as variáveis globais definidas lá (window.bgColor, window.textColor, etc.), // persiste no localStorage e navega para a página escolhida com querystring opcional.
+// goToPage_preview.js – MostreAki (teste com template)
+// Redireciona para catalogo-template.html passando tema + uid + name
+// Mantém também no localStorage para fallback.
 
-(function(){ function saveThemeToLS(){ const keys = ['bgColor','textColor','btnColor','headerColor','footerColor','containerColor']; keys.forEach(k => { const v = window[k]; if (typeof v === 'string' && v.trim()) { try{ localStorage.setItem(k, v); }catch(e){} } }); }
+window.goToPage = async () => {
+  const { selectedPage, userName, userUid } = window;
+  if (!selectedPage || !userName || !userUid) {
+    alert('Você precisa estar logado e escolher uma opção antes de avançar.');
+    return;
+  }
 
-function themeQuery(){ const enc = v => encodeURIComponent((v||'').replace(/^#/, '')); // tira # e encode const q = new URLSearchParams(); if (window.bgColor)        q.set('bg',   '#' + enc(window.bgColor).replace(/%23/g,'')); if (window.textColor)      q.set('text', '#' + enc(window.textColor).replace(/%23/g,'')); if (window.btnColor)       q.set('btn',  '#' + enc(window.btnColor).replace(/%23/g,'')); if (window.headerColor)    q.set('head', '#' + enc(window.headerColor).replace(/%23/g,'')); if (window.footerColor)    q.set('foot', '#' + enc(window.footerColor).replace(/%23/g,'')); if (window.containerColor) q.set('box',  '#' + enc(window.containerColor).replace(/%23/g,'')); return q.toString(); }
+  const theme = {
+    bgColor: window.bgColor,
+    textColor: window.textColor,
+    btnColor: window.btnColor,
+    headerColor: window.headerColor,
+    footerColor: window.footerColor,
+    containerColor: window.containerColor,
+  };
+  Object.entries(theme).forEach(([k, v]) => {
+    if (typeof v === 'string' && v.trim()) {
+      try { localStorage.setItem(k, v); } catch (e) {}
+    }
+  });
+  try { localStorage.setItem('userName', userName); localStorage.setItem('userUid', userUid); } catch(e){}
 
-// Alvo padrão: catálogo. Ajuste estes caminhos conforme seus arquivos reais: const ROUTES = { catalogo: 'Catalogo_Digital_MostreAki.html', // ou 'catalogo.html' noticias: 'noticias.html' };
+  const withHash = (c) => (c?.startsWith('#') ? c : ('#' + (c || '')));
+  const qs = new URLSearchParams({
+    name: userName,
+    uid: userUid,
+  });
+  if (theme.bgColor)        qs.set('bg',   withHash(theme.bgColor));
+  if (theme.textColor)      qs.set('text', withHash(theme.textColor));
+  if (theme.btnColor)       qs.set('btn',  withHash(theme.btnColor));
+  if (theme.headerColor)    qs.set('head', withHash(theme.headerColor));
+  if (theme.footerColor)    qs.set('foot', withHash(theme.footerColor));
+  if (theme.containerColor) qs.set('box',  withHash(theme.containerColor));
 
-window.goToPage = function(){ // Garante que uma opção foi escolhida; default para catálogo. const page = (window.selectedPage === 'noticias') ? 'noticias' : 'catalogo';
-
-// Se o usuário estiver logado, você pode opcionalmente personalizar a URL com slug
-// Ex.: `/${window.userName}/catalogo.html` – depende da sua infra/hosting.
-
-// Persiste tema
-saveThemeToLS();
-
-// Monta URL destino com tema na query (também funciona sem, pois o catálogo lê LS)
-const base = ROUTES[page];
-const qs   = themeQuery();
-const url  = qs ? `${base}?${qs}` : base;
-
-// Vai!
-location.href = url;
-
-} })();
-
+  const route = (selectedPage === 'noticias') ? '/noticias-template.html' : '/catalogo-template.html';
+  location.href = `${route}?${qs.toString()}`;
+};
