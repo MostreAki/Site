@@ -1,207 +1,294 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Catálogo • MostreAki</title>
-<style>
-  :root{ --beige:#e9e3dc; --paper:#fdfcfb; --ink:#222; --muted:#6b7280; --accent:#fa1e39; }
-  body { font-family: Arial, sans-serif; background: var(--paper); margin: 0; padding: 0; color: var(--ink); }
-  header { background: var(--beige); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; }
-  .logo { font-size: 1.4rem; font-weight: bold; color: #444; }
-  .grid-wrap{ padding: 20px; max-width: 1200px; margin: 0 auto; }
-  .grid { display: grid; gap: 20px; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
-  .item { background: #fff; border-radius: 14px; overflow: hidden; box-shadow: 0 6px 18px rgba(0,0,0,0.06); display: flex; flex-direction: column; }
-  .item img { width: 100%; height: 200px; object-fit: cover; display:block; background:#f3f3f3; }
-  .info { padding: 15px; display: grid; gap: 8px; }
-  .nome { font-size: 1rem; font-weight: bold; }
-  .swatches { display: flex; gap: 6px; }
-  .swatch { width: 14px; height: 14px; border-radius: 4px; border: 1px solid rgba(0,0,0,.08); }
-  .preco { font-weight: bold; color: #222; }
-  .edit { display: flex; gap: 8px; flex-wrap: wrap; align-items:center }
-  .edit input { padding: 6px 8px; border: 1px solid #ddd; border-radius: 6px; font-size: 0.9rem; }
-  .edit button { background: var(--accent); color: #fff; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-  .edit .del{ background:#fff; color:#b91c1c; border:1px solid #fecaca; }
-  .add-tile{ position:relative; display:flex; align-items:center; justify-content:center; height: 200px; border: 2px dashed #d6d3d1; border-radius: 14px; background: #fffaf3; box-shadow: 0 6px 18px rgba(0,0,0,.04); cursor: pointer; transition: border-color .15s, transform .06s; }
-  .add-tile:hover{ border-color:#c8b6a6; }
-  .add-tile:active{ transform: scale(.99); }
-  .add-inner{ text-align:center; color:#7c6f64; }
-  .add-inner .plus{ font-size: 42px; line-height: 1; }
-  .add-inner small{ display:block; margin-top:6px; color:#9a9088; }
-  .add-tile.dragover{ background:#fff4e6; border-color:#c58f5c; }
-  .uploading::after{ content: "Enviando..."; position:absolute; inset:0; background:rgba(0,0,0,.5); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:bold; border-radius:14px; }
-  footer { text-align: center; padding: 20px; background: var(--beige); font-size: 0.9rem; color: #555; }
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Catálogo Digital – MostreAki</title>
+  <style>
+    :root{
+      --bg: #0b0c10;          /* fundo */
+      --panel: #111318;       /* cartões */
+      --ink: #eaf0f6;         /* texto principal */
+      --ink-dim:#9aa7b2;      /* texto secundário */
+      --brand:#26c281;        /* cor do botão */
+      --brand-ink:#002b1a;
+      --accent:#ffd166;       /* destaque */
+      --danger:#ff6b6b;
+      --muted:#22262f;
+      --radius:18px;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background:linear-gradient(120deg,#0b0c10,#0e1016 30%,#0b0c10 70%);
+      color:var(--ink)
+    }
+    .wrap{max-width:1100px; margin:40px auto; padding:0 20px}
+    header{display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:24px}
+    .brand{display:flex; align-items:center; gap:12px}
+    .logo{width:42px; height:42px; display:grid; place-items:center; background: radial-gradient(120% 120% at 30% 30%, #35e39b, #158a5a 60%, #0a3a28 100%); border-radius:50%; box-shadow:var(--shadow)}
+    .logo svg{fill:white}
+    h1{font-size: clamp(20px, 2.6vw, 30px); margin:0}
+    .sub{color:var(--ink-dim); font-size:14px}
+    .toolbar{display:flex; gap:10px; flex-wrap:wrap}
+    .btn{background:var(--brand); color:#001b12; border:0; padding:10px 14px; border-radius:999px; font-weight:700; cursor:pointer; box-shadow: 0 6px 18px rgba(38,194,129,.3)}
+    .btn:hover{filter:brightness(1.05)}
+    .btn.secondary{background:#222a33; color:var(--ink)}
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getFirestore, collection, addDoc, serverTimestamp, query, orderBy, getDocs, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+    .config{display:grid; grid-template-columns: 1fr 1fr; gap:12px; background:var(--muted); padding:14px; border-radius:var(--radius); margin-bottom:18px}
+    .config label{display:grid; gap:6px; font-size:13px; color:var(--ink-dim)}
+    .config input{background:#0f1318; color:var(--ink); border:1px solid #1f2430; padding:10px 12px; border-radius:12px; font-size:14px}
 
-// >>> Firebase (mesmo projeto do CrieAki)
-const app = initializeApp({
-  apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
-  authDomain: "mostreaki-2025.firebaseapp.com",
-  projectId: "mostreaki-2025",
-  storageBucket: "mostreaki-2025.appspot.com",
-  messagingSenderId: "748712068097",
-  appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
-});
+    .grid{display:grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap:16px}
+    .card{background:var(--panel); border:1px solid #1a1f27; border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow); display:flex; flex-direction:column}
+    .media{position:relative; aspect-ratio: 1 / 1; display:grid; place-items:center; background:linear-gradient(180deg,#1b222b,#131821)}
+    .media input[type=file]{display:none}
+    .upload-hint{position:absolute; bottom:10px; right:10px; background:rgba(0,0,0,.55); color:#fff; font-size:12px; padding:6px 8px; border-radius:10px}
+    .media img{max-width:100%; max-height:100%; object-fit:cover; width:100%; height:100%}
+    .img-fallback{display:grid; place-items:center; width:100%; height:100%; color:#6d7a86}
+    .img-fallback svg{opacity:.6}
 
-const auth = getAuth(app);
-const db = getFirestore(app);
-const storage = getStorage(app);
+    .body{padding:14px; display:grid; gap:10px}
+    .title{display:grid; gap:6px}
+    .title input{background:#0f1318; color:var(--ink); border:1px solid #1f2430; padding:9px 10px; border-radius:10px; font-weight:600}
 
-let currentUser = null;
+    .price-qty{display:grid; grid-template-columns: 1fr 100px; gap:8px}
+    .price-qty input{background:#0f1318; color:var(--ink); border:1px solid #1f2430; padding:9px 10px; border-radius:10px; font-weight:600}
 
-function moneyToNumber(v){
-  if(typeof v==='number') return v;
-  return Number(String(v).replace(/[^0-9,.-]/g,'').replace(/\./g,'').replace(',','.'))||0;
-}
-function numberToBRL(n){
-  try{ return (+n).toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); }
-  catch{ return `R$ ${( +n || 0).toFixed(2)}`; }
-}
+    .actions{display:flex; gap:8px; margin-top:6px}
+    .wapp{flex:1; background:var(--brand); color:var(--brand-ink); border:0; padding:10px 12px; border-radius:12px; font-weight:800; cursor:pointer}
+    .wapp:hover{filter:brightness(1.05)}
+    .remove{background:#1f252e; color:#b2bdc7; border:0; padding:10px 12px; border-radius:12px; cursor:pointer}
+    .remove:hover{background:#232a35}
 
-// input invisível para upload múltiplo
-const picker = document.createElement('input');
-picker.type='file'; picker.accept='image/*'; picker.multiple=true;
-document.addEventListener('DOMContentLoaded', ()=> document.body.appendChild(picker));
+    .add{border:2px dashed #2a3340; background:#11141b; color:#7b8a96; border-radius:var(--radius); display:grid; place-items:center; aspect-ratio:1/1}
+    .add button{background:#11141b; border:0; color:#9fb5c2; cursor:pointer}
+    .foot{color:#7b8a96; font-size:12px; text-align:center; margin:20px 0}
+    .accent{color:var(--accent)}
+  </style>
 
-picker.addEventListener('change', async ()=>{
-  const files=[...picker.files];
-  if(!files.length || !currentUser) return;
-  await handleUploads(files);
-  picker.value='';
-});
+  <!-- APLICA TEMA (cores do MostreAki) -->
+  <script>
+    (function applyTheme(){
+      const params = new URLSearchParams(location.search);
+      const pick = (k, fallback) => (params.get(k) || localStorage.getItem(k) || fallback);
+      const theme = {
+        bgColor:        pick('bg','#0b0c10'),
+        textColor:      pick('text','#eaf0f6'),
+        btnColor:       pick('btn','#26c281'),
+        headerColor:    pick('head','#111318'),
+        footerColor:    pick('foot','#111318'),
+        containerColor: pick('box','#111318')
+      };
+      const root = document.documentElement;
+      root.style.setProperty('--bg', theme.bgColor);
+      root.style.setProperty('--panel', theme.containerColor);
+      root.style.setProperty('--ink', theme.textColor);
+      root.style.setProperty('--brand', theme.btnColor);
+      try{ document.body.style.background = theme.bgColor; }catch{}
+    })();
+  </script>
 
-async function handleUploads(files){
-  const tile = document.querySelector('.add-tile');
-  if(tile){ tile.classList.add('uploading'); }
-  for(const file of files){ await uploadSingle(file); }
-  if(tile){ tile.classList.remove('uploading'); }
-  await loadCatalog();
-}
+  <!-- LÊ name/uid/wapp e preenche -->
+  <script>
+    (function initIdentity(){
+      const qs = new URLSearchParams(location.search);
+      const get = (k, lsK) => qs.get(k) || localStorage.getItem(lsK || k) || '';
+      const name = get('name','userName') || 'Minha Loja';
+      const uid  = get('uid','userUid');
+      const wapp = get('wapp','whatsNumber') || '5599999999999';
 
-function uploadSingle(file){
-  return new Promise((resolve, reject)=>{
-    const path = `catalog/${currentUser.uid}/images/${Date.now()}-${file.name}`;
-    const r = ref(storage, path);
-    const t = uploadBytesResumable(r, file, { contentType:file.type });
-    t.on('state_changed', ()=>{}, reject, async ()=>{
-      const url = await getDownloadURL(t.snapshot.ref);
-      await addDoc(collection(db, 'catalogos', currentUser.uid, 'imagens'), {
-        url, path, createdAt: serverTimestamp(), titulo:'', preco:0, quantidade:1
-      });
-      resolve();
-    });
-  });
-}
+      try {
+        localStorage.setItem('userName', name);
+        if (uid)  localStorage.setItem('userUid', uid);
+        if (wapp) localStorage.setItem('whatsNumber', wapp);
+      } catch(e){}
 
-async function loadCatalog(){
-  const grid = document.querySelector('.grid');
-  grid.innerHTML = '';
-
-  // tile de adicionar
-  const add = document.createElement('div');
-  add.className='add-tile';
-  add.innerHTML = `
-    <div class="add-inner">
-      <div class="plus">＋</div>
-      Adicionar fotos
-      <small>Toque ou arraste aqui</small>
-    </div>
-  `;
-  add.addEventListener('click', ()=> picker.click());
-  ['dragenter','dragover'].forEach(evt=> add.addEventListener(evt, (e)=>{
-    e.preventDefault(); add.classList.add('dragover');
-  }));
-  ['dragleave','drop'].forEach(evt=> add.addEventListener(evt, (e)=>{
-    e.preventDefault(); add.classList.remove('dragover');
-  }));
-  add.addEventListener('drop', (e)=>{
-    const files=[...e.dataTransfer.files].filter(f=>/^image\//.test(f.type));
-    if(files.length && currentUser) handleUploads(files);
-  });
-  grid.appendChild(add);
-
-  // carrega itens
-  const q = query(collection(db, 'catalogos', currentUser.uid, 'imagens'), orderBy('createdAt','desc'));
-  const snap = await getDocs(q);
-
-  snap.forEach(docSnap => {
-    const data = docSnap.data();
-    const card = document.createElement('div');
-    card.className = 'item';
-    card.innerHTML = `
-      <img src="${data.url}" alt="Produto" />
-      <div class="info">
-        <div class="nome">${(data.titulo || 'Sem nome')}</div>
-        <div class="swatches">
-          <span class="swatch" style="background:#bda089"></span>
-          <span class="swatch" style="background:#e5ddd5"></span>
-          <span class="swatch" style="background:#8b8b8b"></span>
-        </div>
-        <div class="preco">${numberToBRL(data.preco || 0)}</div>
-        <div class="edit">
-          <input class="titulo" type="text" value="${(data.titulo||'').replace(/"/g,'&quot;')}" placeholder="Nome" />
-          <input class="preco" type="text" value="${numberToBRL(data.preco||0)}" placeholder="Preço" />
-          <input class="quantidade" type="number" min="0" value="${data.quantidade||1}" placeholder="Qtd" />
-          <button data-id="${docSnap.id}" data-path="${data.path}">Salvar</button>
-          <button class="del" data-id="${docSnap.id}" data-path="${data.path}">Excluir</button>
-        </div>
-      </div>
-    `;
-    grid.appendChild(card);
-  });
-
-  // salvar
-  document.querySelectorAll('.edit button:not(.del)').forEach(btn => {
-    btn.addEventListener('click', async ()=>{
-      const card = btn.closest('.item');
-      const titulo = card.querySelector('.titulo').value.trim();
-      const preco = moneyToNumber(card.querySelector('.preco').value);
-      const quantidade = parseInt(card.querySelector('.quantidade').value||'0',10);
-      await updateDoc(doc(db, 'catalogos', currentUser.uid, 'imagens', btn.dataset.id), { titulo, preco, quantidade });
-      const old = btn.textContent; btn.textContent='Salvo!'; setTimeout(()=>btn.textContent=old,1200);
-    });
-  });
-
-  // excluir
-  document.querySelectorAll('.edit .del').forEach(btn => {
-    btn.addEventListener('click', async ()=>{
-      if(!confirm('Excluir este item?')) return;
-      await deleteDoc(doc(db, 'catalogos', currentUser.uid, 'imagens', btn.dataset.id));
-      await deleteObject(ref(storage, btn.dataset.path));
-      loadCatalog();
-    });
-  });
-}
-
-onAuthStateChanged(auth, user => {
-  if(user){
-    currentUser = user;
-    loadCatalog();
-  } else {
-    alert('Faça login para acessar.');
-    location.href = 'index.html';
-  }
-});
-</script>
+      // Deixa disponível pro script principal
+      window.__MOSTREAKI__ = { name, uid, wapp };
+    })();
+  </script>
 </head>
 <body>
-<header>
-  <div class="logo">MostreAki • Catálogo</div>
-</header>
-<main>
-  <div class="grid-wrap">
-    <div class="grid"></div>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-7.07 17.07l.7-.7A9 9 0 1 1 19.64 5.87l.7-.7A10 10 0 0 0 12 2Zm0 4a6 6 0 1 0 4.24 10.24l-.71-.71A5 5 0 1 1 12 7V6Z"/></svg>
+        </div>
+        <div>
+          <h1>Catálogo Digital <span class="accent">MostreAki</span></h1>
+          <div class="sub">
+            Template base – imagens, preço, quantidade e botão WhatsApp
+            <span id="uidBadge"></span>
+          </div>
+        </div>
+      </div>
+      <div class="toolbar">
+        <button id="btnAdd" class="btn">+ Adicionar item</button>
+        <button id="btnExport" class="btn secondary">Exportar JSON</button>
+      </div>
+    </header>
+
+    <!-- Configurações rápidas -->
+    <section class="config" aria-label="Configurações do catálogo">
+      <label>Nome da loja
+        <input id="storeName" type="text" value="Minha Loja" />
+      </label>
+      <label>WhatsApp (apenas números, com DDI/DDD – ex: 55XXXXXXXXXXX)
+        <input id="whatsNumber" type="tel" value="5599999999999" />
+      </label>
+    </section>
+
+    <!-- Grade de produtos -->
+    <section class="grid" id="grid"></section>
+
+    <p class="foot">Dica: clique na imagem de cada item para <strong>enviar uma foto</strong>. O botão de WhatsApp monta a mensagem automaticamente.</p>
   </div>
-</main>
-<footer>
-  © <span id="year"></span> MostreAki — Catálogo do Cliente
-</footer>
-<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+
+  <template id="cardTpl">
+    <article class="card" data-card>
+      <label class="media" aria-label="Imagem do produto">
+        <input type="file" accept="image/*" data-file />
+        <img data-img hidden alt="Imagem do produto"/>
+        <div class="img-fallback" data-fallback>
+          <svg width="50" height="50" viewBox="0 0 24 24"><path fill="currentColor" d="M12 8a3 3 0 1 0 0 6a3 3 0 0 0 0-6m0-6a9 9 0 0 0-9 9c0 4.97 4.03 9 9 9s9-4.03 9-9s-4.03-9-9-9m0 16a7 7 0 1 1 0-14a7 7 0 0 1 0 14"/></svg>
+        </div>
+        <div class="upload-hint">Enviar foto</div>
+      </label>
+      <div class="body">
+        <div class="title">
+          <input type="text" placeholder="Nome do produto" value="Produto" data-name />
+        </div>
+        <div class="price-qty">
+          <input type="text" inputmode="decimal" placeholder="Preço (R$)" value="R$ 0,00" data-price />
+          <input type="number" min="1" step="1" value="1" data-qty />
+        </div>
+        <div class="actions">
+          <button class="wapp" data-wa>Chamar no WhatsApp</button>
+          <button class="remove" data-remove>Remover</button>
+        </div>
+      </div>
+    </article>
+  </template>
+
+  <script>
+    // ===== Config =====
+    const grid = document.getElementById('grid');
+    const tpl = document.getElementById('cardTpl');
+    const storeNameEl = document.getElementById('storeName');
+    const whatsEl = document.getElementById('whatsNumber');
+    const uidBadge = document.getElementById('uidBadge');
+
+    // Usa dados vindos do goToPage (query/localStorage)
+    (function hydrateHeader(){
+      const data = window.__MOSTREAKI__ || {};
+      if (data.name) storeNameEl.value = data.name;
+      if (data.wapp) whatsEl.value = (''+data.wapp).replace(/\D/g,'');
+      if (data.uid)  uidBadge.innerHTML = ` · UID: <span style="color:#9aa7b2">${data.uid}</span>`;
+    })();
+
+    // Utils
+    const fmtBRL = new Intl.NumberFormat('pt-BR', { style:'currency', currency:'BRL' });
+    const toCents = (str) => {
+      if (!str) return 0;
+      const only = (''+str).replace(/[^0-9]/g,'');
+      return parseInt(only || '0', 10);
+    }
+    const centsToBRL = (c) => fmtBRL.format((c||0)/100);
+
+    // Cria um card
+    function newCard(prefill={}){
+      const node = tpl.content.firstElementChild.cloneNode(true);
+      const file = node.querySelector('[data-file]');
+      const img = node.querySelector('[data-img]');
+      const fallback = node.querySelector('[data-fallback]');
+      const name = node.querySelector('[data-name]');
+      const price = node.querySelector('[data-price]');
+      const qty = node.querySelector('[data-qty]');
+      const btnWa = node.querySelector('[data-wa]');
+      const btnRemove = node.querySelector('[data-remove]');
+
+      // Preenche
+      name.value = prefill.name || 'Produto';
+      const cents = prefill.cents ?? 0;
+      price.value = centsToBRL(cents);
+      qty.value = prefill.qty || 1;
+
+      // Upload preview
+      node.querySelector('.media').addEventListener('click', () => file.click());
+      file.addEventListener('change', (e)=>{
+        const f = e.target.files?.[0];
+        if(!f) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+          img.src = reader.result;
+          img.hidden = false;
+          fallback.hidden = true;
+        };
+        reader.readAsDataURL(f);
+      });
+
+      // Máscara de preço simples
+      price.addEventListener('input', (e)=>{
+        const cents = toCents(e.target.value);
+        e.target.value = centsToBRL(cents);
+      });
+
+      // WhatsApp action
+      btnWa.addEventListener('click', ()=>{
+        const n = name.value.trim()||'Produto';
+        const c = toCents(price.value);
+        const q = parseInt(qty.value||'1',10);
+        const total = centsToBRL(c*q);
+        const store = storeNameEl.value.trim();
+        const waNumber = whatsEl.value.replace(/\D/g,'');
+        const msg = `Olá, vim do catálogo *${store}*%0A`+
+                    `Produto: *${encodeURIComponent(n)}*%0A`+
+                    `Preço: *${encodeURIComponent(centsToBRL(c))}*%0A`+
+                    `Quantidade: *${q}*%0A`+
+                    `Total: *${encodeURIComponent(total)}*`;
+        const url = `https://wa.me/${waNumber}?text=${msg}`;
+        window.open(url, '_blank');
+      });
+
+      // Remover
+      btnRemove.addEventListener('click', ()=> node.remove());
+
+      grid.appendChild(node);
+    }
+
+    // Botões principais
+    document.getElementById('btnAdd').addEventListener('click', ()=> newCard());
+    document.getElementById('btnExport').addEventListener('click', ()=>{
+      const data = [...grid.querySelectorAll('[data-card]')].map(card=>{
+        const name = card.querySelector('[data-name]').value.trim();
+        const priceCents = toCents(card.querySelector('[data-price]').value);
+        const qty = parseInt(card.querySelector('[data-qty]').value||'1',10);
+        const img = card.querySelector('[data-img]');
+        return { name, price_cents: priceCents, qty, image_data: img?.src||null };
+      });
+      const json = JSON.stringify({
+        store: storeNameEl.value.trim(),
+        whatsapp: whatsEl.value.trim(),
+        items: data
+      }, null, 2);
+      const blob = new Blob([json], {type:'application/json'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'catalogo-mostreaki.json';
+      a.click();
+      URL.revokeObjectURL(a.href);
+    });
+
+    // Sementes de exemplo
+    [
+      { name:'Pôster Espiral', cents: 6900, qty:1 },
+      { name:'Camisa MostreAki', cents: 9900, qty:1 },
+      { name:'Adesivo Hiperbóreo', cents: 1900, qty:2 }
+    ].forEach(seed=> newCard(seed));
+  </script>
 </body>
 </html>
