@@ -18,10 +18,7 @@
       --shadow: 0 10px 30px rgba(0,0,0,.35);
     }
     *{box-sizing:border-box}
-    body{
-      margin:0; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background:#0b0c10; color:var(--ink)
-    }
+    body{ margin:0; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background:#0b0c10; color:var(--ink) }
     .wrap{max-width:1100px; margin:40px auto; padding:0 20px}
     header{display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:24px}
     .brand{display:flex; align-items:center; gap:12px}
@@ -37,16 +34,13 @@
 
     .config{display:grid; grid-template-columns: 1fr 1fr; gap:12px; background:var(--muted); padding:14px; border-radius:var(--radius); margin-bottom:18px}
     .config label{display:grid; gap:6px; font-size:13px; color:var(--ink-dim)}
-    .config input{
-      background:#0f1318; color:var(--ink); border:1px solid #1f2430;
-      padding:12px; border-radius:12px; font-size:clamp(13px,1.4vw,16px); height:clamp(40px,5.2vw,56px)
-    }
+    .config input{background:#0f1318; color:var(--ink); border:1px solid #1f2430; padding:12px; border-radius:12px; font-size:clamp(13px,1.4vw,16px); height:clamp(40px,5.2vw,56px)}
 
     /* GRID: 3 no mobile / 4 no desktop */
     .grid{display:grid; gap:16px; grid-template-columns: repeat(3, 1fr)}
     @media (min-width: 992px){ .grid{grid-template-columns: repeat(4, 1fr)} }
 
-    /* Cards com container queries pra ficar proporcional */
+    /* Cards com container queries p/ controles proporcionais */
     .card{
       background:var(--panel); border:1px solid #1a1f27; border-radius:var(--radius);
       overflow:hidden; box-shadow:var(--shadow); display:flex; flex-direction:column;
@@ -64,15 +58,9 @@
     .img-fallback svg{opacity:.6}
     .body{padding:14px; display:grid; gap:10px}
     .title{display:grid; gap:6px}
-    .title input{
-      background:#0f1318; color:var(--ink); border:1px solid #1f2430; padding: var(--pad-ctrl);
-      border-radius:10px; font-weight:700; font-size:var(--fs-title); height:var(--h-ctrl)
-    }
+    .title input{background:#0f1318; color:var(--ink); border:1px solid #1f2430; padding: var(--pad-ctrl); border-radius:10px; font-weight:700; font-size:var(--fs-title); height:var(--h-ctrl)}
     .price-qty{display:grid; grid-template-columns: 1fr 1fr; gap:8px}
-    .price-qty input{
-      background:#0f1318; color:var(--ink); border:1px solid #1f2430; padding: var(--pad-ctrl);
-      border-radius:10px; font-weight:800; font-size:var(--fs-base); height:var(--h-ctrl); text-align:center
-    }
+    .price-qty input{background:#0f1318; color:var(--ink); border:1px solid #1f2430; padding: var(--pad-ctrl); border-radius:10px; font-weight:800; font-size:var(--fs-base); height:var(--h-ctrl); text-align:center}
     .actions{display:flex; gap:8px; margin-top:6px}
     .wapp{flex:1; background:var(--brand); color:var(--brand-ink); border:0; border-radius:12px; font-weight:900; cursor:pointer; height:var(--h-ctrl); font-size:var(--fs-base)}
     .wapp:hover{filter:brightness(1.05)}
@@ -104,7 +92,7 @@
       root.style.setProperty('--ink', textColor);
       root.style.setProperty('--brand', btnColor);
 
-      document.body.style.background = bgColor; // aceita HEX/rgb(a)/linear-gradient(...)
+      document.body.style.background = bgColor; // HEX/rgb(a)/linear-gradient(...)
     })();
   </script>
 </head>
@@ -176,11 +164,7 @@
     const uidBadge = document.getElementById('uidBadge');
 
     const fmtBRL = new Intl.NumberFormat('pt-BR', { style:'currency', currency:'BRL' });
-    const toCents = (str) => {
-      if (!str) return 0;
-      const only = (''+str).replace(/[^0-9]/g,'');
-      return parseInt(only || '0', 10);
-    }
+    const toCents = (str) => { const only = (''+str).replace(/[^0-9]/g,''); return parseInt(only||'0',10); }
     const centsToBRL = (c) => fmtBRL.format((c||0)/100);
 
     function newCard(prefill={}){
@@ -195,37 +179,20 @@
       const btnRemove = node.querySelector('[data-remove]');
 
       name.value = prefill.name || 'Produto';
-      const cents = prefill.cents ?? 0;
-      price.value = centsToBRL(cents);
+      price.value = centsToBRL(prefill.cents ?? 0);
       qty.value = prefill.qty || 1;
 
       node.querySelector('.media').addEventListener('click', () => file.click());
 
       file.addEventListener('change', async (e)=>{
-        const f = e.target.files?.[0];
-        if(!f) return;
-        // preview rápido
+        const f = e.target.files?.[0]; if(!f) return;
         const reader = new FileReader();
-        reader.onload = () => {
-          img.src = reader.result;
-          img.hidden = false;
-          fallback.hidden = true;
-        };
+        reader.onload = () => { img.src = reader.result; img.hidden = false; fallback.hidden = true; };
         reader.readAsDataURL(f);
-
-        // sobe pro Storage e troca pela URL final
-        try {
-          const url = await window.MOSTREAKI_UPLOAD?.(f);
-          if (url) img.src = url;
-        } catch (err) {
-          console.error('Falha no upload:', err);
-        }
+        try { const url = await window.MOSTREAKI_UPLOAD?.(f); if (url) img.src = url; } catch (err) { console.error('Upload:', err); }
       });
 
-      price.addEventListener('input', (e)=>{
-        const cents = toCents(e.target.value);
-        e.target.value = centsToBRL(cents);
-      });
+      price.addEventListener('input', (e)=>{ e.target.value = centsToBRL(toCents(e.target.value)); });
 
       btnWa.addEventListener('click', async ()=>{
         const n = name.value.trim()||'Produto';
@@ -234,25 +201,9 @@
         const total = centsToBRL(c*q);
         const store = storeNameEl.value.trim();
         const waNumber = whatsEl.value.replace(/\D/g,'');
-        const msg = `Olá, vim do catálogo *${store}*%0A`+
-                    `Produto: *${encodeURIComponent(n)}*%0A`+
-                    `Preço: *${encodeURIComponent(centsToBRL(c))}*%0A`+
-                    `Quantidade: *${q}*%0A`+
-                    `Total: *${encodeURIComponent(total)}*`;
-        const url = `https://wa.me/${waNumber}?text=${msg}`;
-        window.open(url, '_blank');
-
-        // salva item (opcional: log de clique)
-        try {
-          await window.MOSTREAKI_SAVE_ITEM?.({
-            name: n,
-            price_cents: c,
-            qty: q,
-            image_url: img?.src || null
-          });
-        } catch (err) {
-          console.error('Falha ao salvar item:', err);
-        }
+        const msg = `Olá, vim do catálogo *${store}*%0AProduto: *${encodeURIComponent(n)}*%0APreço: *${encodeURIComponent(centsToBRL(c))}*%0AQuantidade: *${q}*%0ATotal: *${encodeURIComponent(total)}*`;
+        window.open(`https://wa.me/${waNumber}?text=${msg}`, '_blank');
+        try { await window.MOSTREAKI_SAVE_ITEM?.({ name:n, price_cents:c, qty:q, image_url: img?.src || null }); } catch(e){}
       });
 
       btnRemove.addEventListener('click', ()=> node.remove());
@@ -261,26 +212,17 @@
     }
 
     document.getElementById('btnAdd').addEventListener('click', ()=> newCard());
-
     document.getElementById('btnExport').addEventListener('click', ()=>{
       const data = [...grid.querySelectorAll('[data-card]')].map(card=>{
         const name = card.querySelector('[data-name]').value.trim();
-        const priceCents = toCents(card.querySelector('[data-price]').value);
+        const price_cents = toCents(card.querySelector('[data-price]').value);
         const qty = parseInt(card.querySelector('[data-qty]').value||'1',10);
-        const img = card.querySelector('[data-img]');
-        return { name, price_cents: priceCents, qty, image_url: img?.src||null };
+        const img = card.querySelector('[data-img]').src || null;
+        return { name, price_cents, qty, image_url: img };
       });
-      const json = JSON.stringify({
-        store: storeNameEl.value.trim(),
-        whatsapp: whatsEl.value.trim(),
-        items: data
-      }, null, 2);
+      const json = JSON.stringify({ store: storeNameEl.value.trim(), whatsapp: whatsEl.value.trim(), items: data }, null, 2);
       const blob = new Blob([json], {type:'application/json'});
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = 'catalogo-mostreaki.json';
-      a.click();
-      URL.revokeObjectURL(a.href);
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'catalogo-mostreaki.json'; a.click(); URL.revokeObjectURL(a.href);
     });
 
     // ====== Publicar (Salvar & Visualizar) ======
@@ -289,7 +231,6 @@
         const uid = localStorage.getItem('userUid') || new URLSearchParams(location.search).get('uid');
         if(!uid){ alert('UID não encontrado. Abra o catálogo com ?uid=SEU_UID.'); return; }
 
-        // coleta itens
         const items = [...grid.querySelectorAll('[data-card]')].map(card=>{
           const name = card.querySelector('[data-name]').value.trim();
           const price_cents = toCents(card.querySelector('[data-price]').value);
@@ -298,30 +239,20 @@
           return { name, price_cents, qty, image_url: img };
         });
 
-        // tema / loja
+        // tema/loja vindos de query/LS (mesma leitura do header)
         const qs = new URLSearchParams(location.search);
-        const pick = (keys, fb)=>{
-          const arr = Array.isArray(keys)? keys : [keys];
-          for (const k of arr){
-            const v = qs.get(k) || localStorage.getItem(k);
-            if (v) return v;
-          }
-          return fb;
-        };
+        const pick = (keys, fb)=>{ const arr = Array.isArray(keys)? keys : [keys]; for (const k of arr){ const v = qs.get(k)||localStorage.getItem(k); if(v) return v; } return fb; };
         const theme = {
           bg:   pick(['bg','bgColor'],'#0b0c10'),
           text: pick(['text','textColor'],'#eaf0f6'),
           btn:  pick(['btn','btnColor','buttonColor'],'#26c281'),
-          box:  pick(['box','containerColor'],''#111318')
+          box:  pick(['box','containerColor'],'#111318')   /* <-- CORRIGIDO: sem apóstrofo extra */
         };
         const store = storeNameEl.value.trim();
         const whatsapp = whatsEl.value.replace(/\D/g,'');
 
-        // salva no Firestore (função global definida no bloco Firebase)
         const link = await window.MOSTREAKI_PUBLISH?.({ uid, store, whatsapp, theme, items });
         if (!link) throw new Error('Falha ao publicar');
-
-        // abre página de visualização
         window.open(link, '_blank');
       }catch(e){
         console.error(e);
@@ -330,11 +261,7 @@
     });
 
     // Sementes
-    [
-      { name:'Pôster Espiral', cents: 6900, qty:1 },
-      { name:'Camisa MostreAki', cents: 9900, qty:1 },
-      { name:'Adesivo Hiperbóreo', cents: 1900, qty:2 }
-    ].forEach(seed=> newCard(seed));
+    [{name:'Pôster Espiral', cents:6900, qty:1},{name:'Camisa MostreAki', cents:9900, qty:1},{name:'Adesivo Hiperbóreo', cents:1900, qty:2}].forEach(seed=> newCard(seed));
   </script>
 
   <!-- Firebase (CDN modular) -->
@@ -371,19 +298,12 @@
           const data = snap.data();
           const storeNameEl = document.getElementById('storeName');
           const whatsEl     = document.getElementById('whatsNumber');
-          if (data?.nome) {
-            storeNameEl.value = data.nome;
-            localStorage.setItem('userName', data.nome);
-          }
-          if (data?.whatsapp) {
-            whatsEl.value = String(data.whatsapp).replace(/\D/g,'');
-            localStorage.setItem('whatsNumber', whatsEl.value);
-          }
+          if (data?.nome) { storeNameEl.value = data.nome; localStorage.setItem('userName', data.nome); }
+          if (data?.whatsapp) { whatsEl.value = String(data.whatsapp).replace(/\D/g,''); localStorage.setItem('whatsNumber', whatsEl.value); }
         }
       } catch (e) { console.error("Erro ao buscar perfil:", e); }
     }
 
-    // mostra UID no subtítulo
     const badge = document.getElementById('uidBadge');
     if (badge && uid) badge.innerHTML = ` · UID: <span style="color:#9aa7b2">${uid}</span>`;
 
@@ -402,20 +322,11 @@
       await addDoc(col, { ...fields, createdAt: serverTimestamp() });
     };
 
-    // Publica catálogo completo e retorna URL de visualização
     window.MOSTREAKI_PUBLISH = async function({ uid, store, whatsapp, theme, items }){
-      const pubRef = doc(db, 'usuarios', uid, 'public', 'catalog_published'); // doc fixo
-      await setDoc(pubRef, {
-        store,
-        whatsapp,
-        theme,
-        items,
-        updatedAt: serverTimestamp()
-      }, { merge:true });
-      // retorna link da página de visualização
+      const pubRef = doc(db, 'usuarios', uid, 'public', 'catalog_published');
+      await setDoc(pubRef, { store, whatsapp, theme, items, updatedAt: serverTimestamp() }, { merge:true });
       const base = new URL('catalogo-view.html', location.href).toString();
-      const url  = `${base}?uid=${encodeURIComponent(uid)}&v=${Date.now()}`;
-      return url;
+      return `${base}?uid=${encodeURIComponent(uid)}&v=${Date.now()}`;
     };
   </script>
 </body>
