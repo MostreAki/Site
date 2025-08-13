@@ -16,12 +16,6 @@
       --muted:#22262f;
       --radius:18px;
       --shadow: 0 10px 30px rgba(0,0,0,.35);
-
-      /* escala responsiva pros controles */
-      --fs-base: clamp(13px, 1.4vw, 18px);
-      --fs-title: clamp(14px, 1.6vw, 20px);
-      --h-ctrl: clamp(42px, 5.2vw, 56px);
-      --pad-ctrl: clamp(10px, 1.6vw, 14px);
     }
 
     *{box-sizing:border-box}
@@ -44,12 +38,15 @@
     .btn:hover{filter:brightness(1.05)}
     .btn.secondary{background:#222a33; color:var(--ink)}
 
-    /* sem editor aqui — apenas nome/whats */
-    .config{display:grid; grid-template-columns: 1fr 1fr; gap:12px; background:var(--muted); padding:14px; border-radius:var(--radius); margin-bottom:18px}
+    /* apenas nome/whats; fundo vem do CrieAki automaticamente */
+    .config{
+      display:grid; grid-template-columns: 1fr 1fr; gap:12px;
+      background:var(--muted); padding:14px; border-radius:var(--radius); margin-bottom:18px
+    }
     .config label{display:grid; gap:6px; font-size:13px; color:var(--ink-dim)}
     .config input{
       background:#0f1318; color:var(--ink); border:1px solid #1f2430;
-      padding: var(--pad-ctrl); border-radius:12px; font-size:var(--fs-base); height:var(--h-ctrl)
+      padding: 12px; border-radius:12px; font-size:clamp(13px,1.4vw,16px); height:clamp(40px,5.2vw,56px)
     }
 
     /* ====== GRID: 3 no mobile / 4 no desktop ====== */
@@ -58,7 +55,21 @@
       .grid{grid-template-columns: repeat(4, 1fr)}
     }
 
-    .card{background:var(--panel); border:1px solid #1a1f27; border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow); display:flex; flex-direction:column}
+    /* ====== CARDS com Container Queries p/ responsividade proporcional ====== */
+    .card{
+      background:var(--panel); border:1px solid #1a1f27; border-radius:var(--radius);
+      overflow:hidden; box-shadow:var(--shadow); display:flex; flex-direction:column;
+      container-type: inline-size; /* habilita @container */
+    }
+
+    /* escala baseada na largura do card */
+    .card{
+      --fs-base: clamp(12px, 3.2cqi, 18px);    /* cqi: % da largura do container */
+      --fs-title: clamp(13px, 3.8cqi, 20px);
+      --h-ctrl: clamp(40px, 16cqi, 56px);      /* altura de inputs/botões */
+      --pad-ctrl: clamp(8px, 2.5cqi, 14px);
+    }
+
     .media{position:relative; aspect-ratio: 1 / 1; display:grid; place-items:center; background:linear-gradient(180deg,#1b222b,#131821)}
     .media input[type=file]{display:none}
     .upload-hint{position:absolute; bottom:10px; right:10px; background:rgba(0,0,0,.55); color:#fff; font-size:12px; padding:6px 8px; border-radius:10px}
@@ -70,14 +81,15 @@
     .title{display:grid; gap:6px}
     .title input{
       background:#0f1318; color:var(--ink); border:1px solid #1f2430;
-      padding: var(--pad-ctrl); border-radius:10px; font-weight:700; font-size:var(--fs-title); height:var(--h-ctrl)
+      padding: var(--pad-ctrl); border-radius:10px; font-weight:700;
+      font-size:var(--fs-title); height:var(--h-ctrl)
     }
 
-    /* preço e quantidade maiores e proporcionais */
     .price-qty{display:grid; grid-template-columns: 1fr 1fr; gap:8px}
     .price-qty input{
       background:#0f1318; color:var(--ink); border:1px solid #1f2430;
-      padding: var(--pad-ctrl); border-radius:10px; font-weight:700; font-size:var(--fs-base); height:var(--h-ctrl); text-align:center
+      padding: var(--pad-ctrl); border-radius:10px; font-weight:800;
+      font-size:var(--fs-base); height:var(--h-ctrl); text-align:center
     }
 
     .actions{display:flex; gap:8px; margin-top:6px}
@@ -96,6 +108,7 @@
 
     .add{border:2px dashed #2a3340; background:#11141b; color:#7b8a96; border-radius:var(--radius); display:grid; place-items:center; aspect-ratio:1/1}
     .add button{background:#11141b; border:0; color:#9fb5c2; cursor:pointer}
+
     .foot{color:#7b8a96; font-size:12px; text-align:center; margin:20px 0}
     .accent{color:var(--accent)}
   </style>
@@ -104,10 +117,11 @@
   <script>
     (function applyTheme(){
       const qs = new URLSearchParams(location.search);
-      // lê tanto o padrão antigo (bg/text/btn/head/foot/box) quanto o do CrieAki (bgColor/textColor/btnColor/headerColor/footerColor/containerColor)
-      const pick = (keys, fb) => {
-        for (const k of keys){
-          const v = qs.get(k) || localStorage.getItem(k);
+      // lê tanto o padrão (bg/text/btn/head/foot/box) quanto as chaves do CrieAki (bgColor/textColor/...)
+      const pick = (keys, fb)=>{
+        const arr = Array.isArray(keys)? keys : [keys];
+        for (const k of arr){
+          const v = qs.get(k) || (typeof localStorage!=='undefined' ? localStorage.getItem(k) : null);
           if (v) return v;
         }
         return fb;
@@ -115,7 +129,7 @@
 
       const bgColor   = pick(['bg','bgColor'], '#0b0c10');
       const textColor = pick(['text','textColor'], '#eaf0f6');
-      const btnColor  = pick(['btn','buttonColor','btnColor'], '#26c281');
+      const btnColor  = pick(['btn','btnColor','buttonColor'], '#26c281');
       const headColor = pick(['head','headerColor'], '#111318');
       const footColor = pick(['foot','footerColor'], '#111318');
       const boxColor  = pick(['box','containerColor'], '#111318');
@@ -125,12 +139,8 @@
       root.style.setProperty('--ink', textColor);
       root.style.setProperty('--brand', btnColor);
 
-      // aceita cor sólida ou gradiente
-      if ((bgColor || '').startsWith('linear-gradient(')) {
-        document.body.style.background = bgColor;
-      } else {
-        document.body.style.background = bgColor;
-      }
+      // aceita HEX, rgb(a) ou linear-gradient(...)
+      document.body.style.background = bgColor;
     })();
   </script>
 </head>
@@ -323,7 +333,7 @@
     import { getFirestore, doc, getDoc, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
     import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
-    // === CONFIG DO TEU PROJETO ===
+    // === CONFIG DO TEU PROJETO (dos prints) ===
     const firebaseConfig = {
       apiKey: "AIzaSyBrkUtwP4T77oXE22OjOFVhfEUlJ7yctiE",
       authDomain: "mostreaki-2025.firebaseapp.com",
