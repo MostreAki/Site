@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Catálogo Digital – MostreAki</title>
+  <title>Catálogo Digital – MostreAki (Editor)</title>
   <style>
     :root{
       --panel:#111318;
@@ -17,15 +17,11 @@
       --radius:18px;
       --shadow: 0 10px 30px rgba(0,0,0,.35);
     }
-
     *{box-sizing:border-box}
     body{
-      margin:0;
-      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background:#0b0c10; /* será sobrescrito pelo tema vindo do CrieAki */
-      color:var(--ink)
+      margin:0; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background:#0b0c10; color:var(--ink)
     }
-
     .wrap{max-width:1100px; margin:40px auto; padding:0 20px}
     header{display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:24px}
     .brand{display:flex; align-items:center; gap:12px}
@@ -37,87 +33,59 @@
     .btn{background:var(--brand); color:#001b12; border:0; padding:10px 14px; border-radius:999px; font-weight:700; cursor:pointer; box-shadow: 0 6px 18px rgba(38,194,129,.3)}
     .btn:hover{filter:brightness(1.05)}
     .btn.secondary{background:#222a33; color:var(--ink)}
+    .btn.ghost{background:#1f252e; color:#c7d2db}
 
-    /* apenas nome/whats; fundo vem do CrieAki automaticamente */
-    .config{
-      display:grid; grid-template-columns: 1fr 1fr; gap:12px;
-      background:var(--muted); padding:14px; border-radius:var(--radius); margin-bottom:18px
-    }
+    .config{display:grid; grid-template-columns: 1fr 1fr; gap:12px; background:var(--muted); padding:14px; border-radius:var(--radius); margin-bottom:18px}
     .config label{display:grid; gap:6px; font-size:13px; color:var(--ink-dim)}
     .config input{
       background:#0f1318; color:var(--ink); border:1px solid #1f2430;
-      padding: 12px; border-radius:12px; font-size:clamp(13px,1.4vw,16px); height:clamp(40px,5.2vw,56px)
+      padding:12px; border-radius:12px; font-size:clamp(13px,1.4vw,16px); height:clamp(40px,5.2vw,56px)
     }
 
-    /* ====== GRID: 3 no mobile / 4 no desktop ====== */
+    /* GRID: 3 no mobile / 4 no desktop */
     .grid{display:grid; gap:16px; grid-template-columns: repeat(3, 1fr)}
-    @media (min-width: 992px){
-      .grid{grid-template-columns: repeat(4, 1fr)}
-    }
+    @media (min-width: 992px){ .grid{grid-template-columns: repeat(4, 1fr)} }
 
-    /* ====== CARDS com Container Queries p/ responsividade proporcional ====== */
+    /* Cards com container queries pra ficar proporcional */
     .card{
       background:var(--panel); border:1px solid #1a1f27; border-radius:var(--radius);
       overflow:hidden; box-shadow:var(--shadow); display:flex; flex-direction:column;
-      container-type: inline-size; /* habilita @container */
-    }
-
-    /* escala baseada na largura do card */
-    .card{
-      --fs-base: clamp(12px, 3.2cqi, 18px);    /* cqi: % da largura do container */
+      container-type: inline-size;
+      --fs-base: clamp(12px, 3.2cqi, 18px);
       --fs-title: clamp(13px, 3.8cqi, 20px);
-      --h-ctrl: clamp(40px, 16cqi, 56px);      /* altura de inputs/botões */
+      --h-ctrl: clamp(40px, 16cqi, 56px);
       --pad-ctrl: clamp(8px, 2.5cqi, 14px);
     }
-
     .media{position:relative; aspect-ratio: 1 / 1; display:grid; place-items:center; background:linear-gradient(180deg,#1b222b,#131821)}
     .media input[type=file]{display:none}
     .upload-hint{position:absolute; bottom:10px; right:10px; background:rgba(0,0,0,.55); color:#fff; font-size:12px; padding:6px 8px; border-radius:10px}
     .media img{max-width:100%; max-height:100%; object-fit:cover; width:100%; height:100%}
     .img-fallback{display:grid; place-items:center; width:100%; height:100%; color:#6d7a86}
     .img-fallback svg{opacity:.6}
-
     .body{padding:14px; display:grid; gap:10px}
     .title{display:grid; gap:6px}
     .title input{
-      background:#0f1318; color:var(--ink); border:1px solid #1f2430;
-      padding: var(--pad-ctrl); border-radius:10px; font-weight:700;
-      font-size:var(--fs-title); height:var(--h-ctrl)
+      background:#0f1318; color:var(--ink); border:1px solid #1f2430; padding: var(--pad-ctrl);
+      border-radius:10px; font-weight:700; font-size:var(--fs-title); height:var(--h-ctrl)
     }
-
     .price-qty{display:grid; grid-template-columns: 1fr 1fr; gap:8px}
     .price-qty input{
-      background:#0f1318; color:var(--ink); border:1px solid #1f2430;
-      padding: var(--pad-ctrl); border-radius:10px; font-weight:800;
-      font-size:var(--fs-base); height:var(--h-ctrl); text-align:center
+      background:#0f1318; color:var(--ink); border:1px solid #1f2430; padding: var(--pad-ctrl);
+      border-radius:10px; font-weight:800; font-size:var(--fs-base); height:var(--h-ctrl); text-align:center
     }
-
     .actions{display:flex; gap:8px; margin-top:6px}
-    .wapp{
-      flex:1; background:var(--brand); color:var(--brand-ink); border:0;
-      border-radius:12px; font-weight:900; cursor:pointer;
-      height:var(--h-ctrl); font-size:var(--fs-base)
-    }
+    .wapp{flex:1; background:var(--brand); color:var(--brand-ink); border:0; border-radius:12px; font-weight:900; cursor:pointer; height:var(--h-ctrl); font-size:var(--fs-base)}
     .wapp:hover{filter:brightness(1.05)}
-    .remove{
-      background:#1f252e; color:#b2bdc7; border:0;
-      border-radius:12px; cursor:pointer;
-      height:var(--h-ctrl); padding:0 12px; font-size:var(--fs-base); white-space:nowrap
-    }
+    .remove{background:#1f252e; color:#b2bdc7; border:0; border-radius:12px; cursor:pointer; height:var(--h-ctrl); padding:0 12px; font-size:var(--fs-base); white-space:nowrap}
     .remove:hover{background:#232a35}
-
-    .add{border:2px dashed #2a3340; background:#11141b; color:#7b8a96; border-radius:var(--radius); display:grid; place-items:center; aspect-ratio:1/1}
-    .add button{background:#11141b; border:0; color:#9fb5c2; cursor:pointer}
-
     .foot{color:#7b8a96; font-size:12px; text-align:center; margin:20px 0}
     .accent{color:var(--accent)}
   </style>
 
-  <!-- Tema: puxa AUTOMATICAMENTE a paleta do CrieAki (query ou localStorage) -->
+  <!-- TEMA: lê bg/bgColor (etc.) da URL ou localStorage -->
   <script>
     (function applyTheme(){
       const qs = new URLSearchParams(location.search);
-      // lê tanto o padrão (bg/text/btn/head/foot/box) quanto as chaves do CrieAki (bgColor/textColor/...)
       const pick = (keys, fb)=>{
         const arr = Array.isArray(keys)? keys : [keys];
         for (const k of arr){
@@ -126,12 +94,9 @@
         }
         return fb;
       };
-
       const bgColor   = pick(['bg','bgColor'], '#0b0c10');
       const textColor = pick(['text','textColor'], '#eaf0f6');
       const btnColor  = pick(['btn','btnColor','buttonColor'], '#26c281');
-      const headColor = pick(['head','headerColor'], '#111318');
-      const footColor = pick(['foot','footerColor'], '#111318');
       const boxColor  = pick(['box','containerColor'], '#111318');
 
       const root = document.documentElement;
@@ -139,8 +104,7 @@
       root.style.setProperty('--ink', textColor);
       root.style.setProperty('--brand', btnColor);
 
-      // aceita HEX, rgb(a) ou linear-gradient(...)
-      document.body.style.background = bgColor;
+      document.body.style.background = bgColor; // aceita HEX/rgb(a)/linear-gradient(...)
     })();
   </script>
 </head>
@@ -153,16 +117,16 @@
         </div>
         <div>
           <h1>Catálogo Digital <span class="accent">MostreAki</span></h1>
-          <div class="sub">Template base – imagens, preço, quantidade e botão WhatsApp <span id="uidBadge"></span></div>
+          <div class="sub">Editor – adicione itens, salve e visualize <span id="uidBadge"></span></div>
         </div>
       </div>
       <div class="toolbar">
         <button id="btnAdd" class="btn">+ Adicionar item</button>
         <button id="btnExport" class="btn secondary">Exportar JSON</button>
+        <button id="btnPublish" class="btn">Salvar & Visualizar</button>
       </div>
     </header>
 
-    <!-- Só nome e Whats; fundo vem do CrieAki automaticamente -->
     <section class="config" aria-label="Configurações do catálogo">
       <label>Nome da loja
         <input id="storeName" type="text" value="Minha Loja" />
@@ -174,7 +138,7 @@
 
     <section class="grid" id="grid"></section>
 
-    <p class="foot">Dica: toque na imagem do item para <strong>enviar uma foto</strong>. O botão de WhatsApp monta a mensagem automaticamente.</p>
+    <p class="foot">Dica: toque na imagem do item para <strong>enviar uma foto</strong>. O botão de WhatsApp monta a mensagem automaticamente. Use “Salvar & Visualizar” para gerar o link de compartilhamento.</p>
   </div>
 
   <template id="cardTpl">
@@ -278,7 +242,7 @@
         const url = `https://wa.me/${waNumber}?text=${msg}`;
         window.open(url, '_blank');
 
-        // salva item no Firestore
+        // salva item (opcional: log de clique)
         try {
           await window.MOSTREAKI_SAVE_ITEM?.({
             name: n,
@@ -297,13 +261,14 @@
     }
 
     document.getElementById('btnAdd').addEventListener('click', ()=> newCard());
+
     document.getElementById('btnExport').addEventListener('click', ()=>{
       const data = [...grid.querySelectorAll('[data-card]')].map(card=>{
         const name = card.querySelector('[data-name]').value.trim();
         const priceCents = toCents(card.querySelector('[data-price]').value);
         const qty = parseInt(card.querySelector('[data-qty]').value||'1',10);
         const img = card.querySelector('[data-img]');
-        return { name, price_cents: priceCents, qty, image_data: img?.src||null };
+        return { name, price_cents: priceCents, qty, image_url: img?.src||null };
       });
       const json = JSON.stringify({
         store: storeNameEl.value.trim(),
@@ -318,6 +283,52 @@
       URL.revokeObjectURL(a.href);
     });
 
+    // ====== Publicar (Salvar & Visualizar) ======
+    document.getElementById('btnPublish').addEventListener('click', async ()=>{
+      try{
+        const uid = localStorage.getItem('userUid') || new URLSearchParams(location.search).get('uid');
+        if(!uid){ alert('UID não encontrado. Abra o catálogo com ?uid=SEU_UID.'); return; }
+
+        // coleta itens
+        const items = [...grid.querySelectorAll('[data-card]')].map(card=>{
+          const name = card.querySelector('[data-name]').value.trim();
+          const price_cents = toCents(card.querySelector('[data-price]').value);
+          const qty = parseInt(card.querySelector('[data-qty]').value||'1',10);
+          const img = card.querySelector('[data-img]').src || null;
+          return { name, price_cents, qty, image_url: img };
+        });
+
+        // tema / loja
+        const qs = new URLSearchParams(location.search);
+        const pick = (keys, fb)=>{
+          const arr = Array.isArray(keys)? keys : [keys];
+          for (const k of arr){
+            const v = qs.get(k) || localStorage.getItem(k);
+            if (v) return v;
+          }
+          return fb;
+        };
+        const theme = {
+          bg:   pick(['bg','bgColor'],'#0b0c10'),
+          text: pick(['text','textColor'],'#eaf0f6'),
+          btn:  pick(['btn','btnColor','buttonColor'],'#26c281'),
+          box:  pick(['box','containerColor'],''#111318')
+        };
+        const store = storeNameEl.value.trim();
+        const whatsapp = whatsEl.value.replace(/\D/g,'');
+
+        // salva no Firestore (função global definida no bloco Firebase)
+        const link = await window.MOSTREAKI_PUBLISH?.({ uid, store, whatsapp, theme, items });
+        if (!link) throw new Error('Falha ao publicar');
+
+        // abre página de visualização
+        window.open(link, '_blank');
+      }catch(e){
+        console.error(e);
+        alert('Não foi possível publicar o catálogo.');
+      }
+    });
+
     // Sementes
     [
       { name:'Pôster Espiral', cents: 6900, qty:1 },
@@ -326,14 +337,13 @@
     ].forEach(seed=> newCard(seed));
   </script>
 
-  <!-- Firebase (CDN modular) + integração MostreAki -->
+  <!-- Firebase (CDN modular) -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { getFirestore, doc, getDoc, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, setDoc, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
     import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
-    // === CONFIG DO TEU PROJETO (dos prints) ===
     const firebaseConfig = {
       apiKey: "AIzaSyBrkUtwP4T77oXE22OjOFVhfEUlJ7yctiE",
       authDomain: "mostreaki-2025.firebaseapp.com",
@@ -361,7 +371,6 @@
           const data = snap.data();
           const storeNameEl = document.getElementById('storeName');
           const whatsEl     = document.getElementById('whatsNumber');
-
           if (data?.nome) {
             storeNameEl.value = data.nome;
             localStorage.setItem('userName', data.nome);
@@ -371,9 +380,7 @@
             localStorage.setItem('whatsNumber', whatsEl.value);
           }
         }
-      } catch (e) {
-        console.error("Erro ao buscar perfil:", e);
-      }
+      } catch (e) { console.error("Erro ao buscar perfil:", e); }
     }
 
     // mostra UID no subtítulo
@@ -393,6 +400,22 @@
       const who = uid || 'public';
       const col = collection(db, 'usuarios', who, 'items');
       await addDoc(col, { ...fields, createdAt: serverTimestamp() });
+    };
+
+    // Publica catálogo completo e retorna URL de visualização
+    window.MOSTREAKI_PUBLISH = async function({ uid, store, whatsapp, theme, items }){
+      const pubRef = doc(db, 'usuarios', uid, 'public', 'catalog_published'); // doc fixo
+      await setDoc(pubRef, {
+        store,
+        whatsapp,
+        theme,
+        items,
+        updatedAt: serverTimestamp()
+      }, { merge:true });
+      // retorna link da página de visualização
+      const base = new URL('catalogo-view.html', location.href).toString();
+      const url  = `${base}?uid=${encodeURIComponent(uid)}&v=${Date.now()}`;
+      return url;
     };
   </script>
 </body>
