@@ -6,9 +6,8 @@
   <title>Catálogo Digital – MostreAki</title>
   <style>
     :root{
-      --bg: #0b0c10;
-      --panel: #111318;
-      --ink: #eaf0f6;
+      --panel:#111318;
+      --ink:#eaf0f6;
       --ink-dim:#9aa7b2;
       --brand:#26c281;
       --brand-ink:#002b1a;
@@ -17,14 +16,22 @@
       --muted:#22262f;
       --radius:18px;
       --shadow: 0 10px 30px rgba(0,0,0,.35);
+
+      /* escala responsiva pros controles */
+      --fs-base: clamp(13px, 1.4vw, 18px);
+      --fs-title: clamp(14px, 1.6vw, 20px);
+      --h-ctrl: clamp(42px, 5.2vw, 56px);
+      --pad-ctrl: clamp(10px, 1.6vw, 14px);
     }
+
     *{box-sizing:border-box}
     body{
       margin:0;
       font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background:linear-gradient(120deg,#0b0c10,#0e1016 30%,#0b0c10 70%);
+      background:#0b0c10; /* será sobrescrito pelo tema vindo do CrieAki */
       color:var(--ink)
     }
+
     .wrap{max-width:1100px; margin:40px auto; padding:0 20px}
     header{display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:24px}
     .brand{display:flex; align-items:center; gap:12px}
@@ -37,14 +44,12 @@
     .btn:hover{filter:brightness(1.05)}
     .btn.secondary{background:#222a33; color:var(--ink)}
 
-    .config{
-      display:grid; grid-template-columns: 1fr 1fr; gap:12px;
-      background:var(--muted); padding:14px; border-radius:var(--radius); margin-bottom:18px
-    }
+    /* sem editor aqui — apenas nome/whats */
+    .config{display:grid; grid-template-columns: 1fr 1fr; gap:12px; background:var(--muted); padding:14px; border-radius:var(--radius); margin-bottom:18px}
     .config label{display:grid; gap:6px; font-size:13px; color:var(--ink-dim)}
-    .config input, .config select{
+    .config input{
       background:#0f1318; color:var(--ink); border:1px solid #1f2430;
-      padding:10px 12px; border-radius:12px; font-size:14px
+      padding: var(--pad-ctrl); border-radius:12px; font-size:var(--fs-base); height:var(--h-ctrl)
     }
 
     /* ====== GRID: 3 no mobile / 4 no desktop ====== */
@@ -63,15 +68,30 @@
 
     .body{padding:14px; display:grid; gap:10px}
     .title{display:grid; gap:6px}
-    .title input{background:#0f1318; color:var(--ink); border:1px solid #1f2430; padding:9px 10px; border-radius:10px; font-weight:600}
+    .title input{
+      background:#0f1318; color:var(--ink); border:1px solid #1f2430;
+      padding: var(--pad-ctrl); border-radius:10px; font-weight:700; font-size:var(--fs-title); height:var(--h-ctrl)
+    }
 
-    .price-qty{display:grid; grid-template-columns: 1fr 100px; gap:8px}
-    .price-qty input{background:#0f1318; color:var(--ink); border:1px solid #1f2430; padding:9px 10px; border-radius:10px; font-weight:600}
+    /* preço e quantidade maiores e proporcionais */
+    .price-qty{display:grid; grid-template-columns: 1fr 1fr; gap:8px}
+    .price-qty input{
+      background:#0f1318; color:var(--ink); border:1px solid #1f2430;
+      padding: var(--pad-ctrl); border-radius:10px; font-weight:700; font-size:var(--fs-base); height:var(--h-ctrl); text-align:center
+    }
 
     .actions{display:flex; gap:8px; margin-top:6px}
-    .wapp{flex:1; background:var(--brand); color:var(--brand-ink); border:0; padding:10px 12px; border-radius:12px; font-weight:800; cursor:pointer}
+    .wapp{
+      flex:1; background:var(--brand); color:var(--brand-ink); border:0;
+      border-radius:12px; font-weight:900; cursor:pointer;
+      height:var(--h-ctrl); font-size:var(--fs-base)
+    }
     .wapp:hover{filter:brightness(1.05)}
-    .remove{background:#1f252e; color:#b2bdc7; border:0; padding:10px 12px; border-radius:12px; cursor:pointer}
+    .remove{
+      background:#1f252e; color:#b2bdc7; border:0;
+      border-radius:12px; cursor:pointer;
+      height:var(--h-ctrl); padding:0 12px; font-size:var(--fs-base); white-space:nowrap
+    }
     .remove:hover{background:#232a35}
 
     .add{border:2px dashed #2a3340; background:#11141b; color:#7b8a96; border-radius:var(--radius); display:grid; place-items:center; aspect-ratio:1/1}
@@ -80,37 +100,36 @@
     .accent{color:var(--accent)}
   </style>
 
-  <!-- Tema vindo do CrieAki (cores e, opcionalmente, imagem de fundo) -->
+  <!-- Tema: puxa AUTOMATICAMENTE a paleta do CrieAki (query ou localStorage) -->
   <script>
     (function applyTheme(){
       const qs = new URLSearchParams(location.search);
-      const pick = (k, fb)=> qs.get(k) || localStorage.getItem(k) || fb;
-
-      const theme = {
-        bgColor:        pick('bg','#0b0c10'),
-        bgImg:          pick('bgimg',''),            // URL de imagem de fundo (prioridade)
-        bgFit:          pick('bgfit','cover'),       // cover | contain
-        textColor:      pick('text','#eaf0f6'),
-        btnColor:       pick('btn','#26c281'),
-        headerColor:    pick('head','#111318'),
-        footerColor:    pick('foot','#111318'),
-        containerColor: pick('box','#111318')
+      // lê tanto o padrão antigo (bg/text/btn/head/foot/box) quanto o do CrieAki (bgColor/textColor/btnColor/headerColor/footerColor/containerColor)
+      const pick = (keys, fb) => {
+        for (const k of keys){
+          const v = qs.get(k) || localStorage.getItem(k);
+          if (v) return v;
+        }
+        return fb;
       };
 
-      const root = document.documentElement;
-      root.style.setProperty('--panel', theme.containerColor);
-      root.style.setProperty('--ink', theme.textColor);
-      root.style.setProperty('--brand', theme.btnColor);
+      const bgColor   = pick(['bg','bgColor'], '#0b0c10');
+      const textColor = pick(['text','textColor'], '#eaf0f6');
+      const btnColor  = pick(['btn','buttonColor','btnColor'], '#26c281');
+      const headColor = pick(['head','headerColor'], '#111318');
+      const footColor = pick(['foot','footerColor'], '#111318');
+      const boxColor  = pick(['box','containerColor'], '#111318');
 
-      // Aplica fundo (prioriza imagem, senão cor/gradiente)
-      if (theme.bgImg) {
-        document.body.style.backgroundImage = `url("${theme.bgImg}")`;
-        document.body.style.backgroundSize  = theme.bgFit || 'cover';
-        document.body.style.backgroundRepeat = 'no-repeat';
-        document.body.style.backgroundPosition = 'center center';
-        document.body.style.backgroundColor = '#000';
+      const root = document.documentElement;
+      root.style.setProperty('--panel', boxColor);
+      root.style.setProperty('--ink', textColor);
+      root.style.setProperty('--brand', btnColor);
+
+      // aceita cor sólida ou gradiente
+      if ((bgColor || '').startsWith('linear-gradient(')) {
+        document.body.style.background = bgColor;
       } else {
-        document.body.style.background = theme.bgColor;
+        document.body.style.background = bgColor;
       }
     })();
   </script>
@@ -133,40 +152,19 @@
       </div>
     </header>
 
-    <!-- Configurações rápidas + editor de fundo -->
+    <!-- Só nome e Whats; fundo vem do CrieAki automaticamente -->
     <section class="config" aria-label="Configurações do catálogo">
       <label>Nome da loja
         <input id="storeName" type="text" value="Minha Loja" />
       </label>
-
       <label>WhatsApp (apenas números, com DDI/DDD – ex: 55XXXXXXXXXXX)
         <input id="whatsNumber" type="tel" value="5599999999999" />
       </label>
-
-      <label>Fundo (cor/gradiente)
-        <input id="bgEditor" type="text" placeholder="#101820 ou linear-gradient(...)" />
-      </label>
-
-      <label>Fundo (imagem)
-        <input id="bgImage" type="file" accept="image/*" />
-      </label>
-
-      <label>Ajuste da imagem de fundo
-        <select id="bgFit">
-          <option value="cover">cover (recomendado)</option>
-          <option value="contain">contain</option>
-        </select>
-      </label>
-
-      <label>Aplicar fundo
-        <button id="applyBg" class="btn secondary">Aplicar</button>
-      </label>
     </section>
 
-    <!-- Grade de produtos -->
     <section class="grid" id="grid"></section>
 
-    <p class="foot">Dica: clique na imagem de cada item para <strong>enviar uma foto</strong>. O botão de WhatsApp monta a mensagem automaticamente.</p>
+    <p class="foot">Dica: toque na imagem do item para <strong>enviar uma foto</strong>. O botão de WhatsApp monta a mensagem automaticamente.</p>
   </div>
 
   <template id="cardTpl">
@@ -203,24 +201,6 @@
     const whatsEl = document.getElementById('whatsNumber');
     const uidBadge = document.getElementById('uidBadge');
 
-    // Editor de fundo
-    const bgEditor = document.getElementById('bgEditor');
-    const bgImage  = document.getElementById('bgImage');
-    const bgFitSel = document.getElementById('bgFit');
-    const applyBg  = document.getElementById('applyBg');
-
-    // Preenche editor com o que veio por query/localStorage
-    (function hydrateBgEditors(){
-      const qs = new URLSearchParams(location.search);
-      const get = (k)=> qs.get(k) || localStorage.getItem(k) || '';
-      const bg  = get('bg');
-      const bgimg = get('bgimg');
-      const bgfit = get('bgfit') || 'cover';
-      if (bg) bgEditor.value = bg;
-      bgFitSel.value = bgfit;
-      // se vier bgimg por URL, já estará aplicado pelo tema
-    })();
-
     const fmtBRL = new Intl.NumberFormat('pt-BR', { style:'currency', currency:'BRL' });
     const toCents = (str) => {
       if (!str) return 0;
@@ -228,38 +208,6 @@
       return parseInt(only || '0', 10);
     }
     const centsToBRL = (c) => fmtBRL.format((c||0)/100);
-
-    function applyBackground({ bg, bgimg, bgfit }){
-      try {
-        if (bg) localStorage.setItem('bg', bg);
-        if (bgimg) localStorage.setItem('bgimg', bgimg);
-        if (bgfit) localStorage.setItem('bgfit', bgfit);
-      } catch {}
-      if (bgimg) {
-        document.body.style.backgroundImage = `url("${bgimg}")`;
-        document.body.style.backgroundSize  = bgfit || 'cover';
-        document.body.style.backgroundRepeat = 'no-repeat';
-        document.body.style.backgroundPosition = 'center center';
-        document.body.style.backgroundColor = '#000';
-      } else if (bg) {
-        document.body.style.backgroundImage = 'none';
-        document.body.style.background = bg;
-      }
-    }
-
-    if (applyBg) {
-      applyBg.addEventListener('click', ()=>{
-        const bg = bgEditor?.value.trim();
-        const bgfit = bgFitSel?.value || 'cover';
-        if (bgImage?.files && bgImage.files[0]) {
-          const f = bgImage.files[0];
-          const url = URL.createObjectURL(f); // preview local
-          applyBackground({ bgimg:url, bgfit });
-        } else {
-          applyBackground({ bg, bgfit });
-        }
-      });
-    }
 
     function newCard(prefill={}){
       const node = tpl.content.firstElementChild.cloneNode(true);
@@ -360,7 +308,7 @@
       URL.revokeObjectURL(a.href);
     });
 
-    // Sementes de exemplo
+    // Sementes
     [
       { name:'Pôster Espiral', cents: 6900, qty:1 },
       { name:'Camisa MostreAki', cents: 9900, qty:1 },
