@@ -1,375 +1,281 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Catálogo Digital – MostreAki (Editor)</title>
-  <style>
-    :root{
-      --panel:#111318;
-      --ink:#eaf0f6;
-      --ink-dim:#9aa7b2;
-      --brand:#26c281;
-      --brand-ink:#002b1a;
-      --accent:#ffd166;
-      --muted:#22262f;
-      --radius:16px;
-      --shadow: 0 8px 24px rgba(0,0,0,.28);
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background:#0b0c10; color:var(--ink)
-    }
-    .wrap{max-width:1100px; margin:28px auto; padding:0 16px}
-    header{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:18px}
-    .brand{display:flex; align-items:center; gap:10px}
-    .logo{width:38px; height:38px; display:grid; place-items:center; background: radial-gradient(120% 120% at 30% 30%, #35e39b, #158a5a 60%, #0a3a28 100%); border-radius:50%; box-shadow:var(--shadow)}
-    .logo svg{fill:white}
-    h1{font-size: clamp(18px, 2.2vw, 26px); margin:0}
-    .sub{color:var(--ink-dim); font-size:13px}
-    .toolbar{display:flex; gap:8px; flex-wrap:wrap}
-    .btn{
-      background:var(--brand); color:#001b12; border:0;
-      padding:8px 12px; border-radius:10px; font-weight:700; cursor:pointer;
-      font-size:clamp(12px,1.6vw,14px); box-shadow: 0 4px 14px rgba(38,194,129,.25)
-    }
-    .btn:hover{filter:brightness(1.05)}
-    .btn.secondary{background:#222a33; color:var(--ink)}
-    .btn.ghost{background:#1f252e; color:#c7d2db}
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Catálogo Digital – MostreAki (Editor)</title>
+<style>
+  :root{
+    --panel:#111318; --ink:#eaf0f6; --ink-dim:#9aa7b2;
+    --brand:#26c281; --brand-ink:#002b1a;
+    --accent:#ffd166; --muted:#22262f;
+    --radius:16px; --shadow:0 8px 24px rgba(0,0,0,.28);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#0b0c10;color:var(--ink)}
+  .wrap{max-width:1100px;margin:28px auto;padding:0 16px}
+  header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+  .brand{display:flex;align-items:center;gap:10px}
+  .logo{width:38px;height:38px;display:grid;place-items:center;background:radial-gradient(120% 120% at 30% 30%,#35e39b,#158a5a 60%,#0a3a28 100%);border-radius:50%;box-shadow:var(--shadow)}
+  .logo svg{fill:#fff}
+  h1{margin:0;font-size:clamp(18px,2.2vw,26px)}
+  .sub{color:var(--ink-dim);font-size:13px}
+  .toolbar{display:flex;gap:8px;flex-wrap:wrap}
+  .btn{background:var(--brand);color:#001b12;border:0;padding:8px 12px;border-radius:10px;font-weight:700;cursor:pointer;font-size:clamp(12px,1.6vw,14px);box-shadow:0 4px 14px rgba(38,194,129,.25)}
+  .btn:hover{filter:brightness(1.05)} .btn.secondary{background:#222a33;color:var(--ink)}
+  .config{display:grid;grid-template-columns:1fr 1fr;gap:10px;background:var(--muted);padding:12px;border-radius:var(--radius);margin-bottom:14px}
+  .config label{display:grid;gap:6px;font-size:12px;color:var(--ink-dim)}
+  .config input{background:#0f1318;color:var(--ink);border:1px solid #1f2430;padding:10px;border-radius:12px;font-size:clamp(13px,1.4vw,15px);height:clamp(38px,4.6vw,48px)}
+  /* GRID */
+  .grid{display:grid;gap:14px;grid-template-columns:repeat(3,minmax(0,1fr))}
+  @media (max-width:390px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media (min-width:992px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+  /* CARD proporcional */
+  .card{background:var(--panel);border:1px solid #1a1f27;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column;container-type:inline-size;--fs-base:clamp(11px,2.4cqi,14px);--fs-title:clamp(12px,2.9cqi,16px);--h-ctrl:clamp(34px,11cqi,44px);--pad-ctrl:clamp(6px,2cqi,10px)}
+  .media{position:relative;aspect-ratio:1/1;display:grid;place-items:center;background:linear-gradient(180deg,#1b222b,#131821)}
+  .media input[type=file]{display:none}
+  .upload-hint{position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.55);color:#fff;font-size:11px;padding:5px 7px;border-radius:9px}
+  .media img{width:100%;height:100%;object-fit:cover}
+  .img-fallback{display:grid;place-items:center;width:100%;height:100%;color:#6d7a86}.img-fallback svg{opacity:.6}
+  .body{padding:12px;display:grid;gap:8px}
+  .title{background:#0f1318;color:var(--ink);border:1px solid #1f2430;padding:var(--pad-ctrl);border-radius:10px;font-weight:700;font-size:var(--fs-title);height:var(--h-ctrl)}
+  .price-qty{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .price-qty input{background:#0f1318;color:var(--ink);border:1px solid #1f2430;padding:var(--pad-ctrl);border-radius:10px;font-weight:800;font-size:var(--fs-base);height:var(--h-ctrl);text-align:center}
+  .actions{display:flex;gap:8px;margin-top:4px}
+  .wapp{flex:1;background:var(--brand);color:var(--brand-ink);border:0;border-radius:10px;font-weight:800;cursor:pointer;height:var(--h-ctrl);font-size:var(--fs-base)}
+  .wapp:hover{filter:brightness(1.05)}
+  .remove{background:#1f252e;color:#b2bdc7;border:0;border-radius:10px;cursor:pointer;height:var(--h-ctrl);padding:0 10px;font-size:var(--fs-base);white-space:nowrap}
+  .remove:hover{background:#232a35}
+  .foot{color:#7b8a96;font-size:12px;text-align:center;margin:16px 0}
+  .accent{color:var(--accent)}
+  .bubble{display:none;margin-left:8px;font-size:12px;color:#a7ffb0}
+</style>
 
-    .config{
-      display:grid; grid-template-columns: 1fr 1fr; gap:10px;
-      background:var(--muted); padding:12px; border-radius:var(--radius); margin-bottom:14px
-    }
-    .config label{display:grid; gap:6px; font-size:12px; color:var(--ink-dim)}
-    .config input{
-      background:#0f1318; color:var(--ink); border:1px solid #1f2430;
-      padding:10px; border-radius:12px; font-size:clamp(13px,1.4vw,15px); height:clamp(38px,4.6vw,48px)
-    }
-
-    /* ====== GRID ====== */
-    .grid{display:grid; gap:14px; grid-template-columns: repeat(3, minmax(0,1fr))}
-    @media (max-width: 390px){ .grid{grid-template-columns: repeat(2, minmax(0,1fr))} }
-    @media (min-width: 992px){ .grid{grid-template-columns: repeat(4, minmax(0,1fr))} }
-
-    /* ====== CARD com medidas proporcionais menores ====== */
-    .card{
-      background:var(--panel); border:1px solid #1a1f27; border-radius:var(--radius);
-      overflow:hidden; box-shadow:var(--shadow); display:flex; flex-direction:column;
-      container-type: inline-size;
-      /* escala baseada na largura do card */
-      --fs-base:  clamp(11px, 2.4cqi, 14px);
-      --fs-title: clamp(12px, 2.9cqi, 16px);
-      --h-ctrl:   clamp(34px, 11cqi, 44px);
-      --pad-ctrl: clamp(6px,  2cqi,  10px);
-    }
-    .media{position:relative; aspect-ratio: 1 / 1; display:grid; place-items:center; background:linear-gradient(180deg,#1b222b,#131821)}
-    .media input[type=file]{display:none}
-    .upload-hint{position:absolute; bottom:8px; right:8px; background:rgba(0,0,0,.55); color:#fff; font-size:11px; padding:5px 7px; border-radius:9px}
-    .media img{max-width:100%; max-height:100%; object-fit:cover; width:100%; height:100%}
-    .img-fallback{display:grid; place-items:center; width:100%; height:100%; color:#6d7a86}
-    .img-fallback svg{opacity:.6}
-
-    .body{padding:12px; display:grid; gap:8px}
-    .title input{
-      background:#0f1318; color:var(--ink); border:1px solid #1f2430;
-      padding: var(--pad-ctrl); border-radius:10px; font-weight:700;
-      font-size:var(--fs-title); height:var(--h-ctrl)
-    }
-    .price-qty{display:grid; grid-template-columns: 1fr 1fr; gap:8px}
-    .price-qty input{
-      background:#0f1318; color:var(--ink); border:1px solid #1f2430;
-      padding: var(--pad-ctrl); border-radius:10px; font-weight:800;
-      font-size:var(--fs-base); height:var(--h-ctrl); text-align:center
-    }
-    .actions{display:flex; gap:8px; margin-top:4px}
-    .wapp{
-      flex:1; background:var(--brand); color:var(--brand-ink); border:0;
-      border-radius:10px; font-weight:800; cursor:pointer;
-      height:var(--h-ctrl); font-size:var(--fs-base)
-    }
-    .wapp:hover{filter:brightness(1.05)}
-    .remove{
-      background:#1f252e; color:#b2bdc7; border:0;
-      border-radius:10px; cursor:pointer;
-      height:var(--h-ctrl); padding:0 10px; font-size:var(--fs-base); white-space:nowrap
-    }
-    .remove:hover{background:#232a35}
-
-    .foot{color:#7b8a96; font-size:12px; text-align:center; margin:16px 0}
-    .accent{color:var(--accent)}
-  </style>
-
-  <!-- ====== TEMA: lê cor/gradiente/imagem do CrieAki ====== -->
-  <script>
-    (function applyTheme(){
-      const qs = new URLSearchParams(location.search);
-      const read = (keys)=>{
-        const arr = Array.isArray(keys)? keys : [keys];
-        for (const k of arr){
-          const qv = qs.get(k); if (qv) return qv;
-          try{ const ls = localStorage.getItem(k); if (ls) return ls; }catch{}
-        }
-        return null;
-      };
-      const decode = (v)=>{ try{ return decodeURIComponent(v); }catch{return v} };
-
-      // prioridade: imagem > cor
-      let bg = read(['bgImage','bgImg','bgUrl']);
-      let color = read(['bg','bgColor']);
-
-      if (bg){
-        bg = decode(bg).trim();
-        // se vier URL "crua", envolve em url(...)
-        if (!/^url\(/i.test(bg) && /^https?:\/\//i.test(bg)) bg = `url(${bg})`;
-        document.body.style.backgroundImage = bg.startsWith('url(') ? bg : (bg.includes('gradient(') ? bg : `url(${bg})`);
-        document.body.style.backgroundSize = read(['bgSize']) || 'cover';
-        document.body.style.backgroundRepeat = read(['bgRepeat']) || 'no-repeat';
-        document.body.style.backgroundPosition = read(['bgPosition']) || 'center';
-      } else if (color){
-        color = decode(color).trim();
-        // aceita HEX/rgb(a)/gradiente
-        if (/gradient\(/i.test(color)) document.body.style.background = color;
-        else document.body.style.backgroundColor = color;
-      }
-
-      const textColor = read(['text','textColor']) || '#eaf0f6';
-      const btnColor  = read(['btn','btnColor','buttonColor']) || '#26c281';
-      const boxColor  = read(['box','containerColor']) || '#111318';
-      const root = document.documentElement;
-      root.style.setProperty('--panel', boxColor);
-      root.style.setProperty('--ink', textColor);
-      root.style.setProperty('--brand', btnColor);
-    })();
-  </script>
+<!-- Tema (decodifica URL/LocalStorage e aceita cor/gradiente/imagem) -->
+<script>
+(function(){
+  const qs = new URLSearchParams(location.search);
+  const read = (keys)=>{const a=Array.isArray(keys)?keys:[keys];for(const k of a){const q=qs.get(k);if(q!=null)return q;try{const ls=localStorage.getItem(k);if(ls!=null)return ls;}catch{}}return null;}
+  const dec = (v)=>{try{return decodeURIComponent(v)}catch{return v}}
+  let bg = dec(read(['bg','bgColor','bgImage','bgImg','bgUrl']));
+  const textColor = dec(read(['text','textColor'])) || '#eaf0f6';
+  const btnColor  = dec(read(['btn','btnColor','buttonColor'])) || '#26c281';
+  const boxColor  = dec(read(['box','containerColor'])) || '#111318';
+  const root=document.documentElement;
+  root.style.setProperty('--panel', boxColor);
+  root.style.setProperty('--ink', textColor);
+  root.style.setProperty('--brand', btnColor);
+  if(bg){
+    bg = bg.trim();
+    const isUrl=/^https?:\/\//i.test(bg), isGrad=/gradient\(/i.test(bg);
+    if(isGrad){ document.body.style.background = bg; }
+    else if(isUrl || /^url\(/i.test(bg)){
+      const asUrl=isUrl?`url(${bg})`:bg;
+      document.body.style.backgroundImage = asUrl;
+      document.body.style.backgroundSize = dec(read('bgSize')) || 'cover';
+      document.body.style.backgroundRepeat = dec(read('bgRepeat')) || 'no-repeat';
+      document.body.style.backgroundPosition = dec(read('bgPosition')) || 'center';
+    } else { document.body.style.backgroundColor = bg; }
+  }
+})();
+</script>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <div class="brand">
-        <div class="logo" aria-hidden="true">
-          <svg width="20" height="20" viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-7.07 17.07l.7-.7A9 9 0 1 1 19.64 5.87l.7-.7A10 10 0 0 0 12 2Zm0 4a6 6 0 1 0 4.24 10.24l-.71-.71A5 5 0 1 1 12 7V6Z"/></svg>
-        </div>
-        <div>
-          <h1>Catálogo Digital <span class="accent">MostreAki</span></h1>
-          <div class="sub">Editor – adicione itens, salve e visualize <span id="uidBadge"></span></div>
-        </div>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="logo" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-7.07 17.07l.7-.7A9 9 0 1 1 19.64 5.87l.7-.7A10 10 0 0 0 12 2Zm0 4a6 6 0 1 0 4.24 10.24l-.71-.71A5 5 0 1 1 12 7V6Z"/></svg>
       </div>
-      <div class="toolbar">
-        <button id="btnAdd" class="btn">+ Adicionar item</button>
-        <button id="btnExport" class="btn secondary">Exportar JSON</button>
-        <button id="btnPublish" class="btn">Salvar & Visualizar</button>
+      <div>
+        <h1>Catálogo Digital <span class="accent">MostreAki</span></h1>
+        <div class="sub">Editor – adicione itens, salve e visualize <span id="uidBadge"></span><span id="copyOk" class="bubble">link copiado ✓</span></div>
       </div>
-    </header>
+    </div>
+    <div class="toolbar">
+      <button id="btnAdd" class="btn">+ Adicionar item</button>
+      <button id="btnExport" class="btn secondary">Exportar JSON</button>
+      <button id="btnPublish" class="btn">Salvar & Visualizar</button>
+    </div>
+  </header>
 
-    <section class="config" aria-label="Configurações do catálogo">
-      <label>Nome da loja
-        <input id="storeName" type="text" value="Minha Loja" />
-      </label>
-      <label>WhatsApp (apenas números, com DDI/DDD – ex: 55XXXXXXXXXXX)
-        <input id="whatsNumber" type="tel" value="5599999999999" />
-      </label>
-    </section>
+  <section class="config" aria-label="Configurações do catálogo">
+    <label>Nome da loja
+      <input id="storeName" type="text" value="Minha Loja" />
+    </label>
+    <label>WhatsApp (apenas números, com DDI/DDD – ex: 55XXXXXXXXXXX)
+      <input id="whatsNumber" type="tel" value="5599999999999" />
+    </label>
+  </section>
 
-    <section class="grid" id="grid"></section>
+  <section class="grid" id="grid"></section>
+  <p class="foot">Toque na imagem do item para enviar uma foto. “Salvar & Visualizar” gera o link de compartilhamento do seu catálogo.</p>
+</div>
 
-    <p class="foot">Dica: toque na imagem do item para <strong>enviar uma foto</strong>. O botão de WhatsApp monta a mensagem automaticamente. Use “Salvar & Visualizar” para gerar o link de compartilhamento.</p>
-  </div>
-
-  <template id="cardTpl">
-    <article class="card" data-card>
-      <label class="media" aria-label="Imagem do produto">
-        <input type="file" accept="image/*" data-file />
-        <img data-img hidden alt="Imagem do produto"/>
-        <div class="img-fallback" data-fallback>
-          <svg width="44" height="44" viewBox="0 0 24 24"><path fill="currentColor" d="M12 8a3 3 0 1 0 0 6a3 3 0 0 0 0-6m0-6a9 9 0 0 0-9 9c0 4.97 4.03 9 9 9s9-4.03 9-9s-4.03-9-9-9m0 16a7 7 0 1 1 0-14a7 7 0 0 1 0 14"/></svg>
-        </div>
-        <div class="upload-hint">Enviar foto</div>
-      </label>
-      <div class="body">
-        <input class="title" type="text" placeholder="Nome do produto" value="Produto" data-name />
-        <div class="price-qty">
-          <input type="text" inputmode="decimal" placeholder="Preço (R$)" value="R$ 0,00" data-price />
-          <input type="number" min="1" step="1" value="1" data-qty />
-        </div>
-        <div class="actions">
-          <button class="wapp" data-wa>Chamar no WhatsApp</button>
-          <button class="remove" data-remove>Remover</button>
-        </div>
+<template id="cardTpl">
+  <article class="card" data-card>
+    <label class="media" aria-label="Imagem do produto">
+      <input type="file" accept="image/*" data-file />
+      <img data-img hidden alt="Imagem do produto"/>
+      <div class="img-fallback" data-fallback>
+        <svg width="44" height="44" viewBox="0 0 24 24"><path fill="currentColor" d="M12 8a3 3 0 1 0 0 6a3 3 0 0 0 0-6m0-6a9 9 0 0 0-9 9c0 4.97 4.03 9 9 9s9-4.03 9-9s-4.03-9-9-9m0 16a7 7 0 1 1 0-14a7 7 0 0 1 0 14"/></svg>
       </div>
-    </article>
-  </template>
+      <div class="upload-hint">Enviar foto</div>
+    </label>
+    <div class="body">
+      <input class="title" type="text" placeholder="Nome do produto" value="Produto" data-name />
+      <div class="price-qty">
+        <input type="text" inputmode="decimal" placeholder="Preço (R$)" value="R$ 0,00" data-price />
+        <input type="number" min="1" step="1" value="1" data-qty />
+      </div>
+      <div class="actions">
+        <button class="wapp" data-wa>Chamar no WhatsApp</button>
+        <button class="remove" data-remove>Remover</button>
+      </div>
+    </div>
+  </article>
+</template>
 
-  <script>
-    // ===== util =====
-    const grid = document.getElementById('grid');
-    const tpl = document.getElementById('cardTpl');
-    const storeNameEl = document.getElementById('storeName');
-    const whatsEl = document.getElementById('whatsNumber');
-    const uidBadge = document.getElementById('uidBadge');
+<script>
+  const grid = document.getElementById('grid');
+  const tpl  = document.getElementById('cardTpl');
+  const storeNameEl = document.getElementById('storeName');
+  const whatsEl     = document.getElementById('whatsNumber');
+  const uidBadge    = document.getElementById('uidBadge');
+  const copyOk      = document.getElementById('copyOk');
 
-    const fmtBRL = new Intl.NumberFormat('pt-BR', { style:'currency', currency:'BRL' });
-    const toCents = (str)=>{ const only = (''+str).replace(/[^0-9]/g,''); return parseInt(only||'0',10); }
-    const centsToBRL = (c)=> fmtBRL.format((c||0)/100);
+  const fmtBRL = new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'});
+  const toCents = s => parseInt((''+s).replace(/[^0-9]/g,'' )||'0',10);
+  const centsToBRL = c => fmtBRL.format((c||0)/100);
 
-    // ===== card =====
-    function newCard(prefill={}){
-      const node = tpl.content.firstElementChild.cloneNode(true);
-      const file = node.querySelector('[data-file]');
-      const img = node.querySelector('[data-img]');
-      const fallback = node.querySelector('[data-fallback]');
-      const name = node.querySelector('[data-name]');
-      const price = node.querySelector('[data-price]');
-      const qty = node.querySelector('[data-qty]');
-      const btnWa = node.querySelector('[data-wa]');
-      const btnRemove = node.querySelector('[data-remove]');
+  function newCard(prefill={}){
+    const node = tpl.content.firstElementChild.cloneNode(true);
+    const file = node.querySelector('[data-file]');
+    const img  = node.querySelector('[data-img]');
+    const fallback = node.querySelector('[data-fallback]');
+    const name = node.querySelector('[data-name]');
+    const price= node.querySelector('[data-price]');
+    const qty  = node.querySelector('[data-qty]');
+    const btnWa= node.querySelector('[data-wa]');
+    const btnRm= node.querySelector('[data-remove]');
 
-      name.value = prefill.name || 'Produto';
-      price.value = centsToBRL(prefill.cents ?? 0);
-      qty.value = prefill.qty || 1;
+    name.value  = prefill.name || 'Produto';
+    price.value = centsToBRL(prefill.cents ?? 0);
+    qty.value   = prefill.qty || 1;
 
-      node.querySelector('.media').addEventListener('click', () => file.click());
-      file.addEventListener('change', async (e)=>{
-        const f = e.target.files?.[0]; if(!f) return;
-        const reader = new FileReader();
-        reader.onload = () => { img.src = reader.result; img.hidden = false; fallback.hidden = true; };
-        reader.readAsDataURL(f);
-        try { const url = await window.MOSTREAKI_UPLOAD?.(f); if (url) img.src = url; } catch(e){}
-      });
-
-      price.addEventListener('input', e=>{ e.target.value = centsToBRL(toCents(e.target.value)); });
-
-      btnWa.addEventListener('click', async ()=>{
-        const n = name.value.trim()||'Produto';
-        const c = toCents(price.value);
-        const q = parseInt(qty.value||'1',10);
-        const total = centsToBRL(c*q);
-        const store = storeNameEl.value.trim();
-        const wa = whatsEl.value.replace(/\D/g,'');
-        const msg = `Olá, vim do catálogo *${store}*%0AProduto: *${encodeURIComponent(n)}*%0APreço: *${encodeURIComponent(centsToBRL(c))}*%0AQuantidade: *${q}*%0ATotal: *${encodeURIComponent(total)}*`;
-        window.open(`https://wa.me/${wa}?text=${msg}`, '_blank');
-        try { await window.MOSTREAKI_SAVE_ITEM?.({ name:n, price_cents:c, qty:q, image_url: img?.src || null }); } catch(e){}
-      });
-
-      btnRemove.addEventListener('click', ()=> node.remove());
-      grid.appendChild(node);
-    }
-
-    document.getElementById('btnAdd').addEventListener('click', ()=> newCard());
-    document.getElementById('btnExport').addEventListener('click', ()=>{
-      const data = [...grid.querySelectorAll('[data-card]')].map(card=>{
-        const name = card.querySelector('[data-name]').value.trim();
-        const price_cents = toCents(card.querySelector('[data-price]').value);
-        const qty = parseInt(card.querySelector('[data-qty]').value||'1',10);
-        const img = card.querySelector('[data-img]').src || null;
-        return { name, price_cents, qty, image_url: img };
-      });
-      const json = JSON.stringify({ store: storeNameEl.value.trim(), whatsapp: whatsEl.value.trim(), items: data }, null, 2);
-      const blob = new Blob([json], {type:'application/json'});
-      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'catalogo-mostreaki.json'; a.click(); URL.revokeObjectURL(a.href);
+    node.querySelector('.media').addEventListener('click', ()=> file.click());
+    file.addEventListener('change', async (e)=>{
+      const f = e.target.files?.[0]; if(!f) return;
+      const reader = new FileReader();
+      reader.onload = ()=>{ img.src=reader.result; img.hidden=false; fallback.hidden=true; };
+      reader.readAsDataURL(f);
+      try{ const url = await window.MOSTREAKI_UPLOAD?.(f); if(url) img.src=url; }catch{}
     });
 
-    // ===== publicar (salvar & visualizar) =====
-    document.getElementById('btnPublish').addEventListener('click', async ()=>{
-      try{
-        const uid = localStorage.getItem('userUid') || new URLSearchParams(location.search).get('uid');
-        if(!uid){ alert('UID não encontrado. Abra o catálogo com ?uid=SEU_UID.'); return; }
+    price.addEventListener('input', e=> e.target.value = centsToBRL(toCents(e.target.value)));
 
-        const items = [...grid.querySelectorAll('[data-card]')].map(card=>{
-          const name = card.querySelector('[data-name]').value.trim();
-          const price_cents = toCents(card.querySelector('[data-price]').value);
-          const qty = parseInt(card.querySelector('[data-qty]').value||'1',10);
-          const img = card.querySelector('[data-img]').src || null;
-          return { name, price_cents, qty, image_url: img };
-        });
-
-        const qs = new URLSearchParams(location.search);
-        const pick = (keys, fb)=>{ const arr = Array.isArray(keys)? keys : [keys]; for (const k of arr){ const v = qs.get(k)||localStorage.getItem(k); if(v) return v; } return fb; };
-        const theme = {
-          bg:   pick(['bg','bgColor','bgImage','bgImg','bgUrl'],'#0b0c10'),
-          text: pick(['text','textColor'],'#eaf0f6'),
-          btn:  pick(['btn','btnColor','buttonColor'],'#26c281'),
-          box:  pick(['box','containerColor'],'#111318'),
-          bgSize: pick(['bgSize'],'cover'),
-          bgRepeat: pick(['bgRepeat'],'no-repeat'),
-          bgPosition: pick(['bgPosition'],'center')
-        };
-        const store = storeNameEl.value.trim();
-        const whatsapp = whatsEl.value.replace(/\D/g,'');
-
-        const link = await window.MOSTREAKI_PUBLISH?.({ uid, store, whatsapp, theme, items });
-        if (!link) throw new Error('Falha ao publicar');
-        window.open(link, '_blank');
-      }catch(e){ console.error(e); alert('Não foi possível publicar o catálogo.'); }
+    btnWa.addEventListener('click', async ()=>{
+      const n = name.value.trim()||'Produto';
+      const c = toCents(price.value);
+      const q = parseInt(qty.value||'1',10);
+      const total = centsToBRL(c*q);
+      const store = storeNameEl.value.trim();
+      const wa = whatsEl.value.replace(/\D/g,'');
+      const msg = `Olá, vim do catálogo *${store}*%0AProduto: *${encodeURIComponent(n)}*%0APreço: *${encodeURIComponent(centsToBRL(c))}*%0AQuantidade: *${q}*%0ATotal: *${encodeURIComponent(total)}*`;
+      window.open(`https://wa.me/${wa}?text=${msg}`,'_blank');
+      try{ await window.MOSTREAKI_SAVE_ITEM?.({name:n,price_cents:c,qty:q,image_url:img?.src||null}); }catch{}
     });
 
-    // sementes
-    [{name:'Pôster Espiral', cents:6900, qty:1},{name:'Camisa MostreAki', cents:9900, qty:1},{name:'Adesivo Hiperbóreo', cents:1900, qty:2}].forEach(seed=> newCard(seed));
-  </script>
+    btnRm.addEventListener('click', ()=> node.remove());
+    grid.appendChild(node);
+  }
 
-  <!-- ====== Firebase (CDN modular) ====== -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { getFirestore, doc, getDoc, setDoc, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-    import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+  document.getElementById('btnAdd').addEventListener('click', ()=> newCard());
+  document.getElementById('btnExport').addEventListener('click', ()=>{
+    const items = [...grid.querySelectorAll('[data-card]')].map(card=>{
+      return {
+        name: card.querySelector('[data-name]').value.trim(),
+        price_cents: toCents(card.querySelector('[data-price]').value),
+        qty: parseInt(card.querySelector('[data-qty]').value||'1',10),
+        image_url: card.querySelector('[data-img]').src || null
+      };
+    });
+    const json = JSON.stringify({store:storeNameEl.value.trim(),whatsapp:whatsEl.value.trim(),items},null,2);
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([json],{type:'application/json'}));
+    a.download='catalogo-mostreaki.json'; a.click(); URL.revokeObjectURL(a.href);
+  });
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyBrkUtwP4T77oXE22OjOFVhfEUlJ7yctiE",
-      authDomain: "mostreaki-2025.firebaseapp.com",
-      projectId: "mostreaki-2025",
-      storageBucket: "mostreaki-2025.appspot.com",
-      messagingSenderId: "748712068097",
-      appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
-    };
+  document.getElementById('btnPublish').addEventListener('click', async ()=>{
+    try{
+      const uid = localStorage.getItem('userUid') || new URLSearchParams(location.search).get('uid');
+      if(!uid){ alert('UID não encontrado. Abra o catálogo com ?uid=SEU_UID.'); return; }
+      const items = [...grid.querySelectorAll('[data-card]')].map(card=>({
+        name: card.querySelector('[data-name]').value.trim(),
+        price_cents: toCents(card.querySelector('[data-price]').value),
+        qty: parseInt(card.querySelector('[data-qty]').value||'1',10),
+        image_url: card.querySelector('[data-img]').src || null
+      }));
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db   = getFirestore(app);
-    const storage = getStorage(app);
+      const qs = new URLSearchParams(location.search);
+      const get = k => qs.get(k) ?? localStorage.getItem(k) ?? null;
+      const theme = {
+        bg: get('bg')||get('bgColor')||get('bgImage')||get('bgImg')||get('bgUrl')||'#0b0c10',
+        text: get('text')||get('textColor')||'#eaf0f6',
+        btn:  get('btn')||get('btnColor')||get('buttonColor')||'#26c281',
+        box:  get('box')||get('containerColor')||'#111318',
+        bgSize: get('bgSize')||'cover', bgRepeat:get('bgRepeat')||'no-repeat', bgPosition:get('bgPosition')||'center'
+      };
+      const store = storeNameEl.value.trim();
+      const whatsapp = whatsEl.value.replace(/\D/g,'');
 
-    await signInAnonymously(auth);
+      const link = await window.MOSTREAKI_PUBLISH?.({ uid, store, whatsapp, theme, items });
+      if(!link) throw new Error('Falha ao publicar');
+      try{ await navigator.clipboard.writeText(link); copyOk.style.display='inline'; setTimeout(()=>copyOk.style.display='none',2000);}catch{}
+      window.open(link,'_blank');
+    }catch(e){ console.error(e); alert('Não foi possível publicar o catálogo.'); }
+  });
 
-    const uid = new URLSearchParams(location.search).get('uid') || localStorage.getItem('userUid') || null;
-    if (uid) localStorage.setItem('userUid', uid);
+  // sementes
+  [{name:'Pôster Espiral',cents:6900,qty:1},{name:'Camisa MostreAki',cents:9900,qty:1},{name:'Adesivo Hiperbóreo',cents:1900,qty:2}].forEach(newCard);
+</script>
 
-    // hidrata perfil
-    if (uid) {
-      try {
-        const snap = await getDoc(doc(db, "usuarios", uid));
-        if (snap.exists()) {
-          const data = snap.data();
-          const storeNameEl = document.getElementById('storeName');
-          const whatsEl     = document.getElementById('whatsNumber');
-          if (data?.nome) { storeNameEl.value = data.nome; localStorage.setItem('userName', data.nome); }
-          if (data?.whatsapp) { whatsEl.value = String(data.whatsapp).replace(/\D/g,''); localStorage.setItem('whatsNumber', whatsEl.value); }
-        }
-      } catch (e) { console.error("Erro ao buscar perfil:", e); }
-    }
+<!-- Firebase (CDN modular) -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getFirestore, doc, getDoc, setDoc, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
-    const badge = document.getElementById('uidBadge');
-    if (badge && uid) badge.innerHTML = ` · UID: <span style="color:#9aa7b2">${uid}</span>`;
+  const firebaseConfig={apiKey:"AIzaSyBrkUtwP4T77oXE22OjOFVhfEUlJ7yctiE",authDomain:"mostreaki-2025.firebaseapp.com",projectId:"mostreaki-2025",storageBucket:"mostreaki-2025.appspot.com",messagingSenderId:"748712068097",appId:"1:748712068097:web:09cf043fbb45917ef6ec00"};
+  const app=initializeApp(firebaseConfig); const auth=getAuth(app); const db=getFirestore(app); const storage=getStorage(app);
+  await signInAnonymously(auth);
 
-    // helpers globais
-    window.MOSTREAKI_UPLOAD = async function(file) {
-      const who = uid || 'public';
-      const path = `usuarios/${who}/catalog/${Date.now()}-${file.name}`;
-      const ref = sRef(storage, path);
-      await uploadBytes(ref, file);
-      return await getDownloadURL(ref);
-    };
-    window.MOSTREAKI_SAVE_ITEM = async function(fields) {
-      const who = uid || 'public';
-      const col = collection(db, 'usuarios', who, 'items');
-      await addDoc(col, { ...fields, createdAt: serverTimestamp() });
-    };
-    window.MOSTREAKI_PUBLISH = async function({ uid, store, whatsapp, theme, items }){
-      const pubRef = doc(db, 'usuarios', uid, 'public', 'catalog_published');
-      await setDoc(pubRef, { store, whatsapp, theme, items, updatedAt: serverTimestamp() }, { merge:true });
-      const base = new URL('catalogo-view.html', location.href).toString();
-      return `${base}?uid=${encodeURIComponent(uid)}&v=${Date.now()}`;
-    };
-  </script>
+  const params=new URLSearchParams(location.search);
+  const uid=params.get('uid')||localStorage.getItem('userUid')||null;
+  if(uid) localStorage.setItem('userUid',uid);
+
+  if(uid){
+    try{
+      const snap=await getDoc(doc(db,"usuarios",uid));
+      if(snap.exists()){
+        const d=snap.data();
+        if(d?.nome){ document.getElementById('storeName').value=d.nome; localStorage.setItem('userName',d.nome); }
+        if(d?.whatsapp){ const v=String(d.whatsapp).replace(/\D/g,''); document.getElementById('whatsNumber').value=v; localStorage.setItem('whatsNumber',v); }
+      }
+    }catch(e){console.error(e)}
+  }
+  const badge=document.getElementById('uidBadge'); if(badge&&uid) badge.innerHTML=` · UID: <span style="color:#9aa7b2">${uid}</span>`;
+
+  // helpers globais
+  window.MOSTREAKI_UPLOAD = async file => { const who=uid||'public'; const path=`usuarios/${who}/catalog/${Date.now()}-${file.name}`; const ref=sRef(storage,path); await uploadBytes(ref,file); return await getDownloadURL(ref); };
+  window.MOSTREAKI_SAVE_ITEM = async fields => { const who=uid||'public'; const col=collection(db,'usuarios',who,'items'); await addDoc(col,{...fields,createdAt:serverTimestamp()}); };
+  window.MOSTREAKI_PUBLISH = async ({uid,store,whatsapp,theme,items})=>{
+    const pubRef=doc(db,'usuarios',uid,'public','catalog_published');
+    await setDoc(pubRef,{store,whatsapp,theme,items,updatedAt:serverTimestamp()},{merge:true});
+    const base = new URL('catalogo-view.html', location.href).toString();
+    return `${base}?uid=${encodeURIComponent(uid)}&v=${Date.now()}`;
+  };
+</script>
 </body>
 </html>
