@@ -89,42 +89,41 @@
   }
 </style>
 
-<!-- Tema: QS > localStorage; decodifica e aplica com !important -->
+<!-- Tema: QS > localStorage; aplica quando DOM pronto, com !important -->
 <script>
-(function applyTheme(){
-  const qs=new URLSearchParams(location.search);
-  const read=(keys)=>{const a=Array.isArray(keys)?keys:[keys];for(const k of a){if(qs.has(k)) return qs.get(k);try{const ls=localStorage.getItem(k);if(ls!=null)return ls;}catch{}}return null;}
-  const dec=v=>{try{return decodeURIComponent(v)}catch{return v}}
-  const setVar=(k,v)=>document.documentElement.style.setProperty(k,v);
-  const setImp=(p,v)=>{ if(v!=null) document.body.style.setProperty(p,v,'important'); };
+(function(){
+  function applyThemeNow(){
+    const qs=new URLSearchParams(location.search);
+    const read=(keys)=>{const a=Array.isArray(keys)?keys:[keys];for(const k of a){if(qs.has(k))return qs.get(k);try{const ls=localStorage.getItem(k);if(ls!=null)return ls;}catch{}}return null;}
+    const dec=v=>{try{return decodeURIComponent(v)}catch{return v}}
+    const setVar=(k,v)=>document.documentElement.style.setProperty(k,v);
+    const setImp=(p,v)=>{const tgt=document.body||document.documentElement;if(v!=null)tgt.style.setProperty(p,v,'important');};
 
-  // paleta
-  const text=dec(read(['text','textColor']))||'#eaf0f6';
-  const btn =dec(read(['btn','btnColor','buttonColor']))||'#26c281';
-  const box =dec(read(['box','containerColor']))||'#111318';
-  const head=dec(read(['head','headerColor']))||'#111318';
-  const foot=dec(read(['foot','footerColor']))||'#111318';
-  setVar('--ink',text); setVar('--brand',btn); setVar('--panel',box); setVar('--head',head); setVar('--foot',foot);
+    const text=dec(read(['text','textColor']))||'#eaf0f6';
+    const btn =dec(read(['btn','btnColor','buttonColor']))||'#26c281';
+    const box =dec(read(['box','containerColor']))||'#111318';
+    const head=dec(read(['head','headerColor']))||'#111318';
+    const foot=dec(read(['foot','footerColor']))||'#111318';
+    setVar('--ink',text); setVar('--brand',btn); setVar('--panel',box); setVar('--head',head); setVar('--foot',foot);
 
-  // limpa qualquer fundo anterior
-  document.body.style.removeProperty('background');
-  document.body.style.removeProperty('background-color');
-  document.body.style.removeProperty('background-image');
+    const tgt=document.body||document.documentElement;
+    ['background','background-color','background-image','background-size','background-repeat','background-position'].forEach(p=>tgt.style.removeProperty(p));
 
-  // fundo
-  let bg = dec(read(['bg','bgColor','bgImage','bgImg','bgUrl']));
-  if(bg){
-    bg=bg.trim();
-    const isUrl=/^https?:\/\//i.test(bg), isGrad=/gradient\(/i.test(bg);
-    if(isGrad){ setImp('background',bg); }
-    else if(isUrl || /^url\(/i.test(bg)){
-      const asUrl=isUrl?`url(${bg})`:bg;
-      setImp('background-image',asUrl);
-      setImp('background-size',dec(read('bgSize'))||'cover');
-      setImp('background-repeat',dec(read('bgRepeat'))||'no-repeat');
-      setImp('background-position',dec(read('bgPosition'))||'center');
-    }else{ setImp('background-color',bg); }
+    let bg=dec(read(['bg','bgColor','bgImage','bgImg','bgUrl']));
+    if(bg){
+      bg=bg.trim();
+      const isUrl=/^https?:\/\//i.test(bg), isGrad=/gradient\(/i.test(bg);
+      if(isGrad){ setImp('background',bg); }
+      else if(isUrl || /^url\(/i.test(bg)){
+        const asUrl=isUrl?`url(${bg})`:bg;
+        setImp('background-image',asUrl);
+        setImp('background-size',dec(read('bgSize'))||'cover');
+        setImp('background-repeat',dec(read('bgRepeat'))||'no-repeat');
+        setImp('background-position',dec(read('bgPosition'))||'center');
+      }else{ setImp('background-color',bg); }
+    }
   }
+  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',applyThemeNow);}else{applyThemeNow();}
 })();
 </script>
 </head>
@@ -200,6 +199,7 @@
   const toCents = s => parseInt((''+s).replace(/[^0-9]/g,'' )||'0',10);
   const centsToBRL = c => fmtBRL.format((c||0)/100);
 
+  // preview do nome da loja
   storeNameEl.addEventListener('input', ()=> storePreviewEl.textContent = storeNameEl.value.trim() || 'Minha Loja');
 
   function newCard(prefill={}){
@@ -223,7 +223,10 @@
       const reader = new FileReader();
       reader.onload = ()=>{ img.src=reader.result; img.hidden=false; fallback.hidden=true; };
       reader.readAsDataURL(f);
-      try{ const url = await window.MOSTREAKI_UPLOAD?.(f); if(url) img.src=url; }catch{}
+      try{
+        const uid = localStorage.getItem('userUid') || new URLSearchParams(location.search).get('uid') || 'public';
+        await window.MOSTREAKI_UPLOAD?.(f, { uid, imgEl: img });
+      }catch{}
     });
 
     price.addEventListener('input', e=> e.target.value = centsToBRL(toCents(e.target.value)));
@@ -256,7 +259,8 @@
       reader.onload = ()=>{ storeLogoEl.src = reader.result; };
       reader.readAsDataURL(f);
       try{
-        const url = await window.MOSTREAKI_UPLOAD?.(f);
+        const uid = localStorage.getItem('userUid') || new URLSearchParams(location.search).get('uid') || 'public';
+        const url = await window.MOSTREAKI_UPLOAD_LOGO?.(f, { uid });
         if(url){ storeLogoEl.src = url; localStorage.setItem('logoUrl', url); }
       }catch{}
     };
@@ -281,11 +285,18 @@
       const uid = localStorage.getItem('userUid') || new URLSearchParams(location.search).get('uid');
       if(!uid){ alert('UID não encontrado. Abra o catálogo com ?uid=SEU_UID.'); return; }
       const items = [...grid.querySelectorAll('[data-card]')].map(card=>({
-        name: card.querySelector('[data-name]').value.trim(),
+        name: card.querySelector('[data-name']).value.trim(),
         price_cents: toCents(card.querySelector('[data-price]').value),
         qty: parseInt(card.querySelector('[data-qty]').value||'1',10),
         image_url: card.querySelector('[data-img]').src || null
       }));
+
+      // Bloqueia publicação se houver imagem sem URL http(s) (ainda em pending)
+      const notOk = items.some(i => !(i.image_url && /^https?:\/\//.test(i.image_url)));
+      if (notOk){
+        alert('Algumas imagens ainda estão em análise. Aguarde a aprovação para publicar.');
+        return;
+      }
 
       const qs = new URLSearchParams(location.search);
       const get = k => qs.get(k) ?? localStorage.getItem(k) ?? null;
@@ -309,16 +320,16 @@
     }catch(e){ console.error(e); alert('Não foi possível publicar o catálogo.'); }
   });
 
-  // sementes
+  // Sementes
   [{name:'Pôster Espiral',cents:6900,qty:1},{name:'Camisa MostreAki',cents:9900,qty:1},{name:'Adesivo Hiperbóreo',cents:1900,qty:2}].forEach(newCard);
 </script>
 
-<!-- Firebase (CDN modular) -->
+<!-- Firebase + Moderation (CDN modular) -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { getFirestore, doc, getDoc, setDoc, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-  import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+  import { getFirestore, doc, getDoc, setDoc, onSnapshot, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getStorage, ref as sRef, uploadBytes } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
   const firebaseConfig={apiKey:"AIzaSyBrkUtwP4T77oXE22OjOFVhfEUlJ7yctiE",authDomain:"mostreaki-2025.firebaseapp.com",projectId:"mostreaki-2025",storageBucket:"mostreaki-2025.appspot.com",messagingSenderId:"748712068097",appId:"1:748712068097:web:09cf043fbb45917ef6ec00"};
   const app=initializeApp(firebaseConfig); const auth=getAuth(app); const db=getFirestore(app); const storage=getStorage(app);
@@ -341,17 +352,69 @@
   }
   const badge=document.getElementById('uidBadge'); if(badge&&uid) badge.innerHTML=` · UID: <span style="color:#cbd5df">${uid}</span>`;
 
-  // helpers globais
-  window.MOSTREAKI_UPLOAD = async file => {
-    const who=uid||'public'; const path=`usuarios/${who}/catalog/${Date.now()}-${file.name}`;
-    const ref=sRef(storage,path); await uploadBytes(ref,file); return await getDownloadURL(ref);
+  // Listener de moderação por arquivo
+  function trackModeration(uid, imgEl, fileKey){
+    const ref = doc(db, 'usuarios', uid, 'moderation', fileKey);
+    return onSnapshot(ref, snap=>{
+      if(!snap.exists()) return;
+      const data = snap.data();
+      if (data.status === 'approved' && data.approvedUrl){
+        imgEl.src = data.approvedUrl;
+        imgEl.hidden = false;
+        const fb = imgEl.closest('[data-card]')?.querySelector('[data-fallback]');
+        if (fb) fb.hidden = true;
+      }
+      if (data.status === 'rejected'){
+        const wrap = imgEl.closest('[data-card]');
+        if (wrap) wrap.style.outline = '2px solid #ff6b6b';
+      }
+    });
+  }
+
+  // Upload moderado (itens)
+  window.MOSTREAKI_UPLOAD = async function(file, { uid, imgEl }) {
+    const who = uid || 'public';
+    const fileKey = `${Date.now()}-${Math.random().toString(36).slice(2)}-${file.name}`;
+    const pendingPath = `usuarios/${who}/catalog/pending/${fileKey}`;
+    await uploadBytes(sRef(storage, pendingPath), file, { contentType: file.type });
+    await setDoc(doc(db, 'usuarios', who, 'moderation', fileKey), {
+      status: 'pending', pendingPath, createdAt: serverTimestamp()
+    }, { merge: true });
+    trackModeration(who, imgEl, fileKey);
+    return null; // sem URL até aprovar
   };
-  window.MOSTREAKI_SAVE_ITEM = async fields => {
-    const who=uid||'public'; const col=collection(db,'usuarios',who,'items'); await addDoc(col,{...fields,createdAt:serverTimestamp()});
+
+  // Upload moderado (logo) – mesma moderação
+  window.MOSTREAKI_UPLOAD_LOGO = async function(file, { uid }) {
+    const who = uid || 'public';
+    const fileKey = `logo-${Date.now()}-${Math.random().toString(36).slice(2)}-${file.name}`;
+    const pendingPath = `usuarios/${who}/catalog/pending/${fileKey}`;
+    await uploadBytes(sRef(storage, pendingPath), file, { contentType: file.type });
+    await setDoc(doc(db, 'usuarios', who, 'moderation', fileKey), {
+      status: 'pending', pendingPath, kind: 'logo', createdAt: serverTimestamp()
+    }, { merge: true });
+
+    // opcional: ouvir e, se aprovado, gravar em LS
+    onSnapshot(doc(db,'usuarios',who,'moderation',fileKey),(snap)=>{
+      const d=snap.data();
+      if(d?.status==='approved' && d.approvedUrl){
+        localStorage.setItem('logoUrl', d.approvedUrl);
+      }
+    });
+    return null;
   };
-  window.MOSTREAKI_PUBLISH = async ({uid,store,whatsapp,theme,items})=>{
-    const pubRef=doc(db,'usuarios',uid,'public','catalog_published');
-    await setDoc(pubRef,{store,whatsapp,theme,items,updatedAt:serverTimestamp()},{merge:true});
+
+  // Log de clique no Whats (opcional)
+  window.MOSTREAKI_SAVE_ITEM = async function(fields) {
+    const who = uid || 'public';
+    const col = collection(db, 'usuarios', who, 'items');
+    await addDoc(col, { ...fields, createdAt: serverTimestamp() });
+  };
+
+  // Publicação
+  window.MOSTREAKI_PUBLISH = async function({ uid, store, whatsapp, theme, items }){
+    const pubRef = doc(db, 'usuarios', uid, 'public', 'catalog_published');
+    await setDoc(pubRef, { store, whatsapp, theme, items, updatedAt: serverTimestamp() }, { merge:true });
     const base = new URL('catalogo-view.html', location.href).toString();
     return `${base}?uid=${encodeURIComponent(uid)}&v=${Date.now()}`;
   };
