@@ -1,174 +1,90 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Catálogo – MostreAki (Visualização)</title>
-  <style>
-    :root{
-      --panel:#111318; --ink:#eaf0f6; --ink-dim:#9aa7b2;
-      --brand:#26c281; --brand-ink:#002b1a; --muted:#22262f;
-      --radius:18px; --shadow: 0 10px 30px rgba(0,0,0,.35);
-    }
-    *{box-sizing:border-box}
-    body{margin:0; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background:#0b0c10; color:var(--ink)}
-    .wrap{max-width:1100px; margin:40px auto; padding:0 20px}
-    header{display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:24px}
-    .brand{display:flex; align-items:center; gap:12px}
-    .logo{width:42px; height:42px; display:grid; place-items:center; background: radial-gradient(120% 120% at 30% 30%, #35e39b, #158a5a 60%, #0a3a28 100%); border-radius:50%; box-shadow:var(--shadow)}
-    .logo svg{fill:white}
-    h1{font-size: clamp(20px, 2.6vw, 30px); margin:0}
-    .sub{color:var(--ink-dim); font-size:14px}
-
-    .grid{display:grid; gap:16px; grid-template-columns: repeat(2, 1fr)}
-    @media (min-width: 640px){ .grid{grid-template-columns: repeat(3, 1fr)} }
-    @media (min-width: 992px){ .grid{grid-template-columns: repeat(4, 1fr)} }
-
-    .card{
-      background:var(--panel); border:1px solid #1a1f27; border-radius:var(--radius);
-      overflow:hidden; box-shadow:var(--shadow); display:flex; flex-direction:column;
-      container-type:inline-size;
-      --fs-base: clamp(12px, 3.2cqi, 18px);
-      --fs-title: clamp(13px, 3.8cqi, 20px);
-      --h-ctrl: clamp(40px, 16cqi, 56px);
-      --pad-ctrl: clamp(8px, 2.5cqi, 14px);
-    }
-    .media{aspect-ratio:1/1; background:linear-gradient(180deg,#1b222b,#131821)}
-    .media img{width:100%; height:100%; object-fit:cover}
-    .body{padding:14px; display:grid; gap:10px}
-    .title{font-weight:800; font-size:var(--fs-title)}
-    .meta{display:flex; gap:8px; justify-content:space-between; font-weight:800; font-size:var(--fs-base)}
-    .actions{display:flex; gap:8px; margin-top:6px}
-    .wapp{
-      flex:1; background:var(--brand); color:var(--brand-ink); border:0;
-      border-radius:12px; font-weight:900; cursor:pointer;
-      height:var(--h-ctrl); font-size:var(--fs-base)
-    }
-    .wapp:hover{filter:brightness(1.05)}
-  </style>
-
-  <!-- Tema puxado do Firestore (theme salvo na publicação) OU da query/LS como fallback -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyBrkUtwP4T77oXE22OjOFVhfEUlJ7yctiE",
-      authDomain: "mostreaki-2025.firebaseapp.com",
-      projectId: "mostreaki-2025",
-    };
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    const qs = new URLSearchParams(location.search);
-    const uid = qs.get('uid');
-
-    const pick = (keys, fb)=>{
-      const arr = Array.isArray(keys)? keys : [keys];
-      for (const k of arr){
-        const v = qs.get(k) || (typeof localStorage!=='undefined' ? localStorage.getItem(k) : null);
-        if (v) return v;
-      } return fb;
-    };
-
-    async function applyThemeFromPublished(){
-      try{
-        if (!uid) throw new Error('UID ausente');
-        const ref = doc(db, 'usuarios', uid, 'public', 'catalog_published');
-        const snap = await getDoc(ref);
-        let theme = null;
-        if (snap.exists()) theme = snap.data()?.theme || null;
-
-        const bgColor   = theme?.bg   || pick(['bg','bgColor'], '#0b0c10');
-        const textColor = theme?.text || pick(['text','textColor'], '#eaf0f6');
-        const btnColor  = theme?.btn  || pick(['btn','btnColor','buttonColor'], '#26c281');
-        const boxColor  = theme?.box  || pick(['box','containerColor'], '#111318');
-
-        const root = document.documentElement;
-        root.style.setProperty('--panel', boxColor);
-        root.style.setProperty('--ink', textColor);
-        root.style.setProperty('--brand', btnColor);
-        document.body.style.background = bgColor;
-      }catch(e){ console.warn('Tema: usando fallback', e); }
-    }
-    applyThemeFromPublished();
-  </script>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Catálogo | MostreAki</title>
+<style>
+  :root{--bg:#0b0c10;--panel:#111318;--ink:#eaf0f6;--brand:#26c281;--brand-ink:#002b1a;--radius:16px}
+  *{box-sizing:border-box} body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink);background:#0b0c10}
+  .wrap{max-width:1100px;margin:24px auto;padding:0 16px}
+  header{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+  .logo{width:56px;height:56px;border-radius:50%;overflow:hidden;background:#0e0}
+  .logo img{width:100%;height:100%;object-fit:cover}
+  h1{margin:0;font-size:clamp(20px,2.6vw,30px)}
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+  @media (min-width:520px){.grid{grid-template-columns:repeat(3,1fr)}}
+  @media (min-width:960px){.grid{grid-template-columns:repeat(4,1fr)}}
+  .card{background:var(--panel);border:1px solid #1a1f27;border-radius:var(--radius);overflow:hidden}
+  .media{aspect-ratio:1/1;background:#12161f}
+  .media img{width:100%;height:100%;object-fit:cover}
+  .body{padding:12px;display:grid;gap:8px}
+  .title{font-weight:800}
+  .price{opacity:.9}
+  .wapp{background:var(--brand);color:var(--brand-ink);border:0;padding:10px 12px;border-radius:12px;font-weight:800;cursor:pointer;width:100%}
+</style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <div class="brand">
-        <div class="logo" aria-hidden="true">
-          <svg width="22" height="22" viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-7.07 17.07l.7-.7A9 9 0 1 1 19.64 5.87l.7-.7A10 10 0 0 0 12 2Zm0 4a6 6 0 1 0 4.24 10.24l-.71-.71A5 5 0 1 1 12 7V6Z"/></svg>
-        </div>
-        <div>
-          <h1 id="storeTitle">Catálogo <span class="accent">MostreAki</span></h1>
-          <div class="sub" id="subInfo"></div>
-        </div>
-      </div>
-    </header>
+<div class="wrap">
+  <header>
+    <div class="logo"><img id="logo" alt="Logo"/></div>
+    <h1 id="store">Catálogo</h1>
+  </header>
+  <section id="grid" class="grid"></section>
+</div>
 
-    <section class="grid" id="grid"></section>
-  </div>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  const firebaseConfig = {
+    apiKey: "AIzaSyBrkUtwP4T77oXE22OjOFVhfEUlJ7yctiE",
+    authDomain: "mostreaki-2025.firebaseapp.com",
+    projectId: "mostreaki-2025",
+    storageBucket: "mostreaki-2025.appspot.com",
+    appId: "1:748712068097:web:09cf043bfb45917ef6ec00",
+  };
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyBrkUtwP4T77oXE22OjOFVhfEUlJ7yctiE",
-      authDomain: "mostreaki-2025.firebaseapp.com",
-      projectId: "mostreaki-2025",
-    };
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+  const app = initializeApp(firebaseConfig);
+  const db  = getFirestore(app);
 
-    const qs = new URLSearchParams(location.search);
-    const uid = qs.get('uid');
+  const fmtBRL = new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'});
+  const id = new URLSearchParams(location.search).get('id');
 
-    const fmtBRL = new Intl.NumberFormat('pt-BR', { style:'currency', currency:'BRL' });
-
-    async function loadPublished(){
-      if (!uid){ document.getElementById('grid').innerHTML = '<p>UID ausente.</p>'; return; }
-
-      const ref = doc(db, 'usuarios', uid, 'public', 'catalog_published');
-      const snap = await getDoc(ref);
-      if (!snap.exists()){ document.getElementById('grid').innerHTML = '<p>Catálogo não publicado.</p>'; return; }
-      const data = snap.data();
-
-      // título e info
-      document.getElementById('storeTitle').textContent = data.store || 'Catálogo';
-      const w = (data.whatsapp||'').replace(/\D/g,'');
-      document.getElementById('subInfo').textContent = w ? `Contato WhatsApp: +${w}` : '';
-
-      const grid = document.getElementById('grid');
-      grid.innerHTML = '';
-      (data.items||[]).forEach(item=>{
-        const card = document.createElement('article');
-        card.className = 'card';
-        card.innerHTML = `
-          <div class="media">${ item.image_url ? `<img src="${item.image_url}" alt="">` : '' }</div>
-          <div class="body">
-            <div class="title">${item.name||'Produto'}</div>
-            <div class="meta">
-              <div>${fmtBRL.format((item.price_cents||0)/100)}</div>
-              <div>Qtd: ${item.qty||1}</div>
-            </div>
-            <div class="actions">
-              <button class="wapp">Chamar no WhatsApp</button>
-            </div>
-          </div>
-        `;
-        card.querySelector('.wapp').addEventListener('click', ()=>{
-          const msg = `Olá! Tenho interesse no produto *${encodeURIComponent(item.name||'Produto')}* por *${encodeURIComponent(fmtBRL.format((item.price_cents||0)/100))}* (Qtd: *${item.qty||1}*).`;
-          const url = `https://wa.me/${w}?text=${msg}`;
-          window.open(url, '_blank');
-        });
-        grid.appendChild(card);
-      });
-    }
-
-    loadPublished();
-  </script>
+  async function load(){
+    if(!id){ document.body.innerHTML='<p style="padding:20px">Catálogo não encontrado.</p>'; return; }
+    const snap = await getDoc(doc(db,'catalogos', id));
+    if(!snap.exists()){ document.body.innerHTML='<p style="padding:20px">Catálogo inexistente.</p>'; return; }
+    const data = snap.data();
+    // tema
+    const root = document.documentElement, t=data.theme||{};
+    root.style.setProperty('--bg', t.bg || '#0b0c10');
+    root.style.setProperty('--panel', t.box|| '#111318');
+    root.style.setProperty('--ink', t.text|| '#eaf0f6');
+    root.style.setProperty('--brand', t.btn|| '#26c281');
+    document.body.style.background = (/^#|^rgb|^hsl/i.test(t.bg||'')) ? (t.bg||'#0b0c10') : `url(${t.bg}) center/cover no-repeat`;
+    // topo
+    if(data.logoUrl) document.getElementById('logo').src = data.logoUrl;
+    document.getElementById('store').textContent = data.store || 'Catálogo';
+    // itens
+    const grid = document.getElementById('grid');
+    (data.items||[]).forEach(i=>{
+      const card = document.createElement('article'); card.className='card';
+      card.innerHTML = `
+        <div class="media">${i.image_url?`<img src="${i.image_url}" alt="">`:''}</div>
+        <div class="body">
+          <div class="title">${i.name||'Produto'}</div>
+          <div class="price">${fmtBRL.format((i.price_cents||0)/100)}</div>
+          <button class="wapp">Chamar no WhatsApp</button>
+        </div>`;
+      card.querySelector('.wapp').onclick=()=>{
+        const msg = `Olá, vim do catálogo *${encodeURIComponent(data.store||'Minha Loja')}*%0AProduto: *${encodeURIComponent(i.name||'Produto')}*%0APreço: *${encodeURIComponent(fmtBRL.format((i.price_cents||0)/100))}*`;
+        window.open(`https://wa.me/${(data.whatsapp||'').replace(/\D/g,'')}?text=${msg}`,'_blank');
+      };
+      grid.appendChild(card);
+    });
+  }
+  load();
+</script>
 </body>
 </html>
