@@ -8,10 +8,8 @@
   :root{
     --panel:#111318; --ink:#eaf0f6; --ink-dim:#9aa7b2;
     --brand:#26c281; --brand-ink:#002b1a;
-    --accent:#ffd166; --muted:#22262f;
-    --head:#111318; --foot:#111318;
+    --muted:#22262f; --head:#111318; --foot:#111318;
     --radius:16px; --shadow:0 8px 24px rgba(0,0,0,.28);
-    --logoSize: clamp(40px, 12vw, 56px);
   }
   *{box-sizing:border-box}
   body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink)}
@@ -22,11 +20,22 @@
   header{background:var(--head);border-radius:16px;padding:12px 12px 14px;box-shadow:var(--shadow);margin-bottom:16px}
   .top{display:flex;align-items:center;justify-content:space-between;gap:10px}
   .brand{display:flex;align-items:center;gap:12px}
+
+  /* ---- LOGO sempre círculo perfeito ---- */
   .logoWrap{
-    width:var(--logoSize);height:var(--logoSize);aspect-ratio:1/1;border-radius:50%;
-    overflow:hidden;display:grid;place-items:center;background:#0e151c;border:1px solid #1f2a34
+    inline-size: clamp(44px, 14vw, 64px);
+    block-size:auto; aspect-ratio:1/1;
+    flex:0 0 auto; align-self:center;
+    border-radius:50%; overflow:hidden;
+    display:grid; place-items:center;
+    background:#0e151c; border:1px solid #1f2a34;
+    -webkit-mask-image:-webkit-radial-gradient(white, black);
+    clip-path:circle(50% at 50% 50%);
   }
-  .logoWrap img{width:100%;height:100%;object-fit:contain;background:transparent}
+  .logoWrap img#storeLogo{
+    width:100%; height:100%; object-fit:cover; border-radius:50%; display:block;
+  }
+
   .titleBox h1{margin:0;font-size:clamp(18px,2.2vw,26px)}
   .titleBox .sub{color:var(--ink-dim);font-size:12px}
 
@@ -46,7 +55,7 @@
   @media (max-width:390px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
   @media (min-width:992px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
 
-  /* CARD proporcional (controles menores) */
+  /* CARD proporcional */
   .card{
     background:var(--panel);border:1px solid #1a1f27;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);
     display:flex;flex-direction:column;container-type:inline-size;
@@ -74,56 +83,44 @@
 
   .foot{color:#7b8a96;font-size:12px;text-align:center;margin:16px 0}
   footer.site-footer{background:var(--foot);border-radius:16px;margin-top:16px;padding:10px;text-align:center;color:var(--ink-dim);font-size:12px}
-
-  /* MOBILE refinado */
-  @media (max-width:560px){
-    .config{grid-template-columns:1fr;gap:8px}
-    .config input{height:40px;font-size:14px}
-    .grid{gap:10px}
-    .body{padding:8px;gap:6px}
-    .price-qty{gap:6px}
-    .actions{gap:6px}
-  }
-  @container (max-width:260px){
-    .card{ --fs-base:10px; --fs-title:11px; --h-ctrl:26px; --pad-ctrl:6px; }
-  }
 </style>
 
-<!-- Tema: QS > localStorage; aplica quando DOM pronto, com !important -->
+<!-- Tema da paleta: QS > localStorage; aplica com !important -->
 <script>
 (function(){
-  function applyThemeNow(){
+  function applyTheme(){
     const qs=new URLSearchParams(location.search);
-    const read=(keys)=>{const a=Array.isArray(keys)?keys:[keys];for(const k of a){if(qs.has(k))return qs.get(k);try{const ls=localStorage.getItem(k);if(ls!=null)return ls;}catch{}}return null;}
-    const dec=v=>{try{return decodeURIComponent(v)}catch{return v}}
+    const pick=(keys)=>{const list=Array.isArray(keys)?keys:[keys];for(const k of list){if(qs.get(k))return qs.get(k);try{const v=localStorage.getItem(k);if(v!=null)return v;}catch{}}return null;}
+    const d=v=>{try{return decodeURIComponent(v)}catch{return v}}
     const setVar=(k,v)=>document.documentElement.style.setProperty(k,v);
-    const setImp=(p,v)=>{const tgt=document.body||document.documentElement;if(v!=null)tgt.style.setProperty(p,v,'important');};
+    const imp=(p,v)=>{const t=document.body||document.documentElement;if(v!=null)t.style.setProperty(p,v,'important')}
 
-    const text=dec(read(['text','textColor']))||'#eaf0f6';
-    const btn =dec(read(['btn','btnColor','buttonColor']))||'#26c281';
-    const box =dec(read(['box','containerColor']))||'#111318';
-    const head=dec(read(['head','headerColor']))||'#111318';
-    const foot=dec(read(['foot','footerColor']))||'#111318';
+    const text=d(pick(['text','textColor']))||'#eaf0f6';
+    const btn =d(pick(['btn','btnColor','buttonColor']))||'#26c281';
+    const box =d(pick(['box','containerColor']))||'#111318';
+    const head=d(pick(['head','headerColor']))||'#111318';
+    const foot=d(pick(['foot','footerColor']))||'#111318';
     setVar('--ink',text); setVar('--brand',btn); setVar('--panel',box); setVar('--head',head); setVar('--foot',foot);
 
-    const tgt=document.body||document.documentElement;
-    ['background','background-color','background-image','background-size','background-repeat','background-position'].forEach(p=>tgt.style.removeProperty(p));
+    // zera bg anterior
+    const t=document.body||document.documentElement;
+    ['background','background-color','background-image','background-size','background-repeat','background-position'].forEach(p=>t.style.removeProperty(p));
 
-    let bg=dec(read(['bg','bgColor','bgImage','bgImg','bgUrl']));
+    let bg=d(pick(['bg','bgColor','bgImage','bgImg','bgUrl']));
     if(bg){
       bg=bg.trim();
       const isUrl=/^https?:\/\//i.test(bg), isGrad=/gradient\(/i.test(bg);
-      if(isGrad){ setImp('background',bg); }
+      if(isGrad){ imp('background',bg); }
       else if(isUrl || /^url\(/i.test(bg)){
         const asUrl=isUrl?`url(${bg})`:bg;
-        setImp('background-image',asUrl);
-        setImp('background-size',dec(read('bgSize'))||'cover');
-        setImp('background-repeat',dec(read('bgRepeat'))||'no-repeat');
-        setImp('background-position',dec(read('bgPosition'))||'center');
-      }else{ setImp('background-color',bg); }
+        imp('background-image',asUrl);
+        imp('background-size',d(pick('bgSize'))||'cover');
+        imp('background-repeat',d(pick('bgRepeat'))||'no-repeat');
+        imp('background-position',d(pick('bgPosition'))||'center');
+      }else{ imp('background-color',bg); }
     }
   }
-  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',applyThemeNow);}else{applyThemeNow();}
+  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',applyTheme);}else{applyTheme();}
 })();
 </script>
 </head>
@@ -161,9 +158,10 @@
   <footer class="site-footer">© MostreAki — compartilhe seu catálogo com um toque.</footer>
 </div>
 
+<!-- CARD -->
 <template id="cardTpl">
   <article class="card" data-card>
-    <label class="media" aria-label="Imagem do produto">
+    <label class="media">
       <input type="file" accept="image/*" data-file />
       <img data-img hidden alt="Imagem do produto"/>
       <div class="img-fallback" data-fallback>
@@ -186,6 +184,7 @@
 </template>
 
 <script>
+  // ---------- UI helpers ----------
   const grid = document.getElementById('grid');
   const tpl  = document.getElementById('cardTpl');
   const storeNameEl = document.getElementById('storeName');
@@ -199,7 +198,6 @@
   const toCents = s => parseInt((''+s).replace(/[^0-9]/g,'' )||'0',10);
   const centsToBRL = c => fmtBRL.format((c||0)/100);
 
-  // preview do nome da loja
   storeNameEl.addEventListener('input', ()=> storePreviewEl.textContent = storeNameEl.value.trim() || 'Minha Loja');
 
   function newCard(prefill={}){
@@ -231,7 +229,7 @@
 
     price.addEventListener('input', e=> e.target.value = centsToBRL(toCents(e.target.value)));
 
-    btnWa.addEventListener('click', async ()=>{
+    btnWa.addEventListener('click', ()=>{
       const n = name.value.trim()||'Produto';
       const c = toCents(price.value);
       const q = parseInt(qty.value||'1',10);
@@ -240,13 +238,13 @@
       const wa = whatsEl.value.replace(/\D/g,'');
       const msg = `Olá, vim do catálogo *${store}*%0AProduto: *${encodeURIComponent(n)}*%0APreço: *${encodeURIComponent(centsToBRL(c))}*%0AQuantidade: *${q}*%0ATotal: *${encodeURIComponent(total)}*`;
       window.open(`https://wa.me/${wa}?text=${msg}`,'_blank');
-      try{ await window.MOSTREAKI_SAVE_ITEM?.({name:n,price_cents:c,qty:q,image_url:img?.src||null}); }catch{}
     });
 
     btnRm.addEventListener('click', ()=> node.remove());
     grid.appendChild(node);
   }
 
+  // Botões principais
   document.getElementById('btnAdd').addEventListener('click', ()=> newCard());
 
   // Adicionar LOGO
@@ -260,13 +258,13 @@
       reader.readAsDataURL(f);
       try{
         const uid = localStorage.getItem('userUid') || new URLSearchParams(location.search).get('uid') || 'public';
-        const url = await window.MOSTREAKI_UPLOAD_LOGO?.(f, { uid });
-        if(url){ storeLogoEl.src = url; localStorage.setItem('logoUrl', url); }
+        await window.MOSTREAKI_UPLOAD_LOGO?.(f, { uid });
       }catch{}
     };
     picker.click();
   });
 
+  // Exportar JSON
   document.getElementById('btnExport').addEventListener('click', ()=>{
     const items = [...grid.querySelectorAll('[data-card]')].map(card=>({
       name: card.querySelector('[data-name]').value.trim(),
@@ -280,144 +278,74 @@
     a.download='catalogo-mostreaki.json'; a.click(); URL.revokeObjectURL(a.href);
   });
 
+  // Publicar (gera link de visualização)
   document.getElementById('btnPublish').addEventListener('click', async ()=>{
-    try{
-      const uid = localStorage.getItem('userUid') || new URLSearchParams(location.search).get('uid');
-      if(!uid){ alert('UID não encontrado. Abra o catálogo com ?uid=SEU_UID.'); return; }
-      const items = [...grid.querySelectorAll('[data-card]')].map(card=>({
-        name: card.querySelector('[data-name']).value.trim(),
-        price_cents: toCents(card.querySelector('[data-price]').value),
-        qty: parseInt(card.querySelector('[data-qty]').value||'1',10),
-        image_url: card.querySelector('[data-img]').src || null
-      }));
+    const uid = localStorage.getItem('userUid') || new URLSearchParams(location.search).get('uid');
+    if(!uid){ alert('UID não encontrado. Abra o catálogo com ?uid=SEU_UID.'); return; }
 
-      // Bloqueia publicação se houver imagem sem URL http(s) (ainda em pending)
-      const notOk = items.some(i => !(i.image_url && /^https?:\/\//.test(i.image_url)));
-      if (notOk){
-        alert('Algumas imagens ainda estão em análise. Aguarde a aprovação para publicar.');
-        return;
-      }
+    const items = [...grid.querySelectorAll('[data-card]')].map(card=>({
+      name: card.querySelector('[data-name]').value.trim(),
+      price_cents: toCents(card.querySelector('[data-price]').value),
+      qty: parseInt(card.querySelector('[data-qty]').value||'1',10),
+      image_url: card.querySelector('[data-img]').src || null
+    }));
 
-      const qs = new URLSearchParams(location.search);
-      const get = k => qs.get(k) ?? localStorage.getItem(k) ?? null;
-      const theme = {
-        bg:get('bg')||get('bgColor')||get('bgImage')||get('bgImg')||get('bgUrl')||'#0b0c10',
-        text:get('text')||get('textColor')||'#eaf0f6',
-        btn:get('btn')||get('btnColor')||get('buttonColor')||'#26c281',
-        box:get('box')||get('containerColor')||'#111318',
-        head:get('head')||get('headerColor')||'#111318',
-        foot:get('foot')||get('footerColor')||'#111318',
-        bgSize:get('bgSize')||'cover', bgRepeat:get('bgRepeat')||'no-repeat', bgPosition:get('bgPosition')||'center',
-        logoUrl: storeLogoEl.src || get('logoUrl') || localStorage.getItem('logoUrl') || null
-      };
-      const store = storeNameEl.value.trim();
-      const whatsapp = whatsEl.value.replace(/\D/g,'');
+    // Se você usa moderação, pode bloquear aqui itens sem URL http(s)
+    // const notOk = items.some(i => !(i.image_url && /^https?:\/\//.test(i.image_url)));
+    // if (notOk){ alert('Há imagens ainda em análise.'); return; }
 
-      const link = await window.MOSTREAKI_PUBLISH?.({ uid, store, whatsapp, theme, items });
-      if(!link) throw new Error('Falha ao publicar');
-      try{ await navigator.clipboard.writeText(link); copyOk.style.display='inline'; setTimeout(()=>copyOk.style.display='none',2000);}catch{}
-      window.open(link,'_blank');
-    }catch(e){ console.error(e); alert('Não foi possível publicar o catálogo.'); }
+    const qs = new URLSearchParams(location.search);
+    const get = k => qs.get(k) ?? localStorage.getItem(k) ?? null;
+    const theme = {
+      bg:get('bg')||get('bgColor')||get('bgImage')||get('bgImg')||get('bgUrl')||'#0b0c10',
+      text:get('text')||get('textColor')||'#eaf0f6',
+      btn:get('btn')||get('btnColor')||get('buttonColor')||'#26c281',
+      box:get('box')||get('containerColor')||'#111318',
+      head:get('head')||get('headerColor')||'#111318',
+      foot:get('foot')||get('footerColor')||'#111318',
+      bgSize:get('bgSize')||'cover', bgRepeat:get('bgRepeat')||'no-repeat', bgPosition:get('bgPosition')||'center',
+      logoUrl: storeLogoEl.src || get('logoUrl') || localStorage.getItem('logoUrl') || null
+    };
+    const store = storeNameEl.value.trim();
+    const whatsapp = whatsEl.value.replace(/\D/g,'');
+
+    // Aqui apenas geramos um link de visualização estático com querystring (para testar)
+    const base = new URL('catalogo-view.html', location.href).toString();
+    const u = new URL(base);
+    u.searchParams.set('uid', uid);
+    u.searchParams.set('store', store);
+    u.searchParams.set('whats', whatsapp);
+    u.searchParams.set('theme', btoa(unescape(encodeURIComponent(JSON.stringify(theme)))));
+    u.searchParams.set('items', btoa(unescape(encodeURIComponent(JSON.stringify(items)))));
+    const link = u.toString();
+
+    try{ await navigator.clipboard.writeText(link); copyOk.style.display='inline'; setTimeout(()=>copyOk.style.display='none',2000);}catch{}
+    window.open(link,'_blank');
   });
 
-  // Sementes
+  // sementes
   [{name:'Pôster Espiral',cents:6900,qty:1},{name:'Camisa MostreAki',cents:9900,qty:1},{name:'Adesivo Hiperbóreo',cents:1900,qty:2}].forEach(newCard);
+
+  // Badge do UID
+  const uid = new URLSearchParams(location.search).get('uid') || localStorage.getItem('userUid') || null;
+  if(uid){ localStorage.setItem('userUid',uid); uidBadge.innerHTML=` · UID: <span style="color:#cbd5df">${uid}</span>`; }
 </script>
 
-<!-- Firebase + Moderation (CDN modular) -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { getFirestore, doc, getDoc, setDoc, onSnapshot, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-  import { getStorage, ref as sRef, uploadBytes } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+<!-- Fallback JS: garante logo 1:1 até em Android antigo -->
+<script>
+(function fixLogoCircle(){
+  const el = document.querySelector('.logoWrap');
+  if(!el) return;
+  function square(){ el.style.height = el.offsetWidth + 'px'; }
+  square(); addEventListener('resize', square);
+})();
+</script>
 
-  const firebaseConfig={apiKey:"AIzaSyBrkUtwP4T77oXE22OjOFVhfEUlJ7yctiE",authDomain:"mostreaki-2025.firebaseapp.com",projectId:"mostreaki-2025",storageBucket:"mostreaki-2025.appspot.com",messagingSenderId:"748712068097",appId:"1:748712068097:web:09cf043fbb45917ef6ec00"};
-  const app=initializeApp(firebaseConfig); const auth=getAuth(app); const db=getFirestore(app); const storage=getStorage(app);
-  await signInAnonymously(auth);
-
-  const params=new URLSearchParams(location.search);
-  const uid=params.get('uid')||localStorage.getItem('userUid')||null;
-  if(uid) localStorage.setItem('userUid',uid);
-
-  if(uid){
-    try{
-      const snap=await getDoc(doc(db,"usuarios",uid));
-      if(snap.exists()){
-        const d=snap.data();
-        if(d?.nome){ document.getElementById('storeName').value=d.nome; document.getElementById('storePreview').textContent=d.nome; localStorage.setItem('userName',d.nome); }
-        if(d?.whatsapp){ const v=String(d.whatsapp).replace(/\D/g,''); document.getElementById('whatsNumber').value=v; localStorage.setItem('whatsNumber',v); }
-        if(d?.fotoPerfil){ document.getElementById('storeLogo').src=d.fotoPerfil; localStorage.setItem('logoUrl',d.fotoPerfil); }
-      }
-    }catch(e){console.error(e)}
-  }
-  const badge=document.getElementById('uidBadge'); if(badge&&uid) badge.innerHTML=` · UID: <span style="color:#cbd5df">${uid}</span>`;
-
-  // Listener de moderação por arquivo
-  function trackModeration(uid, imgEl, fileKey){
-    const ref = doc(db, 'usuarios', uid, 'moderation', fileKey);
-    return onSnapshot(ref, snap=>{
-      if(!snap.exists()) return;
-      const data = snap.data();
-      if (data.status === 'approved' && data.approvedUrl){
-        imgEl.src = data.approvedUrl;
-        imgEl.hidden = false;
-        const fb = imgEl.closest('[data-card]')?.querySelector('[data-fallback]');
-        if (fb) fb.hidden = true;
-      }
-      if (data.status === 'rejected'){
-        const wrap = imgEl.closest('[data-card]');
-        if (wrap) wrap.style.outline = '2px solid #ff6b6b';
-      }
-    });
-  }
-
-  // Upload moderado (itens)
-  window.MOSTREAKI_UPLOAD = async function(file, { uid, imgEl }) {
-    const who = uid || 'public';
-    const fileKey = `${Date.now()}-${Math.random().toString(36).slice(2)}-${file.name}`;
-    const pendingPath = `usuarios/${who}/catalog/pending/${fileKey}`;
-    await uploadBytes(sRef(storage, pendingPath), file, { contentType: file.type });
-    await setDoc(doc(db, 'usuarios', who, 'moderation', fileKey), {
-      status: 'pending', pendingPath, createdAt: serverTimestamp()
-    }, { merge: true });
-    trackModeration(who, imgEl, fileKey);
-    return null; // sem URL até aprovar
-  };
-
-  // Upload moderado (logo) – mesma moderação
-  window.MOSTREAKI_UPLOAD_LOGO = async function(file, { uid }) {
-    const who = uid || 'public';
-    const fileKey = `logo-${Date.now()}-${Math.random().toString(36).slice(2)}-${file.name}`;
-    const pendingPath = `usuarios/${who}/catalog/pending/${fileKey}`;
-    await uploadBytes(sRef(storage, pendingPath), file, { contentType: file.type });
-    await setDoc(doc(db, 'usuarios', who, 'moderation', fileKey), {
-      status: 'pending', pendingPath, kind: 'logo', createdAt: serverTimestamp()
-    }, { merge: true });
-
-    // opcional: ouvir e, se aprovado, gravar em LS
-    onSnapshot(doc(db,'usuarios',who,'moderation',fileKey),(snap)=>{
-      const d=snap.data();
-      if(d?.status==='approved' && d.approvedUrl){
-        localStorage.setItem('logoUrl', d.approvedUrl);
-      }
-    });
-    return null;
-  };
-
-  // Log de clique no Whats (opcional)
-  window.MOSTREAKI_SAVE_ITEM = async function(fields) {
-    const who = uid || 'public';
-    const col = collection(db, 'usuarios', who, 'items');
-    await addDoc(col, { ...fields, createdAt: serverTimestamp() });
-  };
-
-  // Publicação
-  window.MOSTREAKI_PUBLISH = async function({ uid, store, whatsapp, theme, items }){
-    const pubRef = doc(db, 'usuarios', uid, 'public', 'catalog_published');
-    await setDoc(pubRef, { store, whatsapp, theme, items, updatedAt: serverTimestamp() }, { merge:true });
-    const base = new URL('catalogo-view.html', location.href).toString();
-    return `${base}?uid=${encodeURIComponent(uid)}&v=${Date.now()}`;
-  };
+<!-- Stubs (opcionais) para não quebrar se você ainda não conectou Firebase -->
+<script>
+  // Se já tem sua integração Firebase com moderação, remova estes stubs.
+  window.MOSTREAKI_UPLOAD = async ()=>null;
+  window.MOSTREAKI_UPLOAD_LOGO = async ()=>null;
 </script>
 </body>
 </html>
