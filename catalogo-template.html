@@ -3,67 +3,277 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Catálogo Digital — Editor | MostreAki</title>
+<title>Catálogo Digital – MostreAki</title>
 <style>
   :root{
-    --bg:#0b0c10; --panel:#111318; --ink:#eaf0f6; --ink-dim:#9aa7b2;
-    --brand:#26c281; --brand-ink:#002b1a; --accent:#ffd166; --muted:#22262f;
-    --radius:18px; --shadow:0 10px 30px rgba(0,0,0,.35);
+    --bg:#0b0c10; --ink:#eaf0f6; --brand:#26c281;
+    --head:#111318; --foot:#111318; --box:#111318;
+    --ink-dim:#9aa7b2; --radius:18px; --shadow:0 10px 30px rgba(0,0,0,.35);
   }
   *{box-sizing:border-box}
-  body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink);background:#0b0c10}
-  .wrap{max-width:1100px;margin:32px auto;padding:0 16px}
-  header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px}
-  .brand{display:flex;align-items:center;gap:12px}
-  .logo{width:52px;height:52px;border-radius:50%;overflow:hidden;background:#0e0;box-shadow:var(--shadow)}
-  .logo img{width:100%;height:100%;object-fit:cover}
-  h1{margin:0;font-size:clamp(18px,2.6vw,28px)}
-  .sub{color:var(--ink-dim);font-size:14px}
+  body{
+    margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    color:var(--ink); background:var(--bg);
+  }
+  .wrap{max-width:1100px;margin:24px auto;padding:0 16px}
+  header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px;background:var(--head);padding:16px;border-radius:16px;box-shadow:var(--shadow)}
+  .brand{display:flex;align-items:center;gap:12px;min-width:0}
+  .logoWrap{
+    width:64px;height:64px;border-radius:14px;overflow:hidden;
+    background:#0f1318;border:1px solid #263041;flex:0 0 auto;
+  }
+  .logoWrap img{width:100%;height:100%;object-fit:contain;background:#0f1318}
+  h1{font-size:clamp(18px,3.5vw,32px);margin:0;color:var(--ink)}
+  .sub{color:var(--ink-dim);font-size:13px}
   .toolbar{display:flex;gap:10px;flex-wrap:wrap}
-  .btn{background:var(--brand);color:var(--brand-ink);border:0;padding:10px 14px;border-radius:999px;font-weight:800;cursor:pointer;box-shadow:0 6px 18px rgba(38,194,129,.3)}
+  .btn{background:var(--brand);color:#002b1a;border:0;padding:10px 14px;border-radius:999px;font-weight:700;cursor:pointer;box-shadow:0 6px 18px rgba(38,194,129,.3)}
   .btn.secondary{background:#222a33;color:var(--ink)}
-  .config{display:grid;grid-template-columns:1fr 1fr;gap:12px;background:var(--muted);padding:14px;border-radius:var(--radius);margin-bottom:18px}
+  .config{display:grid;grid-template-columns:1fr 1fr;gap:12px;background:var(--box);padding:14px;border-radius:16px;margin:16px 0}
   .config label{display:grid;gap:6px;font-size:13px;color:var(--ink-dim)}
   .config input{background:#0f1318;color:var(--ink);border:1px solid #1f2430;padding:11px 12px;border-radius:12px;font-size:15px}
-  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
-  @media (min-width:520px){.grid{grid-template-columns:repeat(3,1fr)}}
-  @media (min-width:960px){.grid{grid-template-columns:repeat(4,1fr)}}
-  .card{background:var(--panel);border:1px solid #1a1f27;border-radius:16px;overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column}
-  .media{position:relative;aspect-ratio:1/1;display:grid;place-items:center;background:linear-gradient(180deg,#1b222b,#131821);cursor:pointer}
+  .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}
+  /* 3 por linha no mobile, 4 no desktop */
+  .card{grid-column:span 4;background:var(--box);border:1px solid #1a1f27;border-radius:16px;overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column}
+  @media(min-width:900px){ .card{grid-column:span 3} }
+  .media{position:relative;aspect-ratio:1/1;display:grid;place-items:center;background:linear-gradient(180deg,#1b222b,#131821)}
   .media input[type=file]{display:none}
-  .media .hint{position:absolute;bottom:10px;right:10px;background:rgba(0,0,0,.55);color:#fff;font-size:12px;padding:6px 8px;border-radius:10px}
+  .upload-hint{position:absolute;bottom:10px;right:10px;background:rgba(0,0,0,.55);color:#fff;font-size:12px;padding:6px 8px;border-radius:10px}
   .media img{width:100%;height:100%;object-fit:cover}
   .img-fallback{display:grid;place-items:center;width:100%;height:100%;color:#6d7a86}
-  .body{padding:12px;display:grid;gap:8px}
-  .title input,.price-qty input{background:#0f1318;color:var(--ink);border:1px solid #1f2430;padding:10px;border-radius:10px;font-weight:600}
-  .price-qty{display:grid;grid-template-columns:1fr 94px;gap:8px}
-  .actions{display:flex;gap:8px;margin-top:6px}
-  .wapp{flex:1;background:var(--brand);color:var(--brand-ink);border:0;padding:10px 12px;border-radius:12px;font-weight:800;cursor:pointer}
-  .remove{background:#1f252e;color:#b2bdc7;border:0;padding:10px 12px;border-radius:12px;cursor:pointer}
-  .foot{color:#7b8a96;font-size:12px;text-align:center;margin:20px 0}
+  .img-fallback svg{opacity:.6}
+  .body{padding:12px;display:grid;gap:10px}
+  .title input,.price-qty input{
+    background:#0f1318;color:var(--ink);border:1px solid #1f2430;padding:9px 10px;border-radius:10px;font-weight:600;width:100%
+  }
+  .title{display:grid;gap:6px}
+  .price-qty{display:grid;grid-template-columns:1fr 0.8fr;gap:8px}
+  .actions{display:flex;gap:8px}
+  .wapp{flex:1;background:var(--brand);color:#002b1a;border:0;padding:clamp(8px,2.5vw,12px);border-radius:12px;font-weight:800;cursor:pointer}
+  .remove{background:#1f252e;color:#b2bdc7;border:0;padding:clamp(8px,2.5vw,12px);border-radius:12px;cursor:pointer}
+  .foot{color:var(--ink-dim);font-size:12px;text-align:center;margin:20px 0}
+  .accent{color:var(--brand)}
+  .galleryNote{background:var(--foot);padding:12px;border-radius:12px;color:var(--ink-dim);font-size:12px}
 </style>
 
-<script>
-  // ===== THEME: lê de ?bg, ?text, ?btn, ?head, ?foot, ?box (ou localStorage) =====
+<script type="module">
+  /* ========== 1) TEMA: puxa do query/localStorage e aplica em CSS e body ========== */
   (function applyTheme(){
-    const qs = new URLSearchParams(location.search);
-    const pick = (k,f)=> qs.get(k) ?? localStorage.getItem(k) ?? f;
-    const d = v => {try{return decodeURIComponent(v)}catch{return v}};
+    const P = new URLSearchParams(location.search);
+    const pick = (k, fb)=> (P.get(k) ?? localStorage.getItem(k) ?? fb);
     const theme = {
-      bg:   d(pick('bg','#0b0c10')), text:d(pick('text','#eaf0f6')),
-      btn:  d(pick('btn','#26c281')), head:d(pick('head','#111318')),
-      foot: d(pick('foot','#111318')), box:d(pick('box','#111318')),
-      bgSize:d(pick('bgSize','cover')), bgRepeat:d(pick('bgRepeat','no-repeat')),
-      bgPosition:d(pick('bgPosition','center'))
+      bg:   pick('bg',   '#0b0c10'),
+      text: pick('text', '#eaf0f6'),
+      btn:  pick('btn',  '#26c281'),
+      head: pick('head', '#111318'),
+      foot: pick('foot', '#111318'),
+      box:  pick('box',  '#111318')
     };
     const root = document.documentElement;
-    root.style.setProperty('--bg', theme.bg);
-    root.style.setProperty('--panel', theme.box);
-    root.style.setProperty('--ink', theme.text);
-    root.style.setProperty('--brand', theme.btn);
-    // fundo: aceita cor #xxxxxx ou url(...)
-    const isColor = /^#|^rgb|^hsl/i.test(theme.bg);
-    document.body.style.background = isColor ? theme.bg : `url(${theme.bg}) ${theme.bgPosition}/${theme.bgSize} ${theme.bgRepeat}`;
+    root.style.setProperty('--bg',   theme.bg);
+    root.style.setProperty('--ink',  theme.text);
+    root.style.setProperty('--brand',theme.btn);
+    root.style.setProperty('--head', theme.head);
+    root.style.setProperty('--foot', theme.foot);
+    root.style.setProperty('--box',  theme.box);
+    // aplica direto no body (garante que não “volte” para preto)
+    document.addEventListener('DOMContentLoaded',()=>{ document.body.style.background = theme.bg; });
+  })();
+
+  /* ========== 2) Firebase (CDN v9) ========== */
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+  import { getFirestore, doc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+  import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-storage.js";
+
+  // TODO: COLE SUA CONFIG AQUI
+  const firebaseConfig = {
+    apiKey: "COLAR_AQUI",
+    authDomain: "COLAR_AQUI.firebaseapp.com",
+    projectId: "COLAR_AQUI",
+    storageBucket: "COLAR_AQUI.appspot.com",
+    messagingSenderId: "COLAR_AQUI",
+    appId: "COLAR_AQUI"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db  = getFirestore(app);
+  const st  = getStorage(app);
+
+  /* ========== 3) DOM refs ========== */
+  const grid = document.getElementById('grid');
+  const tpl  = document.getElementById('cardTpl');
+  const storeNameEl = document.getElementById('storeName');
+  const whatsEl     = document.getElementById('whatsNumber');
+  const logoImg     = document.getElementById('logoImg');
+  const logoPick    = document.getElementById('logoPick');
+
+  const fmtBRL = new Intl.NumberFormat('pt-BR', {style:'currency',currency:'BRL'});
+  const toCents = str => parseInt((str||'').replace(/[^\d]/g,'')||'0',10);
+  const centsToBRL = c => fmtBRL.format((c||0)/100);
+
+  /* ========== 4) Helpers Firebase ========== */
+  const P = new URLSearchParams(location.search);
+  const uid   = (P.get('uid')   || '').trim();
+  const store = (P.get('store') || 'minha-loja').trim();
+
+  function catDocRef(){ return doc(db, 'catalogos', `${uid}__${store}`); }
+  function pathFor(fileName){ return `catalogos/${uid}/${store}/${fileName}`; }
+
+  async function uploadImage(file, fileName){
+    const r = ref(st, pathFor(fileName));
+    await uploadBytes(r, file, {contentType:file.type});
+    return await getDownloadURL(r);
+  }
+
+  /* ========== 5) Cards ========== */
+  function newCard(prefill={}){
+    const node = tpl.content.firstElementChild.cloneNode(true);
+    const file = node.querySelector('[data-file]');
+    const img  = node.querySelector('[data-img]');
+    const fallback = node.querySelector('[data-fb]');
+    const name = node.querySelector('[data-name]');
+    const price= node.querySelector('[data-price]');
+    const qty  = node.querySelector('[data-qty]');
+    const btnWa= node.querySelector('[data-wa]');
+    const btnRm= node.querySelector('[data-rm]');
+
+    name.value  = prefill.name || 'Produto';
+    price.value = centsToBRL(prefill.price_cents ?? 0);
+    qty.value   = prefill.qty || 1;
+
+    if (prefill.imageURL){
+      img.src = prefill.imageURL; img.hidden=false; fallback.hidden=true;
+    }
+
+    node.querySelector('.media').addEventListener('click', ()=> file.click());
+    file.addEventListener('change', async (e)=>{
+      const f = e.target.files?.[0]; if(!f) return;
+      // preview imediato
+      const reader = new FileReader();
+      reader.onload = ()=>{ img.src=reader.result; img.hidden=false; fallback.hidden=true; };
+      reader.readAsDataURL(f);
+      // upload
+      try{
+        const url = await uploadImage(f, `items/${Date.now()}_${f.name}`);
+        img.dataset.remote = url;
+      }catch(err){ alert('Falha ao subir imagem do item. Verifique Storage/regras.'); console.error(err); }
+    });
+
+    price.addEventListener('input', e=>{
+      e.target.value = centsToBRL(toCents(e.target.value));
+    });
+
+    btnWa.addEventListener('click', ()=>{
+      const n=name.value.trim()||'Produto';
+      const c=toCents(price.value); const q=parseInt(qty.value||'1',10);
+      const total=centsToBRL(c*q);
+      const waNumber=whatsEl.value.replace(/\D/g,'');
+      const msg = `Olá, vim do catálogo *${storeNameEl.value.trim()}*%0A`+
+                  `Produto: *${encodeURIComponent(n)}*%0A`+
+                  `Preço: *${encodeURIComponent(centsToBRL(c))}*%0A`+
+                  `Quantidade: *${q}*%0A`+
+                  `Total: *${encodeURIComponent(total)}*`;
+      window.open(`https://wa.me/${waNumber}?text=${msg}`,'_blank');
+    });
+
+    btnRm.addEventListener('click', ()=> node.remove());
+    grid.appendChild(node);
+  }
+
+  /* ========== 6) Logo ========== */
+  document.getElementById('btnLogo').addEventListener('click', ()=> logoPick.click());
+  logoPick.addEventListener('change', async (e)=>{
+    const f=e.target.files?.[0]; if(!f) return;
+    // preview sem distorcer (object-fit:contain já cuida)
+    const reader=new FileReader();
+    reader.onload=()=>{ logoImg.src=reader.result; };
+    reader.readAsDataURL(f);
+    // upload
+    try{
+      const url = await uploadImage(f, `logo_${Date.now()}_${f.name}`);
+      logoImg.dataset.remote = url;
+    }catch(err){ alert('Falha ao subir logo. Verifique Storage/regras.'); console.error(err); }
+  });
+
+  /* ========== 7) Toolbar ========== */
+  document.getElementById('btnAdd').addEventListener('click', ()=> newCard());
+
+  document.getElementById('btnExport').addEventListener('click', ()=>{
+    const data = collectData();
+    download('catalogo-monstreaqui.json', JSON.stringify(data,null,2));
+  });
+
+  document.getElementById('btnSave').addEventListener('click', async ()=>{
+    try{
+      const payload = collectData();
+      payload.updatedAt = serverTimestamp();
+      await setDoc(catDocRef(), payload, {merge:true});
+      // redireciona para visualização “limpa”
+      const q = new URLSearchParams({ uid, store });
+      location.href = `/catalogo-view.html?${q}`;
+    }catch(err){
+      alert('Falha ao salvar no Firestore. Verifique credenciais e regras.');
+      console.error(err);
+    }
+  });
+
+  function collectData(){
+    const items = [...grid.querySelectorAll('[data-card]')].map(card=>{
+      const name = card.querySelector('[data-name]').value.trim();
+      const price_cents = toCents(card.querySelector('[data-price]').value);
+      const qty = parseInt(card.querySelector('[data-qty]').value||'1',10);
+      const img = card.querySelector('[data-img]');
+      const imageURL = img.dataset.remote || null; // se já subiu
+      return { name, price_cents, qty, imageURL };
+    });
+    const theme = {
+      bg: getComputedStyle(document.documentElement).getPropertyValue('--bg').trim(),
+      text: getComputedStyle(document.documentElement).getPropertyValue('--ink').trim(),
+      btn: getComputedStyle(document.documentElement).getPropertyValue('--brand').trim(),
+      head:getComputedStyle(document.documentElement).getPropertyValue('--head').trim(),
+      foot:getComputedStyle(document.documentElement).getPropertyValue('--foot').trim(),
+      box: getComputedStyle(document.documentElement).getPropertyValue('--box').trim(),
+    };
+    return {
+      uid, store,
+      storeName: storeNameEl.value.trim(),
+      whatsapp: whatsEl.value.replace(/\D/g,''),
+      logoURL: logoImg.dataset.remote || null,
+      theme, items
+    };
+  }
+
+  function download(filename, text){
+    const blob = new Blob([text],{type:'application/json'});
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download=filename; a.click();
+    URL.revokeObjectURL(a.href);
+  }
+
+  /* ========== 8) Se já existir catálogo, carregar ========== */
+  (async function boot(){
+    // sementes visuais iniciais
+    ['Pôster Espiral','Camisa MostreAki','Adesivo Hiperbóreo'].forEach((n,i)=>newCard({name:n,price_cents:[6900,9900,1900][i],qty:[1,1,2][i]}));
+    if (!uid || !store) return;
+    try{
+      const snap = await getDoc(catDocRef());
+      if (snap.exists()){
+        const data = snap.data();
+        storeNameEl.value = data.storeName || 'Minha Loja';
+        whatsEl.value     = data.whatsapp || '';
+        if (data.logoURL){ logoImg.src = data.logoURL; logoImg.dataset.remote = data.logoURL; }
+        // tema salvo (sobrepõe o que veio por query)
+        const t = data.theme||{};
+        const root=document.documentElement;
+        for (const [k,v] of Object.entries({bg:t.bg,text:t.text,btn:t.btn,head:t.head,foot:t.foot,box:t.box})){
+          if (v){ root.style.setProperty(`--${k==='text'?'ink':k}`, v); }
+        }
+        document.body.style.background = getComputedStyle(root).getPropertyValue('--bg').trim();
+        // itens
+        grid.innerHTML='';
+        (data.items||[]).forEach(it=> newCard(it));
+      }
+    }catch(e){ console.warn('Não foi possível carregar catálogo existente:', e); }
   })();
 </script>
 </head>
@@ -71,241 +281,62 @@
   <div class="wrap">
     <header>
       <div class="brand">
-        <div class="logo"><img id="storeLogo" alt="Logo"/></div>
-        <div>
-          <h1 id="title">Minha Loja</h1>
+        <div class="logoWrap">
+          <img id="logoImg" alt="Logo da loja"/>
+        </div>
+        <div style="min-width:0">
+          <h1 id="title">Catálogo Digital</h1>
           <div class="sub">Editor – adicione itens, salve e visualize</div>
         </div>
       </div>
       <div class="toolbar">
-        <button id="btnAddLogo" class="btn secondary">+ Adicionar logo</button>
+        <input id="logoPick" type="file" accept="image/*" hidden>
+        <button id="btnLogo" class="btn secondary">+ Adicionar logo</button>
         <button id="btnAdd" class="btn">+ Adicionar item</button>
         <button id="btnExport" class="btn secondary">Exportar JSON</button>
-        <button id="btnPublish" class="btn">Salvar & Visualizar</button>
+        <button id="btnSave" class="btn">Salvar & Visualizar</button>
       </div>
     </header>
 
     <section class="config" aria-label="Configurações do catálogo">
-      <label>Nome da loja <input id="storeName" type="text" value="Minha Loja"/></label>
-      <label>WhatsApp (apenas números, com DDI/DDD) <input id="whatsNumber" type="tel" value="5599999999999"/></label>
+      <label>Nome da loja
+        <input id="storeName" type="text" value="Minha Loja"/>
+      </label>
+      <label>WhatsApp (apenas números, com DDI/DDD – ex: 55XXXXXXXXXXX)
+        <input id="whatsNumber" type="tel" value="5599999999999"/>
+      </label>
     </section>
 
-    <section id="grid" class="grid" aria-live="polite"></section>
-    <p class="foot">Dica: toque na imagem para enviar. O botão WhatsApp monta a mensagem. “Salvar & Visualizar” gera um link compartilhável.</p>
+    <div class="galleryNote">Dica: toque na imagem do item para enviar uma foto (ela será enviada ao Storage). O botão WhatsApp monta a mensagem automaticamente. Use <b>Salvar & Visualizar</b> para gerar o link compartilhável.</div>
+
+    <section class="grid" id="grid"></section>
+    <p class="foot">© 2025 MostreAki.</p>
   </div>
 
   <template id="cardTpl">
     <article class="card" data-card>
       <label class="media" aria-label="Imagem do produto">
-        <input type="file" accept="image/*" data-file />
+        <input type="file" accept="image/*" data-file/>
         <img data-img hidden alt="Imagem do produto"/>
-        <div class="img-fallback" data-fallback>📷</div>
-        <div class="hint">Enviar foto</div>
+        <div class="img-fallback" data-fb>
+          <svg width="50" height="50" viewBox="0 0 24 24"><path fill="currentColor" d="M12 8a3 3 0 1 0 0 6a3 3 0 0 0 0-6m0-6a9 9 0 0 0-9 9c0 4.97 4.03 9 9 9s9-4.03 9-9s-4.03-9-9-9m0 16a7 7 0 1 1 0-14a7 7 0 0 1 0 14"/></svg>
+        </div>
+        <div class="upload-hint">Enviar foto</div>
       </label>
       <div class="body">
-        <div class="title"><input type="text" placeholder="Nome do produto" value="Produto" data-name /></div>
+        <div class="title">
+          <input type="text" placeholder="Nome do produto" value="Produto" data-name/>
+        </div>
         <div class="price-qty">
-          <input type="text" inputmode="decimal" placeholder="Preço (R$)" value="R$ 0,00" data-price />
-          <input type="number" min="1" step="1" value="1" data-qty />
+          <input type="text" inputmode="decimal" placeholder="Preço (R$)" value="R$ 0,00" data-price/>
+          <input type="number" min="1" step="1" value="1" data-qty/>
         </div>
         <div class="actions">
           <button class="wapp" data-wa>Chamar no WhatsApp</button>
-          <button class="remove" data-remove>Remover</button>
+          <button class="remove" data-rm>Remover</button>
         </div>
       </div>
     </article>
   </template>
-
-  <!-- Firebase SDKs (CDN modular) -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
-    import { getFirestore, collection, addDoc, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
-    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-storage.js";
-
-    // >>> SEU PROJETO
-    const firebaseConfig = {
-      apiKey: "AIzaSyBrkUtwP4T77oXE22OjOFVhfEUlJ7yctiE",
-      authDomain: "mostreaki-2025.firebaseapp.com",
-      projectId: "mostreaki-2025",
-      storageBucket: "mostreaki-2025.appspot.com",
-      appId: "1:748712068097:web:09cf043bfb45917ef6ec00",
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db  = getFirestore(app);
-    const st  = getStorage(app);
-
-    // ====== UI refs
-    const grid = document.getElementById('grid');
-    const tpl  = document.getElementById('cardTpl');
-    const elStore = document.getElementById('storeName');
-    const elWhats = document.getElementById('whatsNumber');
-    const elLogo  = document.getElementById('storeLogo');
-    const elTitle = document.getElementById('title');
-
-    // ====== Util: moeda
-    const fmtBRL = new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'});
-    const toCents = (str)=> parseInt((''+str).replace(/[^\d]/g,'' )||'0',10);
-    const centsToBRL = (c)=> fmtBRL.format((c||0)/100);
-
-    // ====== Rascunho local (não some ao recarregar)
-    const uid  = new URLSearchParams(location.search).get('uid') || localStorage.getItem('userUid') || 'anon';
-    localStorage.setItem('userUid', uid);
-    const DRAFT_KEY = `ma_draft_${uid}`;
-
-    const saveDraft = ()=>{
-      const items = [...grid.querySelectorAll('[data-card]')].map(card=>({
-        name: card.querySelector('[data-name]').value.trim(),
-        price_cents: toCents(card.querySelector('[data-price]').value),
-        qty: parseInt(card.querySelector('[data-qty]').value||'1',10),
-        image_url: card.querySelector('[data-img]')?.src || null
-      }));
-      const draft = {
-        store: elStore.value.trim(),
-        whatsapp: elWhats.value.replace(/\D/g,''),
-        logoUrl: elLogo.src || null,
-        items
-      };
-      localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
-    };
-    const loadDraft = ()=>{
-      try{
-        const raw = localStorage.getItem(DRAFT_KEY);
-        if(!raw) return;
-        const d = JSON.parse(raw);
-        if(d.store) elStore.value = d.store;
-        if(d.whatsapp) elWhats.value = d.whatsapp;
-        if(d.logoUrl){ elLogo.src = d.logoUrl; elLogo.hidden=false; }
-        if(Array.isArray(d.items) && d.items.length){
-          d.items.forEach(i=>newCard({name:i.name,cents:i.price_cents,qty:i.qty,src:i.image_url}));
-        }
-        elTitle.textContent = elStore.value || 'Minha Loja';
-      }catch{}
-    };
-
-    // ====== Card
-    function newCard(prefill={}){
-      const node = tpl.content.firstElementChild.cloneNode(true);
-      const file = node.querySelector('[data-file]');
-      const img  = node.querySelector('[data-img]');
-      const fb   = node.querySelector('[data-fallback]');
-      const name = node.querySelector('[data-name]');
-      const price= node.querySelector('[data-price]');
-      const qty  = node.querySelector('[data-qty]');
-      const wa   = node.querySelector('[data-wa]');
-      const rm   = node.querySelector('[data-remove]');
-
-      name.value  = prefill.name || 'Produto';
-      price.value = centsToBRL(prefill.cents??0);
-      qty.value   = prefill.qty || 1;
-      if(prefill.src){ img.src=prefill.src; img.hidden=false; fb.hidden=true; }
-
-      node.querySelector('.media').addEventListener('click', ()=> file.click());
-      file.addEventListener('change', async (e)=>{
-        const f = e.target.files?.[0]; if(!f) return;
-        // sobe para Storage (gera URL http)
-        const path = `catalogos/${uid}/${Date.now()}_${(f.name||'img').replace(/\s+/g,'_')}`;
-        const r = ref(st, path);
-        await uploadBytes(r, f);
-        const url = await getDownloadURL(r);
-        img.src = url; img.hidden = false; fb.hidden = true;
-        saveDraft();
-      });
-
-      price.addEventListener('input', (e)=>{ e.target.value = centsToBRL(toCents(e.target.value)); saveDraft(); });
-      name.addEventListener('input', saveDraft);
-      qty .addEventListener('input', saveDraft);
-
-      wa.addEventListener('click', ()=>{
-        const n=name.value.trim()||'Produto';
-        const c=toCents(price.value); const q=parseInt(qty.value||'1',10);
-        const total=centsToBRL(c*q);
-        const msg=`Olá, vim do catálogo *${encodeURIComponent(elStore.value.trim())}*%0A`+
-                  `Produto: *${encodeURIComponent(n)}*%0A`+
-                  `Preço: *${encodeURIComponent(centsToBRL(c))}*%0A`+
-                  `Quantidade: *${q}*%0ATotal: *${encodeURIComponent(total)}*`;
-        window.open(`https://wa.me/${elWhats.value.replace(/\D/g,'')}?text=${msg}`,'_blank');
-      });
-
-      rm.addEventListener('click', ()=>{ node.remove(); saveDraft(); });
-
-      grid.appendChild(node);
-    }
-
-    // ====== Botões
-    document.getElementById('btnAdd').addEventListener('click', ()=>{ newCard(); saveDraft(); });
-    document.getElementById('btnAddLogo').addEventListener('click', async ()=>{
-      const input = document.createElement('input');
-      input.type='file'; input.accept='image/*';
-      input.onchange = async ev=>{
-        const f = ev.target.files?.[0]; if(!f) return;
-        const r = ref(st, `logos/${uid}/${Date.now()}_${(f.name||'logo').replace(/\s+/g,'_')}`);
-        await uploadBytes(r, f);
-        const url = await getDownloadURL(r);
-        elLogo.src = url; elLogo.hidden=false; saveDraft();
-      };
-      input.click();
-    });
-
-    document.getElementById('btnExport').addEventListener('click', ()=>{
-      const data = JSON.parse(localStorage.getItem(DRAFT_KEY) || '{}');
-      const blob = new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-      const a = Object.assign(document.createElement('a'), {href:URL.createObjectURL(blob), download:'catalogo-monstreaqui.json'});
-      a.click(); URL.revokeObjectURL(a.href);
-    });
-
-    // ====== Publish -> Firestore (link curtinho)
-    document.getElementById('btnPublish').addEventListener('click', async ()=>{
-      // coleta
-      const items = [...grid.querySelectorAll('[data-card]')].map(card=>({
-        name: card.querySelector('[data-name]').value.trim(),
-        price_cents: toCents(card.querySelector('[data-price]').value),
-        qty: parseInt(card.querySelector('[data-qty]').value||'1',10),
-        image_url: card.querySelector('[data-img]')?.src || null
-      }));
-      // bloqueia data: (deveria ser http do Storage)
-      const hasDataUrl = items.some(i=> i.image_url && i.image_url.startsWith('data:'));
-      if(hasDataUrl){ alert('Ainda há imagem local (data:). Reenvie e aguarde virar URL http(s).'); return; }
-
-      const qs = new URLSearchParams(location.search);
-      const theme = {
-        bg: qs.get('bg')||localStorage.getItem('bg')||getComputedStyle(document.documentElement).getPropertyValue('--bg').trim(),
-        text:qs.get('text')||localStorage.getItem('text')||'#eaf0f6',
-        btn: qs.get('btn')||localStorage.getItem('btn')||'#26c281',
-        head:qs.get('head')||localStorage.getItem('head')||'#111318',
-        foot:qs.get('foot')||localStorage.getItem('foot')||'#111318',
-        box: qs.get('box')||localStorage.getItem('box')||'#111318'
-      };
-
-      const payload = {
-        uid, store: elStore.value.trim(),
-        whatsapp: elWhats.value.replace(/\D/g,''),
-        logoUrl: elLogo.src || null,
-        theme, items, updated_at: serverTimestamp(), created_at: serverTimestamp()
-      };
-
-      try{
-        const ref = await addDoc(collection(db,'catalogos'), payload);
-        // salva snapshot de rascunho com id (opcional)
-        localStorage.setItem(DRAFT_KEY, JSON.stringify({...payload}));
-        const view = new URL('catalogo-view.html', location.href);
-        view.searchParams.set('id', ref.id);
-        try{ await navigator.clipboard.writeText(view.toString()); }catch{}
-        window.open(view.toString(), '_blank');
-      }catch(e){
-        console.error(e);
-        alert('Falha ao salvar no Firestore. Verifique credenciais e regras.');
-      }
-    });
-
-    // ====== Onload
-    elStore.addEventListener('input', ()=>{ elTitle.textContent = elStore.value || 'Minha Loja'; saveDraft(); });
-    elWhats.addEventListener('input', saveDraft);
-    loadDraft();
-    if(grid.children.length===0){
-      [{name:'Pôster Espiral',cents:6900,qty:1},{name:'Camisa MostreAki',cents:9900,qty:1},{name:'Adesivo Hiperbóreo',cents:1900,qty:2}]
-        .forEach(seed=> newCard(seed));
-    }
-  </script>
 </body>
 </html>
