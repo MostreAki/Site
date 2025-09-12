@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dra. Nome Sobrenome – Dentista | MostreAki</title>
+
+  <!-- SEO básico -->
+  <meta name="description" content="Tratamentos odontológicos com atendimento humanizado. Clareamento, implantes, lentes de contato dental e ortodontia. Agende pelo WhatsApp.">
+  <link rel="icon" href="favicon.ico" type="image/x-icon"/>
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Dra. Nome Sobrenome – Dentista"/>
+  <meta property="og:description" content="Odontologia com foco em estética e bem-estar. Agende pelo WhatsApp."/>
+  <meta property="og:image" content="dentista-foto.jpg"/>
+  <meta property="og:type" content="website"/>
+
+  <style>
+    * { box-sizing: border-box; margin:0; padding:0; font-family: Arial, sans-serif }
+
+    body {
+      background-image: url("fundo-mobile.png");
+      background-size: cover; background-repeat: no-repeat; background-attachment: fixed;
+    }
+    @media (min-width: 768px) { body { background-image: url("fundo-desktop.png"); } }
+
+    header {
+      background-color: #c2e7df; height: 60px;
+      display:flex; align-items:center; justify-content:space-between;
+      padding: 0 20px; position: relative; box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .logo-container { display:flex; align-items:center; cursor:pointer; }
+    .logo-container img { height: 40px; margin-right: 10px; }
+    .logo { font-size: 1.5rem; font-weight: bold; }
+    .logo .mostre { color:#00C2BF; } .logo .aki { color:#FA1E39; }
+
+    .menu-icon { font-size: 1.5rem; cursor:pointer; }
+    .menu-list {
+      position:absolute; top:60px; right:20px; background:#16807C;
+      border:2px solid #000; border-radius:6px; display:none; flex-direction:column;
+      padding:10px; z-index:1000;
+    }
+    .menu-list a {
+      background:#FA1E39; color:#fff; text-decoration:none; padding:10px;
+      margin-bottom:8px; border-radius:6px; text-align:center; font-weight:bold;
+    }
+    .menu-list a:hover { background:#b8313b; }
+
+    .user-circle {
+      background:#15b0af; color:#fff; font-weight:bold; border-radius:50%;
+      width:32px; height:32px; display:none; align-items:center; justify-content:center;
+      background-size:cover; background-position:center; font-size:.9rem;
+    }
+
+    .section {
+      background:#fff; margin: 60px auto; padding:30px; border-radius:10px;
+      box-shadow:0 0 10px #0001; max-width:1100px;
+    }
+    .section h2 { color:#0e7270; margin-bottom:12px; text-align:center; }
+    .section p.lead { text-align:center; color:#333; margin-bottom:24px; line-height:1.6; }
+
+    /* HERO */
+    .hero {
+      display:grid; gap:20px; align-items:center;
+      grid-template-columns: 1fr; text-align:center;
+    }
+    .hero .foto {
+      width:100%; aspect-ratio: 1 / 1; max-width: 360px; margin:0 auto;
+      border-radius:16px; overflow:hidden; background:#f3f7f6;
+      box-shadow:0 4px 18px rgba(0,0,0,.08);
+    }
+    .hero .foto img { width:100%; height:100%; object-fit:cover; display:block; }
+    .hero .info h1 { font-size:1.8rem; color:#0e7270; margin-bottom:6px; }
+    .hero .info .sub { color:#444; margin-bottom:12px; }
+    .hero .cta { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:10px; }
+    .btn { display:inline-block; padding:12px 16px; border-radius:10px; font-weight:bold; text-decoration:none; border:none; cursor:pointer; }
+    .btn-primary { background:#15b0af; color:#fff; }
+    .btn-outline { background:#fff; color:#15b0af; border:2px solid #15b0af; }
+    .badge-trust { margin-top:8px; color:#0e7270; font-size:.9rem; }
+
+    @media (min-width: 900px) {
+      .hero { grid-template-columns: 420px 1fr; text-align:left; }
+      .hero .cta { justify-content:flex-start; }
+    }
+
+    /* GRID SERVIÇOS */
+    .grid {
+      display:grid; gap:16px; grid-template-columns: 1fr;
+    }
+    @media (min-width: 700px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+    .card {
+      background:#fff; border:1px solid #e7e7e7; border-radius:12px; padding:16px;
+      box-shadow:0 2px 8px rgba(0,0,0,.06); transition:.15s ease;
+    }
+    .card:hover { transform: translateY(-2px); box-shadow:0 6px 16px rgba(0,0,0,.10); }
+    .card h3 { color:#0e7270; margin-bottom:8px; font-size:1.05rem; }
+    .card p { color:#444; line-height:1.5; font-size:.95rem; }
+    .price { margin-top:10px; font-weight:bold; color:#0e7270; }
+
+    .cols-2 { display:grid; gap:20px; grid-template-columns:1fr; }
+    @media (min-width: 900px) { .cols-2 { grid-template-columns: 1fr 1fr; } }
+
+    .galeria {
+      display:grid; grid-template-columns:1fr 1fr; gap:10px;
+    }
+    @media (min-width: 700px) { .galeria { grid-template-columns: repeat(4, 1fr); } }
+    .galeria .shot {
+      aspect-ratio: 4 / 3; background:#f3f7f6; border-radius:10px; overflow:hidden;
+      box-shadow:0 2px 10px rgba(0,0,0,.05);
+    }
+    .galeria .shot img { width:100%; height:100%; object-fit:cover; display:block; }
+
+    .faq details { background:#f9fcfb; border:1px solid #e7f3f1; border-radius:10px; padding:12px 14px; margin-bottom:10px; }
+    .faq summary { cursor:pointer; font-weight:bold; color:#0e7270; }
+
+    .mapa iframe { width:100%; height:320px; border:0; border-radius:10px; box-shadow:0 2px 10px rgba(0,0,0,.05); }
+
+    footer {
+      background:#c2e7df; padding:20px; text-align:center; color:#555; font-size:.9rem;
+    }
+
+    /* WhatsApp flutuante */
+    .zap {
+      position:fixed; right:18px; bottom:18px; background:#25D366; color:#fff;
+      padding:12px 16px; border-radius:999px; font-weight:bold; text-decoration:none;
+      box-shadow:0 6px 16px rgba(0,0,0,.18); z-index:9999;
+    }
+  </style>
+
+  <!-- JSON-LD: Dentist -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Dentist",
+    "name": "Dra. Nome Sobrenome",
+    "image": "https://seu-dominio.com/dentista-foto.jpg",
+    "description": "Odontologia estética e funcional com atendimento humanizado.",
+    "telephone": "+55 11 99999-9999",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Rua Exemplo, 123",
+      "addressLocality": "São Paulo",
+      "addressRegion": "SP",
+      "postalCode": "00000-000",
+      "addressCountry": "BR"
+    },
+    "url": "https://seu-dominio.com/template-dentista.html",
+    "sameAs": ["https://instagram.com/seu_perfil"],
+    "openingHours": "Mo-Fr 09:00-18:00",
+    "priceRange": "$$"
+  }
+  </script>
+</head>
+<body>
+
+<header>
+  <div class="logo-container" onclick="location.href='index.html'">
+    <img src="logo.png" alt="Logo">
+    <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <span id="authText" style="font-weight:bold;color:#15b0af;cursor:pointer;display:none">Entrar</span>
+    <div id="userCircle" class="user-circle" title="Perfil"></div>
+    <div class="menu-icon" onclick="toggleMenu()">☰</div>
+  </div>
+  <div class="menu-list" id="menu">
+    <a href="/index.html">Início</a>
+    <a href="/parceiros.html">Parceiros</a>
+    <a href="/planos.html">Planos</a>
+    <a href="/servicos-adicionais.html">Serviços Adicionais</a>
+    <a href="/crieaki.html">CrieAki</a>
+    <a href="/contatos.html">Contatos</a>
+  </div>
+</header>
+
+<!-- HERO -->
+<div class="section">
+  <div class="hero">
+    <div class="foto">
+      <!-- TODO: troque a imagem pelo rosto/consultório do profissional -->
+      <img src="dentista-foto.jpg" alt="Dra. Nome Sobrenome – Dentista">
+    </div>
+    <div class="info">
+      <h1>Dra. Nome Sobrenome</h1>
+      <div class="sub">Dentista • CRO 000000 • Odontologia Estética & Implantes</div>
+      <div class="cta">
+        <!-- TODO: Atualize o número com DDI/DDD -->
+        <a class="btn btn-primary" href="https://wa.me/5511999999999?text=Olá%2C%20quero%20agendar%20uma%20consulta" target="_blank" rel="noopener">Agendar no WhatsApp</a>
+        <a class="btn btn-outline" href="#localizacao">Ver Localização</a>
+      </div>
+      <div class="badge-trust">Atendimento humanizado • Resultados naturais • Tecnologia moderna</div>
+    </div>
+  </div>
+</div>
+
+<!-- SERVIÇOS -->
+<div class="section">
+  <h2>Serviços</h2>
+  <p class="lead">Tratamentos completos para saúde e estética do seu sorriso.</p>
+  <div class="grid">
+    <div class="card">
+      <h3>Clareamento Dental</h3>
+      <p>Protocolo seguro para dentes mais claros, sem sensibilidade exagerada.</p>
+      <div class="price">a partir de R$ 350</div>
+    </div>
+    <div class="card">
+      <h3>Lentes de Contato</h3>
+      <p>Correção estética de forma minimamente invasiva, com planejamento digital.</p>
+      <div class="price">sob orçamento</div>
+    </div>
+    <div class="card">
+      <h3>Implantes</h3>
+      <p>Reposição de dentes ausentes com segurança e previsibilidade.</p>
+      <div class="price">sob orçamento</div>
+    </div>
+    <div class="card">
+      <h3>Ortodontia</h3>
+      <p>Alinhadores e aparelhos com foco em conforto e resultado funcional.</p>
+      <div class="price">a partir de R$ 120/mês</div>
+    </div>
+    <div class="card">
+      <h3>Limpeza & Prevenção</h3>
+      <p>Profilaxia, flúor e orientação de cuidados em casa.</p>
+      <div class="price">R$ 180</div>
+    </div>
+    <div class="card">
+      <h3>Emergências</h3>
+      <p>Atendimento rápido para dor, fraturas e restaurações urgentes.</p>
+      <div class="price">sob orçamento</div>
+    </div>
+  </div>
+</div>
+
+<!-- SOBRE + DEPOIMENTOS -->
+<div class="section cols-2">
+  <div>
+    <h2>Sobre a Profissional</h2>
+    <p class="lead" style="text-align:left">
+      <!-- TODO: Bio real -->
+      Atuação há 10+ anos em odontologia estética e reabilitação oral, unindo tecnologia e acolhimento.
+      Cada plano é feito sob medida, com explicações claras e acompanhamento próximo.
+    </p>
+    <ul style="margin-top:12px; color:#444; line-height:1.8;">
+      <li>Especialização em Implantodontia – Instituição Exemplo</li>
+      <li>Certificação em Lentes de Contato Dental</li>
+      <li>Membro da Associação Brasileira de Odontologia</li>
+    </ul>
+  </div>
+  <div>
+    <h2>Depoimentos</h2>
+    <div class="card">
+      <p>“Atendimento maravilhoso! Meu clareamento ficou natural e sem dor.”</p>
+      <div style="margin-top:6px; font-weight:bold; color:#0e7270;">— Paciente A.</div>
+    </div>
+    <div class="card" style="margin-top:10px;">
+      <p>“A doutora explicou tudo e fiquei super seguro no implante.”</p>
+      <div style="margin-top:6px; font-weight:bold; color:#0e7270;">— Paciente B.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ANTES & DEPOIS -->
+<div class="section">
+  <h2>Antes & Depois</h2>
+  <p class="lead">Resultados reais com foco em harmonia, função e bem-estar.</p>
+  <div class="galeria">
+    <!-- TODO: Substituir imagens reais -->
+    <div class="shot"><img src="antes-depois-1.jpg" alt="Antes e Depois 1"></div>
+    <div class="shot"><img src="antes-depois-2.jpg" alt="Antes e Depois 2"></div>
+    <div class="shot"><img src="antes-depois-3.jpg" alt="Antes e Depois 3"></div>
+    <div class="shot"><img src="antes-depois-4.jpg" alt="Antes e Depois 4"></div>
+  </div>
+</div>
+
+<!-- FAQ -->
+<div class="section faq">
+  <h2>Perguntas Frequentes</h2>
+  <details>
+    <summary>Aceita convênio?</summary>
+    <p style="margin-top:8px">Trabalhamos de forma particular. Emitimos nota e você pode solicitar reembolso onde disponível.</p>
+  </details>
+  <details>
+    <summary>Como funcionam os horários?</summary>
+    <p style="margin-top:8px">Atendimento de segunda a sexta, das 9h às 18h, com agendamento por WhatsApp.</p>
+  </details>
+  <details>
+    <summary>Dói fazer clareamento ou lente?</summary>
+    <p style="margin-top:8px">Nossos protocolos minimizam sensibilidade e priorizam conforto, com avaliação prévia.</p>
+  </details>
+</div>
+
+<!-- LOCALIZAÇÃO -->
+<div class="section" id="localizacao">
+  <h2>Localização</h2>
+  <p class="lead">Rua Exemplo, 123 – Bairro – Cidade/SP</p>
+  <div class="mapa" style="margin-top:12px;">
+    <!-- TODO: Trocar src do maps pelo endereço real -->
+    <iframe
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3656.999999!2d-46.999999!3d-23.999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x000000000000000%3A0x000000000000000!2sSeu%20Consult%C3%B3rio!5e0!3m2!1spt-BR!2sbr!4v0000000000000"
+      loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen>
+    </iframe>
+  </div>
+</div>
+
+<!-- CONTATO RÁPIDO -->
+<div class="section" id="contato">
+  <h2>Agende sua consulta</h2>
+  <p class="lead">Envie uma mensagem e retornaremos com as melhores opções de horário.</p>
+  <div style="text-align:center; margin-top:10px;">
+    <!-- TODO: Atualize o número -->
+    <a class="btn btn-primary" href="https://wa.me/5511999999999?text=Olá%2C%20quero%20agendar%20uma%20consulta" target="_blank" rel="noopener">Falar no WhatsApp</a>
+    <a class="btn btn-outline" href="mailto:contato@seudominio.com">Enviar e-mail</a>
+  </div>
+</div>
+
+<footer>
+  &copy; 2025 MostreAki. Todos os direitos reservados.
+</footer>
+
+<!-- Botão flutuante do WhatsApp -->
+<a class="zap" href="https://wa.me/5511999999999?text=Olá%2C%20vim%20pelo%20site%20e%20quero%20mais%20informações" target="_blank" rel="noopener">WhatsApp</a>
+
+<!-- Modal Login (opcional, mesmo padrão do site; pode remover se não usar) -->
+<div id="modalLogin" class="modal-bg" style="display:none">
+  <div class="modal">
+    <div class="fechar" onclick="fecharModal()">✖</div>
+    <h2>Entrar</h2>
+    <input type="email" id="email" placeholder="E-mail">
+    <div style="position:relative">
+      <input type="password" id="senha" placeholder="Senha">
+      <span onclick="toggleSenha()" style="position:absolute;top:12px;right:12px;cursor:pointer">👁️</span>
+    </div>
+    <button onclick="entrarEmail()">Entrar</button>
+    <button class="btn-google" onclick="entrarGoogle()">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google logo" style="height:20px;vertical-align:middle;"> Entrar com Google
+    </button>
+    <a href="#" onclick="redefinirSenha()">Esqueci minha senha</a>
+    <a href="#" onclick="cadastrarUsuario()">Cadastrar</a>
+  </div>
+</div>
+
+<div id="mensagem" class="mensagem" style="display:none"></div>
+
+<script>
+  // Menu
+  function toggleMenu(){ const m=document.getElementById('menu'); m.style.display = (m.style.display==='flex')?'none':'flex'; }
+  // Modal (se usar)
+  function abrirModal(){ document.getElementById('modalLogin').style.display='flex'; }
+  function fecharModal(){ document.getElementById('modalLogin').style.display='none'; }
+  function toggleSenha(){ const i=document.getElementById('senha'); i.type = (i.type==='password')?'text':'password'; }
+</script>
+
+</body>
+</html>
