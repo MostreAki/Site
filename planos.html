@@ -1,11 +1,11 @@
 <!DOCTYPE html><html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Plano de Assinatura – MostreAki</title>
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon"/>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif }
     body {
       background-image: url("fundo-mobile.png");
       background-size: cover;
@@ -22,6 +22,7 @@
       align-items: center;
       justify-content: space-between;
       padding: 0 20px;
+      position: relative;
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
     .logo-container { display: flex; align-items: center; cursor: pointer; }
@@ -103,20 +104,23 @@
       <a href="/contatos.html">Contatos</a>
     </div>
   </header>  <div class="section">
-    <h2>Assine o MostreAki</h2>
-    <p>Tenha acesso a todas as funcionalidades por apenas R$19,90/mês.</p>
-    <p>Escolha uma forma de pagamento:</p>
-    <img src="pix-mercadopago.png" alt="Pix Mercado Pago" style="max-width: 200px; margin: 10px">
-    <img src="pix-picpay.png" alt="Pix PicPay" style="max-width: 200px; margin: 10px">
-    <img src="pix-bancointer.png" alt="Pix Banco Inter" style="max-width: 200px; margin: 10px">
-    <br><br>
-    <button onclick="confirmarPagamento()">Confirmar Pagamento</button>
+    <h2>Plano de Assinatura MostreAki</h2>
+    <p>Tenha acesso a todos os recursos por apenas <strong>R$19,90/mês</strong></p>
+    <img src="plano.png" alt="Plano" style="max-width:100%;margin:20px 0">
+    <p>Pagamentos via:</p>
+    <ul style="list-style:none;padding:0">
+      <li><img src="pix-mercadopago.png" alt="Pix MercadoPago" width="150"></li>
+      <li><img src="picpay.png" alt="PicPay" width="150"></li>
+      <li><img src="pix-banco.png" alt="Pix Banco Inter" width="150"></li>
+    </ul>
+    <br>
+    <button onclick="window.location.href='contrato.html'" style="padding:12px 20px;background:#fa1e39;color:#fff;border:none;border-radius:6px;font-weight:bold">Confirmar Pagamento</button>
   </div>  <footer>
     &copy; 2025 MostreAki. Todos os direitos reservados.
-  </footer>  <div id="mensagem" class="mensagem"></div>  <script type="module">
+  </footer>  <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getStorage, ref, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
     const app = initializeApp({
       apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
@@ -128,23 +132,10 @@
     });
 
     const auth = getAuth(app);
-    const db = getFirestore(app);
     const provider = new GoogleAuthProvider();
+    const storage = getStorage(app);
     const authText = document.getElementById("authText");
     const userCircle = document.getElementById("userCircle");
-
-    function exibirMensagem(texto, erro = false) {
-      const m = document.getElementById("mensagem");
-      m.textContent = texto;
-      m.className = erro ? "mensagem erro" : "mensagem";
-      m.style.display = "block";
-      setTimeout(() => m.style.display = "none", 3000);
-    }
-
-    window.toggleMenu = () => {
-      const m = document.getElementById("menu");
-      m.style.display = m.style.display === "flex" ? "none" : "flex";
-    }
 
     onAuthStateChanged(auth, async (user) => {
       if (user) {
@@ -157,26 +148,9 @@
           });
         };
 
-        let foto = localStorage.getItem("fotoPerfil");
-        if (!foto) {
-          try {
-            const snap = await getDoc(doc(db, "usuarios", user.uid));
-            if (snap.exists() && snap.data().fotoPerfil) {
-              foto = snap.data().fotoPerfil;
-              localStorage.setItem("fotoPerfil", foto);
-            }
-          } catch (e) {
-            console.warn("Erro ao buscar foto do Firestore:", e);
-          }
-        }
-
-        if (!foto && user.photoURL) {
-          foto = user.photoURL;
-          localStorage.setItem("fotoPerfil", foto);
-        }
-
-        if (foto) {
-          userCircle.style.backgroundImage = `url('${foto}')`;
+        if (user.photoURL) {
+          userCircle.style.backgroundImage = `url('${user.photoURL}')`;
+          localStorage.setItem("fotoPerfil", user.photoURL);
           userCircle.textContent = "";
         } else {
           userCircle.textContent = user.email.charAt(0).toUpperCase();
@@ -185,21 +159,14 @@
       } else {
         authText.textContent = "Entrar";
         authText.style.display = "inline";
-        authText.onclick = () => document.getElementById("modalLogin").style.display = "flex";
+        authText.onclick = abrirModal;
         userCircle.style.display = "none";
       }
     });
 
-    window.confirmarPagamento = async () => {
-      const user = auth.currentUser;
-      if (!user) return exibirMensagem("Você precisa estar logado para confirmar.", true);
-      try {
-        await updateDoc(doc(db, "usuarios", user.uid), { plano: "pago" });
-        exibirMensagem("Plano ativado com sucesso!");
-        setTimeout(() => window.location.href = "index.html", 1500);
-      } catch (e) {
-        exibirMensagem("Erro ao confirmar pagamento.", true);
-      }
+    window.toggleMenu = () => {
+      const m = document.getElementById("menu");
+      m.style.display = m.style.display === "flex" ? "none" : "flex";
     }
   </script></body>
 </html>
