@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Parceiros – MostreAki</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon"/>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif }
+
+    body {
+      background-image: url("fundo-mobile.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+    }
+    @media (min-width: 768px) {
+      body { background-image: url("fundo-desktop.png"); }
+    }
+
+    header {
+      background-color: #c2e7df;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      position: relative;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .logo-container { display: flex; align-items: center; cursor: pointer; }
+    .logo-container img { height: 40px; margin-right: 10px; }
+    .logo { font-size: 1.5rem; font-weight: bold; }
+    .logo .mostre { color: #00C2BF; }
+    .logo .aki { color: #FA1E39; }
+
+    .menu-icon { font-size: 1.5rem; cursor: pointer; }
+    .menu-list {
+      position: absolute;
+      top: 60px;
+      right: 20px;
+      background-color: #16807C;
+      border: 2px solid black;
+      border-radius: 6px;
+      display: none;
+      flex-direction: column;
+      padding: 10px;
+      z-index: 1000;
+    }
+    .menu-list a {
+      background-color: #FA1E39;
+      color: white;
+      text-decoration: none;
+      padding: 10px;
+      margin-bottom: 8px;
+      border-radius: 6px;
+      text-align: center;
+      font-weight: bold;
+    }
+    .menu-list a:hover { background-color: #b8313b; }
+
+    .user-circle {
+      background-color: #15b0af;
+      color: white;
+      font-weight: bold;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background-size: cover;
+      background-position: center;
+      font-size: 0.9rem;
+    }
+
+    .section {
+      background: white;
+      margin: 60px auto;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #0001;
+      max-width: 1100px;
+      text-align: center;
+    }
+
+    footer {
+      background-color: #c2e7df;
+      padding: 20px;
+      text-align: center;
+      color: #555;
+      font-size: 0.9rem;
+    }
+
+    /* Galeria */
+    .intro {
+      max-width: 800px;
+      margin: 0 auto 24px auto;
+      color: #333;
+      line-height: 1.5;
+    }
+    .galeria {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+      margin-top: 10px;
+    }
+    @media (min-width: 640px) { .galeria { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 1024px) { .galeria { grid-template-columns: repeat(3, 1fr); } }
+
+    .card {
+      background: #fff;
+      border: 1px solid #e7e7e7;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      display: flex;
+      flex-direction: column;
+      transition: transform .15s ease, box-shadow .15s ease;
+    }
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.10);
+    }
+    .thumb-wrap {
+      position: relative;
+      aspect-ratio: 16 / 9;
+      background: #f3f7f6;
+      overflow: hidden;
+    }
+    .thumb-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .badge {
+      position: absolute;
+      top: 10px; left: 10px;
+      background: #15b0af;
+      color: #fff;
+      font-size: .78rem;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-weight: bold;
+      box-shadow: 0 2px 6px rgba(0,0,0,.15);
+    }
+    .card-body {
+      padding: 14px 14px 18px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      text-align: left;
+    }
+    .card h3 {
+      font-size: 1.05rem;
+      color: #0e7270;
+    }
+    .card p {
+      font-size: .92rem;
+      color: #444;
+      min-height: 2.6em; /* 2 linhas aprox. */
+    }
+    .actions {
+      display: flex; gap: 8px; margin-top: 6px; flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-block;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-weight: bold;
+      text-decoration: none;
+      text-align: center;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-primary { background: #15b0af; color: #fff; }
+    .btn-primary:hover { filter: brightness(0.95); }
+    .btn-outline {
+      background: #fff; color: #15b0af; border: 2px solid #15b0af;
+    }
+    .btn-outline:hover { background: #e8f7f6; }
+
+    .divider { margin: 28px 0; height: 1px; background: #eaeaea; }
+
+    /* Modal Login (mesmo padrão do site) */
+    .modal-bg {
+      position: fixed; top: 0; left: 0; width: 100%;
+      height: 100%; background: rgba(0,0,0,0.6);
+      display: none; justify-content: center; align-items: center;
+      z-index: 9999;
+    }
+    .modal {
+      background: #fff; padding: 30px; border-radius: 10px;
+      max-width: 400px; width: 90%; position: relative;
+    }
+    .modal h2 { margin-bottom: 20px; color: #16807c; font-size: 1.4rem; text-align: center; }
+    .modal input {
+      width: 100%; padding: 12px; margin-bottom: 15px;
+      border-radius: 6px; border: 1px solid #ccc;
+    }
+    .modal button {
+      width: 100%; padding: 12px; background: #15b0af;
+      border: none; color: #fff; font-weight: bold;
+      border-radius: 6px; margin-bottom: 10px; cursor: pointer;
+    }
+    .modal .btn-google {
+      background: #fff; color: #444; border: 1px solid #ccc;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+    }
+    .modal .btn-google img { height: 20px; }
+    .modal .fechar {
+      position: absolute; top: 10px; right: 15px;
+      font-size: 1.2rem; cursor: pointer; color: #999;
+    }
+    .modal a {
+      display: block; text-align: center;
+      margin-top: 10px; color: #16807c; font-size: .9rem;
+    }
+
+    .mensagem {
+      position: fixed; top: 20px; right: 20px;
+      background: #15b0af; color: #fff; padding: 15px 20px;
+      border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      font-weight: bold; z-index: 9999;
+      animation: fadein 0.5s, fadeout 0.5s 2.5s; display: none;
+    }
+    .mensagem.erro { background: #FA1E39; }
+    @keyframes fadein { from {opacity:0} to {opacity:1} }
+    @keyframes fadeout { from {opacity:1} to {opacity:0} }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-container" onclick="location.href='index.html'">
+    <img src="logo.png" alt="Logo">
+    <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <span id="authText" style="font-weight:bold;color:#15b0af;cursor:pointer;display:none">Entrar</span>
+    <div id="userCircle" class="user-circle" title="Perfil"></div>
+    <div class="menu-icon" onclick="toggleMenu()">☰</div>
+  </div>
+  <div class="menu-list" id="menu">
+    <a href="/index.html">Início</a>
+    <a href="/minha-conta.html">Minha Conta</a>
+    <a href="/planos.html">Planos</a>
+    <a href="/servicos-adicionais.html">Serviços Adicionais</a>
+    <a href="/crieaki.html">CrieAki</a>
+    <a href="/contatos.html">Contatos</a>
+  </div>
+</header>
+
+<div class="section">
+  <h2>Nossos Parceiros e Templates</h2>
+  <p class="intro">
+    Uma seleção dos sites e modelos que desenvolvemos. Explore os templates, veja funcionando ao vivo
+    e escolha o que combina com o seu projeto. Quando estiver pronto, fale com a gente e colocamos no ar rapidinho.
+  </p>
+
+  <div class="galeria">
+    <!-- CARD 1 -->
+    <div class="card">
+      <div class="thumb-wrap">
+        <img src="template1.png" alt="Template Moderno – MostreAki" loading="lazy">
+        <span class="badge">Template</span>
+      </div>
+      <div class="card-body">
+        <h3>Template Moderno</h3>
+        <p>Layout vibrante, botões de ação visíveis e seção de serviços clara.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="https://exemplo1.com" target="_blank" rel="noopener">Ver Site</a>
+          <a class="btn btn-outline" href="https://wa.me/seunumerodetelefone?text=Quero%20o%20Template%20Moderno" target="_blank" rel="noopener">Contratar</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 2 -->
+    <div class="card">
+      <div class="thumb-wrap">
+        <img src="template2.png" alt="Template Minimalista – MostreAki" loading="lazy">
+        <span class="badge">Template</span>
+      </div>
+      <div class="card-body">
+        <h3>Template Minimalista</h3>
+        <p>Tipografia limpa, foco no conteúdo e carregamento super leve.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="https://exemplo2.com" target="_blank" rel="noopener">Ver Site</a>
+          <a class="btn btn-outline" href="https://wa.me/seunumerodetelefone?text=Quero%20o%20Template%20Minimalista" target="_blank" rel="noopener">Contratar</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 3 -->
+    <div class="card">
+      <div class="thumb-wrap">
+        <img src="template3.png" alt="Landing Page Conversão – MostreAki" loading="lazy">
+        <span class="badge">Template</span>
+      </div>
+      <div class="card-body">
+        <h3>Landing de Conversão</h3>
+        <p>Herói forte, provas sociais e CTA destacado para captar leads.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="https://exemplo3.com" target="_blank" rel="noopener">Ver Site</a>
+          <a class="btn btn-outline" href="https://wa.me/seunumerodetelefone?text=Quero%20a%20Landing%20de%20Convers%C3%A3o" target="_blank" rel="noopener">Contratar</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 4 -->
+    <div class="card">
+      <div class="thumb-wrap">
+        <img src="template4.png" alt="Catálogo Visual – MostreAki" loading="lazy">
+        <span class="badge">Template</span>
+      </div>
+      <div class="card-body">
+        <h3>Catálogo Visual</h3>
+        <p>Grade de produtos com filtros simples e exibição em destaque.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="https://exemplo4.com" target="_blank" rel="noopener">Ver Site</a>
+          <a class="btn btn-outline" href="https://wa.me/seunumerodetelefone?text=Quero%20o%20Cat%C3%A1logo%20Visual" target="_blank" rel="noopener">Contratar</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 5 -->
+    <div class="card">
+      <div class="thumb-wrap">
+        <img src="template5.png" alt="Portfolio Criativo – MostreAki" loading="lazy">
+        <span class="badge">Template</span>
+      </div>
+      <div class="card-body">
+        <h3>Portfólio Criativo</h3>
+        <p>Animações suaves e foco em imagens para projetos visuais.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="https://exemplo5.com" target="_blank" rel="noopener">Ver Site</a>
+          <a class="btn btn-outline" href="https://wa.me/seunumerodetelefone?text=Quero%20o%20Portf%C3%B3lio%20Criativo" target="_blank" rel="noopener">Contratar</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 6 -->
+    <div class="card">
+      <div class="thumb-wrap">
+        <img src="template6.png" alt="Restaurante & Delivery – MostreAki" loading="lazy">
+        <span class="badge">Template</span>
+      </div>
+      <div class="card-body">
+        <h3>Restaurante & Delivery</h3>
+        <p>Cardápio simples, destaque para promoções e botão de pedido.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="https://exemplo6.com" target="_blank" rel="noopener">Ver Site</a>
+          <a class="btn btn-outline" href="https://wa.me/seunumerodetelefone?text=Quero%20o%20Restaurante%20%26%20Delivery" target="_blank" rel="noopener">Contratar</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <p class="intro">
+    Quer expor o seu site aqui como parceiro? Envie uma mensagem:
+    <a class="btn btn-outline" style="margin-top:10px" href="https://wa.me/seunumerodetelefone?text=Quero%20ser%20parceiro%20MostreAki" target="_blank" rel="noopener">Quero ser parceiro</a>
+  </p>
+</div>
+
+<footer>
+  &copy; 2025 MostreAki. Todos os direitos reservados.
+</footer>
+
+<!-- Modal Login (mesmo do restante do site) -->
+<div id="modalLogin" class="modal-bg">
+  <div class="modal">
+    <div class="fechar" onclick="fecharModal()">✖</div>
+    <h2>Entrar</h2>
+    <input type="email" id="email" placeholder="E-mail">
+    <div style="position:relative">
+      <input type="password" id="senha" placeholder="Senha">
+      <span onclick="toggleSenha()" style="position:absolute;top:12px;right:12px;cursor:pointer">👁️</span>
+    </div>
+    <button onclick="entrarEmail()">Entrar</button>
+    <button class="btn-google" onclick="entrarGoogle()">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google logo"> Entrar com Google
+    </button>
+    <a href="#" onclick="redefinirSenha()">Esqueci minha senha</a>
+    <a href="#" onclick="cadastrarUsuario()">Cadastrar</a>
+  </div>
+</div>
+
+<div id="mensagem" class="mensagem"></div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+  const app = initializeApp({
+    apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
+    authDomain: "mostreaki-2025.firebaseapp.com",
+    projectId: "mostreaki-2025",
+    storageBucket: "mostreaki-2025.appspot.com",
+    messagingSenderId: "748712068097",
+    appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
+  });
+
+  const auth = getAuth(app);
+  const provider = new GoogleAuthProvider();
+  const authText = document.getElementById("authText");
+  const userCircle = document.getElementById("userCircle");
+
+  function exibirMensagem(texto, erro = false) {
+    const m = document.getElementById("mensagem");
+    m.textContent = texto;
+    m.className = erro ? "mensagem erro" : "mensagem";
+    m.style.display = "block";
+    setTimeout(() => m.style.display = "none", 3000);
+  }
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      authText.textContent = "Sair";
+      authText.style.display = "inline";
+      authText.onclick = () => {
+        signOut(auth).then(() => {
+          localStorage.removeItem("fotoPerfil");
+          location.reload();
+        });
+      };
+      if (user.photoURL) {
+        userCircle.style.backgroundImage = `url('${user.photoURL}')`;
+        localStorage.setItem("fotoPerfil", user.photoURL);
+        userCircle.textContent = "";
+      } else {
+        userCircle.textContent = user.email.charAt(0).toUpperCase();
+      }
+      userCircle.style.display = "flex";
+    } else {
+      authText.textContent = "Entrar";
+      authText.style.display = "inline";
+      authText.onclick = abrirModal;
+      userCircle.style.display = "none";
+    }
+  });
+
+  window.toggleMenu = () => {
+    const m = document.getElementById("menu");
+    m.style.display = m.style.display === "flex" ? "none" : "flex";
+  }
+
+  window.abrirModal = () => document.getElementById("modalLogin").style.display = "flex";
+  window.fecharModal = () => document.getElementById("modalLogin").style.display = "none";
+  window.toggleSenha = () => {
+    const input = document.getElementById("senha");
+    input.type = input.type === "password" ? "text" : "password";
+  }
+
+  window.entrarEmail = () => {
+    const email = document.getElementById("email").value;
+    const senha = document.getElementById("senha").value;
+    signInWithEmailAndPassword(auth, email, senha)
+      .then(() => {
+        exibirMensagem("Você logou com sucesso!");
+        fecharModal();
+      })
+      .catch(() => exibirMensagem("Erro ao entrar. Verifique os dados.", true));
+  }
+
+  window.entrarGoogle = () => {
+    signInWithPopup(auth, provider)
+      .then(result => {
+        if (result.user.photoURL) {
+          localStorage.setItem("fotoPerfil", result.user.photoURL);
+        }
+        exibirMensagem("Login com Google realizado!");
+        fecharModal();
+      })
+      .catch(() => exibirMensagem("Erro ao entrar com Google.", true));
+  }
+
+  window.redefinirSenha = () => {
+    const email = document.getElementById("email").value;
+    if (!email) return exibirMensagem("Digite o e-mail para redefinir.", true);
+    sendPasswordResetEmail(auth, email)
+      .then(() => exibirMensagem("Email de recuperação enviado!"))
+      .catch(() => exibirMensagem("Erro ao enviar redefinição.", true));
+  }
+
+  window.cadastrarUsuario = () => {
+    const email = document.getElementById("email").value;
+    const senha = document.getElementById("senha").value;
+    createUserWithEmailAndPassword(auth, email, senha)
+      .then(() => {
+        exibirMensagem("Cadastro realizado com sucesso!");
+        fecharModal();
+      })
+      .catch(() => exibirMensagem("Erro ao cadastrar. Tente outro e-mail.", true));
+  }
+</script>
+
+</body>
+</html>
