@@ -59,7 +59,6 @@
       text-align: center;
       font-weight: bold;
     }
-
     .menu-list a:hover { background-color: #b8313b; }
 
     .user-circle {
@@ -167,10 +166,12 @@
     <div class="menu-icon" onclick="toggleMenu()">☰</div>
   </div>
   <div class="menu-list" id="menu">
-    <a href="/index.html">Página Inicial</a>
+    <a href="/index.html">Início</a>
     <a href="/minha-conta.html">Minha Conta</a>
+    <a href="/planos.html">Planos</a>
+    <a href="/servicos-adicionais.html">Serviços Adicionais</a>
     <a href="/crieaki.html">CrieAki</a>
-    <a href="/sobre.html">Sobre</a>
+    <a href="/contatos.html">Contatos</a>
   </div>
 </header>
 
@@ -178,7 +179,23 @@
   <h2>Fale com a gente!</h2>
   <p>Você pode nos contatar pelo e-mail <strong>mostreaki@mostreaki.com.br</strong> ou via WhatsApp clicando no botão abaixo:</p>
   <br>
-  <a href="https://wa.me/5519999371521" target="_blank" style="display:inline-block;background:#15b0af;color:white;padding:12px 20px;border-radius:8px;font-weight:bold;text-decoration:none;">Falar com MostreAki no WhatsApp</a>
+  <a href="https://wa.me/seunumerodetelefone" target="_blank" style="display:inline-block;background:#15b0af;color:white;padding:12px 20px;border-radius:8px;font-weight:bold;text-decoration:none;">Falar com MostreAki no WhatsApp</a>
+  
+  <hr style="margin:30px 0;">
+
+  <h3>Ou envie sua mensagem pelo formulário:</h3>
+  <form action="mailto:mostreaki@mostreaki.com.br" method="POST" enctype="text/plain" style="max-width:500px;margin:20px auto;text-align:left;">
+    <label for="nome">Nome:</label><br>
+    <input type="text" id="nome" name="nome" required style="width:100%;padding:10px;margin-bottom:15px;border:1px solid #ccc;border-radius:6px;"><br>
+
+    <label for="email">E-mail:</label><br>
+    <input type="email" id="email" name="email" required style="width:100%;padding:10px;margin-bottom:15px;border:1px solid #ccc;border-radius:6px;"><br>
+
+    <label for="mensagem">Mensagem:</label><br>
+    <textarea id="mensagem" name="mensagem" rows="5" required style="width:100%;padding:10px;margin-bottom:15px;border:1px solid #ccc;border-radius:6px;"></textarea><br>
+
+    <button type="submit" style="background:#15b0af;color:white;padding:12px 20px;border:none;border-radius:8px;font-weight:bold;cursor:pointer;">Enviar</button>
+  </form>
 </div>
 
 <footer>
@@ -242,10 +259,9 @@
           location.reload();
         });
       };
-
-      let foto = localStorage.getItem("fotoPerfil");
-      if (foto) {
-        userCircle.style.backgroundImage = `url('${foto}')`;
+      if (user.photoURL) {
+        userCircle.style.backgroundImage = `url('${user.photoURL}')`;
+        localStorage.setItem("fotoPerfil", user.photoURL);
         userCircle.textContent = "";
       } else {
         userCircle.textContent = user.email.charAt(0).toUpperCase();
@@ -262,14 +278,14 @@
   window.toggleMenu = () => {
     const m = document.getElementById("menu");
     m.style.display = m.style.display === "flex" ? "none" : "flex";
-  };
+  }
 
   window.abrirModal = () => document.getElementById("modalLogin").style.display = "flex";
   window.fecharModal = () => document.getElementById("modalLogin").style.display = "none";
   window.toggleSenha = () => {
     const input = document.getElementById("senha");
     input.type = input.type === "password" ? "text" : "password";
-  };
+  }
 
   window.entrarEmail = () => {
     const email = document.getElementById("email").value;
@@ -280,7 +296,7 @@
         fecharModal();
       })
       .catch(() => exibirMensagem("Erro ao entrar. Verifique os dados.", true));
-  };
+  }
 
   window.entrarGoogle = () => {
     signInWithPopup(auth, provider)
@@ -292,7 +308,7 @@
         fecharModal();
       })
       .catch(() => exibirMensagem("Erro ao entrar com Google.", true));
-  };
+  }
 
   window.redefinirSenha = () => {
     const email = document.getElementById("email").value;
@@ -300,7 +316,7 @@
     sendPasswordResetEmail(auth, email)
       .then(() => exibirMensagem("Email de recuperação enviado!"))
       .catch(() => exibirMensagem("Erro ao enviar redefinição.", true));
-  };
+  }
 
   window.cadastrarUsuario = () => {
     const email = document.getElementById("email").value;
@@ -311,9 +327,8 @@
         fecharModal();
       })
       .catch(() => exibirMensagem("Erro ao cadastrar. Tente outro e-mail.", true));
-  };
+  }
 </script>
 
 </body>
 </html>
-
