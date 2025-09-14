@@ -85,11 +85,35 @@
       max-width: 1200px;
     }
 
-    .planos-imagens img {
+    .plano {
       flex: 1 1 300px;
-      max-width: 100%;
+      max-width: 360px;
+      text-align: center;
+    }
+
+    .plano img {
+      width: 100%;
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .descricao {
+      background: #fff;
+      margin-top: 10px;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .descricao h3 {
+      color: #0e7270;
+      margin-bottom: 8px;
+    }
+
+    .descricao p {
+      font-size: 0.95rem;
+      color: #444;
+      line-height: 1.5;
     }
 
     footer {
@@ -209,9 +233,31 @@
 
   <main>
     <div class="planos-imagens">
-      <a href="/pagamento-plano-1.html"><img src="/plano-basico.png" alt="Plano Básico"/></a>
-      <a href="/pagamento-plano-2.html"><img src="/plano-intermediario.png" alt="Plano Intermediário"/></a>
-      <a href="/pagamento-plano-3.html"><img src="/plano-avancado.png" alt="Plano Avançado"/></a>
+
+      <div class="plano">
+        <a href="/pagamento-plano-1.html"><img src="/plano-basico.png" alt="Plano Básico"/></a>
+        <div class="descricao">
+          <h3>Plano Básico</h3>
+          <p>Para quem quer presença digital sem complicação: site moderno, Instagram ativo e suporte direto pelo WhatsApp. Inclui até 2 atualizações mensais no site e no Instagram.</p>
+        </div>
+      </div>
+
+      <div class="plano">
+        <a href="/pagamento-plano-2.html"><img src="/plano-intermediario.png" alt="Plano Intermediário"/></a>
+        <div class="descricao">
+          <h3>Plano Essencial</h3>
+          <p>Tudo do Básico + mais presença nas redes. Inclui até 3 posts semanais no Instagram, atualizações ilimitadas pequenas no site e relatório mensal simples.</p>
+        </div>
+      </div>
+
+      <div class="plano">
+        <a href="/pagamento-plano-3.html"><img src="/plano-avancado.png" alt="Plano Avançado"/></a>
+        <div class="descricao">
+          <h3>Plano Premium</h3>
+          <p>O pacote completo: site com seções extras personalizadas, até 5 posts semanais + stories, consultoria de identidade visual e prioridade no atendimento.</p>
+        </div>
+      </div>
+
     </div>
   </main>
 
@@ -267,8 +313,6 @@
     const provider = new GoogleAuthProvider();
     const authText = document.getElementById("authText");
     const userCircle = document.getElementById("userCircle");
-
-    const storage = getStorage(); const storageRef = ref(storage, 'mostreaki-2025.appspot.com/fotos_perfil/'); const fotoPerfilRef = ref(storageRef, `${userID}. ${tipoArquivo}`); const getFotoPerfil = async () => { const url = await getDownloadURL(fotoPerfilRef); return url; };
 
     function exibirMensagem(texto, erro = false) {
       const m = document.getElementById("mensagem");
