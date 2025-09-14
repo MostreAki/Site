@@ -3,18 +3,12 @@
 Com interface intuitiva, sites responsivos e suporte técnico prático, o MostreAki é mais do que um site — é um espaço de expressão verdadeira.
 
 ## 🚀 Funcionalidades
-- Criar e personalizar seu próprio site
+- Nós criamos e personalizamos um site do seu jeito.
 - Galeria para mostrar ideias, produtos ou portfólio
 - Ferramentas para divulgação rápida
-- Suporte inteligente com GuiaAki (para assinantes)
+- Atendimento diferenciado.
 
 ## 💻 Tecnologias Utilizadas
-- HTML, CSS e JavaScript
+- HTML, CSS, Json e JavaScript
 - Firebase (Auth e Hosting)
 - GitHub + Vercel
-
-## 📦 Instalação (modo dev)
-```bash
-git clone https://github.com/seuusuario/mostreaki.git
-cd mostreaki
-# abrir index.html direto no navegador ou rodar via live server
