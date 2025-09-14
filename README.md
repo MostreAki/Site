@@ -1,6 +1,6 @@
 #MostreAki
 # Site
-Com interface intuitiva, sites responsivos e suporte técnico prático, o MostreAki é mais do que um site — é um espaço de expressão verdadeira.
+Com interface intuitiva, sites responsivos e suporte técnico prático, o MostreAki é mais do que um site — é um espaço que cuida da sua marca.
 
 ## 🚀 Funcionalidades
 - Nós criamos e personalizamos um site do seu jeito.
