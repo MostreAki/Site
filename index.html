@@ -7,135 +7,130 @@
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#ffffff" />
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
-    body {
-      background-image: url("fundo-mobile.png");
-      background-size: cover;
-      background-repeat: no-repeat;
-      background-attachment: fixed;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
+    * { box-sizing:border-box; margin:0; padding:0; font-family: Arial, sans-serif; }
+    body{
+      background-image:url("fundo-mobile.png");
+      background-size:cover; background-repeat:no-repeat; background-attachment:fixed;
+      display:flex; flex-direction:column; min-height:100vh;
     }
-    @media (min-width: 768px) {
-      body { background-image: url("fundo-desktop.png"); }
-    }
-    header {
-      background-color: #c2e7df;
-      height: 60px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 20px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      position: relative;
-    }
-    .logo-container { display: flex; align-items: center; }
-    .logo-container img { height: 40px; margin-right: 10px; }
-    .logo { font-size: 1.5rem; font-weight: bold; }
-    .logo .mostre { color: #00C2BF; }
-    .logo .aki { color: #FA1E39; }
-    .menu-icon { font-size: 1.5rem; cursor: pointer; }
+    @media (min-width:768px){ body{ background-image:url("fundo-desktop.png"); } }
 
-    .menu-list {
-      position: absolute;
-      top: 60px;
-      right: 20px;
-      background-color: #16807C;
-      border: 2px solid black;
-      border-radius: 6px;
-      display: none;
-      flex-direction: column;
-      padding: 10px;
-      z-index: 1000;
+    header{
+      background:#c2e7df; height:60px; display:flex; align-items:center; justify-content:space-between;
+      padding:0 20px; box-shadow:0 2px 4px rgba(0,0,0,.1); position:relative;
     }
-    .menu-list a {
-      text-decoration: none;
-      color: white;
-      padding: 10px 15px;
-      border-radius: 6px;
-      font-weight: bold;
-      background-color: #FA1E39;
-      margin-bottom: 8px;
-      text-align: center;
+    .logo-container{ display:flex; align-items:center; }
+    .logo-container img{ height:40px; margin-right:10px; }
+    .logo{ font-size:1.5rem; font-weight:bold; }
+    .logo .mostre{ color:#00C2BF; } .logo .aki{ color:#FA1E39; }
+    .menu-icon{ font-size:1.5rem; cursor:pointer; }
+
+    .menu-list{
+      position:absolute; top:60px; right:20px; background:#16807C; border:2px solid #000; border-radius:6px;
+      display:none; flex-direction:column; padding:10px; z-index:1000;
     }
-    .menu-list a:hover { background-color: #b8313b; }
-
-    .banner video { width: 100%; height: auto; }
-
-    .section {
-      background-color: #ffffff;
-      margin: 40px auto;
-      padding: 20px;
-      width: 80%;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      text-align: center;
+    .menu-list a{
+      text-decoration:none; color:#fff; padding:10px 15px; border-radius:6px; font-weight:bold;
+      background:#FA1E39; margin-bottom:8px; text-align:center;
     }
-    .section h2 { color: #008b8b; margin-bottom: 10px; }
+    .menu-list a:hover{ background:#b8313b; }
 
-    .btn {
-      display: inline-block;
-      margin-top: 15px;
-      padding: 10px 20px;
-      background-color: #d73e45;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      text-decoration: none;
-      font-weight: bold;
+    .banner video{ width:100%; height:auto; }
+
+    .section{
+      background:#fff; margin:40px auto; padding:20px; width:80%; border-radius:10px;
+      box-shadow:0 2px 8px rgba(0,0,0,.1); text-align:center;
+    }
+    .section h2{ color:#008b8b; margin-bottom:10px; }
+
+    .btn{
+      display:inline-block; margin-top:15px; padding:10px 20px; background:#d73e45; color:#fff;
+      border:none; border-radius:5px; text-decoration:none; font-weight:bold;
     }
 
-    .user-circle {
-      background-color: #15b0af;
-      color: white;
-      font-weight: bold;
-      border-radius: 50%;
-      width: 32px;
-      height: 32px;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      background-size: cover;
-      background-position: center;
-      font-size: 0.9rem;
+    .user-circle{
+      background:#15b0af; color:#fff; font-weight:bold; border-radius:50%;
+      width:32px; height:32px; display:none; align-items:center; justify-content:center;
+      background-size:cover; background-position:center; font-size:.9rem;
     }
 
-    footer {
-      background-color: #c2e7df;
-      padding: 20px;
-      text-align: center;
-      color: #555;
-      font-size: 0.9rem;
-      margin-top: auto;
+    footer{ background:#c2e7df; padding:20px; text-align:center; color:#555; font-size:.9rem; margin-top:auto; }
+
+    /* ===== botão Entrar no header ===== */
+    .header-auth{
+      display:flex; align-items:center; gap:10px;
+    }
+    #btnAbrirLogin{
+      background:#15b0af; color:#fff; font-weight:bold; border:none; border-radius:8px;
+      padding:8px 12px; cursor:pointer;
     }
 
-    /* ==== NOVO: ações de autenticação no header ==== */
-    .auth-actions { display:none; align-items:center; gap:8px; }
-    .auth-btn {
-      background:#15b0af; color:#fff; padding:6px 10px; border-radius:6px;
-      text-decoration:none; font-weight:bold; display:inline-block;
+    /* ===== Modal de autenticação ===== */
+    .modal-bg{
+      position:fixed; inset:0; background:rgba(0,0,0,.5);
+      display:none; align-items:center; justify-content:center; z-index:9999;
+      padding:20px;
     }
-    .auth-btn.outline {
-      background:transparent; color:#15b0af; border:2px solid #15b0af;
+    .modal-card{
+      background:#ffffff; width:100%; max-width:420px; border-radius:16px;
+      box-shadow:0 20px 60px rgba(0,0,0,.25); overflow:hidden;
+      border:2px solid #c2e7df;
     }
-    .auth-google {
-      border:2px solid #ccc; background:#fff; border-radius:6px;
-      padding:4px 8px; cursor:pointer;
+    .modal-head{
+      background:linear-gradient(90deg,#c2e7df,#15b0af);
+      padding:16px 18px; color:#0b4d4c; display:flex; align-items:center; justify-content:space-between;
     }
-    .auth-google:hover{ border-color:#aaa; }
+    .modal-head h2{ font-size:1.1rem; color:#063b39; }
+    .modal-close{
+      background:transparent; border:none; font-size:22px; line-height:1; cursor:pointer; color:#063b39;
+    }
+    .modal-body{ padding:18px; }
+    .modal-body p.muted{ color:#555; margin-bottom:10px; }
+
+    .actions{ display:grid; gap:10px; }
+    .btn-auth{
+      width:100%; padding:12px; border-radius:10px; font-weight:bold; cursor:pointer; border:0;
+    }
+    .btn-primary{ background:#15b0af; color:#fff; }
+    .btn-outline{
+      background:#fff; color:#15b0af; border:2px solid #15b0af;
+    }
+    .btn-google{
+      background:#fff; border:2px solid #ddd; color:#333; display:flex; align-items:center; justify-content:center; gap:8px;
+    }
+    .btn-google:hover{ border-color:#bbb; }
+    .google-icon{ height:18px; vertical-align:middle; }
+    .modal-foot{
+      padding:14px 18px; background:#f6fbfa; border-top:1px solid #e7f3f1; font-size:.9rem; color:#366; text-align:center;
+    }
+
+    /* acessibilidade scroll lock (opcional) */
+    .no-scroll{ overflow:hidden; }
   </style>
 </head>
 <body>
 
-  <!-- Modal antigo (mantido opcionalmente; não é mais necessário para login) -->
-  <div id="loginModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:9999;">
-    <div style="background:white; padding:20px; border-radius:8px; width:90%; max-width:400px; text-align: center;">
-      <h2>Entrar no MostreAki</h2>
-      <button class="google-login" onclick="loginComGoogle()" style="margin-top:10px;padding:10px;background:white;border:1px solid #ccc;width:100%;">
-        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google Logo"> Entrar com Google
-      </button>
-      <p style="margin-top:10px;"><a href="#" onclick="closeModal()" style="color:#d73e45; text-decoration:none;">Fechar</a></p>
+  <!-- MODAL DE AUTENTICAÇÃO -->
+  <div id="authModal" class="modal-bg" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h2 id="authTitle">Entrar no MostreAki</h2>
+        <button class="modal-close" onclick="fecharModal()" aria-label="Fechar">×</button>
+      </div>
+      <div class="modal-body">
+        <p class="muted">Escolha como deseja continuar:</p>
+        <div class="actions">
+          <a class="btn-auth btn-primary" href="/login.html">Entrar com e-mail e senha</a>
+          <a class="btn-auth btn-outline" href="/cadastro.html">Cadastrar nova conta</a>
+          <button class="btn-auth btn-google" onclick="loginComGoogle()">
+            <img class="google-icon" src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="">
+            Entrar com Google
+          </button>
+        </div>
+      </div>
+      <div class="modal-foot">
+        Sua segurança em primeiro lugar. Use a opção que preferir.
+      </div>
     </div>
   </div>
 
@@ -145,19 +140,14 @@
       <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
     </div>
 
-    <div style="display: flex; align-items: center; gap: 10px;">
-      <!-- NOVO: quando deslogado mostramos este bloco -->
-      <div id="authActions" class="auth-actions">
-        <a class="auth-btn" href="/login.html">Entrar</a>
-        <a class="auth-btn outline" href="/cadastro.html">Cadastrar</a>
-        <button class="auth-google" onclick="loginComGoogle()" title="Entrar com Google">
-          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="" style="height:18px;vertical-align:middle;">
-        </button>
-      </div>
+    <div class="header-auth">
+      <!-- ÚNICO botão visível quando deslogado -->
+      <button id="btnAbrirLogin">Entrar</button>
 
       <!-- Quando logado mostramos 'Sair' + avatar -->
-      <span id="authText" style="font-weight:bold; color:#15b0af; cursor:pointer; display:none;" onclick="handleAuthAction()"></span>
+      <span id="authText" style="font-weight:bold; color:#15b0af; cursor:pointer; display:none;">Sair</span>
       <div id="userCircle" class="user-circle" title="Perfil"></div>
+
       <div class="menu-icon" onclick="toggleMenu()">☰</div>
     </div>
 
@@ -226,26 +216,43 @@
 
     const auth = getAuth(app);
 
-    // Google direto no header
+    // Handlers Modal
+    const $ = (id)=>document.getElementById(id);
+    const modal = $("authModal");
+    const btnAbrir = $("btnAbrirLogin");
+    const authText = $("authText");
+    const userCircle = $("userCircle");
+
+    function abrirModal(){
+      modal.style.display = "flex";
+      document.body.classList.add("no-scroll");
+    }
+    window.fecharModal = function(){
+      modal.style.display = "none";
+      document.body.classList.remove("no-scroll");
+    }
+    btnAbrir.addEventListener("click", abrirModal);
+    modal.addEventListener("click", (e)=>{ if(e.target===modal) fecharModal(); });
+    window.addEventListener("keydown",(e)=>{ if(e.key==="Escape" && modal.style.display==="flex") fecharModal(); });
+
+    // Login Google (no popup)
     window.loginComGoogle = function () {
       const provider = new GoogleAuthProvider();
       signInWithPopup(auth, provider)
         .then(result => {
           const foto = result.user.photoURL;
           if (foto) localStorage.setItem("fotoPerfil", foto);
-          closeModal();
+          fecharModal();
           location.reload();
         })
         .catch(error => alert("Erro ao entrar com Google: " + error.message));
     };
 
+    // Estado de auth → controla Entrar/Sair/Avatar
     onAuthStateChanged(auth, (user) => {
-      const userCircle = document.getElementById("userCircle");
-      const authText   = document.getElementById("authText");
-      const authActions= document.getElementById("authActions");
-      const fotoURL    = localStorage.getItem("fotoPerfil");
-
+      const fotoURL = localStorage.getItem("fotoPerfil");
       if (user) {
+        // avatar
         if (fotoURL) {
           userCircle.style.backgroundImage = `url('${fotoURL}')`;
           userCircle.textContent = "";
@@ -255,37 +262,31 @@
           userCircle.style.backgroundImage = "";
         }
         userCircle.style.display = "flex";
-        authText.textContent = "Sair";
+
+        // mostra "Sair" e oculta botão Entrar
         authText.style.display = "inline";
-        authActions.style.display = "none";
+        btnAbrir.style.display = "none";
       } else {
         userCircle.style.display = "none";
         authText.style.display = "none";
-        authActions.style.display = "flex";
+        btnAbrir.style.display = "inline-block";
       }
+    });
+
+    // Sair
+    authText.addEventListener("click", async ()=>{
+      try{
+        await signOut(auth);
+        localStorage.removeItem("fotoPerfil");
+        location.reload();
+      }catch(e){ alert("Não foi possível sair: " + e.message); }
     });
   </script>
 
   <script>
-    function toggleMenu() {
-      const menu = document.getElementById("menu");
+    function toggleMenu(){
+      const menu=document.getElementById("menu");
       menu.style.display = menu.style.display === "flex" ? "none" : "flex";
-    }
-
-    function handleAuthAction() {
-      // Aqui só aparece quando o texto é "Sair"
-      import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js').then(({ getAuth, signOut }) => {
-        const auth = getAuth();
-        signOut(auth).then(() => {
-          localStorage.removeItem("fotoPerfil");
-          window.location.reload();
-        });
-      });
-    }
-
-    function closeModal() {
-      const modal = document.getElementById("loginModal");
-      if (modal) modal.style.display = "none";
     }
   </script>
 </body>
