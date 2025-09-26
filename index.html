@@ -36,6 +36,7 @@
     .logo .mostre { color: #00C2BF; }
     .logo .aki { color: #FA1E39; }
     .menu-icon { font-size: 1.5rem; cursor: pointer; }
+
     .menu-list {
       position: absolute;
       top: 60px;
@@ -59,7 +60,9 @@
       text-align: center;
     }
     .menu-list a:hover { background-color: #b8313b; }
+
     .banner video { width: 100%; height: auto; }
+
     .section {
       background-color: #ffffff;
       margin: 40px auto;
@@ -70,6 +73,7 @@
       text-align: center;
     }
     .section h2 { color: #008b8b; margin-bottom: 10px; }
+
     .btn {
       display: inline-block;
       margin-top: 15px;
@@ -81,6 +85,7 @@
       text-decoration: none;
       font-weight: bold;
     }
+
     .user-circle {
       background-color: #15b0af;
       color: white;
@@ -95,6 +100,7 @@
       background-position: center;
       font-size: 0.9rem;
     }
+
     footer {
       background-color: #c2e7df;
       padding: 20px;
@@ -103,9 +109,26 @@
       font-size: 0.9rem;
       margin-top: auto;
     }
+
+    /* ==== NOVO: ações de autenticação no header ==== */
+    .auth-actions { display:none; align-items:center; gap:8px; }
+    .auth-btn {
+      background:#15b0af; color:#fff; padding:6px 10px; border-radius:6px;
+      text-decoration:none; font-weight:bold; display:inline-block;
+    }
+    .auth-btn.outline {
+      background:transparent; color:#15b0af; border:2px solid #15b0af;
+    }
+    .auth-google {
+      border:2px solid #ccc; background:#fff; border-radius:6px;
+      padding:4px 8px; cursor:pointer;
+    }
+    .auth-google:hover{ border-color:#aaa; }
   </style>
 </head>
 <body>
+
+  <!-- Modal antigo (mantido opcionalmente; não é mais necessário para login) -->
   <div id="loginModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:9999;">
     <div style="background:white; padding:20px; border-radius:8px; width:90%; max-width:400px; text-align: center;">
       <h2>Entrar no MostreAki</h2>
@@ -114,16 +137,30 @@
       </button>
       <p style="margin-top:10px;"><a href="#" onclick="closeModal()" style="color:#d73e45; text-decoration:none;">Fechar</a></p>
     </div>
-  </div>  <header>
+  </div>
+
+  <header>
     <div class="logo-container">
       <img src="logo.png" alt="Logo" />
       <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
     </div>
+
     <div style="display: flex; align-items: center; gap: 10px;">
+      <!-- NOVO: quando deslogado mostramos este bloco -->
+      <div id="authActions" class="auth-actions">
+        <a class="auth-btn" href="/login.html">Entrar</a>
+        <a class="auth-btn outline" href="/cadastro.html">Cadastrar</a>
+        <button class="auth-google" onclick="loginComGoogle()" title="Entrar com Google">
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="" style="height:18px;vertical-align:middle;">
+        </button>
+      </div>
+
+      <!-- Quando logado mostramos 'Sair' + avatar -->
       <span id="authText" style="font-weight:bold; color:#15b0af; cursor:pointer; display:none;" onclick="handleAuthAction()"></span>
       <div id="userCircle" class="user-circle" title="Perfil"></div>
       <div class="menu-icon" onclick="toggleMenu()">☰</div>
     </div>
+
     <div class="menu-list" id="menu">
       <a href="/sobre.html">Sobre</a>
       <a href="/minha-conta.html">Minha Conta</a>
@@ -133,7 +170,9 @@
       <a href="/redes-sociais.html">Redes Sociais</a>
       <a href="/contatos.html">Contatos</a>
     </div>
-  </header>  <div class="banner">
+  </header>
+
+  <div class="banner">
     <a href="/planos.html">
       <video autoplay muted loop playsinline preload="auto" style="width:100%; height:auto;">
         <source src="banner-mobile.webm" type="video/webm" media="(max-width: 767px)">
@@ -141,21 +180,32 @@
         Seu navegador não suporta vídeo HTML5.
       </video>
     </a>
-  </div>  <div class="section">
+  </div>
+
+  <div class="section">
     <h2>Conheça o Nosso Trabalho e os Nossos Parceiros</h2>
     <p>Aqui voce vai poder ver o nosso trabalho e os Templates que temos disponíveis.</p>
     <a href="/parceiros.html" class="btn">Clique Aqui</a>
-  </div>  <div class="section">
+  </div>
+
+  <div class="section">
     <h2>Redes Sociais</h2>
     <p>Conecte-se com o público nas redes sociais por meio do MostreAki.</p>
     <a href="/redes-sociais.html" class="btn">Clique Aqui</a>
-  </div>  <div class="section">
+  </div>
+
+  <div class="section">
     <h2>Serviços Adicionais</h2>
     <p>Descubra como potencializar sua presença com nossos serviços extras.</p>
     <a href="/servicos-adicionais.html" class="btn">Clique Aqui</a>
-  </div>  <footer>
+  </div>
+
+  <footer>
     &copy; 2025 MostreAki. Todos os direitos reservados.
-  </footer>  <!-- Firebase + Scripts -->  <script type="module">
+  </footer>
+
+  <!-- Firebase + Scripts -->
+  <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
     import {
       getAuth,
@@ -176,6 +226,7 @@
 
     const auth = getAuth(app);
 
+    // Google direto no header
     window.loginComGoogle = function () {
       const provider = new GoogleAuthProvider();
       signInWithPopup(auth, provider)
@@ -190,58 +241,52 @@
 
     onAuthStateChanged(auth, (user) => {
       const userCircle = document.getElementById("userCircle");
-      const authText = document.getElementById("authText");
-      const fotoURL = localStorage.getItem("fotoPerfil");
+      const authText   = document.getElementById("authText");
+      const authActions= document.getElementById("authActions");
+      const fotoURL    = localStorage.getItem("fotoPerfil");
+
       if (user) {
         if (fotoURL) {
           userCircle.style.backgroundImage = `url('${fotoURL}')`;
           userCircle.textContent = "";
         } else {
-          const nome = user.displayName || user.email;
-          const iniciais = nome.trim().charAt(0).toUpperCase();
-          userCircle.textContent = iniciais;
+          const nome = (user.displayName || user.email || "?").trim();
+          userCircle.textContent = nome.charAt(0).toUpperCase();
           userCircle.style.backgroundImage = "";
         }
         userCircle.style.display = "flex";
         authText.textContent = "Sair";
         authText.style.display = "inline";
+        authActions.style.display = "none";
       } else {
         userCircle.style.display = "none";
-        authText.textContent = "Entrar";
-        authText.style.display = "inline";
+        authText.style.display = "none";
+        authActions.style.display = "flex";
       }
     });
-  </script>  <script>
+  </script>
+
+  <script>
     function toggleMenu() {
       const menu = document.getElementById("menu");
       menu.style.display = menu.style.display === "flex" ? "none" : "flex";
     }
 
     function handleAuthAction() {
-      const action = document.getElementById("authText").textContent;
-      if (action === "Entrar") {
-        document.getElementById("loginModal").style.display = "flex";
-      } else {
-        import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js').then(({ getAuth, signOut }) => {
-          const auth = getAuth();
-          signOut(auth).then(() => {
-            localStorage.removeItem("fotoPerfil");
-            window.location.reload();
-          });
+      // Aqui só aparece quando o texto é "Sair"
+      import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js').then(({ getAuth, signOut }) => {
+        const auth = getAuth();
+        signOut(auth).then(() => {
+          localStorage.removeItem("fotoPerfil");
+          window.location.reload();
         });
-      }
+      });
     }
 
     function closeModal() {
-      document.getElementById("loginModal").style.display = "none";
+      const modal = document.getElementById("loginModal");
+      if (modal) modal.style.display = "none";
     }
-  </script></body>
+  </script>
+</body>
 </html>
-
-
-
-
-
-
-
-
