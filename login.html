@@ -1,0 +1,76 @@
+<!DOCTYPE html><html lang="pt-BR"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Entrar – MostreAki</title>
+<style>
+  body{font-family:Arial, sans-serif;background:#f4f7f7;display:flex;min-height:100vh;align-items:center;justify-content:center}
+  .card{background:#fff;border-radius:12px;box-shadow:0 6px 24px rgba(0,0,0,.08);padding:24px;max-width:380px;width:92%}
+  .card h1{margin:0 0 12px;color:#0f6f6e}
+  label{display:block;margin:10px 0 6px;color:#333}
+  input{width:100%;padding:10px;border:1px solid #ddd;border-radius:8px}
+  button,.btn{width:100%;margin-top:12px;padding:10px;border-radius:8px;border:0;font-weight:bold;cursor:pointer}
+  .primary{background:#15b0af;color:#fff}
+  .google{background:#fff;border:2px solid #ddd}
+  .muted{font-size:.9rem;color:#666;margin-top:10px}
+  a{color:#15b0af;text-decoration:none;font-weight:bold}
+  .err{color:#b00020;margin-top:8px;min-height:18px}
+</style>
+</head><body>
+<div class="card">
+  <h1>Entrar</h1>
+  <label>E-mail</label>
+  <input id="email" type="email" autocomplete="email" required>
+  <label>Senha</label>
+  <input id="senha" type="password" autocomplete="current-password" required>
+  <div class="err" id="err"></div>
+  <button class="primary" id="btnEntrar">Entrar</button>
+  <button class="google" id="btnGoogle">
+    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" style="height:18px;vertical-align:middle"> Entrar com Google
+  </button>
+  <p class="muted">Não tem conta? <a href="/cadastro.html">Cadastre-se</a></p>
+</div>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+
+const app = initializeApp({
+  apiKey:"AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
+  authDomain:"mostreaki-2025.firebaseapp.com",
+  projectId:"mostreaki-2025",
+  storageBucket:"mostreaki-2025.appspot.com",
+  messagingSenderId:"748712068097",
+  appId:"1:748712068097:web:09cf043fbb45917ef6ec00"
+});
+const auth = getAuth(app);
+
+const $ = (id)=>document.getElementById(id);
+$("btnEntrar").onclick=async ()=>{
+  $("err").textContent="";
+  try{
+    await signInWithEmailAndPassword(auth, $("email").value.trim(), $("senha").value);
+    location.href="/minha-conta.html";
+  }catch(e){ $("err").textContent = traduzErro(e.code); }
+};
+$("btnGoogle").onclick=async ()=>{
+  try{
+    const prov = new GoogleAuthProvider();
+    const r = await signInWithPopup(auth, prov);
+    if(r.user.photoURL) localStorage.setItem("fotoPerfil", r.user.photoURL);
+    location.href="/minha-conta.html";
+  }catch(e){ $("err").textContent = traduzErro(e.code); }
+};
+
+// já logado? manda pro painel
+onAuthStateChanged(auth, u=>{ if(u) location.href="/minha-conta.html"; });
+
+function traduzErro(code){
+  const mapa={
+    "auth/invalid-email":"E-mail inválido.",
+    "auth/user-not-found":"Usuário não encontrado.",
+    "auth/wrong-password":"Senha incorreta.",
+    "auth/too-many-requests":"Muitas tentativas. Tente mais tarde."
+  };
+  return mapa[code] || "Não foi possível entrar. Tente novamente.";
+}
+</script>
+</body></html>
