@@ -5,34 +5,32 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Entrar – MostreAki</title>
 <style>
-  :root{
-    --brand:#15b0af; --brandLight:#c2e7df; --accent:#FA1E39; --ink:#063b39;
-  }
+  :root{--brand:#15b0af; --brandLight:#c2e7df; --accent:#FA1E39; --ink:#063b39;}
   body{font-family:Arial, sans-serif;background:#f4f7f7;display:flex;min-height:100vh;align-items:center;justify-content:center}
   .card{background:#fff;border-radius:12px;box-shadow:0 6px 24px rgba(0,0,0,.08);padding:24px;max-width:380px;width:92%}
   .card h1{margin:0 0 12px;color:#0f6f6e}
   label{display:block;margin:10px 0 6px;color:#333}
   input{width:100%;padding:10px;border:1px solid #ddd;border-radius:8px}
-  button,.btn{width:100%;margin-top:12px;padding:10px;border-radius:8px;border:0;font-weight:bold;cursor:pointer}
+  button,.btn{width:100%;margin-top:12px;padding:12px;border-radius:8px;border:0;font-weight:bold;cursor:pointer}
   .primary{background:var(--brand);color:#fff}
   .google{background:#fff;border:2px solid #ddd}
   .muted{font-size:.9rem;color:#666;margin-top:10px}
   a{color:var(--brand);text-decoration:none;font-weight:bold}
 
-  /* campo de senha com ícone olho */
+  /* Campo de senha com botão olho responsivo */
   .pwd-wrap{position:relative}
+  .pwd-wrap input{padding-right:48px;} /* espaço pro botão */
   .pwd-toggle{
-    position:absolute; right:10px; top:50%; transform:translateY(-50%);
-    background:#fff; border:0; cursor:pointer; font-size:18px; line-height:1;
-    padding:2px 6px; border-radius:6px; color:#444;
+    position:absolute; right:8px; top:50%; transform:translateY(-50%);
+    width:36px; height:36px; display:flex; align-items:center; justify-content:center;
+    background:#fff; border:1px solid #ddd; border-radius:8px; cursor:pointer;
+    font-size:18px; line-height:1; color:#444;
   }
+  .pwd-toggle:active{transform:translateY(-50%) scale(.98)}
 
-  /* POPUP / ALERTA */
+  /* POPUP */
   .alert-bg{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:9999;padding:20px}
-  .alert-card{
-    background:#fff;border-radius:16px;overflow:hidden;max-width:460px;width:100%;
-    box-shadow:0 22px 70px rgba(0,0,0,.25); border:2px solid var(--brandLight);
-  }
+  .alert-card{background:#fff;border-radius:16px;overflow:hidden;max-width:460px;width:100%;box-shadow:0 22px 70px rgba(0,0,0,.25);border:2px solid var(--brandLight)}
   .alert-head{background:linear-gradient(90deg,var(--brandLight),var(--brand));padding:14px 16px;display:flex;align-items:center;gap:10px}
   .alert-dot{width:10px;height:10px;border-radius:50%;background:var(--accent)}
   .alert-title{color:var(--ink);font-weight:bold}
@@ -41,6 +39,9 @@
   .btn-solid{background:var(--brand);color:#fff}
   .btn-ghost{background:#fff;border:2px solid var(--brand);color:var(--brand)}
   .btn-danger{background:var(--accent);color:#fff}
+
+  /* Link “recuperar senha” que só aparece após 1º erro */
+  #recoverLine{display:none;text-align:center;margin-top:6px}
 </style>
 </head>
 <body>
@@ -48,29 +49,24 @@
   <h1>Entrar</h1>
 
   <label for="email">E-mail</label>
-  <!-- validação nativa: exige algo@algo.tld -->
   <input id="email" type="email" autocomplete="username" required
          pattern="^[^\s@]+@[^\s@]+\.[^\s@]{2,}$" placeholder="voce@exemplo.com">
 
   <label for="senha">Senha</label>
   <div class="pwd-wrap">
     <input id="senha" type="password" autocomplete="current-password" required>
-    <button id="toggleSenha" class="pwd-toggle" type="button" aria-label="Mostrar senha">👁️</button>
+    <button id="toggleSenha" class="pwd-toggle" type="button" aria-label="Mostrar senha" aria-pressed="false">👁️</button>
   </div>
-
-  <!-- Se você tiver confirmação de senha nesta página, mantenha o id="confirmSenha" que o script já liga no olho -->
-  <!--
-  <label for="confirmSenha">Confirmar senha</label>
-  <div class="pwd-wrap">
-    <input id="confirmSenha" type="password" autocomplete="new-password" required>
-    <button id="toggleConfirm" class="pwd-toggle" type="button" aria-label="Mostrar confirmação">👁️</button>
-  </div>
-  -->
 
   <button class="primary" id="btnEntrar">Entrar</button>
   <button class="google" id="btnGoogle">
     <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" style="height:18px;vertical-align:middle"> Entrar com Google
   </button>
+
+  <div id="recoverLine" class="muted">
+    Esqueceu a senha? <a href="/recuperar-senha.html">Recuperar senha</a>
+  </div>
+
   <p class="muted">Não tem conta? <a href="/cadastro.html">Cadastre-se</a></p>
 </div>
 
@@ -97,21 +93,19 @@ const app = initializeApp({
   apiKey:"AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
   authDomain:"mostreaki-2025.firebaseapp.com",
   projectId:"mostreaki-2025",
-  storageBucket:"mostreaki-2025.firebasestorage.app", // alinhado; não é usado aqui, mas deixei consistente
+  storageBucket:"mostreaki-2025.firebasestorage.app",
   messagingSenderId:"748712068097",
   appId:"1:748712068097:web:09cf043fbb45917ef6ec00"
 });
 const auth = getAuth(app);
 
-/* Utils popup */
+/* Popup */
 const alertBG = document.getElementById('alert');
 const alertTitle = document.getElementById('alertTitle');
 const alertMsg = document.getElementById('alertMsg');
 const alertActions = document.getElementById('alertActions');
 function showAlert({title="Aviso", html="", actions=[{text:"Fechar", kind:"solid"}]}){
-  alertTitle.textContent = title;
-  alertMsg.innerHTML = html;
-  alertActions.innerHTML = "";
+  alertTitle.textContent = title; alertMsg.innerHTML = html; alertActions.innerHTML = "";
   actions.forEach(a=>{
     const b=document.createElement('button');
     b.className = 'btn ' + (a.kind==='danger'?'btn-danger':a.kind==='ghost'?'btn-ghost':'btn-solid');
@@ -127,7 +121,7 @@ window.addEventListener('keydown', e=>{ if(e.key==='Escape' && alertBG.style.dis
 
 const $ = (id)=>document.getElementById(id);
 
-/* Toggle de senha (👁️/🙈) aproveitável em qualquer input */
+/* Toggle olho */
 function wirePasswordToggle(inputId, btnId){
   const input = $(inputId), btn = $(btnId);
   if(!input || !btn) return;
@@ -135,21 +129,56 @@ function wirePasswordToggle(inputId, btnId){
     const showing = input.type === 'text';
     input.type = showing ? 'password' : 'text';
     btn.textContent = showing ? '👁️' : '🙈';
+    btn.setAttribute('aria-pressed', (!showing).toString());
     btn.setAttribute('aria-label', showing ? 'Mostrar senha' : 'Ocultar senha');
   }
   btn.addEventListener('click', flip);
 }
 wirePasswordToggle('senha','toggleSenha');
-wirePasswordToggle('confirmSenha','toggleConfirm'); // só ativa se existir
 
-/* Validação leve antes de chamar o Firebase */
-function emailValido(valor){
-  // usa o mesmo padrão do input (algo@algo.tld com TLD >=2 chars)
-  return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(valor);
+/* Validação leve */
+const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+function emailValido(v){ return emailRe.test(v); }
+
+/* Trava de tentativas local (UX): 5 falhas => bloqueia 30s (exponencial) */
+function getState(){
+  const now=Date.now();
+  const s = JSON.parse(sessionStorage.getItem('loginState')||'{}');
+  if(!s.lockUntil) s.lockUntil=0;
+  if(!s.failCount) s.failCount=0;
+  if(!s.blockMult) s.blockMult=1;
+  if(now > s.lockUntil){ s.lockUntil=0; }
+  return s;
+}
+function setState(s){ sessionStorage.setItem('loginState', JSON.stringify(s)); }
+function isLocked(){
+  const s=getState(); return s.lockUntil && Date.now()<s.lockUntil;
+}
+function lockMore(){
+  const s=getState();
+  const base=30000; // 30s
+  s.blockMult = Math.min(s.blockMult*2, 8); // limita o crescimento
+  s.lockUntil = Date.now() + base * s.blockMult;
+  setState(s);
+}
+function incFail(){
+  const s=getState(); s.failCount=(s.failCount||0)+1;
+  if(s.failCount>=5){ s.failCount=0; lockMore(); }
+  setState(s);
+}
+function resetFails(){
+  const s=getState(); s.failCount=0; s.blockMult=1; s.lockUntil=0; setState(s);
+}
+function showLockMsg(){
+  const s=getState();
+  const secs = Math.ceil((s.lockUntil - Date.now())/1000);
+  showAlert({title:"Muitas tentativas", html:`Aguarde <b>${secs}s</b> para tentar novamente.`});
 }
 
-/* Entrar por e-mail/senha */
+/* Entrar */
 async function loginEmailSenha(){
+  if(isLocked()) return showLockMsg();
+
   const email = $("email").value.trim();
   const senha = $("senha").value;
 
@@ -160,83 +189,72 @@ async function loginEmailSenha(){
   try{
     const cred = await signInWithEmailAndPassword(auth, email, senha);
 
-    // Exige verificação de e-mail para login com e-mail/senha
     if (!cred.user.emailVerified){
       await sendEmailVerification(cred.user);
       showAlert({
         title:"Confirme seu e-mail",
-        html:`Seu e-mail ainda não foi verificado.<br>
-              Reenviamos o link para <b>${email}</b>. Verifique sua caixa de entrada (ou spam) e tente novamente após confirmar.`,
+        html:`Seu e-mail ainda não foi verificado.<br>Reenviamos o link para <b>${email}</b>. Verifique sua caixa de entrada (ou spam) e tente novamente após confirmar.`,
         actions:[ {text:"OK, vou verificar", kind:"solid"} ]
       });
       await signOut(auth);
       return;
     }
 
-    // OK, liberado
+    resetFails();
     if(cred.user.photoURL) localStorage.setItem("fotoPerfil", cred.user.photoURL);
     location.href="/minha-conta.html";
 
   }catch(e){
-    const {title, html, actions=[]} = mapLoginErro(e.code, email);
-    showAlert({title, html, actions:[...actions, {text:"Fechar", kind:"solid"}]});
+    // Erros tratados como credencial inválida
+    const codes = ["auth/invalid-credential","auth/wrong-password","auth/user-not-found"];
+    if(codes.includes(e.code)){
+      $("recoverLine").style.display = "block"; // mostra “recuperar senha” após 1º erro
+      incFail();
+      if(isLocked()) return showLockMsg();
+
+      return showAlert({
+        title:"Não conseguimos entrar",
+        html:"E-mail e/ou senha incorretos. Você pode tentar novamente ou recuperar a senha.",
+        actions:[
+          {text:"Recuperar senha", kind:"ghost", onClick:()=>location.href="/recuperar-senha.html"},
+          {text:"Cadastrar", kind:"ghost", onClick:()=>location.href="/cadastro.html"},
+          {text:"Fechar", kind:"solid"}
+        ]
+      });
+    }
+
+    if(e.code==="auth/too-many-requests"){
+      lockMore(); return showLockMsg();
+    }
+
+    if(e.code==="auth/invalid-email"){
+      return showAlert({title:"E-mail inválido", html:"Revise o endereço digitado."});
+    }
+
+    showAlert({title:"Erro", html:`Erro inesperado (${e.code}). Tente novamente.`});
   }
 }
 $("btnEntrar").onclick = loginEmailSenha;
 
-/* Enter para enviar */
-document.addEventListener('keydown', (ev)=>{
-  if(ev.key === 'Enter') loginEmailSenha();
-});
+/* Enter envia */
+document.addEventListener('keydown', (ev)=>{ if(ev.key === 'Enter') loginEmailSenha(); });
 
 /* Google */
 $("btnGoogle").onclick = async ()=>{
+  if(isLocked()) return showLockMsg();
   try{
     const prov=new GoogleAuthProvider();
     const r = await signInWithPopup(auth, prov);
+    resetFails();
     if(r.user.photoURL) localStorage.setItem("fotoPerfil", r.user.photoURL);
-    location.href="/minha-conta.html"; // Google normalmente já vem verificado
+    location.href="/minha-conta.html";
   }catch(e){
     showAlert({title:"Google indisponível", html:"Tente novamente em instantes."});
   }
 };
 
 /* Se já estiver logado e verificado, manda pro painel */
-onAuthStateChanged(auth, (u)=>{
-  if(u && u.emailVerified) location.href="/minha-conta.html";
-});
-
-/* Mapeamento de erros – unificando credenciais inválidas */
-function mapLoginErro(code, email){
-  switch(code){
-    case "auth/invalid-email":
-      return {title:"E-mail inválido", html:"Revise o endereço digitado."};
-
-    case "auth/invalid-credential": // formato ok, mas usuário não existe OU senha incorreta
-    case "auth/wrong-password":
-    case "auth/user-not-found":
-      return {
-        title:"Não conseguimos entrar",
-        html:"E-mail e/ou senha incorretos. Você pode tentar novamente ou recuperar a senha.",
-        actions:[
-          {text:"Recuperar senha", kind:"ghost", onClick:()=>location.href="/recuperar-senha.html"},
-          {text:"Cadastrar", kind:"ghost", onClick:()=>location.href="/cadastro.html"}
-        ]
-      };
-
-    case "auth/too-many-requests":
-      return {title:"Muitas tentativas", html:"Aguarde alguns minutos e tente novamente ou redefina a senha."};
-
-    case "auth/network-request-failed":
-      return {title:"Sem conexão", html:"Verifique sua internet e tente novamente."};
-
-    case "auth/user-disabled":
-      return {title:"Conta desabilitada", html:"Fale com o suporte para reativação."};
-
-    default:
-      return {title:"Erro", html:`Erro inesperado (${code}). Tente novamente.`};
-  }
-}
+onAuthStateChanged(auth, (u)=>{ if(u && u.emailVerified) location.href="/minha-conta.html"; });
 </script>
 </body>
 </html>
