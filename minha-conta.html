@@ -1,25 +1,23 @@
-<!DOCTYPE html><html lang="pt-BR">
+<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Minha Conta – MostreAki</title>
   <link rel="icon" href="/favicon.ico" />
   <style>
-  	body {
-  font-family: Arial, Helvetica, sans-serif;
-  padding: 20px;
-  background-image: url("fundo-mobile.png");
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  background-position: center;
-}
-
-@media (min-width: 768px) {
-  body {
-    background-image: url("fundo-desktop.png");
-  }
-}
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      padding: 20px;
+      background-image: url("fundo-mobile.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      background-position: center;
+    }
+    @media (min-width: 768px) {
+      body { background-image: url("fundo-desktop.png"); }
+    }
     *,*:before,*:after{box-sizing:border-box;margin:0;padding:0}
     header{background:#c2e7df;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;position:relative;border-radius:8px;box-shadow:0 2px 6px #0002}
     .logo-container{display:flex;align-items:center;gap:8px;cursor:pointer}
@@ -39,30 +37,17 @@
     #fotoPreview{width:100px;height:100px;border-radius:50%;object-fit:cover;margin:12px auto;border:2px solid #ccc;display:block}
     .buttons{display:flex;flex-direction:column;gap:10px;margin-top:22px}
     .btn{padding:12px;border:none;border-radius:6px;font-weight:700;color:#fff;cursor:pointer}
-    .btn-salvar{background:#16807c}.btn-assinar{background:#28a745}.btn-alterar{background:#007bff}.btn-cancelar{background:#dc3545}
-    .alerta-login
-    {
-      background-color: #fff0f0;
-      border: 2px solid #fa1e39;
-      color: #b30000;
-      padding: 15px;
-      margin: 30px auto;
-      max-width: 500px;
-      border-radius: 8px;
-      text-align: center;
-      font-weight: bold;
-      font-size: 1.1rem;
-      display: none;
+    .btn-salvar{background:#16807c}
+    .btn-assinar{background:#28a745}
+    .btn-alterar{background:#007bff}
+    .btn-cancelar{background:#dc3545}
+    .alerta-login{
+      background-color:#fff0f0;border:2px solid #fa1e39;color:#b30000;
+      padding:15px;margin:30px auto;max-width:500px;border-radius:8px;
+      text-align:center;font-weight:bold;font-size:1.1rem;display:none;
     }
-  
-  footer {
-  background-color: #c2e7df;
-  padding: 20px;
-  text-align: center;
-  color: #555;
-  font-size: 0.9rem;
-  }
-</style>
+    footer { background-color:#c2e7df; padding:20px; text-align:center; color:#555; font-size:.9rem; }
+  </style>
 </head>
 <body>
   <header>
@@ -84,136 +69,159 @@
       <a href="/redes-sociais.html">Redes Sociais</a>
       <a href="/contatos.html">Contatos</a>
     </nav>
-  </header>  <div id="alertaLogin" class="alerta-login">⚠️ Você precisa estar logado para acessar a página Minha Conta. Redirecionando para a página inicial...</div>  <main class="container">
+  </header>
+
+  <div id="alertaLogin" class="alerta-login">⚠️ Você precisa estar logado para acessar a página Minha Conta. Redirecionando para a página inicial...</div>
+
+  <main class="container">
     <h2>Minha Conta</h2>
+
     <div class="form-group">
       <label for="foto">Foto de Perfil</label>
       <input id="foto" type="file" accept="image/*">
       <img id="fotoPreview" alt="Preview">
     </div>
+
     <div class="form-group"><label>Instagram</label><input id="instagram" type="text"></div>
     <div class="form-group"><label>Facebook</label><input id="facebook" type="text"></div>
     <div class="form-group"><label>WhatsApp</label><input id="whatsapp" type="text"></div>
     <div class="form-group"><label>YouTube</label><input id="youtube" type="text"></div>
+
     <div class="buttons">
       <button id="btnSalvar" class="btn btn-salvar">Salvar Alterações</button>
-      
       <button id="btnExcluirFoto" class="btn btn-cancelar">Remover Foto de Perfil</button>
     </div>
-  </main><script type="module">
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-import { getFirestore, doc, setDoc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
+  </main>
 
-const app = initializeApp({
-  apiKey: 'AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE',
-  authDomain: 'mostreaki-2025.firebaseapp.com',
-  projectId: 'mostreaki-2025',
-  storageBucket: 'mostreaki-2025.appspot.com',
-  messagingSenderId: '748712068097',
-  appId: '1:748712068097:web:09cf043fbb45917ef6ec00'
-});
+  <script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+  import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+  import { getFirestore, doc, setDoc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+  import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
 
-const auth = getAuth(app), db = getFirestore(app), storage = getStorage(app, "gs://mostreaki-2025.firebasestorage.app");
-const $ = s => document.querySelector(s);
+  const app = initializeApp({
+    apiKey: 'AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE',
+    authDomain: 'mostreaki-2025.firebaseapp.com',
+    projectId: 'mostreaki-2025',
+    storageBucket: 'mostreaki-2025.appspot.com',
+    messagingSenderId: '748712068097',
+    appId: '1:748712068097:web:09cf043fbb45917ef6ec00'
+  });
 
-$('#menuBtn').onclick = () => {
-  $('#menu').style.display = $('#menu').style.display === 'flex' ? 'none' : 'flex';
-};
+  // ✅ Storage no bucket padrão
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const storage = getStorage(app);
 
-function atualizarUserCircle(url) {
-  if (!url) return;
-  localStorage.setItem('fotoPerfil', url);
-  $('#fotoPreview').src = url;
-  const el = $('#userCircle'); el.innerHTML = ''; el.style.display = 'flex';
-  el.append(Object.assign(new Image(), { src: url }));
-}
-
-function exibirFotoLocal() {
-  const cached = localStorage.getItem('fotoPerfil');
-  if (cached) atualizarUserCircle(cached);
-}
-exibirFotoLocal();
-
-async function previewImagem(ev, uid) {
-  const file = ev.target.files?.[0]; if (!file) return;
-  $('#fotoPreview').src = URL.createObjectURL(file);
-  const storageRef = ref(storage, `fotosPerfil/${uid}`);
-  try {
-    const snap = await uploadBytes(storageRef, file);
-    const url = await getDownloadURL(storageRef);
-    await setDoc(doc(db, 'usuarios', uid), { fotoPerfil: url }, { merge: true });
-    atualizarUserCircle(url);
-  } catch (e) {
-    alert('Erro ao salvar imagem.');
-  }
-}
-
-async function removerFoto(uid) {
-  const fotoRef = ref(storage, `fotosPerfil/${uid}`);
-  try {
-    await deleteObject(fotoRef);
-    await setDoc(doc(db, 'usuarios', uid), { fotoPerfil: '' }, { merge: true });
-    localStorage.removeItem('fotoPerfil');
-    $('#fotoPreview').src = ''; $('#userCircle').style.display = 'none';
-    alert('Foto removida.');
-  } catch (e) {
-    alert('Falha ao remover.');
-  }
-}
-
-async function salvar(uid) {
-  const data = {
-    instagram: $('#instagram').value.trim(),
-    facebook:  $('#facebook').value.trim(),
-    whatsapp:  $('#whatsapp').value.trim(),
-    youtube:   $('#youtube').value.trim()
+  const $ = s => document.querySelector(s);
+  $('#menuBtn').onclick = () => {
+    $('#menu').style.display = $('#menu').style.display === 'flex' ? 'none' : 'flex';
   };
-  await setDoc(doc(db, 'usuarios', uid), data, { merge: true });
-  alert('Dados salvos!');
-}
 
-async function carregar(uid) {
-  const snap = await getDoc(doc(db, 'usuarios', uid));
-  if (!snap.exists()) return;
-  const d = snap.data();
-  $('#instagram').value = d.instagram || '';
-  $('#facebook').value  = d.facebook  || '';
-  $('#whatsapp').value  = d.whatsapp  || '';
-  $('#youtube').value   = d.youtube   || '';
-  if (d.fotoPerfil) atualizarUserCircle(d.fotoPerfil);
-}
-
-onAuthStateChanged(auth, user => {
-  const a = $('#authText');
-  if (user) {
-    $('#foto').onchange = ev => previewImagem(ev, user.uid);
-    $('#btnSalvar').onclick      = () => salvar(user.uid);
-    $('#btnExcluirFoto').onclick = () => removerFoto(user.uid);
-    a.textContent = 'Sair'; a.style.display = 'inline';
-    a.onclick = async () => {
-      await signOut(auth);
-      localStorage.removeItem('fotoPerfil');
-      location = '/index.html';
-    };
-    carregar(user.uid);
-  } else {
-    $('#alertaLogin').style.display = 'block';
-    document.querySelector('main.container').style.display = 'none';
-    localStorage.removeItem('fotoPerfil');
-    setTimeout(() => location = '/index.html', 5000);
+  function atualizarUserCircle(url) {
+    if (!url) return;
+    localStorage.setItem('fotoPerfil', url);
+    $('#fotoPreview').src = url;
+    const el = $('#userCircle'); el.innerHTML = ''; el.style.display = 'flex';
+    const img = new Image(); img.src = url; img.alt = 'Foto';
+    el.append(img);
   }
-});
-</script>
-<footer>
-  © 2025 MostreAki – Todos os direitos reservados.
-  </footer>
+
+  // Prioridade: photoURL → Firestore → localStorage
+  async function prefetchFoto(uid) {
+    const u = auth.currentUser;
+    if (u?.photoURL) { atualizarUserCircle(u.photoURL); return; }
+
+    try {
+      const snap = await getDoc(doc(db, 'usuarios', uid));
+      const url = snap.exists() && snap.data().fotoPerfil;
+      if (url) { atualizarUserCircle(url); return; }
+    } catch(e) { /* silencioso */ }
+
+    const cached = localStorage.getItem('fotoPerfil');
+    if (cached) atualizarUserCircle(cached);
+  }
+
+  async function previewImagem(ev, uid) {
+    const file = ev.target.files?.[0]; if (!file) return;
+    $('#fotoPreview').src = URL.createObjectURL(file);
+
+    // 🔒 caminho alinhado às regras: usuarios/{uid}/perfil/avatar.jpg
+    const storageRef = ref(storage, `usuarios/${uid}/perfil/avatar.jpg`);
+    try {
+      await uploadBytes(storageRef, file, { contentType: file.type });
+      const url = await getDownloadURL(storageRef);
+      await setDoc(doc(db, 'usuarios', uid), { fotoPerfil: url }, { merge: true });
+      atualizarUserCircle(url);
+      alert('Foto atualizada com sucesso!');
+    } catch (e) {
+      console.error(e);
+      alert('Erro ao salvar imagem no Storage.');
+    }
+  }
+
+  async function removerFoto(uid) {
+    const fotoRef = ref(storage, `usuarios/${uid}/perfil/avatar.jpg`);
+    try {
+      await deleteObject(fotoRef);
+      await setDoc(doc(db, 'usuarios', uid), { fotoPerfil: '' }, { merge: true });
+      localStorage.removeItem('fotoPerfil');
+      $('#fotoPreview').src = '';
+      $('#userCircle').style.display = 'none';
+      alert('Foto removida.');
+    } catch (e) {
+      console.error(e);
+      alert('Falha ao remover.');
+    }
+  }
+
+  async function salvar(uid) {
+    const data = {
+      instagram: $('#instagram').value.trim(),
+      facebook:  $('#facebook').value.trim(),
+      whatsapp:  $('#whatsapp').value.trim(),
+      youtube:   $('#youtube').value.trim()
+    };
+    await setDoc(doc(db, 'usuarios', uid), data, { merge: true });
+    alert('Dados salvos!');
+  }
+
+  async function carregar(uid) {
+    const snap = await getDoc(doc(db, 'usuarios', uid));
+    if (!snap.exists()) return;
+    const d = snap.data();
+    $('#instagram').value = d.instagram || '';
+    $('#facebook').value  = d.facebook  || '';
+    $('#whatsapp').value  = d.whatsapp  || '';
+    $('#youtube').value   = d.youtube   || '';
+    // Foto fica pelo prefetchFoto()
+  }
+
+  onAuthStateChanged(auth, user => {
+    const a = $('#authText');
+    if (user) {
+      $('#foto').onchange = ev => previewImagem(ev, user.uid);
+      $('#btnSalvar').onclick      = () => salvar(user.uid);
+      $('#btnExcluirFoto').onclick = () => removerFoto(user.uid);
+
+      a.textContent = 'Sair'; a.style.display = 'inline';
+      a.onclick = async () => {
+        await signOut(auth);
+        localStorage.removeItem('fotoPerfil');
+        location = '/index.html';
+      };
+
+      carregar(user.uid);
+      prefetchFoto(user.uid);
+    } else {
+      $('#alertaLogin').style.display = 'block';
+      document.querySelector('main.container').style.display = 'none';
+      localStorage.removeItem('fotoPerfil');
+      setTimeout(() => location = '/index.html', 5000);
+    }
+  });
+  </script>
+
+  <footer>© 2025 MostreAki – Todos os direitos reservados.</footer>
 </body>
 </html>
-
-
-
-
-
-
