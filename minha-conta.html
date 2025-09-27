@@ -32,7 +32,7 @@
     .form-group{margin-bottom:16px}
     label{display:block;margin-bottom:6px;font-weight:600}
     input[type=text],input[type=file]{width:100%;padding:10px;border:1px solid #ccc;border-radius:6px;font-size:1rem}
-    #fotoPreview{width:100px;height:100px;border-radius:50%;object-fit:cover;margin:12px auto;border:2px solid #ccc;display:block; background:#e9f5f4}
+    #fotoPreview{width:100px;height:100px;border-radius:50%;object-fit:cover;margin:12px auto;border:2px solid #ccc;display:block;background:#e9f5f4}
     .buttons{display:flex;flex-direction:column;gap:10px;margin-top:22px}
     .btn{padding:12px;border:none;border-radius:6px;font-weight:700;color:#fff;cursor:pointer}
     .btn-salvar{background:#16807c}
@@ -115,51 +115,87 @@
     $('#menu').style.display = $('#menu').style.display === 'flex' ? 'none' : 'flex';
   };
 
+  // ——— Avatar helpers ———
+  function cacheBust(url){ return url ? url + (url.includes('?')?'&':'?') + 'v=' + Date.now() : url; }
+
   function atualizarUserCircle(url) {
     if (!url) return;
     localStorage.setItem('fotoPerfil', url);
-    $('#fotoPreview').src = url;
-    const el = $('#userCircle'); el.innerHTML = ''; el.style.display = 'flex';
-    const img = new Image(); img.src = url; img.alt = 'Foto';
+
+    const bust = cacheBust(url);
+    const preview = $('#fotoPreview');
+    if (preview) preview.src = bust;
+
+    const el = $('#userCircle');
+    if (!el) return;
+    el.innerHTML = '';
+    el.style.display = 'flex';
+    const img = new Image();
+    img.src = bust; img.alt = 'Foto';
     el.append(img);
+  }
+
+  // Preenche rapidamente com o que já temos em cache (para não “piscar”)
+  (function quickFillFromCache(){
+    const cache = localStorage.getItem('fotoPerfil');
+    if (cache) { try { atualizarUserCircle(cache); } catch(_){} }
+  })();
+
+  function extFromType(type){
+    const map = {'image/jpeg':'jpg','image/png':'png','image/webp':'webp','image/gif':'gif'};
+    return map[type] || 'jpg';
   }
 
   // Busca a foto com fallback robusto
   async function prefetchFoto(uid) {
-    let url = auth.currentUser?.photoURL || null;
+    let url = null;
 
-    // 1) Firestore
-    if (!url) {
-      try {
-        const snap = await getDoc(doc(db, 'usuarios', uid));
-        url = (snap.exists() && snap.data().fotoPerfil) || null;
-      } catch (e) { /* ignora */ }
+    // 1) Se veio do provedor (Google), aproveita
+    url = auth.currentUser?.photoURL || null;
+    if (url) { atualizarUserCircle(url); return; }
+
+    // 2) Firestore (usuarios/{uid}.fotoPerfil)
+    try {
+      const snap = await getDoc(doc(db, 'usuarios', uid));
+      const v = (snap.exists() && snap.data().fotoPerfil) || null;
+      if (v) { atualizarUserCircle(v); return; }
+    } catch (e) { /* silencioso */ }
+
+    // 3) Storage direto (tenta jpg/png/webp/gif no caminho padrão)
+    const tryExt = async (e)=> getDownloadURL(ref(storage, `usuarios/${uid}/perfil/avatar.${e}`)).catch(()=>null);
+    const direct = await tryExt('jpg') || await tryExt('png') || await tryExt('webp') || await tryExt('gif');
+    if (direct) {
+      await setDoc(doc(db,'usuarios',uid),{ fotoPerfil: direct },{ merge:true });
+      atualizarUserCircle(direct);
+      return;
     }
 
-    // 2) Storage direto (se seguir o caminho padrão)
-    if (!url) {
-      try {
-        url = await getDownloadURL(ref(storage, `usuarios/${uid}/perfil/avatar.jpg`));
-      } catch (e) { /* arquivo pode não existir ainda */ }
-    }
-
-    // 3) localStorage
-    if (!url) {
-      url = localStorage.getItem('fotoPerfil') || null;
-    }
-
-    if (url) atualizarUserCircle(url);
+    // 4) localStorage (último recurso)
+    const cache = localStorage.getItem('fotoPerfil');
+    if (cache) atualizarUserCircle(cache);
   }
 
+  // Upload de imagem (salvando com a extensão certa)
   async function previewImagem(ev, uid) {
     const file = ev.target.files?.[0]; if (!file) return;
     $('#fotoPreview').src = URL.createObjectURL(file);
 
-    const storageRef = ref(storage, `usuarios/${uid}/perfil/avatar.jpg`);
+    const ext = extFromType(file.type);
+    const storageRef = ref(storage, `usuarios/${uid}/perfil/avatar.${ext}`);
+
     try {
       await uploadBytes(storageRef, file, { contentType: file.type });
       const url = await getDownloadURL(storageRef);
+
+      // Salva URL exata no Firestore para leituras futuras
       await setDoc(doc(db, 'usuarios', uid), { fotoPerfil: url }, { merge: true });
+
+      // Remove possíveis versões antigas com outras extensões (best-effort)
+      const others = ['jpg','png','webp','gif'].filter(e=>e!==ext);
+      for (const e of others) {
+        try { await deleteObject(ref(storage, `usuarios/${uid}/perfil/avatar.${e}`)); } catch(_) {}
+      }
+
       atualizarUserCircle(url);
       alert('Foto atualizada com sucesso!');
     } catch (e) {
@@ -168,21 +204,25 @@
     }
   }
 
+  // Remover foto
   async function removerFoto(uid) {
-    const fotoRef = ref(storage, `usuarios/${uid}/perfil/avatar.jpg`);
-    try {
-      await deleteObject(fotoRef);
-      await setDoc(doc(db, 'usuarios', uid), { fotoPerfil: '' }, { merge: true });
-      localStorage.removeItem('fotoPerfil');
-      $('#fotoPreview').src = '';
-      $('#userCircle').style.display = 'none';
-      alert('Foto removida.');
-    } catch (e) {
-      console.error(e);
-      alert('Falha ao remover.');
+    // Tenta deletar todas as variantes conhecidas
+    const variants = ['jpg','png','webp','gif'];
+    let removed = false;
+    for (const e of variants) {
+      try { await deleteObject(ref(storage, `usuarios/${uid}/perfil/avatar.${e}`)); removed = true; } catch(_) {}
     }
+    try {
+      await setDoc(doc(db, 'usuarios', uid), { fotoPerfil: '' }, { merge: true });
+    } catch(_) {}
+
+    localStorage.removeItem('fotoPerfil');
+    $('#fotoPreview').src = '';
+    $('#userCircle').style.display = 'none';
+    alert(removed ? 'Foto removida.' : 'Nenhuma foto encontrada para remover.');
   }
 
+  // Salvar demais campos
   async function salvar(uid) {
     const data = {
       instagram: $('#instagram').value.trim(),
@@ -194,6 +234,7 @@
     alert('Dados salvos!');
   }
 
+  // Carregar demais campos
   async function carregar(uid) {
     const snap = await getDoc(doc(db, 'usuarios', uid));
     if (!snap.exists()) return;
@@ -215,7 +256,8 @@
       a.textContent = 'Sair'; a.style.display = 'inline';
       a.onclick = async () => {
         await signOut(auth);
-        localStorage.removeItem('fotoPerfil'); // limpa somente no signOut
+        // limpa cache somente no logout
+        localStorage.removeItem('fotoPerfil');
         location = '/index.html';
       };
 
@@ -223,10 +265,10 @@
       prefetchFoto(user.uid);
 
     } else {
-      // Não apaga localStorage aqui para evitar perder o fallback durante o boot.
+      // Não apaga localStorage aqui — evita perder o preview no boot
       $('#alertaLogin').style.display = 'block';
       document.querySelector('main.container').style.display = 'none';
-      // Redireciona só se continuar sem usuário após um pequeno tempo
+      // Redireciona se continuar sem usuário
       setTimeout(() => { if (!auth.currentUser) location = '/index.html'; }, 4000);
     }
   });
