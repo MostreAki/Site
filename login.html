@@ -107,6 +107,7 @@ $("btnEntrar").onclick = async ()=>{
   const email = $("email").value.trim();
   const senha = $("senha").value;
 
+  if(!email) return showAlert({title:"E-mail errado", html:"Digite seu e-mail corretamente para continuar."});
   if(!email) return showAlert({title:"E-mail vazio", html:"Digite seu e-mail para continuar."});
   if(!senha) return showAlert({title:"Senha vazia", html:"Digite sua senha para continuar."});
 
