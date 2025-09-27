@@ -91,52 +91,62 @@
     </div>
   </main>
 
- <script type="module">
+<script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
 import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 import { getFirestore, doc, setDoc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
+import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject, listAll } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
 
 const app = initializeApp({
   apiKey: 'AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE',
   authDomain: 'mostreaki-2025.firebaseapp.com',
   projectId: 'mostreaki-2025',
-  storageBucket: 'mostreaki-2025.appspot.com',
+  // ✅ bucket correto (SEM "gs://")
+  storageBucket: 'mostreaki-2025.firebasestorage.app',
   messagingSenderId: '748712068097',
   appId: '1:748712068097:web:09cf043fbb45917ef6ec00'
 });
 
+// ✅ força o Storage a usar o teu bucket (COM "gs://")
 const auth = getAuth(app);
 const db = getFirestore(app);
-const storage = getStorage(app);
+const storage = getStorage(app, 'gs://mostreaki-2025.firebasestorage.app');
 
-// ✅ deixa o Storage visível globalmente (se algum script fora do módulo usar)
-window.firebaseApp = app;
-window.firebaseAuth = auth;
-window.firebaseDb = db;
+// (opcional) expõe global p/ scripts fora do módulo
 window.firebaseStorage = storage;
-window.firebaseRef = (p) => ref(storage, p);
 
 const $ = s => document.querySelector(s);
 $('#menuBtn').onclick = () => {
   $('#menu').style.display = $('#menu').style.display === 'flex' ? 'none' : 'flex';
 };
 
-// ===== helpers de avatar =====
+// ——— Depuração rápida (mostra bucket, uid e listagem da pasta) ———
+let dbg = document.getElementById('dbg');
+if (!dbg) {
+  dbg = document.createElement('div');
+  dbg.id = 'dbg';
+  dbg.style.cssText = 'max-width:600px;margin:8px auto 0;font:12px/1.3 monospace;color:#135;opacity:.9;';
+  dbg.innerHTML = `<details open><summary>Depuração Storage</summary>
+    <div id="dbgBody"></div></details>`;
+  document.body.insertBefore(dbg, document.body.firstChild);
+}
+const dbgBody = document.getElementById('dbgBody');
+const say = (m)=>{ console.log(m); dbgBody.innerHTML += `<div>${m}</div>`; };
+
+// ——— Avatar helpers ———
 function cacheBust(url){ return url ? url + (url.includes('?')?'&':'?') + 'v=' + Date.now() : url; }
 function atualizarUserCircle(url) {
   if (!url) return;
   localStorage.setItem('fotoPerfil', url);
   const bust = cacheBust(url);
-  const preview = $('#fotoPreview');
-  if (preview) preview.src = bust;
+  const preview = $('#fotoPreview'); if (preview) preview.src = bust;
   const el = $('#userCircle'); if (!el) return;
   el.innerHTML = ''; el.style.display = 'flex';
   const img = new Image(); img.src = bust; img.alt = 'Foto';
   el.append(img);
 }
 
-// Preenche rápido com cache para evitar “piscar”
+// Preenche rápido com cache pra não “piscar”
 (() => {
   const cache = localStorage.getItem('fotoPerfil');
   if (cache) { try { atualizarUserCircle(cache); } catch(_){} }
@@ -147,60 +157,75 @@ function extFromType(type){
   return map[type] || 'jpg';
 }
 
-// Tenta preencher a foto: photoURL → Firestore → Storage direto → cache
+// Busca foto: photoURL → Firestore → Storage (jpg/png/webp/gif) → cache
 async function prefetchFoto(uid) {
   let url = auth.currentUser?.photoURL || null;
-  if (url) { atualizarUserCircle(url); return; }
+  if (url) { atualizarUserCircle(url); say(`[foto] via photoURL`); return; }
 
   try {
     const snap = await getDoc(doc(db, 'usuarios', uid));
     const v = (snap.exists() && snap.data().fotoPerfil) || null;
-    if (v) { atualizarUserCircle(v); return; }
+    if (v) { atualizarUserCircle(v); say(`[foto] via Firestore`); return; }
   } catch {}
 
-  // tenta variantes comuns no caminho padrão
   const tryExt = async (e)=> getDownloadURL(ref(storage, `usuarios/${uid}/perfil/avatar.${e}`)).catch(()=>null);
   const direct = await tryExt('jpg') || await tryExt('png') || await tryExt('webp') || await tryExt('gif');
   if (direct) {
     await setDoc(doc(db,'usuarios',uid),{ fotoPerfil: direct },{ merge:true });
-    atualizarUserCircle(direct);
+    atualizarUserCircle(direct); say(`[foto] via Storage direto`);
     return;
   }
 
   const cache = localStorage.getItem('fotoPerfil');
-  if (cache) atualizarUserCircle(cache);
+  if (cache) { atualizarUserCircle(cache); say(`[foto] via localStorage`); }
 }
 
-// ===== upload / remover =====
+// Upload
 async function previewImagem(ev, uid) {
   const file = ev.target.files?.[0]; if (!file) return;
   $('#fotoPreview').src = URL.createObjectURL(file);
 
   const ext = extFromType(file.type);
-  const storageRef = ref(storage, `usuarios/${uid}/perfil/avatar.${ext}`);
+  const path = `usuarios/${uid}/perfil/avatar.${ext}`;
+  const storageRef = ref(storage, path);
+
+  say(`Upload → bucket: ${app.options.storageBucket} | path: ${path}`);
+
   try {
     await uploadBytes(storageRef, file, { contentType: file.type });
     const url = await getDownloadURL(storageRef);
+
     await setDoc(doc(db, 'usuarios', uid), { fotoPerfil: url }, { merge: true });
 
-    // Remove variantes antigas (best-effort)
+    // Apaga variantes antigas (best-effort)
     for (const e of ['jpg','png','webp','gif']) {
       if (e === ext) continue;
       try { await deleteObject(ref(storage, `usuarios/${uid}/perfil/avatar.${e}`)); } catch {}
+    }
+
+    // Lista a pasta para comprovar
+    try {
+      const list = await listAll(ref(storage, `usuarios/${uid}/perfil`));
+      say(`Listagem /usuarios/${uid}/perfil → ${list.items.map(i=>i.name).join(', ') || '(vazia)'}`);
+    } catch (e) {
+      say(`Falha ao listar pasta: ${e.code || e.message}`);
     }
 
     atualizarUserCircle(url);
     alert('Foto atualizada com sucesso!');
   } catch (e) {
     console.error(e);
+    say(`ERRO upload: ${e.code || ''} ${e.message || e}`);
     alert('Erro ao salvar imagem no Storage.');
   }
 }
 
+// Remover foto
 async function removerFoto(uid) {
+  const base = `usuarios/${uid}/perfil/avatar.`;
   let removed = false;
   for (const e of ['jpg','png','webp','gif']) {
-    try { await deleteObject(ref(storage, `usuarios/${uid}/perfil/avatar.${e}`)); removed = true; } catch {}
+    try { await deleteObject(ref(storage, base+e)); removed = true; } catch {}
   }
   try { await setDoc(doc(db, 'usuarios', uid), { fotoPerfil: '' }, { merge: true }); } catch {}
   localStorage.removeItem('fotoPerfil');
@@ -209,7 +234,7 @@ async function removerFoto(uid) {
   alert(removed ? 'Foto removida.' : 'Nenhuma foto encontrada para remover.');
 }
 
-// ===== salvar / carregar perfil =====
+// Salvar demais campos
 async function salvar(uid) {
   const data = {
     instagram: $('#instagram').value.trim(),
@@ -221,6 +246,7 @@ async function salvar(uid) {
   alert('Dados salvos!');
 }
 
+// Carregar demais campos
 async function carregar(uid) {
   const snap = await getDoc(doc(db, 'usuarios', uid));
   if (!snap.exists()) return;
@@ -231,9 +257,10 @@ async function carregar(uid) {
   $('#youtube').value   = d.youtube   || '';
 }
 
-// ===== boot de auth =====
+// Boot de auth
 onAuthStateChanged(auth, user => {
   const a = $('#authText');
+
   if (user) {
     $('#foto').onchange = ev => previewImagem(ev, user.uid);
     $('#btnSalvar').onclick      = () => salvar(user.uid);
@@ -242,10 +269,11 @@ onAuthStateChanged(auth, user => {
     a.textContent = 'Sair'; a.style.display = 'inline';
     a.onclick = async () => {
       await signOut(auth);
-      localStorage.removeItem('fotoPerfil'); // limpa somente no logout
+      localStorage.removeItem('fotoPerfil');
       location = '/index.html';
     };
 
+    say(`Auth OK → uid: ${user.uid}, bucket: ${app.options.storageBucket}`);
     carregar(user.uid);
     prefetchFoto(user.uid);
 
@@ -255,9 +283,10 @@ onAuthStateChanged(auth, user => {
     setTimeout(() => { if (!auth.currentUser) location = '/index.html'; }, 4000);
   }
 });
-  </script>
+</script>
 
   <footer>© 2025 MostreAki – Todos os direitos reservados.</footer>
 </body>
 </html>
+
 
