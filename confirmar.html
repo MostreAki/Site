@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Verificação de e-mail – MostreAki</title>
+<style>
+  :root{ --brand:#15b0af; --brandLight:#c2e7df; --accent:#FA1E39; --ink:#063b39; --bg:#f4f7f7; --card:#ffffff; }
+  body{ font-family:Arial, sans-serif; background:var(--bg); min-height:100vh; display:flex; align-items:center; justify-content:center; padding:16px; }
+  .card{ background:var(--card); border-radius:16px; width:100%; max-width:520px; padding:24px; text-align:center; border:2px solid var(--brandLight);
+         box-shadow:0 10px 40px rgba(0,0,0,.08); }
+  .icon{ font-size:42px; line-height:1; margin-bottom:8px; }
+  .ok{ color:#0f7; } .warn{ color:#e67; }
+  h1{ color:#0f6f6e; font-size:1.35rem; margin:0 0 6px; }
+  p{ color:#344; margin:6px 0; }
+  .btn{ display:inline-block; margin-top:14px; padding:12px 18px; border-radius:12px; border:0; font-weight:bold; cursor:pointer; background:var(--brand); color:#fff; text-decoration:none; }
+  .muted{ color:#666; font-size:.92rem; margin-top:12px; }
+</style>
+</head>
+<body>
+<div class="card" id="box">
+  <div class="icon">⏳</div>
+  <h1>Validando seu e-mail…</h1>
+  <p>Aguarde alguns segundos.</p>
+</div>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { getAuth, applyActionCode } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+
+const app = initializeApp({
+  apiKey:"AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
+  authDomain:"mostreaki-2025.firebaseapp.com",
+  projectId:"mostreaki-2025",
+  storageBucket:"mostreaki-2025.appspot.com",
+  messagingSenderId:"748712068097",
+  appId:"1:748712068097:web:09cf043fbb45917ef6ec00"
+});
+const auth = getAuth(app);
+
+const box = document.getElementById('box');
+const params = new URLSearchParams(location.search);
+const mode = params.get('mode');
+const oobCode = params.get('oobCode');
+
+async function run(){
+  if(mode!=='verifyEmail' || !oobCode){
+    box.innerHTML = `
+      <div class="icon warn">⚠️</div>
+      <h1>Link inválido</h1>
+      <p>O link de verificação está incompleto ou expirou.</p>
+      <p class="muted">Solicite um novo e-mail de verificação e tente novamente.</p>`;
+    return;
+  }
+  try{
+    await applyActionCode(auth, oobCode);
+    box.innerHTML = `
+      <div class="icon ok">✅</div>
+      <h1>E-mail verificado com sucesso!</h1>
+      <p>Seu cadastro foi confirmado. Você já pode fazer login.</p>
+      <a class="btn" href="/login.html">Fazer Login</a>
+      <p class="muted">Caso a página de login não abra, use o menu do site.</p>`;
+  }catch(e){
+    box.innerHTML = `
+      <div class="icon warn">⚠️</div>
+      <h1>Não foi possível verificar</h1>
+      <p>O link pode ter expirado ou já ter sido utilizado.</p>
+      <p class="muted">Abra o app e solicite um novo e-mail de verificação.</p>`;
+  }
+}
+run();
+</script>
+</body>
+</html>
