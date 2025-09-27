@@ -1,27 +1,47 @@
-<!DOCTYPE html><html lang="pt-BR"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Entrar – MostreAki</title>
 <style>
+  :root{
+    --brand:#15b0af; --brandLight:#c2e7df; --accent:#FA1E39; --ink:#063b39;
+  }
   body{font-family:Arial, sans-serif;background:#f4f7f7;display:flex;min-height:100vh;align-items:center;justify-content:center}
   .card{background:#fff;border-radius:12px;box-shadow:0 6px 24px rgba(0,0,0,.08);padding:24px;max-width:380px;width:92%}
   .card h1{margin:0 0 12px;color:#0f6f6e}
   label{display:block;margin:10px 0 6px;color:#333}
   input{width:100%;padding:10px;border:1px solid #ddd;border-radius:8px}
   button,.btn{width:100%;margin-top:12px;padding:10px;border-radius:8px;border:0;font-weight:bold;cursor:pointer}
-  .primary{background:#15b0af;color:#fff}
+  .primary{background:var(--brand);color:#fff}
   .google{background:#fff;border:2px solid #ddd}
   .muted{font-size:.9rem;color:#666;margin-top:10px}
-  a{color:#15b0af;text-decoration:none;font-weight:bold}
-  .err{color:#b00020;margin-top:8px;min-height:18px}
+  a{color:var(--brand);text-decoration:none;font-weight:bold}
+
+  /* POPUP / ALERTA */
+  .alert-bg{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:9999;padding:20px}
+  .alert-card{
+    background:#fff;border-radius:16px;overflow:hidden;max-width:460px;width:100%;
+    box-shadow:0 22px 70px rgba(0,0,0,.25); border:2px solid var(--brandLight);
+  }
+  .alert-head{background:linear-gradient(90deg,var(--brandLight),var(--brand));padding:14px 16px;display:flex;align-items:center;gap:10px}
+  .alert-dot{width:10px;height:10px;border-radius:50%;background:var(--accent)}
+  .alert-title{color:var(--ink);font-weight:bold}
+  .alert-body{padding:16px;color:#2b2b2b}
+  .alert-actions{display:flex;gap:10px;flex-wrap:wrap;padding:0 16px 16px}
+  .btn-solid{background:var(--brand);color:#fff}
+  .btn-ghost{background:#fff;border:2px solid var(--brand);color:var(--brand)}
+  .btn-danger{background:var(--accent);color:#fff}
 </style>
-</head><body>
+</head>
+<body>
 <div class="card">
   <h1>Entrar</h1>
   <label>E-mail</label>
-  <input id="email" type="email" autocomplete="email" required>
+  <input id="email" type="email" autocomplete="email" required placeholder="voce@exemplo.com">
   <label>Senha</label>
   <input id="senha" type="password" autocomplete="current-password" required>
-  <div class="err" id="err"></div>
   <button class="primary" id="btnEntrar">Entrar</button>
   <button class="google" id="btnGoogle">
     <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" style="height:18px;vertical-align:middle"> Entrar com Google
@@ -29,9 +49,24 @@
   <p class="muted">Não tem conta? <a href="/cadastro.html">Cadastre-se</a></p>
 </div>
 
+<!-- POPUP -->
+<div id="alert" class="alert-bg" role="dialog" aria-modal="true" aria-labelledby="alertTitle">
+  <div class="alert-card">
+    <div class="alert-head">
+      <div class="alert-dot"></div>
+      <div id="alertTitle" class="alert-title">Mensagem</div>
+    </div>
+    <div id="alertMsg" class="alert-body">...</div>
+    <div id="alertActions" class="alert-actions"></div>
+  </div>
+</div>
+
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import {
+  getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider,
+  onAuthStateChanged, sendEmailVerification, signOut
+} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 
 const app = initializeApp({
   apiKey:"AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
@@ -43,34 +78,103 @@ const app = initializeApp({
 });
 const auth = getAuth(app);
 
+/* Utils popup */
+const alertBG = document.getElementById('alert');
+const alertTitle = document.getElementById('alertTitle');
+const alertMsg = document.getElementById('alertMsg');
+const alertActions = document.getElementById('alertActions');
+function showAlert({title="Aviso", html="", actions=[{text:"Fechar", kind:"solid"}]}){
+  alertTitle.textContent = title;
+  alertMsg.innerHTML = html;
+  alertActions.innerHTML = "";
+  actions.forEach(a=>{
+    const b=document.createElement('button');
+    b.className = 'btn ' + (a.kind==='danger'?'btn-danger':a.kind==='ghost'?'btn-ghost':'btn-solid');
+    b.textContent = a.text;
+    b.onclick = ()=>{ if(a.onClick) a.onClick(); closeAlert(); };
+    alertActions.appendChild(b);
+  });
+  alertBG.style.display='flex';
+}
+function closeAlert(){ alertBG.style.display='none'; }
+alertBG.addEventListener('click', e=>{ if(e.target===alertBG) closeAlert(); });
+window.addEventListener('keydown', e=>{ if(e.key==='Escape' && alertBG.style.display==='flex') closeAlert(); });
+
 const $ = (id)=>document.getElementById(id);
-$("btnEntrar").onclick=async ()=>{
-  $("err").textContent="";
+
+/* Entrar por e-mail/senha */
+$("btnEntrar").onclick = async ()=>{
+  const email = $("email").value.trim();
+  const senha = $("senha").value;
+
+  if(!email) return showAlert({title:"E-mail vazio", html:"Digite seu e-mail para continuar."});
+  if(!senha) return showAlert({title:"Senha vazia", html:"Digite sua senha para continuar."});
+
   try{
-    await signInWithEmailAndPassword(auth, $("email").value.trim(), $("senha").value);
+    const cred = await signInWithEmailAndPassword(auth, email, senha);
+
+    // Exige verificação de e-mail para login com e-mail/senha
+    if (!cred.user.emailVerified){
+      await sendEmailVerification(cred.user);
+      showAlert({
+        title:"Confirme seu e-mail",
+        html:`Seu e-mail ainda não foi verificado.<br>
+              Reenviamos o link para <b>${email}</b>. Verifique sua caixa de entrada (ou spam) e tente novamente após confirmar.`,
+        actions:[
+          {text:"OK, vou verificar", kind:"solid"}
+        ]
+      });
+      await signOut(auth);
+      return;
+    }
+
+    // OK, liberado
+    if(cred.user.photoURL) localStorage.setItem("fotoPerfil", cred.user.photoURL);
     location.href="/minha-conta.html";
-  }catch(e){ $("err").textContent = traduzErro(e.code); }
+
+  }catch(e){
+    const {title, html} = mapLoginErro(e.code, email);
+    showAlert({title, html, actions:[
+      ...(e.code==="auth/user-not-found" ? [{text:"Cadastrar", kind:"ghost", onClick:()=>location.href="/cadastro.html"}] : []),
+      {text:"Fechar", kind:"solid"}
+    ]});
+  }
 };
-$("btnGoogle").onclick=async ()=>{
+
+/* Google */
+$("btnGoogle").onclick = async ()=>{
   try{
-    const prov = new GoogleAuthProvider();
+    const prov=new GoogleAuthProvider();
     const r = await signInWithPopup(auth, prov);
     if(r.user.photoURL) localStorage.setItem("fotoPerfil", r.user.photoURL);
+    // Google geralmente já vem verificado
     location.href="/minha-conta.html";
-  }catch(e){ $("err").textContent = traduzErro(e.code); }
+  }catch(e){
+    showAlert({title:"Google indisponível", html:"Tente novamente em alguns instantes."});
+  }
 };
 
-// já logado? manda pro painel
-onAuthStateChanged(auth, u=>{ if(u) location.href="/minha-conta.html"; });
+/* Se já estiver logado e verificado, manda pro painel */
+onAuthStateChanged(auth, (u)=>{
+  if(u && u.emailVerified) location.href="/minha-conta.html";
+});
 
-function traduzErro(code){
-  const mapa={
-    "auth/invalid-email":"E-mail inválido.",
-    "auth/user-not-found":"Usuário não encontrado.",
-    "auth/wrong-password":"Senha incorreta.",
-    "auth/too-many-requests":"Muitas tentativas. Tente mais tarde."
-  };
-  return mapa[code] || "Não foi possível entrar. Tente novamente.";
+function mapLoginErro(code, email){
+  switch(code){
+    case "auth/invalid-email":
+      return {title:"E-mail inválido", html:"Revise o endereço digitado."};
+    case "auth/user-not-found":
+      return {title:"Conta não encontrada", html:`Não encontramos cadastro para <b>${email}</b>.`};
+    case "auth/wrong-password":
+      return {title:"Senha incorreta", html:"Verifique sua senha e tente novamente."};
+    case "auth/too-many-requests":
+      return {title:"Muitas tentativas", html:"Você tentou diversas vezes. Aguarde alguns minutos e tente novamente."};
+    case "auth/network-request-failed":
+      return {title:"Sem conexão", html:"Falha de rede. Verifique sua internet e tente novamente."};
+    default:
+      return {title:"Não foi possível entrar", html:`Erro inesperado (${code}). Tente novamente.`};
+  }
 }
 </script>
-</body></html>
+</body>
+</html>
