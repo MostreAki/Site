@@ -34,7 +34,7 @@
     .logo .mostre { color: #00C2BF; }
     .logo .aki { color: #FA1E39; }
 
-    .menu-icon { font-size: 1.5rem; cursor: pointer; }
+    .menu-icon { font-size: 1.5rem; cursor: pointer; user-select: none; }
     .menu-list {
       position: absolute;
       top: 60px;
@@ -45,7 +45,7 @@
       display: none;
       flex-direction: column;
       padding: 10px;
-      z-index: 1000;
+      z-index: 10000;
     }
 
     .menu-list a {
@@ -67,12 +67,13 @@
       border-radius: 50%;
       width: 32px;
       height: 32px;
-      display: none;
+      display: flex;
       align-items: center;
       justify-content: center;
       background-size: cover;
       background-position: center;
       font-size: 0.9rem;
+      overflow: hidden;
     }
 
     .planos-imagens {
@@ -123,90 +124,6 @@
       color: #555;
       font-size: 0.9rem;
     }
-
-    .modal-bg {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.6);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-    }
-
-    .modal {
-      background: #fff;
-      padding: 30px;
-      border-radius: 10px;
-      max-width: 400px;
-      width: 90%;
-      position: relative;
-    }
-
-    .modal h2 {
-      margin-bottom: 20px;
-      color: #16807c;
-      font-size: 1.4rem;
-      text-align: center;
-    }
-
-    .modal input {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 15px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-    }
-
-    .modal button {
-      width: 100%;
-      padding: 12px;
-      background: #15b0af;
-      border: none;
-      color: #fff;
-      font-weight: bold;
-      border-radius: 6px;
-      margin-bottom: 10px;
-      cursor: pointer;
-    }
-
-    .modal .btn-google {
-      background: #fff;
-      color: #444;
-      border: 1px solid #ccc;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-    }
-
-    .modal .btn-google img { height: 20px; }
-
-    .modal a {
-      display: block;
-      text-align: center;
-      margin-top: 10px;
-      color: #16807c;
-      font-size: .9rem;
-      text-decoration: none;
-    }
-
-    .mensagem {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: #15b0af;
-      color: #fff;
-      padding: 15px 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-      font-weight: bold;
-      z-index: 9999;
-      display: none;
-    }
-
-    .mensagem.erro { background: #FA1E39; }
   </style>
 </head>
 <body>
@@ -218,18 +135,19 @@
     </div>
     <div style="display:flex;align-items:center;gap:10px;">
       <span id="authText" style="font-weight:bold;color:#15b0af;cursor:pointer;display:none">Entrar</span>
-      <div id="userCircle" class="user-circle" title="Perfil"></div>
-      <div class="menu-icon" onclick="toggleMenu()">☰</div>
+      <div id="userCircle" class="user-circle" title="Perfil">F</div>
+      <!-- removido onclick inline; JS cuida do toggle -->
+      <div id="menuBtn" class="menu-icon" aria-controls="menu" aria-expanded="false">☰</div>
     </div>
-    <div class="menu-list" id="menu">
-    <a href="/index.html">Página Inicial</a>
+    <nav class="menu-list" id="menu">
+      <a href="/index.html">Página Inicial</a>
       <a href="/sobre.html">Sobre</a>
       <a href="/minha-conta.html">Minha Conta</a>
       <a href="/parceiros.html">Parceiros</a>
       <a href="/servicos-adicionais.html">Serviços Adicionais</a>
       <a href="/redes-sociais.html">Redes Sociais</a>
       <a href="/contatos.html">Contatos</a>
-    </div>
+    </nav>
   </header>
 
   <main>
@@ -247,14 +165,14 @@
         <a href="/pagamento-plano-2.html"><img src="/plano-intermediario.svg" alt="Plano Intermediário"/></a>
         <div class="descricao">
           <h3>Plano Essencial</h3>
-          <p> Perfeito para negócios em crescimento que querem se destacar.</p>
+          <p>Perfeito para negócios em crescimento que querem se destacar.</p>
         </div>
       </div>
 
       <div class="plano">
         <a href="/pagamento-plano-3.html"><img src="/plano-avancado.svg" alt="Plano Avançado"/></a>
         <div class="descricao">
-          <h3>Plano Avançados</h3>
+          <h3>Plano Avançado</h3>
           <p>A escolha de empresas que buscam máxima visibilidade e resultados rápidos.</p>
         </div>
       </div>
@@ -266,125 +184,127 @@
     &copy; 2025 MostreAki. Todos os direitos reservados.
   </footer>
 
-<script type="module">
-import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-import { getFirestore, doc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-import { getStorage, ref, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
+  <!-- SCRIPT ÚNICO: avatar + menu (bucket .firebasestorage.app alinhado) -->
+  <script type="module">
+  import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+  import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+  import { getFirestore, doc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+  import { getStorage, ref, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
 
-const cfg = {
-  apiKey: 'AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE',
-  authDomain: 'mostreaki-2025.firebaseapp.com',
-  projectId: 'mostreaki-2025',
-  storageBucket: 'mostreaki-2025.firebasestorage.app',
-  messagingSenderId: '748712068097',
-  appId: '1:748712068097:web:09cf043fbb45917ef6ec00'
-};
-const app = getApps().length ? getApp() : initializeApp(cfg);
-const auth = getAuth(app);
-const db   = getFirestore(app);
-// força bucket correto com gs://
-const stg  = getStorage(app, 'gs://mostreaki-2025.firebasestorage.app');
-
-const $  = s => document.querySelector(s);
-const circle   = () => document.getElementById('userCircle') || document.querySelector('.user-circle');
-const authText = () => document.getElementById('authText');
-
-const cacheBust = u => u ? u + (u.includes('?')?'&':'?') + 'v=' + Date.now() : u;
-
-function setAvatar(url){
-  if (!url) return;
-  localStorage.setItem('fotoPerfil', url);
-  const el = circle(); if (!el) return;
-  el.textContent = '';           // remove a letra "F"
-  el.style.display = 'flex';
-  const img = new Image();
-  img.src = cacheBust(url); img.alt = 'Foto';
-  img.style.width='100%'; img.style.height='100%'; img.style.objectFit='cover';
-  el.append(img);
-}
-
-// Preenche rápido com cache para não “piscar”
-(() => { const c = localStorage.getItem('fotoPerfil'); if (c) setAvatar(c); })();
-
-async function prefetchFoto(uid){
-  // 1) provedor (Google)
-  if (auth.currentUser?.photoURL) { setAvatar(auth.currentUser.photoURL); return; }
-  // 2) Firestore
-  try {
-    const s = await getDoc(doc(db,'usuarios',uid));
-    const saved = s.exists() && s.data().fotoPerfil;
-    if (saved) { setAvatar(saved); return; }
-  } catch {}
-  // 3) Storage direto (tenta várias extensões)
-  const tryExt = async e => getDownloadURL(ref(stg, `usuarios/${uid}/perfil/avatar.${e}`)).catch(()=>null);
-  const direct = await tryExt('jpg') || await tryExt('png') || await tryExt('webp') || await tryExt('gif');
-  if (direct) {
-    try { await setDoc(doc(db,'usuarios',uid), { fotoPerfil: direct }, { merge:true }); } catch {}
-    setAvatar(direct);
-  }
-}
-
-// === MENU: toggle robusto com clique fora + ESC e z-index corrigido ===
-function wireMenu(){
-  const btn  = document.getElementById('menuBtn') || document.querySelector('.menu-icon');
-  const menu = document.getElementById('menu');
-  if (!btn || !menu) return;
-
-  // Acessibilidade básica
-  btn.setAttribute('aria-controls', 'menu');
-  btn.setAttribute('aria-expanded', 'false');
-
-  // Garante que o menu fique na frente
-  if (getComputedStyle(menu).position === 'static') menu.style.position = 'absolute';
-  if (!menu.style.zIndex) menu.style.zIndex = '10000';
-
-  const open = () => {
-    menu.style.display = 'flex';
-    btn.setAttribute('aria-expanded', 'true');
-    document.addEventListener('click', onDoc, true);
-    document.addEventListener('keydown', onKey);
+  const cfg = {
+    apiKey: 'AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE',
+    authDomain: 'mostreaki-2025.firebaseapp.com',
+    projectId: 'mostreaki-2025',
+    storageBucket: 'mostreaki-2025.firebasestorage.app', // sem gs://
+    messagingSenderId: '748712068097',
+    appId: '1:748712068097:web:09cf043fbb45917ef6ec00'
   };
-  const close = () => {
-    menu.style.display = 'none';
-    btn.setAttribute('aria-expanded', 'false');
-    document.removeEventListener('click', onDoc, true);
-    document.removeEventListener('keydown', onKey);
-  };
-  const toggle = () => (menu.style.display === 'flex' ? close() : open());
+  const app = getApps().length ? getApp() : initializeApp(cfg);
+  const auth = getAuth(app);
+  const db   = getFirestore(app);
+  // força bucket correto com gs://
+  const stg  = getStorage(app, 'gs://mostreaki-2025.firebasestorage.app');
 
-  function onDoc(e){
-    if (!menu.contains(e.target) && e.target !== btn) close();
+  const $ = s => document.querySelector(s);
+  const circle = () => document.getElementById('userCircle') || document.querySelector('.user-circle');
+
+  const cacheBust = u => u ? u + (u.includes('?')?'&':'?') + 'v=' + Date.now() : u;
+
+  function setAvatar(url){
+    if (!url) return;
+    localStorage.setItem('fotoPerfil', url);
+    const el = circle(); if (!el) return;
+    el.textContent = ''; el.style.display = 'flex';
+    const img = new Image();
+    img.src = cacheBust(url); img.alt = 'Foto';
+    img.style.width='100%'; img.style.height='100%'; img.style.objectFit='cover';
+    el.append(img);
   }
-  function onKey(e){ if (e.key === 'Escape') close(); }
 
-  btn.addEventListener('click', (e)=>{ e.stopPropagation(); toggle(); });
-}
+  // Preenche rápido com cache (evita mostrar a letra)
+  (() => { const c = localStorage.getItem('fotoPerfil'); if (c) setAvatar(c); })();
 
-// === AUTH UI (texto Entrar/Sair + avatar) ===
-function wireAuthUI(){
-  onAuthStateChanged(auth, user => {
-    const at = authText();
-    if (user) {
-      if (at) {
-        at.textContent = 'Sair';
-        at.style.display = 'inline';
-        at.onclick = async () => {
-          await signOut(auth);
-          localStorage.removeItem('fotoPerfil');
-          location = '/index.html';
-        };
-      }
-      prefetchFoto(user.uid);
-    } else {
-      if (at) {
-        at.textContent = 'Entrar';
-        at.style.display = 'inline';
-        at.onclick = () => location = '/index.html';
-      }
-      // Se quiser esconder o círculo quando deslogado:
-      // const el = circle(); if (el) el.style.display = 'none';
+  async function prefetchFoto(uid){
+    // 1) provedor (Google)
+    if (auth.currentUser?.photoURL) { setAvatar(auth.currentUser.photoURL); return; }
+    // 2) Firestore
+    try {
+      const s = await getDoc(doc(db,'usuarios',uid));
+      const saved = s.exists() && s.data().fotoPerfil;
+      if (saved) { setAvatar(saved); return; }
+    } catch {}
+    // 3) Storage direto (jpg/png/webp/gif)
+    const tryExt = async e => getDownloadURL(ref(stg, `usuarios/${uid}/perfil/avatar.${e}`)).catch(()=>null);
+    const direct = await tryExt('jpg') || await tryExt('png') || await tryExt('webp') || await tryExt('gif');
+    if (direct) {
+      try { await setDoc(doc(db,'usuarios',uid), { fotoPerfil: direct }, { merge:true }); } catch {}
+      setAvatar(direct);
     }
+  }
 
+  // MENU: toggle com clique fora + ESC
+  function wireMenu(){
+    const btn  = document.getElementById('menuBtn') || document.querySelector('.menu-icon');
+    const menu = document.getElementById('menu');
+    if (!btn || !menu) return;
+
+    btn.setAttribute('aria-controls', 'menu');
+    btn.setAttribute('aria-expanded', 'false');
+
+    if (getComputedStyle(menu).position === 'static') menu.style.position = 'absolute';
+    if (!menu.style.zIndex) menu.style.zIndex = '10000';
+
+    const open = () => {
+      menu.style.display = 'flex';
+      btn.setAttribute('aria-expanded', 'true');
+      document.addEventListener('click', onDoc, true);
+      document.addEventListener('keydown', onKey);
+    };
+    const close = () => {
+      menu.style.display = 'none';
+      btn.setAttribute('aria-expanded', 'false');
+      document.removeEventListener('click', onDoc, true);
+      document.removeEventListener('keydown', onKey);
+    };
+    const toggle = () => (menu.style.display === 'flex' ? close() : open());
+
+    function onDoc(e){ if (!menu.contains(e.target) && e.target !== btn) close(); }
+    function onKey(e){ if (e.key === 'Escape') close(); }
+
+    btn.addEventListener('click', (e)=>{ e.stopPropagation(); toggle(); });
+  }
+
+  // AUTH UI (Entrar/Sair + avatar)
+  function wireAuthUI(){
+    const at = document.getElementById('authText');
+    onAuthStateChanged(auth, user => {
+      if (user) {
+        if (at) {
+          at.textContent = 'Sair';
+          at.style.display = 'inline';
+          at.onclick = async () => {
+            await signOut(auth);
+            localStorage.removeItem('fotoPerfil');
+            location = '/index.html';
+          };
+        }
+        prefetchFoto(user.uid);
+      } else {
+        if (at) {
+          at.textContent = 'Entrar';
+          at.style.display = 'inline';
+          at.onclick = () => location = '/index.html';
+        }
+        // se quiser esconder o círculo deslogado: circle()?.style.display = 'none';
+      }
+    });
+  }
+
+  function boot(){
+    wireMenu();
+    wireAuthUI();
+  }
+  document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', boot) : boot();
+  </script>
 </body>
 </html>
