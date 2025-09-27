@@ -21,7 +21,7 @@
   .card h1{margin:0 0 4px; color:#0f6f6e; font-size:1.35rem}
   .sub{color:#4a6665; font-size:.92rem; margin-bottom:16px}
 
-  /* Campos estilizados responsivos */
+  /* Campos responsivos com label flutuante */
   .form-grid{display:grid; gap:12px}
   @media (min-width:560px){ .cols-2{ grid-template-columns:1fr 1fr; } }
 
@@ -35,19 +35,28 @@
   .field label{
     position:absolute; left:12px; top:10px; color:#667; font-size:.95rem; pointer-events:none;
     transition: all .18s ease;
-    background: #fff; padding:0 6px; border-radius:6px; transform-origin:left top;
+    background:#fff; padding:0 6px; border-radius:6px; transform-origin:left top;
   }
-  .field.focus label,
-  .field.has-value label{
-    top:-8px; font-size:.78rem; color:var(--brand);
-  }
+  .field.focus label, .field.has-value label{ top:-8px; font-size:.78rem; color:var(--brand); }
+
   .hint{font-size:.82rem; color:#667; margin-top:6px}
 
-  button{width:100%; margin-top:12px; padding:12px; border-radius:12px; border:0; font-weight:bold; cursor:pointer}
+  button,.btn{width:100%; margin-top:12px; padding:12px; border-radius:12px; border:0; font-weight:bold; cursor:pointer}
   .primary{background:var(--brand); color:#fff}
   .google{background:#fff; border:2px solid #ddd; color:#333; display:flex; align-items:center; justify-content:center; gap:8px}
   .muted{font-size:.92rem; color:#666; margin-top:10px}
   a{color:var(--brand); text-decoration:none; font-weight:bold}
+
+  /* Olho de senha — adaptado com seus ajustes */
+  .pwd-wrap{position:relative}
+  .pwd-wrap input{padding-right:16%}           /* espaço pro botão */
+  .pwd-toggle{
+    position:absolute; right:8px; top:20%;     /* seu ajuste visual */
+    width:36px; height:36px; display:flex; align-items:center; justify-content:center;
+    background:#fff; border:1px solid #ddd; border-radius:6px; cursor:pointer;
+    font-size:18px; line-height:1; color:#444;
+  }
+  .pwd-toggle:active{transform:scale(.98)}
 
   /* POPUP brand */
   .alert-bg{position:fixed; inset:0; background:rgba(0,0,0,.55); display:none; align-items:center; justify-content:center; z-index:9999; padding:20px}
@@ -57,7 +66,6 @@
   .alert-title{color:var(--ink); font-weight:bold}
   .alert-body{padding:16px; color:#2b2b2b}
   .alert-actions{display:flex; gap:10px; flex-wrap:wrap; padding:0 16px 16px}
-  .btn{padding:10px 14px; border-radius:10px; font-weight:bold; cursor:pointer; border:0}
   .btn-solid{background:var(--brand); color:#fff}
   .btn-ghost{background:#fff; border:2px solid var(--brand); color:var(--brand)}
 </style>
@@ -79,8 +87,8 @@
     </div>
 
     <div class="cols-2 form-grid">
-      <div class="field"><label for="senha">Senha (mín. 6) *</label><input id="senha" type="password" required autocomplete="new-password" placeholder=""></div>
-      <div class="field"><label for="senha2">Confirmar senha *</label><input id="senha2" type="password" required placeholder=""></div>
+      <div class="field pwd-wrap"><label for="senha">Senha (mín. 6) *</label><input id="senha" type="password" required autocomplete="new-password" placeholder=""><button id="toggleSenha" class="pwd-toggle" type="button" aria-label="Mostrar senha" aria-pressed="false">👁️</button></div>
+      <div class="field pwd-wrap"><label for="senha2">Confirmar senha *</label><input id="senha2" type="password" required placeholder=""><button id="toggleSenha2" class="pwd-toggle" type="button" aria-label="Mostrar confirmação" aria-pressed="false">👁️</button></div>
     </div>
   </div>
 
@@ -114,15 +122,14 @@ const app = initializeApp({
   apiKey:"AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
   authDomain:"mostreaki-2025.firebaseapp.com",
   projectId:"mostreaki-2025",
-  storageBucket:"mostreaki-2025.appspot.com",
+  storageBucket:"mostreaki-2025.firebasestorage.app", /* mantido consistente */
   messagingSenderId:"748712068097",
   appId:"1:748712068097:web:09cf043fbb45917ef6ec00"
 });
 const auth = getAuth(app);
 
 /* ===== floating label UX ===== */
-const fields = document.querySelectorAll('.field');
-fields.forEach(f=>{
+document.querySelectorAll('.field').forEach(f=>{
   const i=f.querySelector('input');
   const set = ()=>{ f.classList.toggle('has-value', !!i.value); };
   i.addEventListener('focus', ()=>f.classList.add('focus'));
@@ -166,6 +173,26 @@ fone.addEventListener("input", () => {
 const phoneDigits = ()=>$("fone").value.replace(/\D/g,"");
 const phoneValido = ()=>{ const d=phoneDigits(); return d.length===10 || d.length===11; };
 
+/* ===== Olhos de senha ===== */
+function wirePasswordToggle(inputId, btnId){
+  const input = $(inputId), btn = $(btnId);
+  if(!input || !btn) return;
+  function flip(){
+    const showing = input.type === 'text';
+    input.type = showing ? 'password' : 'text';
+    btn.textContent = showing ? '👁️' : '🙈';
+    btn.setAttribute('aria-pressed', (!showing).toString());
+    btn.setAttribute('aria-label', showing ? 'Mostrar' : 'Ocultar');
+  }
+  btn.addEventListener('click', flip);
+}
+wirePasswordToggle('senha','toggleSenha');
+wirePasswordToggle('senha2','toggleSenha2');
+
+/* ===== Validações auxiliares ===== */
+const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const emailValido = v => emailRe.test(v);
+
 /* ===== Cadastro por e-mail ===== */
 $("btnCadastrar").onclick = async () => {
   const nome = $("nome").value.trim();
@@ -174,21 +201,20 @@ $("btnCadastrar").onclick = async () => {
 
   if(!nome) return showAlert({title:"Nome obrigatório", html:"Informe seu <b>nome completo</b> para continuar."});
   if(!phoneValido()) return showAlert({title:"Celular inválido", html:"Informe um número com DDD (10 ou 11 dígitos)."});
-  if(email!==email2) return showAlert({title:"E-mails não conferem", html:"Revise o endereço digitado."});
+  if(!emailValido(email) || !emailValido(email2)) return showAlert({title:"E-mail inválido", html:"Revise o endereço digitado."});
+  if(email!==email2) return showAlert({title:"E-mails não conferem", html:"Digite o mesmo e-mail nos dois campos."});
+  if(s1.length<6) return showAlert({title:"Senha fraca", html:"Use pelo menos 6 caracteres."});
   if(s1!==s2) return showAlert({title:"Senhas não conferem", html:"Digite a mesma senha nos dois campos."});
 
   try{
     const cred = await createUserWithEmailAndPassword(auth, email, s1);
     await updateProfile(cred.user,{ displayName:nome });
-
-    // Enviar e-mail de verificação → para sua verify.html (configure a URL de ação no console)
-    await sendEmailVerification(cred.user/*, { url: location.origin + '/verify.html' }*/);
+    await sendEmailVerification(cred.user);
 
     showAlert({
       title:"Confirme seu e-mail",
-      html:`Enviamos um link de verificação para <b>${email}</b>.<br>
-            Clique no link do e-mail; ao abrir, você verá a mensagem de sucesso e poderá <b>Fazer Login</b>.<br><br>
-            <small>Se não encontrar, veja a caixa de spam.</small>`,
+      html:`Enviamos um link para <b>${email}</b>.<br>
+            Depois de confirmar, você poderá <b>Fazer Login</b>. Se não encontrar, verifique o spam.`,
       actions:[{text:"OK, vou verificar", kind:"solid", onClick:()=>{ location.href='/login.html'; }}]
     });
 
@@ -210,10 +236,9 @@ $("btnGoogle").onclick = async ()=>{
     const prov = new GoogleAuthProvider();
     const r = await signInWithPopup(auth, prov);
     if(r.user.photoURL) localStorage.setItem("fotoPerfil", r.user.photoURL);
-    // Conta Google geralmente já vem verificada
     location.href="/minha-conta.html";
   }catch(e){
-    showAlert({title:"Google indisponível", html:"Tente novamente em alguns instantes."});
+    showAlert({title:"Google indisponível", html:"Tente novamente em instantes."});
   }
 };
 </script>
