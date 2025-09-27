@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cadastro – MostreAki</title>
+<style>
+  :root{
+    --brand:#15b0af; --brandLight:#c2e7df; --accent:#FA1E39; --ink:#063b39;
+  }
+  body{font-family:Arial, sans-serif;background:#f4f7f7;display:flex;min-height:100vh;align-items:center;justify-content:center}
+  .card{background:#fff;border-radius:12px;box-shadow:0 6px 24px rgba(0,0,0,.08);padding:24px;max-width:440px;width:92%}
+  .card h1{margin:0 0 12px;color:#0f6f6e}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  label{display:block;margin:10px 0 6px;color:#333}
+  input{width:100%;padding:10px;border:1px solid #ddd;border-radius:8px}
+  button{width:100%;margin-top:12px;padding:10px;border-radius:8px;border:0;font-weight:bold;cursor:pointer}
+  .primary{background:var(--brand);color:#fff}
+  .google{background:#fff;border:2px solid #ddd}
+  .muted{font-size:.9rem;color:#666;margin-top:10px}
+  a{color:var(--brand);text-decoration:none;font-weight:bold}
+  .hint{font-size:.85rem;color:#666;margin-top:4px}
+
+  /* POPUP / ALERTA */
+  .alert-bg{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:9999;padding:20px}
+  .alert-card{
+    background:#fff;border-radius:16px;overflow:hidden;max-width:460px;width:100%;
+    box-shadow:0 22px 70px rgba(0,0,0,.25); border:2px solid var(--brandLight);
+  }
+  .alert-head{background:linear-gradient(90deg,var(--brandLight),var(--brand));padding:14px 16px;display:flex;align-items:center;gap:10px}
+  .alert-dot{width:10px;height:10px;border-radius:50%;background:var(--accent)}
+  .alert-title{color:var(--ink);font-weight:bold}
+  .alert-body{padding:16px;color:#2b2b2b}
+  .alert-actions{display:flex;gap:10px;flex-wrap:wrap;padding:0 16px 16px}
+  .btn{padding:10px 14px;border-radius:10px;font-weight:bold;cursor:pointer;border:0}
+  .btn-solid{background:var(--brand);color:#fff}
+  .btn-ghost{background:#fff;border:2px solid var(--brand);color:var(--brand)}
+  .btn-danger{background:var(--accent);color:#fff}
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>Criar conta</h1>
+
+  <label>Nome (opcional)</label>
+  <input id="nome" type="text" autocomplete="name" placeholder="Seu nome completo">
+
+  <label>Celular / WhatsApp (obrigatório)</label>
+  <input id="fone" type="tel" inputmode="tel" autocomplete="tel" required placeholder="(11) 98888-7777">
+  <div class="hint">Informe com DDD. Aceita 10 ou 11 dígitos (ex.: (11) 98888-7777).</div>
+
+  <div class="grid">
+    <div>
+      <label>E-mail</label>
+      <input id="email" type="email" autocomplete="email" required placeholder="voce@exemplo.com">
+    </div>
+    <div>
+      <label>Confirmar e-mail</label>
+      <input id="email2" type="email" required placeholder="voce@exemplo.com">
+    </div>
+  </div>
+
+  <div class="grid">
+    <div>
+      <label>Senha (mín. 6)</label>
+      <input id="senha" type="password" autocomplete="new-password" required>
+    </div>
+    <div>
+      <label>Confirmar senha</label>
+      <input id="senha2" type="password" required>
+    </div>
+  </div>
+
+  <button class="primary" id="btnCadastrar">Criar conta</button>
+  <button class="google" id="btnGoogle">
+    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" style="height:18px;vertical-align:middle"> Cadastrar com Google
+  </button>
+  <p class="muted">Já tem conta? <a href="/login.html">Entrar</a></p>
+</div>
+
+<!-- POPUP -->
+<div id="alert" class="alert-bg" role="dialog" aria-modal="true" aria-labelledby="alertTitle">
+  <div class="alert-card">
+    <div class="alert-head">
+      <div class="alert-dot"></div>
+      <div id="alertTitle" class="alert-title">Mensagem</div>
+    </div>
+    <div id="alertMsg" class="alert-body">...</div>
+    <div id="alertActions" class="alert-actions"></div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import {
+  getAuth, createUserWithEmailAndPassword, updateProfile,
+  signInWithPopup, GoogleAuthProvider, sendEmailVerification, onAuthStateChanged, signOut
+} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+
+const app = initializeApp({
+  apiKey:"AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
+  authDomain:"mostreaki-2025.firebaseapp.com",
+  projectId:"mostreaki-2025",
+  storageBucket:"mostreaki-2025.appspot.com",
+  messagingSenderId:"748712068097",
+  appId:"1:748712068097:web:09cf043fbb45917ef6ec00"
+});
+const auth = getAuth(app);
+
+/* Utils popup */
+const alertBG = document.getElementById('alert');
+const alertTitle = document.getElementById('alertTitle');
+const alertMsg = document.getElementById('alertMsg');
+const alertActions = document.getElementById('alertActions');
+function showAlert({title="Aviso", html="", actions=[{text:"Fechar", kind:"solid"}]}){
+  alertTitle.textContent = title;
+  alertMsg.innerHTML = html;
+  alertActions.innerHTML = "";
+  actions.forEach(a=>{
+    const b=document.createElement('button');
+    b.className = 'btn ' + (a.kind==='danger'?'btn-danger':a.kind==='ghost'?'btn-ghost':'btn-solid');
+    b.textContent = a.text;
+    b.onclick = ()=>{ if(a.onClick) a.onClick(); closeAlert(); };
+    alertActions.appendChild(b);
+  });
+  alertBG.style.display='flex';
+}
+function closeAlert(){ alertBG.style.display='none'; }
+alertBG.addEventListener('click', e=>{ if(e.target===alertBG) closeAlert(); });
+window.addEventListener('keydown', e=>{ if(e.key==='Escape' && alertBG.style.display==='flex') closeAlert(); });
+
+/* Campo telefone: máscara + validação */
+const $ = (id)=>document.getElementById(id);
+const fone = $("fone");
+fone.addEventListener("input", () => {
+  let v = fone.value.replace(/\D/g, "");
+  if (v.length > 11) v = v.slice(0,11);
+  if (v.length >= 3 && v.length <= 6) fone.value = `(${v.slice(0,2)}) ${v.slice(2)}`;
+  else if (v.length >= 7 && v.length <= 10) fone.value = `(${v.slice(0,2)}) ${v.slice(2,6)}-${v.slice(6)}`;
+  else if (v.length === 11) fone.value = `(${v.slice(0,2)}) ${v.slice(2,7)}-${v.slice(7)}`;
+  else fone.value = v;
+});
+const phoneDigits = ()=>$("fone").value.replace(/\D/g,"");
+const phoneValido = ()=>{ const d=phoneDigits(); return d.length===10 || d.length===11; };
+
+/* Cadastro por e-mail */
+$("btnCadastrar").onclick = async () => {
+  const nome = $("nome").value.trim();
+  const email = $("email").value.trim(), email2 = $("email2").value.trim();
+  const s1 = $("senha").value, s2 = $("senha2").value;
+
+  if (!phoneValido()) return showAlert({title:"Celular inválido", html:"Informe um celular com DDD (10 ou 11 dígitos)."});
+  if (email!==email2) return showAlert({title:"E-mails não conferem", html:"Revise o endereço digitado."});
+  if (s1!==s2) return showAlert({title:"Senhas não conferem", html:"Digite a mesma senha nos dois campos."});
+
+  try{
+    const cred = await createUserWithEmailAndPassword(auth, email, s1);
+    if (nome) await updateProfile(cred.user,{ displayName:nome });
+
+    // Verificação por e-mail obrigatória
+    await sendEmailVerification(cred.user);
+    showAlert({
+      title:"Confirme seu e-mail",
+      html:`Enviamos um link de verificação para <b>${email}</b>.<br>
+            Abra seu e-mail, clique no link e depois faça login.<br><br>
+            <small>Dica: verifique a caixa de spam.</small>`,
+      actions:[
+        {text:"Ir para a tela de login", kind:"solid", onClick:()=>{ /* manter sessão? melhor sair */ }},
+      ]
+    });
+
+    // Opcional: guardar celular local (ou salvar no Firestore se desejar)
+    localStorage.setItem("userPhone", phoneDigits());
+
+    // sair para exigir login após verificação
+    await signOut(auth);
+    // redireciona ao fechar o popup
+    alertActions.querySelector('button')?.addEventListener('click', ()=>{ location.href="/login.html"; });
+
+  }catch(e){
+    const msg = mapCadastroErro(e.code);
+    showAlert({title:"Não foi possível cadastrar", html:msg});
+  }
+};
+
+/* Cadastro com Google */
+$("btnGoogle").onclick = async ()=>{
+  try{
+    const prov = new GoogleAuthProvider();
+    const r = await signInWithPopup(auth, prov);
+    if(r.user.photoURL) localStorage.setItem("fotoPerfil", r.user.photoURL);
+    location.href="/minha-conta.html";
+  }catch(e){
+    showAlert({title:"Google indisponível", html:"Tente novamente em instantes."});
+  }
+};
+
+onAuthStateChanged(auth, u=>{ /* sem ação aqui */ });
+
+function mapCadastroErro(code){
+  const mapa={
+    "auth/email-already-in-use":`Este e-mail já possui cadastro. <br><br>
+      <a href="/login.html" style="color:var(--brand);font-weight:bold;">Ir para o login</a>`,
+    "auth/invalid-email":"E-mail inválido. Revise o endereço.",
+    "auth/weak-password":"Senha fraca (mínimo 6 caracteres).",
+    "auth/network-request-failed":"Falha de rede. Verifique sua conexão."
+  };
+  return mapa[code] || `Erro inesperado (${code}). Tente novamente.`;
+}
+</script>
+</body>
+</html>
