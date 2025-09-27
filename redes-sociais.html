@@ -6,153 +6,65 @@
   <title>Redes Sociais – MostreAki</title>
   <link rel="icon" href="favicon.ico" type="image/x-icon"/>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif }
+    *{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
+    body{
+      background-image:url("fundo-mobile.png");
+      background-size:cover;background-repeat:no-repeat;background-attachment:fixed;
+    }
+    @media (min-width:768px){ body{ background-image:url("fundo-desktop.png"); } }
 
-    body {
-      background-image: url("fundo-mobile.png");
-      background-size: cover;
-      background-repeat: no-repeat;
-      background-attachment: fixed;
+    header{
+      background:#c2e7df;height:60px;display:flex;align-items:center;justify-content:space-between;
+      padding:0 20px;position:relative;box-shadow:0 2px 6px rgba(0,0,0,.1);
     }
-    @media (min-width: 768px) {
-      body { background-image: url("fundo-desktop.png"); }
-    }
+    .logo-container{display:flex;align-items:center;cursor:pointer}
+    .logo-container img{height:40px;margin-right:10px}
+    .logo{font-size:1.5rem;font-weight:bold}
+    .logo .mostre{color:#00C2BF}.logo .aki{color:#FA1E39}
 
-    header {
-      background-color: #c2e7df;
-      height: 60px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 20px;
-      position: relative;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    .menu-icon{font-size:1.5rem;cursor:pointer;user-select:none}
+    .menu-list{
+      position:absolute;top:60px;right:20px;background:#16807C;border:2px solid #000;border-radius:6px;
+      display:none;flex-direction:column;padding:10px;z-index:10000;
     }
-    .logo-container { display: flex; align-items: center; cursor: pointer; }
-    .logo-container img { height: 40px; margin-right: 10px; }
-    .logo { font-size: 1.5rem; font-weight: bold; }
-    .logo .mostre { color: #00C2BF; }
-    .logo .aki { color: #FA1E39; }
+    .menu-list a{
+      background:#FA1E39;color:#fff;text-decoration:none;padding:10px;margin-bottom:8px;border-radius:6px;
+      text-align:center;font-weight:bold;
+    }
+    .menu-list a:hover{background:#b8313b}
 
-    .menu-icon { font-size: 1.5rem; cursor: pointer; }
-    .menu-list {
-      position: absolute;
-      top: 60px;
-      right: 20px;
-      background-color: #16807C;
-      border: 2px solid black;
-      border-radius: 6px;
-      display: none;
-      flex-direction: column;
-      padding: 10px;
-      z-index: 1000;
-    }
-    .menu-list a {
-      background-color: #FA1E39;
-      color: white;
-      text-decoration: none;
-      padding: 10px;
-      margin-bottom: 8px;
-      border-radius: 6px;
-      text-align: center;
-      font-weight: bold;
-    }
-    .menu-list a:hover { background-color: #b8313b; }
-
-    .user-circle {
-      background-color: #15b0af;
-      color: white;
-      font-weight: bold;
-      border-radius: 50%;
-      width: 32px;
-      height: 32px;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      background-size: cover;
-      background-position: center;
-      font-size: 0.9rem;
+    .user-circle{
+      background:#15b0af;color:#fff;font-weight:bold;border-radius:50%;
+      width:32px;height:32px;display:flex;align-items:center;justify-content:center;
+      background-size:cover;background-position:center;font-size:.9rem;overflow:hidden;
     }
 
-    main {
-      max-width: 900px;
-      margin: 40px auto;
-      padding: 20px;
+    main{max-width:900px;margin:40px auto;padding:20px}
+    .rede{
+      background:#fff;margin-bottom:30px;padding:20px;border-radius:12px;
+      box-shadow:0 2px 8px rgba(0,0,0,.1);text-align:center
     }
+    .rede img.logo{width:80px;margin-bottom:15px}
+    .rede img.banner{width:100%;border-radius:8px;margin-bottom:15px;box-shadow:0 2px 6px rgba(0,0,0,.08)}
+    .rede a.btn{display:inline-block;background:#15b0af;color:#fff;padding:12px 20px;border-radius:8px;font-weight:bold;text-decoration:none}
+    .rede a.btn:hover{filter:brightness(.9)}
 
-    .rede {
-      background: #fff;
-      margin-bottom: 30px;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      text-align: center;
-    }
-    .rede img.logo {
-      width: 80px;
-      margin-bottom: 15px;
-    }
-    .rede img.banner {
-      width: 100%;
-      border-radius: 8px;
-      margin-bottom: 15px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-    }
-    .rede a.btn {
-      display: inline-block;
-      background: #15b0af;
-      color: #fff;
-      padding: 12px 20px;
-      border-radius: 8px;
-      font-weight: bold;
-      text-decoration: none;
-    }
-    .rede a.btn:hover { filter: brightness(0.9); }
-
-    footer {
-      background-color: #c2e7df;
-      padding: 20px;
-      text-align: center;
-      color: #555;
-      font-size: 0.9rem;
-    }
+    footer{background:#c2e7df;padding:20px;text-align:center;color:#555;font-size:.9rem}
 
     /* Modal Login */
-    .modal-bg {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.6);
-      display: none; justify-content: center; align-items: center;
-      z-index: 9999;
-    }
-    .modal {
-      background: #fff; padding: 30px; border-radius: 10px;
-      max-width: 400px; width: 90%; position: relative;
-    }
-    .modal h2 { margin-bottom: 20px; color: #16807c; font-size: 1.4rem; text-align: center; }
-    .modal input {
-      width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 6px; border: 1px solid #ccc;
-    }
-    .modal button {
-      width: 100%; padding: 12px; background: #15b0af; border: none; color: #fff; font-weight: bold;
-      border-radius: 6px; margin-bottom: 10px; cursor: pointer;
-    }
-    .modal .btn-google {
-      background: #fff; color: #444; border: 1px solid #ccc;
-      display: flex; align-items: center; justify-content: center; gap: 10px;
-    }
-    .modal .btn-google img { height: 20px; }
-    .modal .fechar {
-      position: absolute; top: 10px; right: 15px; font-size: 1.2rem; cursor: pointer; color: #999;
-    }
-    .modal a {
-      display: block; text-align: center; margin-top: 10px; color: #16807c; font-size: .9rem; text-decoration: none;
-    }
+    .modal-bg{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);
+      display:none;justify-content:center;align-items:center;z-index:9999}
+    .modal{background:#fff;padding:30px;border-radius:10px;max-width:400px;width:90%;position:relative}
+    .modal h2{margin-bottom:20px;color:#16807c;font-size:1.4rem;text-align:center}
+    .modal input{width:100%;padding:12px;margin-bottom:15px;border-radius:6px;border:1px solid #ccc}
+    .modal button{width:100%;padding:12px;background:#15b0af;border:none;color:#fff;font-weight:bold;border-radius:6px;margin-bottom:10px;cursor:pointer}
+    .modal .btn-google{background:#fff;color:#444;border:1px solid #ccc;display:flex;align-items:center;justify-content:center;gap:10px}
+    .modal .btn-google img{height:20px}
+    .modal .fechar{position:absolute;top:10px;right:15px;font-size:1.2rem;cursor:pointer;color:#999}
+    .modal a{display:block;text-align:center;margin-top:10px;color:#16807c;font-size:.9rem;text-decoration:none}
 
-    .mensagem {
-      position: fixed; top: 20px; right: 20px; background: #15b0af; color: #fff; padding: 15px 20px;
-      border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); font-weight: bold; z-index: 9999; display: none;
-    }
-    .mensagem.erro { background: #FA1E39; }
+    .mensagem{position:fixed;top:20px;right:20px;background:#15b0af;color:#fff;padding:15px 20px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.2);font-weight:bold;z-index:9999;display:none}
+    .mensagem.erro{background:#FA1E39}
   </style>
 </head>
 <body>
@@ -164,37 +76,37 @@
   </div>
   <div style="display:flex;align-items:center;gap:10px;">
     <span id="authText" style="font-weight:bold;color:#15b0af;cursor:pointer;display:none">Entrar</span>
-    <div id="userCircle" class="user-circle" title="Perfil"></div>
-    <div class="menu-icon" onclick="toggleMenu()">☰</div>
+    <div id="userCircle" class="user-circle" title="Perfil">F</div>
+    <div id="menuBtn" class="menu-icon" aria-controls="menu" aria-expanded="false">☰</div>
   </div>
-  <div class="menu-list" id="menu">
-   <a href="/index.html">Página Inicial</a>
-      <a href="/sobre.html">Sobre</a>
-      <a href="/minha-conta.html">Minha Conta</a>
-      <a href="/planos.html">Planos</a>
-      <a href="/parceiros.html">Parceiros</a>
-      <a href="/servicos-adicionais.html">Serviços Adicionais</a>
-      <a href="/contatos.html">Contatos</a>
-  </div>
+  <nav class="menu-list" id="menu">
+    <a href="/index.html">Página Inicial</a>
+    <a href="/sobre.html">Sobre</a>
+    <a href="/minha-conta.html">Minha Conta</a>
+    <a href="/planos.html">Planos</a>
+    <a href="/parceiros.html">Parceiros</a>
+    <a href="/servicos-adicionais.html">Serviços Adicionais</a>
+    <a href="/contatos.html">Contatos</a>
+  </nav>
 </header>
 
 <main>
   <div class="rede">
     <img class="logo" src="logo-insta.png" alt="Instagram">
     <img class="banner" src="banner-insta.svg" alt="Banner Instagram">
-    <a class="btn" href="https://www.instagram.com/mostreaki?igsh=MWRuMDFsb3kwMnZscA==" target="_blank">Seguir no Instagram</a>
+    <a class="btn" href="https://www.instagram.com/mostreaki?igsh=MWRuMDFsb3kwMnZscA==" target="_blank" rel="noopener">Seguir no Instagram</a>
   </div>
 
   <div class="rede">
     <img class="logo" src="logo-whats.png" alt="Grupo WhatsApp">
     <img class="banner" src="banner-whats.svg" alt="Banner WhatsApp">
-    <a class="btn" href="https://chat.whatsapp.com/EFijvibki5LHlyv7haUsVT?mode=ems_copy_t" target="_blank">Entrar no Grupo</a>
+    <a class="btn" href="https://chat.whatsapp.com/EFijvibki5LHlyv7haUsVT?mode=ems_copy_t" target="_blank" rel="noopener">Entrar no Grupo</a>
   </div>
 
   <div class="rede">
     <img class="logo" src="logo-yout.png" alt="YouTube">
     <img class="banner" src="banner-yout.svg" alt="Banner YouTube">
-    <a class="btn" href="https://youtube.com/@mostreaki?si=JajjHBMJWF2XZPff" target="_blank">Inscrever-se no YouTube</a>
+    <a class="btn" href="https://youtube.com/@mostreaki?si=JajjHBMJWF2XZPff" target="_blank" rel="noopener">Inscrever-se no YouTube</a>
   </div>
 </main>
 
@@ -223,121 +135,174 @@
 
 <div id="mensagem" class="mensagem"></div>
 
-<!-- Firebase + Autenticação -->
+<!-- Script único: avatar + menu + auth (bucket .firebasestorage.app) -->
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import {
-    getAuth,
-    onAuthStateChanged,
-    signOut,
-    signInWithEmailAndPassword,
-    createUserWithEmailAndPassword,
-    sendPasswordResetEmail,
-    signInWithPopup,
-    GoogleAuthProvider
-  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { getAuth, onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, sendPasswordResetEmail, createUserWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import { getFirestore, doc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+import { getStorage, ref, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
 
-  const app = initializeApp({
-    apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
-    authDomain: "mostreaki-2025.firebaseapp.com",
-    projectId: "mostreaki-2025",
-    storageBucket: "mostreaki-2025.appspot.com",
-    messagingSenderId: "748712068097",
-    appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
-  });
+const cfg = {
+  apiKey: 'AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE',
+  authDomain: 'mostreaki-2025.firebaseapp.com',
+  projectId: 'mostreaki-2025',
+  storageBucket: 'mostreaki-2025.firebasestorage.app', // sem gs://
+  messagingSenderId: '748712068097',
+  appId: '1:748712068097:web:09cf043fbb45917ef6ec00'
+};
+const app = getApps().length ? getApp() : initializeApp(cfg);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+// força o bucket correto com gs://
+const stg  = getStorage(app, 'gs://mostreaki-2025.firebasestorage.app');
 
-  const auth = getAuth(app);
-  const provider = new GoogleAuthProvider();
-  const authText = document.getElementById("authText");
-  const userCircle = document.getElementById("userCircle");
+const $ = s => document.querySelector(s);
+const circle = () => document.getElementById('userCircle') || document.querySelector('.user-circle');
+const cacheBust = u => u ? u + (u.includes('?')?'&':'?') + 'v=' + Date.now() : u;
 
-  function exibirMensagem(texto, erro = false) {
-    const m = document.getElementById("mensagem");
-    m.textContent = texto;
-    m.className = erro ? "mensagem erro" : "mensagem";
-    m.style.display = "block";
-    setTimeout(() => m.style.display = "none", 3000);
+function setAvatar(url){
+  if (!url) return;
+  localStorage.setItem('fotoPerfil', url);
+  const el = circle(); if (!el) return;
+  el.textContent = ''; el.style.display = 'flex';
+  const img = new Image();
+  img.src = cacheBust(url); img.alt = 'Foto';
+  img.style.width='100%'; img.style.height='100%'; img.style.objectFit='cover';
+  el.append(img);
+}
+// cache imediato (evita mostrar a letra "F")
+(() => { const c = localStorage.getItem('fotoPerfil'); if (c) setAvatar(c); })();
+
+async function prefetchFoto(uid){
+  // 1) provedor (Google)
+  if (auth.currentUser?.photoURL) { setAvatar(auth.currentUser.photoURL); return; }
+  // 2) Firestore
+  try {
+    const s = await getDoc(doc(db,'usuarios',uid));
+    const saved = s.exists() && s.data().fotoPerfil;
+    if (saved) { setAvatar(saved); return; }
+  } catch {}
+  // 3) Storage direto (tenta jpg/png/webp/gif)
+  const tryExt = async e => getDownloadURL(ref(stg, `usuarios/${uid}/perfil/avatar.${e}`)).catch(()=>null);
+  const direct = await tryExt('jpg') || await tryExt('png') || await tryExt('webp') || await tryExt('gif');
+  if (direct) {
+    try { await setDoc(doc(db,'usuarios',uid), { fotoPerfil: direct }, { merge:true }); } catch {}
+    setAvatar(direct);
   }
+}
 
-  onAuthStateChanged(auth, (user) => {
+// MENU: toggle com clique fora + ESC
+function wireMenu(){
+  const btn  = document.getElementById('menuBtn') || document.querySelector('.menu-icon');
+  const menu = document.getElementById('menu');
+  if (!btn || !menu) return;
+
+  btn.setAttribute('aria-controls','menu');
+  btn.setAttribute('aria-expanded','false');
+
+  if (getComputedStyle(menu).position === 'static') menu.style.position = 'absolute';
+  if (!menu.style.zIndex) menu.style.zIndex = '10000';
+
+  const open = () => {
+    menu.style.display = 'flex';
+    btn.setAttribute('aria-expanded','true');
+    document.addEventListener('click', onDoc, true);
+    document.addEventListener('keydown', onKey);
+  };
+  const close = () => {
+    menu.style.display = 'none';
+    btn.setAttribute('aria-expanded','false');
+    document.removeEventListener('click', onDoc, true);
+    document.removeEventListener('keydown', onKey);
+  };
+  const toggle = () => (menu.style.display === 'flex' ? close() : open());
+
+  function onDoc(e){ if (!menu.contains(e.target) && e.target !== btn) close(); }
+  function onKey(e){ if (e.key === 'Escape') close(); }
+
+  btn.addEventListener('click', (e)=>{ e.stopPropagation(); toggle(); });
+}
+
+// AUTH UI + modal
+const provider = new GoogleAuthProvider();
+const modal = document.getElementById('modalLogin');
+const msg   = document.getElementById('mensagem');
+
+function abrirModal(){ if (modal) modal.style.display = 'flex'; }
+function fecharModal(){ if (modal) modal.style.display = 'none'; }
+function toggleSenha(){
+  const input = document.getElementById('senha'); if (!input) return;
+  input.type = input.type === 'password' ? 'text' : 'password';
+}
+function showMsg(texto, erro=false){
+  if (!msg) return;
+  msg.textContent = texto;
+  msg.classList.toggle('erro', !!erro);
+  msg.style.display = 'block';
+  setTimeout(() => { msg.style.display = 'none'; }, 3000);
+}
+
+async function entrarGoogle(){
+  try { await signInWithPopup(auth, provider); fecharModal(); }
+  catch(e){ console.error(e); showMsg('Erro ao entrar com Google.', true); }
+}
+async function entrarEmail(){
+  const email = (document.getElementById('email')||{}).value || '';
+  const senha = (document.getElementById('senha')||{}).value || '';
+  if (!email || !senha) return showMsg('Preencha email e senha', true);
+  try { await signInWithEmailAndPassword(auth, email, senha); fecharModal(); }
+  catch(e){ console.error(e); showMsg('Login inválido', true); }
+}
+async function cadastrarUsuario(){
+  const email = (document.getElementById('email')||{}).value || '';
+  const senha = (document.getElementById('senha')||{}).value || '';
+  if (!email || !senha) return showMsg('Preencha email e senha', true);
+  try {
+    const cred = await createUserWithEmailAndPassword(auth, email, senha);
+    await setDoc(doc(db,'usuarios', cred.user.uid), { createdAt: Date.now() }, { merge:true });
+    showMsg('Cadastro criado! Verifique seu e-mail.');
+    fecharModal();
+  } catch(e){ console.error(e); showMsg('Erro ao cadastrar', true); }
+}
+async function redefinirSenha(){
+  const email = (document.getElementById('email')||{}).value || '';
+  if (!email) return showMsg('Informe seu e-mail', true);
+  try { await sendPasswordResetEmail(auth, email); showMsg('E-mail de redefinição enviado.'); }
+  catch(e){ console.error(e); showMsg('Erro ao enviar redefinição', true); }
+}
+
+// expõe para os onclick da modal
+window.abrirModal = abrirModal;
+window.fecharModal = fecharModal;
+window.toggleSenha = toggleSenha;
+window.entrarGoogle = entrarGoogle;
+window.entrarEmail  = entrarEmail;
+window.cadastrarUsuario = cadastrarUsuario;
+window.redefinirSenha = redefinirSenha;
+
+function wireAuthUI(){
+  const at = document.getElementById('authText');
+  onAuthStateChanged(auth, user => {
     if (user) {
-      authText.textContent = "Sair";
-      authText.style.display = "inline";
-      authText.onclick = () => {
-        signOut(auth).then(() => {
-          localStorage.removeItem("fotoPerfil");
-          location.reload();
-        });
-      };
-      if (user.photoURL) {
-        userCircle.style.backgroundImage = `url('${user.photoURL}')`;
-        localStorage.setItem("fotoPerfil", user.photoURL);
-        userCircle.textContent = "";
-      } else {
-        userCircle.textContent = user.email.charAt(0).toUpperCase();
+      if (at) {
+        at.textContent = 'Sair';
+        at.style.display = 'inline';
+        at.onclick = async () => {
+          await signOut(auth);
+          localStorage.removeItem('fotoPerfil');
+          location = '/index.html';
+        };
       }
-      userCircle.style.display = "flex";
+      prefetchFoto(user.uid);
     } else {
-      authText.textContent = "Entrar";
-      authText.style.display = "inline";
-      authText.onclick = abrirModal;
-      userCircle.style.display = "none";
+      if (at) { at.textContent = 'Entrar'; at.style.display = 'inline'; at.onclick = () => abrirModal(); }
+      // circle()?.style.display = 'none'; // se quiser esconder deslogado
     }
   });
+}
 
-  window.toggleMenu = () => {
-    const m = document.getElementById("menu");
-    m.style.display = m.style.display === "flex" ? "none" : "flex";
-  }
-
-  window.abrirModal = () => document.getElementById("modalLogin").style.display = "flex";
-  window.fecharModal = () => document.getElementById("modalLogin").style.display = "none";
-  window.toggleSenha = () => {
-    const input = document.getElementById("senha");
-    input.type = input.type === "password" ? "text" : "password";
-  }
-
-  window.entrarEmail = () => {
-    const email = document.getElementById("email").value;
-    const senha = document.getElementById("senha").value;
-    signInWithEmailAndPassword(auth, email, senha)
-      .then(() => {
-        exibirMensagem("Você logou com sucesso!");
-        fecharModal();
-      })
-      .catch(() => exibirMensagem("Erro ao entrar. Verifique os dados.", true));
-  }
-
-  window.entrarGoogle = () => {
-    signInWithPopup(auth, provider)
-      .then(result => {
-        if (result.user.photoURL) {
-          localStorage.setItem("fotoPerfil", result.user.photoURL);
-        }
-        exibirMensagem("Login com Google realizado!");
-        fecharModal();
-      })
-      .catch(() => exibirMensagem("Erro ao entrar com Google.", true));
-  }
-
-  window.redefinirSenha = () => {
-    const email = document.getElementById("email").value;
-    if (!email) return exibirMensagem("Digite o e-mail para redefinir.", true);
-    sendPasswordResetEmail(auth, email)
-      .then(() => exibirMensagem("Email de recuperação enviado!"))
-      .catch(() => exibirMensagem("Erro ao enviar redefinição.", true));
-  }
-
-  window.cadastrarUsuario = () => {
-    const email = document.getElementById("email").value;
-    const senha = document.getElementById("senha").value;
-    createUserWithEmailAndPassword(auth, email, senha)
-      .then(() => {
-        exibirMensagem("Cadastro realizado com sucesso!");
-        fecharModal();
-      })
-      .catch(() => exibirMensagem("Erro ao cadastrar. Tente outro e-mail.", true));
-  }
+function boot(){ wireMenu(); wireAuthUI(); }
+document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', boot) : boot();
 </script>
 
 </body>
