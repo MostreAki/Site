@@ -91,189 +91,173 @@
     </div>
   </main>
 
-  <script type="module">
-  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-  import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-  import { getFirestore, doc, setDoc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-  import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
+ <script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import { getFirestore, doc, setDoc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
 
-  const app = initializeApp({
-    apiKey: 'AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE',
-    authDomain: 'mostreaki-2025.firebaseapp.com',
-    projectId: 'mostreaki-2025',
-    storageBucket: 'mostreaki-2025.appspot.com',
-    messagingSenderId: '748712068097',
-    appId: '1:748712068097:web:09cf043fbb45917ef6ec00'
-  });
+const app = initializeApp({
+  apiKey: 'AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE',
+  authDomain: 'mostreaki-2025.firebaseapp.com',
+  projectId: 'mostreaki-2025',
+  storageBucket: 'mostreaki-2025.appspot.com',
+  messagingSenderId: '748712068097',
+  appId: '1:748712068097:web:09cf043fbb45917ef6ec00'
+});
 
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-  const storage = getStorage(app);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const storage = getStorage(app);
 
-  const $ = s => document.querySelector(s);
-  $('#menuBtn').onclick = () => {
-    $('#menu').style.display = $('#menu').style.display === 'flex' ? 'none' : 'flex';
-  };
+// ✅ deixa o Storage visível globalmente (se algum script fora do módulo usar)
+window.firebaseApp = app;
+window.firebaseAuth = auth;
+window.firebaseDb = db;
+window.firebaseStorage = storage;
+window.firebaseRef = (p) => ref(storage, p);
 
-  // ——— Avatar helpers ———
-  function cacheBust(url){ return url ? url + (url.includes('?')?'&':'?') + 'v=' + Date.now() : url; }
+const $ = s => document.querySelector(s);
+$('#menuBtn').onclick = () => {
+  $('#menu').style.display = $('#menu').style.display === 'flex' ? 'none' : 'flex';
+};
 
-  function atualizarUserCircle(url) {
-    if (!url) return;
-    localStorage.setItem('fotoPerfil', url);
+// ===== helpers de avatar =====
+function cacheBust(url){ return url ? url + (url.includes('?')?'&':'?') + 'v=' + Date.now() : url; }
+function atualizarUserCircle(url) {
+  if (!url) return;
+  localStorage.setItem('fotoPerfil', url);
+  const bust = cacheBust(url);
+  const preview = $('#fotoPreview');
+  if (preview) preview.src = bust;
+  const el = $('#userCircle'); if (!el) return;
+  el.innerHTML = ''; el.style.display = 'flex';
+  const img = new Image(); img.src = bust; img.alt = 'Foto';
+  el.append(img);
+}
 
-    const bust = cacheBust(url);
-    const preview = $('#fotoPreview');
-    if (preview) preview.src = bust;
+// Preenche rápido com cache para evitar “piscar”
+(() => {
+  const cache = localStorage.getItem('fotoPerfil');
+  if (cache) { try { atualizarUserCircle(cache); } catch(_){} }
+})();
 
-    const el = $('#userCircle');
-    if (!el) return;
-    el.innerHTML = '';
-    el.style.display = 'flex';
-    const img = new Image();
-    img.src = bust; img.alt = 'Foto';
-    el.append(img);
-  }
+function extFromType(type){
+  const map = {'image/jpeg':'jpg','image/png':'png','image/webp':'webp','image/gif':'gif'};
+  return map[type] || 'jpg';
+}
 
-  // Preenche rapidamente com o que já temos em cache (para não “piscar”)
-  (function quickFillFromCache(){
-    const cache = localStorage.getItem('fotoPerfil');
-    if (cache) { try { atualizarUserCircle(cache); } catch(_){} }
-  })();
+// Tenta preencher a foto: photoURL → Firestore → Storage direto → cache
+async function prefetchFoto(uid) {
+  let url = auth.currentUser?.photoURL || null;
+  if (url) { atualizarUserCircle(url); return; }
 
-  function extFromType(type){
-    const map = {'image/jpeg':'jpg','image/png':'png','image/webp':'webp','image/gif':'gif'};
-    return map[type] || 'jpg';
-  }
-
-  // Busca a foto com fallback robusto
-  async function prefetchFoto(uid) {
-    let url = null;
-
-    // 1) Se veio do provedor (Google), aproveita
-    url = auth.currentUser?.photoURL || null;
-    if (url) { atualizarUserCircle(url); return; }
-
-    // 2) Firestore (usuarios/{uid}.fotoPerfil)
-    try {
-      const snap = await getDoc(doc(db, 'usuarios', uid));
-      const v = (snap.exists() && snap.data().fotoPerfil) || null;
-      if (v) { atualizarUserCircle(v); return; }
-    } catch (e) { /* silencioso */ }
-
-    // 3) Storage direto (tenta jpg/png/webp/gif no caminho padrão)
-    const tryExt = async (e)=> getDownloadURL(ref(storage, `usuarios/${uid}/perfil/avatar.${e}`)).catch(()=>null);
-    const direct = await tryExt('jpg') || await tryExt('png') || await tryExt('webp') || await tryExt('gif');
-    if (direct) {
-      await setDoc(doc(db,'usuarios',uid),{ fotoPerfil: direct },{ merge:true });
-      atualizarUserCircle(direct);
-      return;
-    }
-
-    // 4) localStorage (último recurso)
-    const cache = localStorage.getItem('fotoPerfil');
-    if (cache) atualizarUserCircle(cache);
-  }
-
-  // Upload de imagem (salvando com a extensão certa)
-  async function previewImagem(ev, uid) {
-    const file = ev.target.files?.[0]; if (!file) return;
-    $('#fotoPreview').src = URL.createObjectURL(file);
-
-    const ext = extFromType(file.type);
-    const storageRef = ref(storage, `usuarios/${uid}/perfil/avatar.${ext}`);
-
-    try {
-      await uploadBytes(storageRef, file, { contentType: file.type });
-      const url = await getDownloadURL(storageRef);
-
-      // Salva URL exata no Firestore para leituras futuras
-      await setDoc(doc(db, 'usuarios', uid), { fotoPerfil: url }, { merge: true });
-
-      // Remove possíveis versões antigas com outras extensões (best-effort)
-      const others = ['jpg','png','webp','gif'].filter(e=>e!==ext);
-      for (const e of others) {
-        try { await deleteObject(ref(storage, `usuarios/${uid}/perfil/avatar.${e}`)); } catch(_) {}
-      }
-
-      atualizarUserCircle(url);
-      alert('Foto atualizada com sucesso!');
-    } catch (e) {
-      console.error(e);
-      alert('Erro ao salvar imagem no Storage.');
-    }
-  }
-
-  // Remover foto
-  async function removerFoto(uid) {
-    // Tenta deletar todas as variantes conhecidas
-    const variants = ['jpg','png','webp','gif'];
-    let removed = false;
-    for (const e of variants) {
-      try { await deleteObject(ref(storage, `usuarios/${uid}/perfil/avatar.${e}`)); removed = true; } catch(_) {}
-    }
-    try {
-      await setDoc(doc(db, 'usuarios', uid), { fotoPerfil: '' }, { merge: true });
-    } catch(_) {}
-
-    localStorage.removeItem('fotoPerfil');
-    $('#fotoPreview').src = '';
-    $('#userCircle').style.display = 'none';
-    alert(removed ? 'Foto removida.' : 'Nenhuma foto encontrada para remover.');
-  }
-
-  // Salvar demais campos
-  async function salvar(uid) {
-    const data = {
-      instagram: $('#instagram').value.trim(),
-      facebook:  $('#facebook').value.trim(),
-      whatsapp:  $('#whatsapp').value.trim(),
-      youtube:   $('#youtube').value.trim()
-    };
-    await setDoc(doc(db, 'usuarios', uid), data, { merge: true });
-    alert('Dados salvos!');
-  }
-
-  // Carregar demais campos
-  async function carregar(uid) {
+  try {
     const snap = await getDoc(doc(db, 'usuarios', uid));
-    if (!snap.exists()) return;
-    const d = snap.data();
-    $('#instagram').value = d.instagram || '';
-    $('#facebook').value  = d.facebook  || '';
-    $('#whatsapp').value  = d.whatsapp  || '';
-    $('#youtube').value   = d.youtube   || '';
+    const v = (snap.exists() && snap.data().fotoPerfil) || null;
+    if (v) { atualizarUserCircle(v); return; }
+  } catch {}
+
+  // tenta variantes comuns no caminho padrão
+  const tryExt = async (e)=> getDownloadURL(ref(storage, `usuarios/${uid}/perfil/avatar.${e}`)).catch(()=>null);
+  const direct = await tryExt('jpg') || await tryExt('png') || await tryExt('webp') || await tryExt('gif');
+  if (direct) {
+    await setDoc(doc(db,'usuarios',uid),{ fotoPerfil: direct },{ merge:true });
+    atualizarUserCircle(direct);
+    return;
   }
 
-  onAuthStateChanged(auth, user => {
-    const a = $('#authText');
+  const cache = localStorage.getItem('fotoPerfil');
+  if (cache) atualizarUserCircle(cache);
+}
 
-    if (user) {
-      $('#foto').onchange = ev => previewImagem(ev, user.uid);
-      $('#btnSalvar').onclick      = () => salvar(user.uid);
-      $('#btnExcluirFoto').onclick = () => removerFoto(user.uid);
+// ===== upload / remover =====
+async function previewImagem(ev, uid) {
+  const file = ev.target.files?.[0]; if (!file) return;
+  $('#fotoPreview').src = URL.createObjectURL(file);
 
-      a.textContent = 'Sair'; a.style.display = 'inline';
-      a.onclick = async () => {
-        await signOut(auth);
-        // limpa cache somente no logout
-        localStorage.removeItem('fotoPerfil');
-        location = '/index.html';
-      };
+  const ext = extFromType(file.type);
+  const storageRef = ref(storage, `usuarios/${uid}/perfil/avatar.${ext}`);
+  try {
+    await uploadBytes(storageRef, file, { contentType: file.type });
+    const url = await getDownloadURL(storageRef);
+    await setDoc(doc(db, 'usuarios', uid), { fotoPerfil: url }, { merge: true });
 
-      carregar(user.uid);
-      prefetchFoto(user.uid);
-
-    } else {
-      // Não apaga localStorage aqui — evita perder o preview no boot
-      $('#alertaLogin').style.display = 'block';
-      document.querySelector('main.container').style.display = 'none';
-      // Redireciona se continuar sem usuário
-      setTimeout(() => { if (!auth.currentUser) location = '/index.html'; }, 4000);
+    // Remove variantes antigas (best-effort)
+    for (const e of ['jpg','png','webp','gif']) {
+      if (e === ext) continue;
+      try { await deleteObject(ref(storage, `usuarios/${uid}/perfil/avatar.${e}`)); } catch {}
     }
-  });
+
+    atualizarUserCircle(url);
+    alert('Foto atualizada com sucesso!');
+  } catch (e) {
+    console.error(e);
+    alert('Erro ao salvar imagem no Storage.');
+  }
+}
+
+async function removerFoto(uid) {
+  let removed = false;
+  for (const e of ['jpg','png','webp','gif']) {
+    try { await deleteObject(ref(storage, `usuarios/${uid}/perfil/avatar.${e}`)); removed = true; } catch {}
+  }
+  try { await setDoc(doc(db, 'usuarios', uid), { fotoPerfil: '' }, { merge: true }); } catch {}
+  localStorage.removeItem('fotoPerfil');
+  $('#fotoPreview').src = '';
+  $('#userCircle').style.display = 'none';
+  alert(removed ? 'Foto removida.' : 'Nenhuma foto encontrada para remover.');
+}
+
+// ===== salvar / carregar perfil =====
+async function salvar(uid) {
+  const data = {
+    instagram: $('#instagram').value.trim(),
+    facebook:  $('#facebook').value.trim(),
+    whatsapp:  $('#whatsapp').value.trim(),
+    youtube:   $('#youtube').value.trim()
+  };
+  await setDoc(doc(db, 'usuarios', uid), data, { merge: true });
+  alert('Dados salvos!');
+}
+
+async function carregar(uid) {
+  const snap = await getDoc(doc(db, 'usuarios', uid));
+  if (!snap.exists()) return;
+  const d = snap.data();
+  $('#instagram').value = d.instagram || '';
+  $('#facebook').value  = d.facebook  || '';
+  $('#whatsapp').value  = d.whatsapp  || '';
+  $('#youtube').value   = d.youtube   || '';
+}
+
+// ===== boot de auth =====
+onAuthStateChanged(auth, user => {
+  const a = $('#authText');
+  if (user) {
+    $('#foto').onchange = ev => previewImagem(ev, user.uid);
+    $('#btnSalvar').onclick      = () => salvar(user.uid);
+    $('#btnExcluirFoto').onclick = () => removerFoto(user.uid);
+
+    a.textContent = 'Sair'; a.style.display = 'inline';
+    a.onclick = async () => {
+      await signOut(auth);
+      localStorage.removeItem('fotoPerfil'); // limpa somente no logout
+      location = '/index.html';
+    };
+
+    carregar(user.uid);
+    prefetchFoto(user.uid);
+
+  } else {
+    $('#alertaLogin').style.display = 'block';
+    document.querySelector('main.container').style.display = 'none';
+    setTimeout(() => { if (!auth.currentUser) location = '/index.html'; }, 4000);
+  }
+});
   </script>
 
   <footer>© 2025 MostreAki – Todos os direitos reservados.</footer>
 </body>
 </html>
+
