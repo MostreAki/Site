@@ -267,97 +267,124 @@
   </footer>
 
 <script type="module">
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
 import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 import { getFirestore, doc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 import { getStorage, ref, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
 
-const app = initializeApp({
+const cfg = {
   apiKey: 'AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE',
   authDomain: 'mostreaki-2025.firebaseapp.com',
   projectId: 'mostreaki-2025',
-  storageBucket: 'mostreaki-2025.firebasestorage.app',          // <- sem gs://
+  storageBucket: 'mostreaki-2025.firebasestorage.app',
   messagingSenderId: '748712068097',
   appId: '1:748712068097:web:09cf043fbb45917ef6ec00'
-});
-
-// força usar o bucket certo (com gs://)
+};
+const app = getApps().length ? getApp() : initializeApp(cfg);
 const auth = getAuth(app);
-const db = getFirestore(app);
-const storage = getStorage(app, 'gs://mostreaki-2025.firebasestorage.app');
+const db   = getFirestore(app);
+// força bucket correto com gs://
+const stg  = getStorage(app, 'gs://mostreaki-2025.firebasestorage.app');
 
-const $ = s => document.querySelector(s);
+const $  = s => document.querySelector(s);
+const circle   = () => document.getElementById('userCircle') || document.querySelector('.user-circle');
+const authText = () => document.getElementById('authText');
 
-// preenche de cara com o cache (evita mostrar “F”)
-(() => {
-  const c = localStorage.getItem('fotoPerfil');
-  const el = $('#userCircle');
-  if (c && el) {
-    el.innerHTML = ''; el.style.display = 'flex';
-    const img = new Image(); img.src = c; img.alt = 'Foto'; img.style.width='100%'; img.style.height='100%'; img.style.objectFit='cover';
-    el.append(img);
-  }
-})();
+const cacheBust = u => u ? u + (u.includes('?')?'&':'?') + 'v=' + Date.now() : u;
 
-function cacheBust(url){ return url ? url + (url.includes('?')?'&':'?') + 'v=' + Date.now() : url; }
 function setAvatar(url){
-  if(!url) return;
+  if (!url) return;
   localStorage.setItem('fotoPerfil', url);
-  const el = $('#userCircle'); if(!el) return;
-  el.innerHTML=''; el.style.display='flex';
-  const img = new Image(); img.src = cacheBust(url); img.alt='Foto';
+  const el = circle(); if (!el) return;
+  el.textContent = '';           // remove a letra "F"
+  el.style.display = 'flex';
+  const img = new Image();
+  img.src = cacheBust(url); img.alt = 'Foto';
   img.style.width='100%'; img.style.height='100%'; img.style.objectFit='cover';
   el.append(img);
 }
 
+// Preenche rápido com cache para não “piscar”
+(() => { const c = localStorage.getItem('fotoPerfil'); if (c) setAvatar(c); })();
+
 async function prefetchFoto(uid){
   // 1) provedor (Google)
   if (auth.currentUser?.photoURL) { setAvatar(auth.currentUser.photoURL); return; }
-
-  // 2) Firestore (usuarios/{uid}.fotoPerfil)
+  // 2) Firestore
   try {
     const s = await getDoc(doc(db,'usuarios',uid));
     const saved = s.exists() && s.data().fotoPerfil;
     if (saved) { setAvatar(saved); return; }
   } catch {}
-
-  // 3) Storage direto (tenta jpg/png/webp/gif)
-  const tryExt = async e => getDownloadURL(ref(storage, `usuarios/${uid}/perfil/avatar.${e}`)).catch(()=>null);
+  // 3) Storage direto (tenta várias extensões)
+  const tryExt = async e => getDownloadURL(ref(stg, `usuarios/${uid}/perfil/avatar.${e}`)).catch(()=>null);
   const direct = await tryExt('jpg') || await tryExt('png') || await tryExt('webp') || await tryExt('gif');
   if (direct) {
-    await setDoc(doc(db,'usuarios',uid), { fotoPerfil: direct }, { merge:true });
-    setAvatar(direct); return;
+    try { await setDoc(doc(db,'usuarios',uid), { fotoPerfil: direct }, { merge:true }); } catch {}
+    setAvatar(direct);
   }
-
-  // 4) cache já foi aplicado no boot, então aqui não precisa repetir
 }
 
-function wireAuthUI(){
-  const at = $('#authText');
-  if (!at) return;
+// === MENU: toggle robusto com clique fora + ESC e z-index corrigido ===
+function wireMenu(){
+  const btn  = document.getElementById('menuBtn') || document.querySelector('.menu-icon');
+  const menu = document.getElementById('menu');
+  if (!btn || !menu) return;
 
+  // Acessibilidade básica
+  btn.setAttribute('aria-controls', 'menu');
+  btn.setAttribute('aria-expanded', 'false');
+
+  // Garante que o menu fique na frente
+  if (getComputedStyle(menu).position === 'static') menu.style.position = 'absolute';
+  if (!menu.style.zIndex) menu.style.zIndex = '10000';
+
+  const open = () => {
+    menu.style.display = 'flex';
+    btn.setAttribute('aria-expanded', 'true');
+    document.addEventListener('click', onDoc, true);
+    document.addEventListener('keydown', onKey);
+  };
+  const close = () => {
+    menu.style.display = 'none';
+    btn.setAttribute('aria-expanded', 'false');
+    document.removeEventListener('click', onDoc, true);
+    document.removeEventListener('keydown', onKey);
+  };
+  const toggle = () => (menu.style.display === 'flex' ? close() : open());
+
+  function onDoc(e){
+    if (!menu.contains(e.target) && e.target !== btn) close();
+  }
+  function onKey(e){ if (e.key === 'Escape') close(); }
+
+  btn.addEventListener('click', (e)=>{ e.stopPropagation(); toggle(); });
+}
+
+// === AUTH UI (texto Entrar/Sair + avatar) ===
+function wireAuthUI(){
   onAuthStateChanged(auth, user => {
+    const at = authText();
     if (user) {
-      at.textContent = 'Sair';
-      at.style.display = 'inline';
-      at.onclick = async () => {
-        await signOut(auth);
-        localStorage.removeItem('fotoPerfil');
-        location = '/index.html';
-      };
+      if (at) {
+        at.textContent = 'Sair';
+        at.style.display = 'inline';
+        at.onclick = async () => {
+          await signOut(auth);
+          localStorage.removeItem('fotoPerfil');
+          location = '/index.html';
+        };
+      }
       prefetchFoto(user.uid);
     } else {
-      at.textContent = 'Entrar';
-      at.style.display = 'inline';
-      at.onclick = () => location = '/index.html'; // ou abrir teu modal de login
-      // se quiser esconder o círculo quando deslogado, descomente:
-      // const el = $('#userCircle'); if (el) el.style.display = 'none';
+      if (at) {
+        at.textContent = 'Entrar';
+        at.style.display = 'inline';
+        at.onclick = () => location = '/index.html';
+      }
+      // Se quiser esconder o círculo quando deslogado:
+      // const el = circle(); if (el) el.style.display = 'none';
     }
-  });
-}
-
-wireAuthUI();
-</script>
 
 </body>
 </html>
