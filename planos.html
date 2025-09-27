@@ -266,143 +266,98 @@
     &copy; 2025 MostreAki. Todos os direitos reservados.
   </footer>
 
-  <!-- Modal de Login -->
-  <div id="modalLogin" class="modal-bg">
-    <div class="modal">
-      <h2>Entrar</h2>
-      <input type="email" id="email" placeholder="E-mail">
-      <div style="position:relative">
-        <input type="password" id="senha" placeholder="Senha">
-        <span onclick="toggleSenha()" style="position:absolute;top:12px;right:12px;cursor:pointer">👁️</span>
-      </div>
-      <button onclick="entrarEmail()">Entrar</button>
-      <button class="btn-google" onclick="entrarGoogle()">
-        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google logo">
-        Entrar com Google
-      </button>
-      <a href="#" onclick="redefinirSenha()">Esqueci minha senha</a>
-      <a href="/cadastro.html" onclick="cadastrarUsuario()">Cadastrar</a>
-    </div>
-  </div>
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import { getFirestore, doc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+import { getStorage, ref, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
 
-  <div id="mensagem" class="mensagem"></div>
+const app = initializeApp({
+  apiKey: 'AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE',
+  authDomain: 'mostreaki-2025.firebaseapp.com',
+  projectId: 'mostreaki-2025',
+  storageBucket: 'mostreaki-2025.firebasestorage.app',          // <- sem gs://
+  messagingSenderId: '748712068097',
+  appId: '1:748712068097:web:09cf043fbb45917ef6ec00'
+});
 
-  <!-- Firebase + Autenticação -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import {
-      getAuth,
-      onAuthStateChanged,
-      signOut,
-      signInWithEmailAndPassword,
-      createUserWithEmailAndPassword,
-      sendPasswordResetEmail,
-      signInWithPopup,
-      GoogleAuthProvider
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+// força usar o bucket certo (com gs://)
+const auth = getAuth(app);
+const db = getFirestore(app);
+const storage = getStorage(app, 'gs://mostreaki-2025.firebasestorage.app');
 
-    const app = initializeApp({
-      apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
-      authDomain: "mostreaki-2025.firebaseapp.com",
-      projectId: "mostreaki-2025",
-      storageBucket: "mostreaki-2025.appspot.com",
-      messagingSenderId: "748712068097",
-      appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
-    });
+const $ = s => document.querySelector(s);
 
-    const auth = getAuth(app);
-    const provider = new GoogleAuthProvider();
-    const authText = document.getElementById("authText");
-    const userCircle = document.getElementById("userCircle");
+// preenche de cara com o cache (evita mostrar “F”)
+(() => {
+  const c = localStorage.getItem('fotoPerfil');
+  const el = $('#userCircle');
+  if (c && el) {
+    el.innerHTML = ''; el.style.display = 'flex';
+    const img = new Image(); img.src = c; img.alt = 'Foto'; img.style.width='100%'; img.style.height='100%'; img.style.objectFit='cover';
+    el.append(img);
+  }
+})();
 
-    function exibirMensagem(texto, erro = false) {
-      const m = document.getElementById("mensagem");
-      m.textContent = texto;
-      m.className = erro ? "mensagem erro" : "mensagem";
-      m.style.display = "block";
-      setTimeout(() => m.style.display = "none", 3000);
+function cacheBust(url){ return url ? url + (url.includes('?')?'&':'?') + 'v=' + Date.now() : url; }
+function setAvatar(url){
+  if(!url) return;
+  localStorage.setItem('fotoPerfil', url);
+  const el = $('#userCircle'); if(!el) return;
+  el.innerHTML=''; el.style.display='flex';
+  const img = new Image(); img.src = cacheBust(url); img.alt='Foto';
+  img.style.width='100%'; img.style.height='100%'; img.style.objectFit='cover';
+  el.append(img);
+}
+
+async function prefetchFoto(uid){
+  // 1) provedor (Google)
+  if (auth.currentUser?.photoURL) { setAvatar(auth.currentUser.photoURL); return; }
+
+  // 2) Firestore (usuarios/{uid}.fotoPerfil)
+  try {
+    const s = await getDoc(doc(db,'usuarios',uid));
+    const saved = s.exists() && s.data().fotoPerfil;
+    if (saved) { setAvatar(saved); return; }
+  } catch {}
+
+  // 3) Storage direto (tenta jpg/png/webp/gif)
+  const tryExt = async e => getDownloadURL(ref(storage, `usuarios/${uid}/perfil/avatar.${e}`)).catch(()=>null);
+  const direct = await tryExt('jpg') || await tryExt('png') || await tryExt('webp') || await tryExt('gif');
+  if (direct) {
+    await setDoc(doc(db,'usuarios',uid), { fotoPerfil: direct }, { merge:true });
+    setAvatar(direct); return;
+  }
+
+  // 4) cache já foi aplicado no boot, então aqui não precisa repetir
+}
+
+function wireAuthUI(){
+  const at = $('#authText');
+  if (!at) return;
+
+  onAuthStateChanged(auth, user => {
+    if (user) {
+      at.textContent = 'Sair';
+      at.style.display = 'inline';
+      at.onclick = async () => {
+        await signOut(auth);
+        localStorage.removeItem('fotoPerfil');
+        location = '/index.html';
+      };
+      prefetchFoto(user.uid);
+    } else {
+      at.textContent = 'Entrar';
+      at.style.display = 'inline';
+      at.onclick = () => location = '/index.html'; // ou abrir teu modal de login
+      // se quiser esconder o círculo quando deslogado, descomente:
+      // const el = $('#userCircle'); if (el) el.style.display = 'none';
     }
+  });
+}
 
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        authText.textContent = "Sair";
-        authText.style.display = "inline";
-        authText.onclick = () => {
-          signOut(auth).then(() => {
-            localStorage.removeItem("fotoPerfil");
-            location.reload();
-          });
-        };
-        if (user.photoURL) {
-          userCircle.style.backgroundImage = `url('${user.photoURL}')`;
-          localStorage.setItem("fotoPerfil", user.photoURL);
-          userCircle.textContent = "";
-        } else {
-          userCircle.textContent = user.email.charAt(0).toUpperCase();
-        }
-        userCircle.style.display = "flex";
-      } else {
-        authText.textContent = "Entrar";
-        authText.style.display = "inline";
-        authText.onclick = abrirModal;
-        userCircle.style.display = "none";
-      }
-    });
-
-    window.toggleMenu = () => {
-      const m = document.getElementById("menu");
-      m.style.display = m.style.display === "flex" ? "none" : "flex";
-    };
-
-    window.abrirModal = () => document.getElementById("modalLogin").style.display = "flex";
-    window.fecharModal = () => document.getElementById("modalLogin").style.display = "none";
-    window.toggleSenha = () => {
-      const input = document.getElementById("senha");
-      input.type = input.type === "password" ? "text" : "password";
-    };
-
-    window.entrarEmail = () => {
-      const email = document.getElementById("email").value;
-      const senha = document.getElementById("senha").value;
-      signInWithEmailAndPassword(auth, email, senha)
-        .then(() => {
-          exibirMensagem("Você logou com sucesso!");
-          fecharModal();
-        })
-        .catch(() => exibirMensagem("Erro ao entrar. Verifique os dados.", true));
-    };
-
-    window.entrarGoogle = () => {
-      signInWithPopup(auth, provider)
-        .then(result => {
-          if (result.user.photoURL) {
-            localStorage.setItem("fotoPerfil", result.user.photoURL);
-          }
-          exibirMensagem("Login com Google realizado!");
-          fecharModal();
-        })
-        .catch(() => exibirMensagem("Erro ao entrar com Google.", true));
-    };
-
-    window.redefinirSenha = () => {
-      const email = document.getElementById("email").value;
-      if (!email) return exibirMensagem("Digite o e-mail para redefinir.", true);
-      sendPasswordResetEmail(auth, email)
-        .then(() => exibirMensagem("Email de recuperação enviado!"))
-        .catch(() => exibirMensagem("Erro ao enviar redefinição.", true));
-    };
-
-    window.cadastrarUsuario = () => {
-      const email = document.getElementById("email").value;
-      const senha = document.getElementById("senha").value;
-      createUserWithEmailAndPassword(auth, email, senha)
-        .then(() => {
-          exibirMensagem("Cadastro realizado com sucesso!");
-          fecharModal();
-        })
-        .catch(() => exibirMensagem("Erro ao cadastrar. Tente outro e-mail.", true));
-    };
-  </script>
+wireAuthUI();
+</script>
 
 </body>
 </html>
