@@ -172,7 +172,7 @@ function mapLoginErro(code, email){
     case "auth/network-request-failed":
       return {title:"Sem conexão", html:"Falha de rede. Verifique sua internet e tente novamente."};
     default:
-      return {title:"Não foi possível entrar", html:`Erro inesperado (${E-Mail digitado incorretamente}). Tente novamente.`};
+      return {title:"Não foi possível entrar", html:`Erro inesperado (${code}). Tente novamente.`};
   }
 }
 </script>
