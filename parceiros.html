@@ -14,9 +14,7 @@
       background-repeat: no-repeat;
       background-attachment: fixed;
     }
-    @media (min-width: 768px) {
-      body { background-image: url("fundo-desktop.png"); }
-    }
+    @media (min-width: 768px) { body { background-image: url("fundo-desktop.png"); } }
 
     header {
       background-color: #c2e7df;
@@ -35,7 +33,7 @@
     .logo .mostre { color: #00C2BF; }
     .logo .aki { color: #FA1E39; }
 
-    .menu-icon { font-size: 1.5rem; cursor: pointer; }
+    .menu-icon { font-size: 1.5rem; cursor: pointer; user-select: none; }
     .menu-list {
       position: absolute;
       top: 60px;
@@ -46,7 +44,7 @@
       display: none;
       flex-direction: column;
       padding: 10px;
-      z-index: 1000;
+      z-index: 10000;
     }
     .menu-list a {
       background-color: #FA1E39;
@@ -67,12 +65,13 @@
       border-radius: 50%;
       width: 32px;
       height: 32px;
-      display: none;
+      display: flex;
       align-items: center;
       justify-content: center;
       background-size: cover;
       background-position: center;
       font-size: 0.9rem;
+      overflow: hidden;
     }
 
     .section {
@@ -119,111 +118,53 @@
       flex-direction: column;
       transition: transform .15s ease, box-shadow .15s ease;
     }
-    .card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(0,0,0,0.10);
-    }
-    .thumb-wrap {
-      position: relative;
-      aspect-ratio: 16 / 9;
-      background: #f3f7f6;
-      overflow: hidden;
-    }
-    .thumb-wrap img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
+    .card:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.10); }
+    .thumb-wrap { position: relative; aspect-ratio: 16 / 9; background: #f3f7f6; overflow: hidden; }
+    .thumb-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
     .badge {
-      position: absolute;
-      top: 10px; left: 10px;
-      background: #15b0af;
-      color: #fff;
-      font-size: .78rem;
-      padding: 6px 10px;
-      border-radius: 999px;
-      font-weight: bold;
+      position: absolute; top: 10px; left: 10px; background: #15b0af; color: #fff;
+      font-size: .78rem; padding: 6px 10px; border-radius: 999px; font-weight: bold;
       box-shadow: 0 2px 6px rgba(0,0,0,.15);
     }
-    .card-body {
-      padding: 14px 14px 18px 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      text-align: left;
-    }
-    .card h3 {
-      font-size: 1.05rem;
-      color: #0e7270;
-    }
-    .card p {
-      font-size: .92rem;
-      color: #444;
-      min-height: 2.6em; /* 2 linhas aprox. */
-    }
-    .actions {
-      display: flex; gap: 8px; margin-top: 6px; flex-wrap: wrap;
-    }
+    .card-body { padding: 14px 14px 18px 14px; display: flex; flex-direction: column; gap: 8px; text-align: left; }
+    .card h3 { font-size: 1.05rem; color: #0e7270; }
+    .card p  { font-size: .92rem; color: #444; min-height: 2.6em; }
+
+    .actions { display: flex; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
     .btn {
-      display: inline-block;
-      padding: 10px 14px;
-      border-radius: 8px;
-      font-weight: bold;
-      text-decoration: none;
-      text-align: center;
-      cursor: pointer;
-      border: none;
+      display: inline-block; padding: 10px 14px; border-radius: 8px; font-weight: bold;
+      text-decoration: none; text-align: center; cursor: pointer; border: none;
     }
     .btn-primary { background: #15b0af; color: #fff; }
     .btn-primary:hover { filter: brightness(0.95); }
-    .btn-outline {
-      background: #fff; color: #15b0af; border: 2px solid #15b0af;
-    }
+    .btn-outline { background: #fff; color: #15b0af; border: 2px solid #15b0af; }
     .btn-outline:hover { background: #e8f7f6; }
 
     .divider { margin: 28px 0; height: 1px; background: #eaeaea; }
 
-    /* Modal Login (mesmo padrão do site) */
+    /* Modal Login (mantido como no site) */
     .modal-bg {
-      position: fixed; top: 0; left: 0; width: 100%;
-      height: 100%; background: rgba(0,0,0,0.6);
-      display: none; justify-content: center; align-items: center;
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center;
       z-index: 9999;
     }
     .modal {
-      background: #fff; padding: 30px; border-radius: 10px;
-      max-width: 400px; width: 90%; position: relative;
+      background: #fff; padding: 30px; border-radius: 10px; max-width: 400px; width: 90%; position: relative;
     }
     .modal h2 { margin-bottom: 20px; color: #16807c; font-size: 1.4rem; text-align: center; }
-    .modal input {
-      width: 100%; padding: 12px; margin-bottom: 15px;
-      border-radius: 6px; border: 1px solid #ccc;
-    }
+    .modal input { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 6px; border: 1px solid #ccc; }
     .modal button {
-      width: 100%; padding: 12px; background: #15b0af;
-      border: none; color: #fff; font-weight: bold;
+      width: 100%; padding: 12px; background: #15b0af; border: none; color: #fff; font-weight: bold;
       border-radius: 6px; margin-bottom: 10px; cursor: pointer;
     }
-    .modal .btn-google {
-      background: #fff; color: #444; border: 1px solid #ccc;
-      display: flex; align-items: center; justify-content: center; gap: 10px;
-    }
+    .modal .btn-google { background: #fff; color: #444; border: 1px solid #ccc; display: flex; align-items: center; justify-content: center; gap: 10px; }
     .modal .btn-google img { height: 20px; }
-    .modal .fechar {
-      position: absolute; top: 10px; right: 15px;
-      font-size: 1.2rem; cursor: pointer; color: #999;
-    }
-    .modal a {
-      display: block; text-align: center;
-      margin-top: 10px; color: #16807c; font-size: .9rem;
-    }
+    .modal .fechar { position: absolute; top: 10px; right: 15px; font-size: 1.2rem; cursor: pointer; color: #999; }
+    .modal a { display: block; text-align: center; margin-top: 10px; color: #16807c; font-size: .9rem; }
 
     .mensagem {
-      position: fixed; top: 20px; right: 20px;
-      background: #15b0af; color: #fff; padding: 15px 20px;
-      border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-      font-weight: bold; z-index: 9999;
+      position: fixed; top: 20px; right: 20px; background: #15b0af; color: #fff; padding: 15px 20px;
+      border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); font-weight: bold; z-index: 9999;
       animation: fadein 0.5s, fadeout 0.5s 2.5s; display: none;
     }
     .mensagem.erro { background: #FA1E39; }
@@ -233,244 +174,348 @@
 </head>
 <body>
 
-<header>
-  <div class="logo-container" onclick="location.href='index.html'">
-    <img src="logo.png" alt="Logo">
-    <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
-  </div>
-  <div style="display:flex;align-items:center;gap:10px;">
-    <span id="authText" style="font-weight:bold;color:#15b0af;cursor:pointer;display:none">Entrar</span>
-    <div id="userCircle" class="user-circle" title="Perfil"></div>
-    <div class="menu-icon" onclick="toggleMenu()">☰</div>
-  </div>
-  <div class="menu-list" id="menu">
-    <a href="/index.html">Página Inicial</a>
+  <header>
+    <div class="logo-container" onclick="location.href='index.html'">
+      <img src="logo.png" alt="Logo">
+      <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span id="authText" style="font-weight:bold;color:#15b0af;cursor:pointer;display:none">Entrar</span>
+      <div id="userCircle" class="user-circle" title="Perfil">F</div>
+      <div id="menuBtn" class="menu-icon" aria-controls="menu" aria-expanded="false">☰</div>
+    </div>
+    <nav class="menu-list" id="menu">
+      <a href="/index.html">Página Inicial</a>
       <a href="/sobre.html">Sobre</a>
       <a href="/minha-conta.html">Minha Conta</a>
       <a href="/planos.html">Planos</a>
       <a href="/servicos-adicionais.html">Serviços Adicionais</a>
       <a href="/redes-sociais.html">Redes Sociais</a>
       <a href="/contatos.html">Contatos</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="section">
+      <h2>Nossos Parceiros e Templates</h2>
+      <p class="intro">
+        Uma seleção dos sites e modelos que desenvolvemos. Explore os templates, veja funcionando ao vivo
+        e escolha o que combina com o seu projeto. Quando estiver pronto, fale com a gente e colocamos no ar para você.
+      </p>
+
+      <div class="galeria">
+        <!-- CARD 1 -->
+        <div class="card">
+          <div class="thumb-wrap">
+            <img src="template1.svg" alt="Template Moderno – MostreAki" loading="lazy">
+            <span class="badge">Template</span>
+          </div>
+          <div class="card-body">
+            <h3>Template Moderno</h3>
+            <p>Layout vibrante, botões de ação visíveis e de projetos fãs pessoais de entretenimento.</p>
+            <div class="actions">
+              <a class="btn btn-primary" href="https://www.pokedaimon.com.br" target="_blank" rel="noopener">Ver Site</a>
+              <a class="btn btn-outline" href="/planos.html" target="_blank" rel="noopener">Contratar</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 2 -->
+        <div class="card">
+          <div class="thumb-wrap">
+            <img src="template2.svg" alt="Template Minimalista – MostreAki" loading="lazy">
+            <span class="badge">Template</span>
+          </div>
+          <div class="card-body">
+            <h3>Template Minimalista</h3>
+            <p>Tipografia limpa, com foco no conteúdo e carregamento super leve.</p>
+            <div class="actions">
+              <a class="btn btn-primary" href="https://www.almanyx.com.br" target="_blank" rel="noopener">Ver Site</a>
+              <a class="btn btn-outline" href="/planos.html" target="_blank" rel="noopener">Contratar</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 3 -->
+        <div class="card">
+          <div class="thumb-wrap">
+            <img src="template3.svg" alt="Landing Page Conversão – MostreAki" loading="lazy">
+            <span class="badge">Template</span>
+          </div>
+          <div class="card-body">
+            <h3>Serviços de Assinatura</h3>
+            <p>Especiais para prestação de serviço com planos de assinaturas</p>
+            <div class="actions">
+              <a class="btn btn-primary" href="https://www.mostreaki.com.br" target="_blank" rel="noopener">Ver Site</a>
+              <a class="btn btn-outline" href="/planos.html" target="_blank" rel="noopener">Contratar</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 4 -->
+        <div class="card">
+          <div class="thumb-wrap">
+            <img src="template4.png" alt="Catálogo Visual – MostreAki" loading="lazy">
+            <span class="badge">Template</span>
+          </div>
+          <div class="card-body">
+            <h3>Catálogo Visual</h3>
+            <p>Grade de produtos com filtros simples e exibição em destaque como exemplo produtos de artesanato.</p>
+            <div class="actions">
+              <a class="btn btn-primary" href="#" target="_blank" rel="noopener">Ver Site</a>
+              <a class="btn btn-outline" href="https://wa.me/seunumerodetelefone?text=Quero%20o%20Cat%C3%A1logo%20Visual" target="_blank" rel="noopener">Contratar</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 5 -->
+        <div class="card">
+          <div class="thumb-wrap">
+            <img src="template5.png" alt="Portfólio Criativo – MostreAki" loading="lazy">
+            <span class="badge">Template</span>
+          </div>
+          <div class="card-body">
+            <h3>Portfólio Criativo</h3>
+            <p>Opções específicas para fortalecimento da Marca com catálogo e vendas de produtos via Whatsapp.</p>
+            <div class="actions">
+              <a class="btn btn-primary" href="#" target="_blank" rel="noopener">Ver Site</a>
+              <a class="btn btn-outline" href="https://wa.me/seunumerodetelefone?text=Quero%20o%20Portf%C3%B3lio%20Criativo" target="_blank" rel="noopener">Contratar</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <p class="intro">
+        Quer expor o seu site aqui como parceiro? Envie uma mensagem:
+        <a class="btn btn-outline" style="margin-top:10px" href="https://wa.me/seunumerodetelefone?text=Quero%20ser%20parceiro%20MostreAki" target="_blank" rel="noopener">Quero ser parceiro</a>
+      </p>
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2025 MostreAki. Todos os direitos reservados.
+  </footer>
+
+  <!-- Modal Login (mantido, com stubs JS para não quebrar) -->
+  <div id="modalLogin" class="modal-bg">
+    <div class="modal">
+      <div class="fechar" onclick="fecharModal()">✖</div>
+      <h2>Entrar</h2>
+      <input type="email" id="email" placeholder="E-mail">
+      <div style="position:relative">
+        <input type="password" id="senha" placeholder="Senha">
+        <span onclick="toggleSenha()" style="position:absolute;top:12px;right:12px;cursor:pointer">👁️</span>
+      </div>
+      <button onclick="entrarEmail()">Entrar</button>
+      <button class="btn-google" onclick="entrarGoogle()">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google logo"> Entrar com Google
+      </button>
+      <a href="#" onclick="redefinirSenha()">Esqueci minha senha</a>
+      <a href="#" onclick="cadastrarUsuario()">Cadastrar</a>
+    </div>
   </div>
-</header>
 
-<div class="section">
-  <h2>Nossos Parceiros e Templates</h2>
-  <p class="intro">
-    Uma seleção dos sites e modelos que desenvolvemos. Explore os templates, veja funcionando ao vivo
-    e escolha o que combina com o seu projeto. Quando estiver pronto, fale com a gente e colocamos no ar para você.
-  </p>
+  <div id="mensagem" class="mensagem"></div>
 
-  <div class="galeria">
-    <!-- CARD 1 -->
-    <div class="card">
-      <div class="thumb-wrap">
-        <img src="template1.svg" alt="Template Moderno – MostreAki" loading="lazy">
-        <span class="badge">Template</span>
-      </div>
-      <div class="card-body">
-        <h3>Template Moderno</h3>
-        <p>Layout vibrante, botões de ação visíveis e de projetos fãs pessoais de entretenimento.</p>
-        <div class="actions">
-          <a class="btn btn-primary" href="https://www.pokedaimon.com.br" target="_blank" rel="noopener">Ver Site</a>
-          <a class="btn btn-outline" href="https://www.mostreaki.com.br/planos.html" target="_blank" rel="noopener">Contratar</a>
-        </div>
-      </div>
-    </div>
+  <!-- SCRIPT ÚNICO: avatar + menu (bucket .firebasestorage.app alinhado) -->
+  <script type="module">
+  import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+  import { getAuth, onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, sendPasswordResetEmail, createUserWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+  import { getFirestore, doc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+  import { getStorage, ref, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
 
-    <!-- CARD 2 -->
-    <div class="card">
-      <div class="thumb-wrap">
-        <img src="template2.svg" alt="Template Minimalista – MostreAki" loading="lazy">
-        <span class="badge">Template</span>
-      </div>
-      <div class="card-body">
-        <h3>Template Minimalista</h3>
-        <p>Tipografia limpa, com foco no conteúdo e carregamento super leve.</p>
-        <div class="actions">
-          <a class="btn btn-primary" href="https://www.almanyx.com.br" target="_blank" rel="noopener">Ver Site</a>
-          <a class="btn btn-outline" href="https://www.mostreaki.com.br/planos.html" target="_blank" rel="noopener">Contratar</a>
-        </div>
-      </div>
-    </div>
+  const cfg = {
+    apiKey: 'AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE',
+    authDomain: 'mostreaki-2025.firebaseapp.com',
+    projectId: 'mostreaki-2025',
+    storageBucket: 'mostreaki-2025.firebasestorage.app', // sem gs://
+    messagingSenderId: '748712068097',
+    appId: '1:748712068097:web:09cf043fbb45917ef6ec00'
+  };
+  const app = getApps().length ? getApp() : initializeApp(cfg);
+  const auth = getAuth(app);
+  const db   = getFirestore(app);
+  // força bucket correto com gs://
+  const stg  = getStorage(app, 'gs://mostreaki-2025.firebasestorage.app');
 
-    <!-- CARD 3 -->
-    <div class="card">
-      <div class="thumb-wrap">
-        <img src="template3.svg" alt="Landing Page Conversão – MostreAki" loading="lazy">
-        <span class="badge">Template</span>
-      </div>
-      <div class="card-body">
-        <h3>Serviços de Assinatura</h3>
-        <p>Especiais para prestação de serviço com planos de assinaturas</p>
-        <div class="actions">
-          <a class="btn btn-primary" href="https://www.mostreaki.com.br" target="_blank" rel="noopener">Ver Site</a>
-          <a class="btn btn-outline" href="https://www.mostreaki.com.br/planos.html" target="_blank" rel="noopener">Contratar</a>
-        </div>
-      </div>
-    </div>
+  const $ = s => document.querySelector(s);
+  const circle = () => document.getElementById('userCircle') || document.querySelector('.user-circle');
 
-    <!-- CARD 4 -->
-    <div class="card">
-      <div class="thumb-wrap">
-        <img src="template4.png" alt="Catálogo Visual – MostreAki" loading="lazy">
-        <span class="badge">Template</span>
-      </div>
-      <div class="card-body">
-        <h3>Catálogo Visual</h3>
-        <p>Grade de produtos com filtros simples e exibição em destaque como exemplo produtos de artesanato.</p>
-        <div class="actions">
-          <a class="btn btn-primary" href="https://exemplo4.com" target="_blank" rel="noopener">Ver Site</a>
-          <a class="btn btn-outline" href="https://wa.me/seunumerodetelefone?text=Quero%20o%20Cat%C3%A1logo%20Visual" target="_blank" rel="noopener">Contratar</a>
-        </div>
-      </div>
-    </div>
+  const cacheBust = u => u ? u + (u.includes('?')?'&':'?') + 'v=' + Date.now() : u;
 
-    <!-- CARD 5 -->
-    <div class="card">
-      <div class="thumb-wrap">
-        <img src="template5.png" alt="Portfolio Criativo – MostreAki" loading="lazy">
-        <span class="badge">Template</span>
-      </div>
-      <div class="card-body">
-        <h3>Portfólio Criativo</h3>
-        <p>Opções específicas para fortalecimento da Marca com catálogo e vendas de produtos via Whatsapp.</p>
-        <div class="actions">
-          <a class="btn btn-primary" href="https://exemplo5.com" target="_blank" rel="noopener">Ver Site</a>
-          <a class="btn btn-outline" href="https://wa.me/seunumerodetelefone?text=Quero%20o%20Portf%C3%B3lio%20Criativo" target="_blank" rel="noopener">Contratar</a>
-        </div>
-      </div>
-    </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="divider"></div>
-
-  <p class="intro">
-    Quer expor o seu site aqui como parceiro? Envie uma mensagem:
-    <a class="btn btn-outline" style="margin-top:10px" href="https://wa.me/seunumerodetelefone?text=Quero%20ser%20parceiro%20MostreAki" target="_blank" rel="noopener">Quero ser parceiro</a>
-  </p>
-</div>
-
-<footer>
-  &copy; 2025 MostreAki. Todos os direitos reservados.
-</footer>
-
-<!-- Modal Login (mesmo do restante do site) -->
-<div id="modalLogin" class="modal-bg">
-  <div class="modal">
-    <div class="fechar" onclick="fecharModal()">✖</div>
-    <h2>Entrar</h2>
-    <input type="email" id="email" placeholder="E-mail">
-    <div style="position:relative">
-      <input type="password" id="senha" placeholder="Senha">
-      <span onclick="toggleSenha()" style="position:absolute;top:12px;right:12px;cursor:pointer">👁️</span>
-    </div>
-    <button onclick="entrarEmail()">Entrar</button>
-    <button class="btn-google" onclick="entrarGoogle()">
-      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google logo"> Entrar com Google
-    </button>
-    <a href="#" onclick="redefinirSenha()">Esqueci minha senha</a>
-    <a href="#" onclick="cadastrarUsuario()">Cadastrar</a>
-  </div>
-</div>
-
-<div id="mensagem" class="mensagem"></div>
-
-<script type="module">
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-import { getFirestore, doc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-import { getStorage, ref, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
-
-const app = initializeApp({
-  apiKey: 'AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE',
-  authDomain: 'mostreaki-2025.firebaseapp.com',
-  projectId: 'mostreaki-2025',
-  storageBucket: 'mostreaki-2025.firebasestorage.app',          // <- sem gs://
-  messagingSenderId: '748712068097',
-  appId: '1:748712068097:web:09cf043fbb45917ef6ec00'
-});
-
-// força usar o bucket certo (com gs://)
-const auth = getAuth(app);
-const db = getFirestore(app);
-const storage = getStorage(app, 'gs://mostreaki-2025.firebasestorage.app');
-
-const $ = s => document.querySelector(s);
-
-// preenche de cara com o cache (evita mostrar “F”)
-(() => {
-  const c = localStorage.getItem('fotoPerfil');
-  const el = $('#userCircle');
-  if (c && el) {
-    el.innerHTML = ''; el.style.display = 'flex';
-    const img = new Image(); img.src = c; img.alt = 'Foto'; img.style.width='100%'; img.style.height='100%'; img.style.objectFit='cover';
+  function setAvatar(url){
+    if (!url) return;
+    localStorage.setItem('fotoPerfil', url);
+    const el = circle(); if (!el) return;
+    el.textContent = ''; el.style.display = 'flex';
+    const img = new Image();
+    img.src = cacheBust(url); img.alt = 'Foto';
+    img.style.width='100%'; img.style.height='100%'; img.style.objectFit='cover';
     el.append(img);
   }
-})();
 
-function cacheBust(url){ return url ? url + (url.includes('?')?'&':'?') + 'v=' + Date.now() : url; }
-function setAvatar(url){
-  if(!url) return;
-  localStorage.setItem('fotoPerfil', url);
-  const el = $('#userCircle'); if(!el) return;
-  el.innerHTML=''; el.style.display='flex';
-  const img = new Image(); img.src = cacheBust(url); img.alt='Foto';
-  img.style.width='100%'; img.style.height='100%'; img.style.objectFit='cover';
-  el.append(img);
-}
+  // Preenche rápido com cache (evita mostrar a letra)
+  (() => { const c = localStorage.getItem('fotoPerfil'); if (c) setAvatar(c); })();
 
-async function prefetchFoto(uid){
-  // 1) provedor (Google)
-  if (auth.currentUser?.photoURL) { setAvatar(auth.currentUser.photoURL); return; }
-
-  // 2) Firestore (usuarios/{uid}.fotoPerfil)
-  try {
-    const s = await getDoc(doc(db,'usuarios',uid));
-    const saved = s.exists() && s.data().fotoPerfil;
-    if (saved) { setAvatar(saved); return; }
-  } catch {}
-
-  // 3) Storage direto (tenta jpg/png/webp/gif)
-  const tryExt = async e => getDownloadURL(ref(storage, `usuarios/${uid}/perfil/avatar.${e}`)).catch(()=>null);
-  const direct = await tryExt('jpg') || await tryExt('png') || await tryExt('webp') || await tryExt('gif');
-  if (direct) {
-    await setDoc(doc(db,'usuarios',uid), { fotoPerfil: direct }, { merge:true });
-    setAvatar(direct); return;
+  async function prefetchFoto(uid){
+    // 1) provedor (Google)
+    if (auth.currentUser?.photoURL) { setAvatar(auth.currentUser.photoURL); return; }
+    // 2) Firestore
+    try {
+      const s = await getDoc(doc(db,'usuarios',uid));
+      const saved = s.exists() && s.data().fotoPerfil;
+      if (saved) { setAvatar(saved); return; }
+    } catch {}
+    // 3) Storage direto (jpg/png/webp/gif)
+    const tryExt = async e => getDownloadURL(ref(stg, `usuarios/${uid}/perfil/avatar.${e}`)).catch(()=>null);
+    const direct = await tryExt('jpg') || await tryExt('png') || await tryExt('webp') || await tryExt('gif');
+    if (direct) {
+      try { await setDoc(doc(db,'usuarios',uid), { fotoPerfil: direct }, { merge:true }); } catch {}
+      setAvatar(direct);
+    }
   }
 
-  // 4) cache já foi aplicado no boot, então aqui não precisa repetir
-}
+  // MENU: toggle com clique fora + ESC
+  function wireMenu(){
+    const btn  = document.getElementById('menuBtn') || document.querySelector('.menu-icon');
+    const menu = document.getElementById('menu');
+    if (!btn || !menu) return;
 
-function wireAuthUI(){
-  const at = $('#authText');
-  if (!at) return;
+    btn.setAttribute('aria-controls', 'menu');
+    btn.setAttribute('aria-expanded', 'false');
 
-  onAuthStateChanged(auth, user => {
-    if (user) {
-      at.textContent = 'Sair';
-      at.style.display = 'inline';
-      at.onclick = async () => {
-        await signOut(auth);
-        localStorage.removeItem('fotoPerfil');
-        location = '/index.html';
-      };
-      prefetchFoto(user.uid);
-    } else {
-      at.textContent = 'Entrar';
-      at.style.display = 'inline';
-      at.onclick = () => location = '/index.html'; // ou abrir teu modal de login
-      // se quiser esconder o círculo quando deslogado, descomente:
-      // const el = $('#userCircle'); if (el) el.style.display = 'none';
+    if (getComputedStyle(menu).position === 'static') menu.style.position = 'absolute';
+    if (!menu.style.zIndex) menu.style.zIndex = '10000';
+
+    const open = () => {
+      menu.style.display = 'flex';
+      btn.setAttribute('aria-expanded', 'true');
+      document.addEventListener('click', onDoc, true);
+      document.addEventListener('keydown', onKey);
+    };
+    const close = () => {
+      menu.style.display = 'none';
+      btn.setAttribute('aria-expanded', 'false');
+      document.removeEventListener('click', onDoc, true);
+      document.removeEventListener('keydown', onKey);
+    };
+    const toggle = () => (menu.style.display === 'flex' ? close() : open());
+
+    function onDoc(e){ if (!menu.contains(e.target) && e.target !== btn) close(); }
+    function onKey(e){ if (e.key === 'Escape') close(); }
+
+    btn.addEventListener('click', (e)=>{ e.stopPropagation(); toggle(); });
+  }
+
+  // AUTH UI (Entrar/Sair + avatar)
+  function wireAuthUI(){
+    const at = document.getElementById('authText');
+    onAuthStateChanged(auth, user => {
+      if (user) {
+        if (at) {
+          at.textContent = 'Sair';
+          at.style.display = 'inline';
+          at.onclick = async () => {
+            await signOut(auth);
+            localStorage.removeItem('fotoPerfil');
+            location = '/index.html';
+          };
+        }
+        prefetchFoto(user.uid);
+      } else {
+        if (at) {
+          at.textContent = 'Entrar';
+          at.style.display = 'inline';
+          at.onclick = () => { abrirModal(); };
+        }
+        // circle()?.style.display = 'none'; // se quiser esconder deslogado
+      }
+    });
+  }
+
+  // ===== Modal básico (stubs para não quebrar) =====
+  const modal = document.getElementById('modalLogin');
+  const msg   = document.getElementById('mensagem');
+
+  function abrirModal(){ if (modal) modal.style.display = 'flex'; }
+  function fecharModal(){ if (modal) modal.style.display = 'none'; }
+  function toggleSenha(){
+    const input = document.getElementById('senha'); if (!input) return;
+    input.type = input.type === 'password' ? 'text' : 'password';
+  }
+  function showMsg(texto, erro=false){
+    if (!msg) return;
+    msg.textContent = texto;
+    msg.classList.toggle('erro', !!erro);
+    msg.style.display = 'block';
+    setTimeout(() => { msg.style.display = 'none'; }, 3000);
+  }
+
+  async function entrarGoogle(){
+    try {
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(auth, provider);
+      fecharModal();
+    } catch (e) {
+      showMsg('Falha no login Google', true);
+      console.error(e);
     }
-  });
-}
+  }
+  async function entrarEmail(){
+    const email = (document.getElementById('email')||{}).value || '';
+    const senha = (document.getElementById('senha')||{}).value || '';
+    if (!email || !senha) return showMsg('Preencha email e senha', true);
+    try {
+      await signInWithEmailAndPassword(auth, email, senha);
+      fecharModal();
+    } catch (e) {
+      showMsg('Login inválido', true);
+      console.error(e);
+    }
+  }
+  async function cadastrarUsuario(){
+    const email = (document.getElementById('email')||{}).value || '';
+    const senha = (document.getElementById('senha')||{}).value || '';
+    if (!email || !senha) return showMsg('Preencha email e senha', true);
+    try {
+      const cred = await createUserWithEmailAndPassword(auth, email, senha);
+      // cria doc de usuário mínimo
+      await setDoc(doc(db,'usuarios', cred.user.uid), { createdAt: Date.now() }, { merge:true });
+      showMsg('Cadastro criado! Verifique seu e-mail para confirmação.');
+      fecharModal();
+    } catch (e) {
+      showMsg('Erro ao cadastrar', true);
+      console.error(e);
+    }
+  }
+  async function redefinirSenha(){
+    const email = (document.getElementById('email')||{}).value || '';
+    if (!email) return showMsg('Informe seu e-mail', true);
+    try {
+      await sendPasswordResetEmail(auth, email);
+      showMsg('E-mail de redefinição enviado.');
+    } catch (e) {
+      showMsg('Erro ao enviar redefinição', true);
+      console.error(e);
+    }
+  }
 
-wireAuthUI();
-</script>
+  // expõe stubs para os onclick da modal
+  window.abrirModal = abrirModal;
+  window.fecharModal = fecharModal;
+  window.toggleSenha = toggleSenha;
+  window.entrarGoogle = entrarGoogle;
+  window.entrarEmail = entrarEmail;
+  window.cadastrarUsuario = cadastrarUsuario;
+  window.redefinirSenha = redefinirSenha;
 
+  function boot(){
+    wireMenu();
+    wireAuthUI();
+  }
+  document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', boot) : boot();
+  </script>
 </body>
 </html>
