@@ -19,6 +19,14 @@
   .muted{font-size:.9rem;color:#666;margin-top:10px}
   a{color:var(--brand);text-decoration:none;font-weight:bold}
 
+  /* campo de senha com ícone olho */
+  .pwd-wrap{position:relative}
+  .pwd-toggle{
+    position:absolute; right:10px; top:50%; transform:translateY(-50%);
+    background:#fff; border:0; cursor:pointer; font-size:18px; line-height:1;
+    padding:2px 6px; border-radius:6px; color:#444;
+  }
+
   /* POPUP / ALERTA */
   .alert-bg{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:9999;padding:20px}
   .alert-card{
@@ -38,10 +46,27 @@
 <body>
 <div class="card">
   <h1>Entrar</h1>
-  <label>E-mail</label>
-  <input id="email" type="email" autocomplete="email" required placeholder="voce@exemplo.com">
-  <label>Senha</label>
-  <input id="senha" type="password" autocomplete="current-password" required>
+
+  <label for="email">E-mail</label>
+  <!-- validação nativa: exige algo@algo.tld -->
+  <input id="email" type="email" autocomplete="username" required
+         pattern="^[^\s@]+@[^\s@]+\.[^\s@]{2,}$" placeholder="voce@exemplo.com">
+
+  <label for="senha">Senha</label>
+  <div class="pwd-wrap">
+    <input id="senha" type="password" autocomplete="current-password" required>
+    <button id="toggleSenha" class="pwd-toggle" type="button" aria-label="Mostrar senha">👁️</button>
+  </div>
+
+  <!-- Se você tiver confirmação de senha nesta página, mantenha o id="confirmSenha" que o script já liga no olho -->
+  <!--
+  <label for="confirmSenha">Confirmar senha</label>
+  <div class="pwd-wrap">
+    <input id="confirmSenha" type="password" autocomplete="new-password" required>
+    <button id="toggleConfirm" class="pwd-toggle" type="button" aria-label="Mostrar confirmação">👁️</button>
+  </div>
+  -->
+
   <button class="primary" id="btnEntrar">Entrar</button>
   <button class="google" id="btnGoogle">
     <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" style="height:18px;vertical-align:middle"> Entrar com Google
@@ -50,7 +75,7 @@
 </div>
 
 <!-- POPUP -->
-<div id="alert" class="alert-bg" role="dialog" aria-modal="true" aria-labelledby="alertTitle">
+<div id="alert" class="alert-bg" role="dialog" aria-modal="true" aria-labelledby="alertTitle" aria-live="polite">
   <div class="alert-card">
     <div class="alert-head">
       <div class="alert-dot"></div>
@@ -72,7 +97,7 @@ const app = initializeApp({
   apiKey:"AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
   authDomain:"mostreaki-2025.firebaseapp.com",
   projectId:"mostreaki-2025",
-  storageBucket:"mostreaki-2025.appspot.com",
+  storageBucket:"mostreaki-2025.firebasestorage.app", // alinhado; não é usado aqui, mas deixei consistente
   messagingSenderId:"748712068097",
   appId:"1:748712068097:web:09cf043fbb45917ef6ec00"
 });
@@ -102,13 +127,34 @@ window.addEventListener('keydown', e=>{ if(e.key==='Escape' && alertBG.style.dis
 
 const $ = (id)=>document.getElementById(id);
 
+/* Toggle de senha (👁️/🙈) aproveitável em qualquer input */
+function wirePasswordToggle(inputId, btnId){
+  const input = $(inputId), btn = $(btnId);
+  if(!input || !btn) return;
+  function flip(){
+    const showing = input.type === 'text';
+    input.type = showing ? 'password' : 'text';
+    btn.textContent = showing ? '👁️' : '🙈';
+    btn.setAttribute('aria-label', showing ? 'Mostrar senha' : 'Ocultar senha');
+  }
+  btn.addEventListener('click', flip);
+}
+wirePasswordToggle('senha','toggleSenha');
+wirePasswordToggle('confirmSenha','toggleConfirm'); // só ativa se existir
+
+/* Validação leve antes de chamar o Firebase */
+function emailValido(valor){
+  // usa o mesmo padrão do input (algo@algo.tld com TLD >=2 chars)
+  return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(valor);
+}
+
 /* Entrar por e-mail/senha */
-$("btnEntrar").onclick = async ()=>{
+async function loginEmailSenha(){
   const email = $("email").value.trim();
   const senha = $("senha").value;
 
-  if(!email) return showAlert({title:"E-mail errado", html:"Digite seu e-mail corretamente para continuar."});
   if(!email) return showAlert({title:"E-mail vazio", html:"Digite seu e-mail para continuar."});
+  if(!emailValido(email)) return showAlert({title:"E-mail inválido", html:"Revise o endereço digitado."});
   if(!senha) return showAlert({title:"Senha vazia", html:"Digite sua senha para continuar."});
 
   try{
@@ -121,9 +167,7 @@ $("btnEntrar").onclick = async ()=>{
         title:"Confirme seu e-mail",
         html:`Seu e-mail ainda não foi verificado.<br>
               Reenviamos o link para <b>${email}</b>. Verifique sua caixa de entrada (ou spam) e tente novamente após confirmar.`,
-        actions:[
-          {text:"OK, vou verificar", kind:"solid"}
-        ]
+        actions:[ {text:"OK, vou verificar", kind:"solid"} ]
       });
       await signOut(auth);
       return;
@@ -134,13 +178,16 @@ $("btnEntrar").onclick = async ()=>{
     location.href="/minha-conta.html";
 
   }catch(e){
-    const {title, html} = mapLoginErro(e.code, email);
-    showAlert({title, html, actions:[
-      ...(e.code==="auth/user-not-found" ? [{text:"Cadastrar", kind:"ghost", onClick:()=>location.href="/cadastro.html"}] : []),
-      {text:"Fechar", kind:"solid"}
-    ]});
+    const {title, html, actions=[]} = mapLoginErro(e.code, email);
+    showAlert({title, html, actions:[...actions, {text:"Fechar", kind:"solid"}]});
   }
-};
+}
+$("btnEntrar").onclick = loginEmailSenha;
+
+/* Enter para enviar */
+document.addEventListener('keydown', (ev)=>{
+  if(ev.key === 'Enter') loginEmailSenha();
+});
 
 /* Google */
 $("btnGoogle").onclick = async ()=>{
@@ -148,10 +195,9 @@ $("btnGoogle").onclick = async ()=>{
     const prov=new GoogleAuthProvider();
     const r = await signInWithPopup(auth, prov);
     if(r.user.photoURL) localStorage.setItem("fotoPerfil", r.user.photoURL);
-    // Google geralmente já vem verificado
-    location.href="/minha-conta.html";
+    location.href="/minha-conta.html"; // Google normalmente já vem verificado
   }catch(e){
-    showAlert({title:"Google indisponível", html:"Tente novamente em alguns instantes."});
+    showAlert({title:"Google indisponível", html:"Tente novamente em instantes."});
   }
 };
 
@@ -160,20 +206,35 @@ onAuthStateChanged(auth, (u)=>{
   if(u && u.emailVerified) location.href="/minha-conta.html";
 });
 
+/* Mapeamento de erros – unificando credenciais inválidas */
 function mapLoginErro(code, email){
   switch(code){
     case "auth/invalid-email":
       return {title:"E-mail inválido", html:"Revise o endereço digitado."};
-    case "auth/user-not-found":
-      return {title:"Conta não encontrada", html:`Não encontramos cadastro para <b>${email}</b>.`};
+
+    case "auth/invalid-credential": // formato ok, mas usuário não existe OU senha incorreta
     case "auth/wrong-password":
-      return {title:"Senha incorreta", html:"Verifique sua senha e tente novamente."};
+    case "auth/user-not-found":
+      return {
+        title:"Não conseguimos entrar",
+        html:"E-mail e/ou senha incorretos. Você pode tentar novamente ou recuperar a senha.",
+        actions:[
+          {text:"Recuperar senha", kind:"ghost", onClick:()=>location.href="/recuperar-senha.html"},
+          {text:"Cadastrar", kind:"ghost", onClick:()=>location.href="/cadastro.html"}
+        ]
+      };
+
     case "auth/too-many-requests":
-      return {title:"Muitas tentativas", html:"Você tentou diversas vezes. Aguarde alguns minutos e tente novamente."};
+      return {title:"Muitas tentativas", html:"Aguarde alguns minutos e tente novamente ou redefina a senha."};
+
     case "auth/network-request-failed":
-      return {title:"Sem conexão", html:"Falha de rede. Verifique sua internet e tente novamente."};
+      return {title:"Sem conexão", html:"Verifique sua internet e tente novamente."};
+
+    case "auth/user-disabled":
+      return {title:"Conta desabilitada", html:"Fale com o suporte para reativação."};
+
     default:
-      return {title:"Não foi possível entrar", html:`Erro inesperado (${code}). Tente novamente.`};
+      return {title:"Erro", html:`Erro inesperado (${code}). Tente novamente.`};
   }
 }
 </script>
