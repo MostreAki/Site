@@ -16,7 +16,6 @@
     @media (min-width: 768px) {
       body { background-image: url("fundo-desktop.png"); }
     }
-
     header {
       background-color: #c2e7df;
       height: 60px;
@@ -27,7 +26,6 @@
       position: relative;
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
-
     .logo-container { display: flex; align-items: center; cursor: pointer; }
     .logo-container img { height: 40px; margin-right: 10px; }
     .logo { font-size: 1.5rem; font-weight: bold; }
@@ -47,7 +45,6 @@
       padding: 10px;
       z-index: 10000;
     }
-
     .menu-list a {
       background-color: #FA1E39;
       color: white;
@@ -77,234 +74,332 @@
     }
 
     .planos-imagens {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-      justify-content: center;
-      margin: 40px auto;
-      padding: 20px;
-      max-width: 1200px;
+      display: flex; flex-wrap: wrap; gap: 20px;
+      justify-content: center; margin: 40px auto; padding: 20px; max-width: 1200px;
     }
-
-    .plano {
-      flex: 1 1 300px;
-      max-width: 360px;
-      text-align: center;
-    }
-
-    .plano img {
-      width: 100%;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-
+    .plano { flex: 1 1 300px; max-width: 360px; text-align: center; }
+    .plano a.cta { display:block; border-radius:12px; overflow:hidden; }
+    .plano img { width: 100%; display:block;
+      border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
     .descricao {
-      background: #fff;
-      margin-top: 10px;
-      padding: 15px;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      background: #fff; margin-top: 10px; padding: 15px;
+      border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
+    .descricao h3 { color: #0e7270; margin-bottom: 8px; }
+    .descricao p { font-size: 0.95rem; color: #444; line-height: 1.5; }
 
-    .descricao h3 {
-      color: #0e7270;
-      margin-bottom: 8px;
-    }
+    footer { background-color: #c2e7df; padding: 20px; text-align: center; color: #555; font-size: 0.9rem; }
 
-    .descricao p {
-      font-size: 0.95rem;
-      color: #444;
-      line-height: 1.5;
-    }
+    /* Modal Termos (sem PDF) */
+    :root{--brand:#15b0af;--brandLight:#c2e7df;--accent:#FA1E39;--ink:#063b39;}
+    .btn{border:0;border-radius:10px;padding:10px 14px;font-weight:bold;cursor:pointer}
+    .btn-primary{background:var(--brand);color:#fff}
+    .btn-ghost{background:#fff;border:2px solid var(--brand);color:var(--brand)}
+    .tm-bg{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:9999;padding:16px}
+    .tm-card{background:#fff;border:2px solid var(--brandLight);border-radius:14px;max-width:720px;width:100%;box-shadow:0 22px 70px rgba(0,0,0,.25);overflow:hidden}
+    .tm-head{display:flex;align-items:center;gap:10px;background:linear-gradient(90deg,var(--brandLight),var(--brand));padding:12px 14px}
+    .tm-dot{width:10px;height:10px;border-radius:50%;background:var(--accent)}
+    .tm-title{color:var(--ink);font-weight:bold}
+    .tm-x{margin-left:auto;background:transparent;border:0;font-size:18px;cursor:pointer;color:#355}
+    .tm-body{max-height:50vh;overflow:auto;padding:16px 16px 8px;color:#223;line-height:1.55}
+    .tm-check{display:flex;align-items:center;gap:10px;padding:8px 16px;color:#234}
+    .tm-actions{display:flex;gap:10px;justify-content:flex-end;padding:0 16px 16px}
 
-    footer {
-      background-color: #c2e7df;
-      padding: 20px;
-      text-align: center;
-      color: #555;
-      font-size: 0.9rem;
-    }
+    /* Popup de aviso simples (não logado) */
+    .toast{position:fixed;top:16px;right:16px;background:#FA1E39;color:#fff;padding:12px 14px;border-radius:10px;
+      box-shadow:0 6px 18px rgba(0,0,0,.2);display:none;z-index:99999;font-weight:bold}
   </style>
 </head>
 <body>
 
-  <header>
-    <div class="logo-container" onclick="location.href='index.html'">
-      <img src="logo.png" alt="Logo">
-      <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
-    </div>
-    <div style="display:flex;align-items:center;gap:10px;">
-      <span id="authText" style="font-weight:bold;color:#15b0af;cursor:pointer;display:none">Entrar</span>
-      <div id="userCircle" class="user-circle" title="Perfil">F</div>
-      <!-- removido onclick inline; JS cuida do toggle -->
-      <div id="menuBtn" class="menu-icon" aria-controls="menu" aria-expanded="false">☰</div>
-    </div>
-    <nav class="menu-list" id="menu">
-      <a href="/index.html">Página Inicial</a>
-      <a href="/sobre.html">Sobre</a>
-      <a href="/minha-conta.html">Minha Conta</a>
-      <a href="/parceiros.html">Parceiros</a>
-      <a href="/servicos-adicionais.html">Serviços Adicionais</a>
-      <a href="/redes-sociais.html">Redes Sociais</a>
-      <a href="/contatos.html">Contatos</a>
-    </nav>
-  </header>
+<header>
+  <div class="logo-container" onclick="location.href='index.html'">
+    <img src="logo.png" alt="Logo">
+    <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <span id="authText" style="font-weight:bold;color:#15b0af;cursor:pointer;display:none">Entrar</span>
+    <div id="userCircle" class="user-circle" title="Perfil">F</div>
+    <div id="menuBtn" class="menu-icon" aria-controls="menu" aria-expanded="false">☰</div>
+  </div>
+  <nav class="menu-list" id="menu">
+    <a href="/index.html">Página Inicial</a>
+    <a href="/sobre.html">Sobre</a>
+    <a href="/minha-conta.html">Minha Conta</a>
+    <a href="/parceiros.html">Parceiros</a>
+    <a href="/servicos-adicionais.html">Serviços Adicionais</a>
+    <a href="/redes-sociais.html">Redes Sociais</a>
+    <a href="/contatos.html">Contatos</a>
+  </nav>
+</header>
 
-  <main>
-    <div class="planos-imagens">
-
-      <div class="plano">
-        <a href="/pagamento-plano-1.html"><img src="/plano-basico.svg" alt="Plano Básico"/></a>
-        <div class="descricao">
-          <h3>Plano Básico</h3>
-          <p>Para quem quer presença digital sem complicação: site moderno, Instagram ativo e suporte direto pelo WhatsApp.</p>
-        </div>
+<main>
+  <div class="planos-imagens">
+    <div class="plano">
+      <a href="#" class="cta" data-plan="basico" aria-label="Assinar Plano Básico">
+        <img src="/plano-basico.svg" alt="Plano Básico"/>
+      </a>
+      <div class="descricao">
+        <h3>Plano Básico</h3>
+        <p>Para quem quer presença digital sem complicação: site moderno, Instagram ativo e suporte direto pelo WhatsApp.</p>
       </div>
-
-      <div class="plano">
-        <a href="/pagamento-plano-2.html"><img src="/plano-intermediario.svg" alt="Plano Intermediário"/></a>
-        <div class="descricao">
-          <h3>Plano Essencial</h3>
-          <p>Perfeito para negócios em crescimento que querem se destacar.</p>
-        </div>
-      </div>
-
-      <div class="plano">
-        <a href="/pagamento-plano-3.html"><img src="/plano-avancado.svg" alt="Plano Avançado"/></a>
-        <div class="descricao">
-          <h3>Plano Avançado</h3>
-          <p>A escolha de empresas que buscam máxima visibilidade e resultados rápidos.</p>
-        </div>
-      </div>
-
     </div>
-  </main>
 
-  <footer>
-    &copy; 2025 MostreAki. Todos os direitos reservados.
-  </footer>
+    <div class="plano">
+      <a href="#" class="cta" data-plan="essencial" aria-label="Assinar Plano Essencial">
+        <img src="/plano-intermediario.svg" alt="Plano Essencial"/>
+      </a>
+      <div class="descricao">
+        <h3>Plano Essencial</h3>
+        <p>Perfeito para negócios em crescimento que querem se destacar.</p>
+      </div>
+    </div>
 
-  <!-- SCRIPT ÚNICO: avatar + menu (bucket .firebasestorage.app alinhado) -->
-  <script type="module">
-  import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-  import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-  import { getFirestore, doc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-  import { getStorage, ref, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
+    <div class="plano">
+      <a href="#" class="cta" data-plan="avancado" aria-label="Assinar Plano Avançado">
+        <img src="/plano-avancado.svg" alt="Plano Avançado"/>
+      </a>
+      <div class="descricao">
+        <h3>Plano Avançado</h3>
+        <p>A escolha de empresas que buscam máxima visibilidade e resultados rápidos.</p>
+      </div>
+    </div>
+  </div>
+</main>
 
-  const cfg = {
-    apiKey: 'AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE',
-    authDomain: 'mostreaki-2025.firebaseapp.com',
-    projectId: 'mostreaki-2025',
-    storageBucket: 'mostreaki-2025.firebasestorage.app', // sem gs://
-    messagingSenderId: '748712068097',
-    appId: '1:748712068097:web:09cf043fbb45917ef6ec00'
-  };
-  const app = getApps().length ? getApp() : initializeApp(cfg);
-  const auth = getAuth(app);
-  const db   = getFirestore(app);
-  // força bucket correto com gs://
-  const stg  = getStorage(app, 'gs://mostreaki-2025.firebasestorage.app');
+<footer>
+  &copy; 2025 MostreAki. Todos os direitos reservados.
+</footer>
 
-  const $ = s => document.querySelector(s);
-  const circle = () => document.getElementById('userCircle') || document.querySelector('.user-circle');
+<!-- Modal de Termos (sem PDF) -->
+<div id="termosModal" class="tm-bg" style="display:none" aria-hidden="true">
+  <div class="tm-card" role="dialog" aria-modal="true" aria-labelledby="tmTitle">
+    <div class="tm-head">
+      <div class="tm-dot"></div>
+      <div class="tm-title" id="tmTitle">Termos de Assinatura – MostreAki</div>
+      <button class="tm-x" onclick="fecharTermos()" aria-label="Fechar">✖</button>
+    </div>
+    <div id="tmBody" class="tm-body">
+      <p><b>Teste (D0–D7):</b> site no subdomínio da MostreAki. <b>D8:</b> captura do 1º ciclo e registro do domínio em nome do cliente.</p>
+      <p><b>Arrependimento (CDC art. 49):</b> até 7 dias, reembolso integral. Após o 7º dia, não há pró-rata do mês corrente.</p>
+      <p>Domínio em nome do cliente; portabilidade e snapshot de DNS na saída; LGPD; limite de responsabilidade (1 ciclo); foro do consumidor.</p>
+      <p>Leia a versão completa em <a href="/termos.html" target="_blank" rel="noopener">/termos.html</a>.</p>
+      <p style="margin:0;color:#666"><i>Role até o fim para habilitar o aceite.</i></p>
+    </div>
+    <label class="tm-check">
+      <input id="tmAceite" type="checkbox" disabled>
+      <span>Li e aceito os Termos (versão <b id="tmVer">1.0</b>).</span>
+    </label>
+    <div class="tm-actions">
+      <button class="btn btn-ghost" onclick="fecharTermos()">Cancelar</button>
+      <button id="tmProsseguir" class="btn btn-primary" disabled>Concordo e prosseguir</button>
+    </div>
+  </div>
+</div>
 
-  const cacheBust = u => u ? u + (u.includes('?')?'&':'?') + 'v=' + Date.now() : u;
+<div id="toast" class="toast">Faça login para continuar.</div>
 
-  function setAvatar(url){
-    if (!url) return;
-    localStorage.setItem('fotoPerfil', url);
-    const el = circle(); if (!el) return;
-    el.textContent = ''; el.style.display = 'flex';
-    const img = new Image();
-    img.src = cacheBust(url); img.alt = 'Foto';
-    img.style.width='100%'; img.style.height='100%'; img.style.objectFit='cover';
-    el.append(img);
-  }
+<!-- SCRIPT: avatar + menu + gating + modal termos + registro de aceite -->
+<script type="module">
+import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+import { getStorage, ref, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
 
-  // Preenche rápido com cache (evita mostrar a letra)
-  (() => { const c = localStorage.getItem('fotoPerfil'); if (c) setAvatar(c); })();
+const cfg = {
+  apiKey: 'AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE',
+  authDomain: 'mostreaki-2025.firebaseapp.com',
+  projectId: 'mostreaki-2025',
+  storageBucket: 'mostreaki-2025.firebasestorage.app', // sem gs://
+  messagingSenderId: '748712068097',
+  appId: '1:748712068097:web:09cf043fbb45917ef6ec00'
+};
+const app = getApps().length ? getApp() : initializeApp(cfg);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+const stg  = getStorage(app, 'gs://mostreaki-2025.firebasestorage.app');
 
-  async function prefetchFoto(uid){
-    // 1) provedor (Google)
-    if (auth.currentUser?.photoURL) { setAvatar(auth.currentUser.photoURL); return; }
-    // 2) Firestore
-    try {
-      const s = await getDoc(doc(db,'usuarios',uid));
-      const saved = s.exists() && s.data().fotoPerfil;
-      if (saved) { setAvatar(saved); return; }
-    } catch {}
-    // 3) Storage direto (jpg/png/webp/gif)
+const TERMS_VERSION = "1.0";
+
+const $ = s => document.querySelector(s);
+const circle = () => document.getElementById('userCircle') || document.querySelector('.user-circle');
+
+function toast(msg='Faça login para continuar.'){
+  const t = $('#toast'); t.textContent = msg; t.style.display='block';
+  setTimeout(()=> t.style.display='none', 2500);
+}
+
+const cacheBust = u => u ? u + (u.includes('?')?'&':'?') + 'v=' + Date.now() : u;
+
+function setAvatar(url){
+  if (!url) return;
+  localStorage.setItem('fotoPerfil', url);
+  const el = circle(); if (!el) return;
+  el.textContent = ''; el.style.display = 'flex';
+  const img = new Image();
+  img.src = cacheBust(url); img.alt = 'Foto';
+  img.style.width='100%'; img.style.height='100%'; img.style.objectFit='cover';
+  el.append(img);
+}
+// Preenche rápido com cache local
+(() => { const c = localStorage.getItem('fotoPerfil'); if (c) setAvatar(c); })();
+
+// ORDEM CORRIGIDA: Firestore → Storage → photoURL do provedor
+async function prefetchFoto(uid){
+  // 1) Firestore (se tem foto customizada, ela manda)
+  try {
+    const s = await getDoc(doc(db,'usuarios',uid));
+    const saved = s.exists() && s.data().fotoPerfil;
+    if (saved) { setAvatar(saved); return; }
+  } catch {}
+
+  // 2) Storage direto (jpg/png/webp/gif)
+  try {
     const tryExt = async e => getDownloadURL(ref(stg, `usuarios/${uid}/perfil/avatar.${e}`)).catch(()=>null);
     const direct = await tryExt('jpg') || await tryExt('png') || await tryExt('webp') || await tryExt('gif');
     if (direct) {
       try { await setDoc(doc(db,'usuarios',uid), { fotoPerfil: direct }, { merge:true }); } catch {}
-      setAvatar(direct);
+      setAvatar(direct); return;
     }
-  }
+  } catch {}
 
-  // MENU: toggle com clique fora + ESC
-  function wireMenu(){
-    const btn  = document.getElementById('menuBtn') || document.querySelector('.menu-icon');
-    const menu = document.getElementById('menu');
-    if (!btn || !menu) return;
+  // 3) photoURL do provedor (Google etc.) — só se não tiver custom
+  if (auth.currentUser?.photoURL) { setAvatar(auth.currentUser.photoURL); }
+}
 
-    btn.setAttribute('aria-controls', 'menu');
+// MENU: toggle com clique fora + ESC
+function wireMenu(){
+  const btn  = document.getElementById('menuBtn') || document.querySelector('.menu-icon');
+  const menu = document.getElementById('menu');
+  if (!btn || !menu) return;
+
+  btn.setAttribute('aria-controls', 'menu');
+  btn.setAttribute('aria-expanded', 'false');
+
+  if (getComputedStyle(menu).position === 'static') menu.style.position = 'absolute';
+  if (!menu.style.zIndex) menu.style.zIndex = '10000';
+
+  const open = () => {
+    menu.style.display = 'flex';
+    btn.setAttribute('aria-expanded', 'true');
+    document.addEventListener('click', onDoc, true);
+    document.addEventListener('keydown', onKey);
+  };
+  const close = () => {
+    menu.style.display = 'none';
     btn.setAttribute('aria-expanded', 'false');
+    document.removeEventListener('click', onDoc, true);
+    document.removeEventListener('keydown', onKey);
+  };
+  const toggle = () => (menu.style.display === 'flex' ? close() : open());
+  function onDoc(e){ if (!menu.contains(e.target) && e.target !== btn) close(); }
+  function onKey(e){ if (e.key === 'Escape') close(); }
+  btn.addEventListener('click', (e)=>{ e.stopPropagation(); toggle(); });
+}
 
-    if (getComputedStyle(menu).position === 'static') menu.style.position = 'absolute';
-    if (!menu.style.zIndex) menu.style.zIndex = '10000';
-
-    const open = () => {
-      menu.style.display = 'flex';
-      btn.setAttribute('aria-expanded', 'true');
-      document.addEventListener('click', onDoc, true);
-      document.addEventListener('keydown', onKey);
-    };
-    const close = () => {
-      menu.style.display = 'none';
-      btn.setAttribute('aria-expanded', 'false');
-      document.removeEventListener('click', onDoc, true);
-      document.removeEventListener('keydown', onKey);
-    };
-    const toggle = () => (menu.style.display === 'flex' ? close() : open());
-
-    function onDoc(e){ if (!menu.contains(e.target) && e.target !== btn) close(); }
-    function onKey(e){ if (e.key === 'Escape') close(); }
-
-    btn.addEventListener('click', (e)=>{ e.stopPropagation(); toggle(); });
-  }
-
-  // AUTH UI (Entrar/Sair + avatar)
-  function wireAuthUI(){
-    const at = document.getElementById('authText');
-    onAuthStateChanged(auth, user => {
-      if (user) {
-        if (at) {
-          at.textContent = 'Sair';
-          at.style.display = 'inline';
-          at.onclick = async () => {
-            await signOut(auth);
-            localStorage.removeItem('fotoPerfil');
-            location = '/index.html';
-          };
-        }
-        prefetchFoto(user.uid);
-      } else {
-        if (at) {
-          at.textContent = 'Entrar';
-          at.style.display = 'inline';
-          at.onclick = () => location = '/index.html';
-        }
-        // se quiser esconder o círculo deslogado: circle()?.style.display = 'none';
+// AUTH UI
+function wireAuthUI(){
+  const at = document.getElementById('authText');
+  onAuthStateChanged(auth, user => {
+    if (user) {
+      if (at) {
+        at.textContent = 'Sair';
+        at.style.display = 'inline';
+        at.onclick = async () => {
+          await signOut(auth);
+          localStorage.removeItem('fotoPerfil');
+          location = '/index.html';
+        };
       }
-    });
-  }
+      prefetchFoto(user.uid);
+    } else {
+      if (at) {
+        at.textContent = 'Entrar';
+        at.style.display = 'inline';
+        at.onclick = () => location = '/login.html';
+      }
+    }
+  });
+}
 
-  function boot(){
-    wireMenu();
-    wireAuthUI();
-  }
-  document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', boot) : boot();
-  </script>
+// GATE: só permite prosseguir se estiver logado
+function wirePlanCTAs(){
+  const links = document.querySelectorAll('a.cta[data-plan]');
+  links.forEach(a=>{
+    a.addEventListener('click', (ev)=>{
+      ev.preventDefault();
+      const user = auth.currentUser;
+      if(!user){ toast(); location.href = '/login.html'; return; }
+      abrirTermos(a.dataset.plan);
+    });
+  });
+}
+
+/* ===== Modal de Termos (sem PDF) ===== */
+document.getElementById('tmVer').textContent = TERMS_VERSION;
+let planContext = null;
+
+window.abrirTermos = (planId) => {
+  planContext = planId;
+  const m = document.getElementById('termosModal');
+  const b = document.getElementById('tmBody');
+  const ace = document.getElementById('tmAceite');
+  const go = document.getElementById('tmProsseguir');
+
+  ace.checked = false; ace.disabled = true; go.disabled = true;
+  m.style.display = 'flex'; m.setAttribute('aria-hidden','false');
+
+  let scrolledBottom = false;
+  const onScroll = () => {
+    const atBottom = Math.ceil(b.scrollTop + b.clientHeight) >= b.scrollHeight;
+    if(atBottom && !scrolledBottom){
+      scrolledBottom = true;
+      ace.disabled = false;
+    }
+  };
+  b.addEventListener('scroll', onScroll, { passive:true });
+
+  ace.onchange = () => { go.disabled = !ace.checked; };
+
+  go.onclick = async () => {
+    const user = auth.currentUser;
+    if(!user){ toast(); location.href='/login.html'; return; }
+
+    try {
+      const ref = doc(db, 'consentimentos', `${user.uid}_${TERMS_VERSION}`);
+      await setDoc(ref, {
+        uid: user.uid,
+        version: TERMS_VERSION,
+        plan: planContext,
+        acceptedAt: serverTimestamp(),
+        userAgent: navigator.userAgent
+      }, { merge:true });
+    } catch(e){ console.error('Falha ao salvar aceite:', e); }
+
+    fecharTermos();
+    iniciarAssinatura(planContext);
+  };
+};
+
+window.fecharTermos = () => {
+  const m = document.getElementById('termosModal');
+  m.style.display = 'none';
+  m.setAttribute('aria-hidden','true');
+};
+
+// Troque pelos seus destinos reais (ou checkout do Mercado Pago)
+function iniciarAssinatura(planId){
+  const route = {
+    basico: '/pagamento-plano-1.html',
+    essencial: '/pagamento-plano-2.html',
+    avancado: '/pagamento-plano-3.html'
+  }[planId] || '/minha-conta.html';
+  location.href = route;
+}
+
+/* boot */
+function boot(){ wireMenu(); wireAuthUI(); wirePlanCTAs(); }
+document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', boot) : boot();
+</script>
 </body>
 </html>
