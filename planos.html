@@ -427,7 +427,7 @@ function iniciarFluxoAssinatura(planId){
 }
 function redirecionarPagamento(planId){
   const route = {
-    basico:   'https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=ce0e5a155db04917b2a79a435e8b4b0ea', // ✅ link do MP – Plano Básico
+    basico:   'https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=ce0e5a155db04917b2a79a435e8b4b0e', // ✅ link do MP – Plano Básico
     essencial:'https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=5ca06daa66b649188a8d2e23470d2f33',
     avancado: 'https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=9545b20e2d01418bac34e421626de39a'
   }[planId] || '/minha-conta.html';
