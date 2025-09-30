@@ -13,20 +13,19 @@
   input{width:100%;padding:10px;border:1px solid #ddd;border-radius:8px}
   button,.btn{width:100%;margin-top:12px;padding:12px;border-radius:8px;border:0;font-weight:bold;cursor:pointer}
   .primary{background:var(--brand);color:#fff}
-  .google{background:#fff;border:2px solid #ddd}
   .muted{font-size:.9rem;color:#666;margin-top:10px}
   a{color:var(--brand);text-decoration:none;font-weight:bold}
 
-  /* Campo de senha com botão olho responsivo */
+  /* Campo de senha com botão olho — ajustes responsivos */
   .pwd-wrap{position:relative}
-  .pwd-wrap input{padding-right:px;} /* espaço pro botão */
+  .pwd-wrap input{padding-right:16%} /* espaço pro botão */
   .pwd-toggle{
-    position:absolute; right:8px; top:16%; transform:translateY(-50%);
-    width:6px; height:6px; display:flex; align-items:center; justify-content:center;
-    background:#fff; border:1px solid #ddd; border-radius:8px; cursor:pointer;
+    position:absolute; right:8px; top:20%;
+    width:36px; height:36px; display:flex; align-items:center; justify-content:center;
+    background:#fff; border:1px solid #ddd; border-radius:6px; cursor:pointer;
     font-size:18px; line-height:1; color:#444;
   }
-  .pwd-toggle:active{transform:translateY(-50%) scale(.98)}
+  .pwd-toggle:active{transform:scale(.98)}
 
   /* POPUP */
   .alert-bg{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:9999;padding:20px}
@@ -59,9 +58,6 @@
   </div>
 
   <button class="primary" id="btnEntrar">Entrar</button>
-  <button class="google" id="btnGoogle">
-    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" style="height:18px;vertical-align:middle"> Entrar com Google
-  </button>
 
   <div id="recoverLine" class="muted">
     Esqueceu a senha? <a href="/recuperar-senha.html">Recuperar senha</a>
@@ -85,7 +81,7 @@
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
 import {
-  getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider,
+  getAuth, signInWithEmailAndPassword,
   onAuthStateChanged, sendEmailVerification, signOut
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 
@@ -122,8 +118,8 @@ window.addEventListener('keydown', e=>{ if(e.key==='Escape' && alertBG.style.dis
 const $ = (id)=>document.getElementById(id);
 
 /* Toggle olho */
-function wirePasswordToggle(inputId, btnId){
-  const input = $(inputId), btn = $(btnId);
+(function wirePasswordToggle(){
+  const input = $("senha"), btn = $("toggleSenha");
   if(!input || !btn) return;
   function flip(){
     const showing = input.type === 'text';
@@ -133,12 +129,11 @@ function wirePasswordToggle(inputId, btnId){
     btn.setAttribute('aria-label', showing ? 'Mostrar senha' : 'Ocultar senha');
   }
   btn.addEventListener('click', flip);
-}
-wirePasswordToggle('senha','toggleSenha');
+})();
 
 /* Validação leve */
 const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-function emailValido(v){ return emailRe.test(v); }
+const emailValido = v => emailRe.test(v);
 
 /* Trava de tentativas local (UX): 5 falhas => bloqueia 30s (exponencial) */
 function getState(){
@@ -151,13 +146,11 @@ function getState(){
   return s;
 }
 function setState(s){ sessionStorage.setItem('loginState', JSON.stringify(s)); }
-function isLocked(){
-  const s=getState(); return s.lockUntil && Date.now()<s.lockUntil;
-}
+function isLocked(){ const s=getState(); return s.lockUntil && Date.now()<s.lockUntil; }
 function lockMore(){
   const s=getState();
   const base=30000; // 30s
-  s.blockMult = Math.min(s.blockMult*2, 8); // limita o crescimento
+  s.blockMult = Math.min(s.blockMult*2, 8);
   s.lockUntil = Date.now() + base * s.blockMult;
   setState(s);
 }
@@ -166,9 +159,7 @@ function incFail(){
   if(s.failCount>=5){ s.failCount=0; lockMore(); }
   setState(s);
 }
-function resetFails(){
-  const s=getState(); s.failCount=0; s.blockMult=1; s.lockUntil=0; setState(s);
-}
+function resetFails(){ setState({failCount:0, blockMult:1, lockUntil:0}); }
 function showLockMsg(){
   const s=getState();
   const secs = Math.ceil((s.lockUntil - Date.now())/1000);
@@ -205,10 +196,9 @@ async function loginEmailSenha(){
     location.href="/minha-conta.html";
 
   }catch(e){
-    // Erros tratados como credencial inválida
     const codes = ["auth/invalid-credential","auth/wrong-password","auth/user-not-found"];
     if(codes.includes(e.code)){
-      $("recoverLine").style.display = "block"; // mostra “recuperar senha” após 1º erro
+      $("recoverLine").style.display = "block";
       incFail();
       if(isLocked()) return showLockMsg();
 
@@ -222,15 +212,8 @@ async function loginEmailSenha(){
         ]
       });
     }
-
-    if(e.code==="auth/too-many-requests"){
-      lockMore(); return showLockMsg();
-    }
-
-    if(e.code==="auth/invalid-email"){
-      return showAlert({title:"E-mail inválido", html:"Revise o endereço digitado."});
-    }
-
+    if(e.code==="auth/too-many-requests"){ lockMore(); return showLockMsg(); }
+    if(e.code==="auth/invalid-email"){ return showAlert({title:"E-mail inválido", html:"Revise o endereço digitado."}); }
     showAlert({title:"Erro", html:`Erro inesperado (${e.code}). Tente novamente.`});
   }
 }
@@ -239,21 +222,7 @@ $("btnEntrar").onclick = loginEmailSenha;
 /* Enter envia */
 document.addEventListener('keydown', (ev)=>{ if(ev.key === 'Enter') loginEmailSenha(); });
 
-/* Google */
-$("btnGoogle").onclick = async ()=>{
-  if(isLocked()) return showLockMsg();
-  try{
-    const prov=new GoogleAuthProvider();
-    const r = await signInWithPopup(auth, prov);
-    resetFails();
-    if(r.user.photoURL) localStorage.setItem("fotoPerfil", r.user.photoURL);
-    location.href="/minha-conta.html";
-  }catch(e){
-    showAlert({title:"Google indisponível", html:"Tente novamente em instantes."});
-  }
-};
-
-/* Se já estiver logado e verificado, manda pro painel */
+/* Já logado e verificado → painel */
 onAuthStateChanged(auth, (u)=>{ if(u && u.emailVerified) location.href="/minha-conta.html"; });
 </script>
 </body>
