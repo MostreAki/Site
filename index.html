@@ -95,14 +95,6 @@
     .btn-outline{
       background:#fff; color:#15b0af; border:2px solid #15b0af;
     }
-    .btn-google{
-      background:#fff; border:2px solid #ddd; color:#333; display:flex; align-items:center; justify-content:center; gap:8px;
-    }
-    .btn-google:hover{ border-color:#bbb; }
-    .google-icon{ height:18px; vertical-align:middle; }
-    .modal-foot{
-      padding:14px 18px; background:#f6fbfa; border-top:1px solid #e7f3f1; font-size:.9rem; color:#366; text-align:center;
-    }
 
     /* acessibilidade scroll lock (opcional) */
     .no-scroll{ overflow:hidden; }
@@ -235,15 +227,6 @@
     modal.addEventListener("click", (e)=>{ if(e.target===modal) fecharModal(); });
     window.addEventListener("keydown",(e)=>{ if(e.key==="Escape" && modal.style.display==="flex") fecharModal(); });
 
-    // Login Google (no popup)
-    window.loginComGoogle = function () {
-      const provider = new GoogleAuthProvider();
-      signInWithPopup(auth, provider)
-        .then(result => {
-          const foto = result.user.photoURL;
-          if (foto) localStorage.setItem("fotoPerfil", foto);
-          fecharModal();
-          location.reload();
         })
         .catch(error => alert("Erro ao entrar com Google: " + error.message));
     };
@@ -291,3 +274,4 @@
   </script>
 </body>
 </html>
+
