@@ -34,19 +34,18 @@
     .logo{font-size:1.5rem;font-weight:bold}
     .logo .mostre{color:#00C2BF}.logo .aki{color:#FA1E39}
 
-    /* ⬇️ Correção: avatar + hambúrguer lado a lado */
+    /* avatar + hambúrguer lado a lado */
     .header-auth{ display:flex; align-items:center; gap:10px; }
 
     .user-circle{
       background:#15b0af;color:#fff;font-weight:bold;border-radius:50%;
       width:32px;height:32px;display:flex;align-items:center;justify-content:center;
-      overflow:hidden; /* garante crop da imagem */
+      overflow:hidden;
       font-size:.9rem;
     }
     .user-circle img{ width:100%; height:100%; object-fit:cover; display:block; }
 
     .menu-icon{
-      /* ⬇️ Correção: botão com caixa fixa e centrado */
       width:32px; height:32px; display:flex; align-items:center; justify-content:center;
       line-height:1; font-size:1.5rem; cursor:pointer; user-select:none;
     }
@@ -428,9 +427,9 @@ function iniciarFluxoAssinatura(planId){
 }
 function redirecionarPagamento(planId){
   const route = {
-    basico:'/pagamento-plano-1.html',
+    basico:   'https://mpago.li/2piQPUa', // ✅ link do MP – Plano Básico
     essencial:'/pagamento-plano-2.html',
-    avancado:'/pagamento-plano-3.html'
+    avancado: '/pagamento-plano-3.html'
   }[planId] || '/minha-conta.html';
   location.href = route;
 }
