@@ -1,100 +1,117 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Planos – MostreAki</title>
   <link rel="icon" href="favicon.ico" type="image/x-icon"/>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif }
-    body {
-      background-image: url("fundo-mobile.png");
-      background-size: cover;
-      background-repeat: no-repeat;
-      background-attachment: fixed;
-    }
-    @media (min-width: 768px) {
-      body { background-image: url("fundo-desktop.png"); }
-    }
-    header {
-      background-color: #c2e7df;
-      height: 60px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 20px;
-      position: relative;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-    .logo-container { display: flex; align-items: center; cursor: pointer; }
-    .logo-container img { height: 40px; margin-right: 10px; }
-    .logo { font-size: 1.5rem; font-weight: bold; }
-    .logo .mostre { color: #00C2BF; }
-    .logo .aki { color: #FA1E39; }
+    *{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
 
-    .menu-icon { font-size: 1.5rem; cursor: pointer; user-select: none; }
-    .menu-list {
-      position: absolute;
-      top: 60px;
-      right: 20px;
-      background-color: #16807C;
-      border: 2px solid black;
-      border-radius: 6px;
-      display: none;
-      flex-direction: column;
-      padding: 10px;
-      z-index: 10000;
-    }
-    .menu-list a {
-      background-color: #FA1E39;
-      color: white;
-      text-decoration: none;
-      padding: 10px;
-      margin-bottom: 8px;
-      border-radius: 6px;
-      text-align: center;
-      font-weight: bold;
-    }
-    .menu-list a:hover { background-color: #b8313b; }
-
-    .user-circle {
-      background-color: #15b0af;
-      color: white;
-      font-weight: bold;
-      border-radius: 50%;
-      width: 32px;
-      height: 32px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background-size: cover;
-      background-position: center;
-      font-size: 0.9rem;
-      overflow: hidden;
+    :root{
+      --brand:#15b0af;        /* turquesa MostreAki */
+      --brandLight:#c2e7df;   /* verde-água clarinho */
+      --accent:#FA1E39;       /* vermelho MostreAki */
+      --ink:#063b39;          /* texto destaque */
+      --card:#ffffff;         /* fundo card */
+      --muted:#445;           /* texto secundário */
     }
 
-    .planos-imagens {
-      display: flex; flex-wrap: wrap; gap: 20px;
-      justify-content: center; margin: 40px auto; padding: 20px; max-width: 1200px;
+    body{
+      background-image:url("fundo-mobile.png");
+      background-size:cover;background-repeat:no-repeat;background-attachment:fixed;
+      color:#222;
     }
-    .plano { flex: 1 1 300px; max-width: 360px; text-align: center; }
-    .plano a.cta { display:block; border-radius:12px; overflow:hidden; }
-    .plano img { width: 100%; display:block;
-      border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-    .descricao {
-      background: #fff; margin-top: 10px; padding: 15px;
-      border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    @media (min-width:768px){ body{ background-image:url("fundo-desktop.png"); } }
+
+    header{
+      background:#c2e7df;height:60px;display:flex;align-items:center;justify-content:space-between;
+      padding:0 20px;position:relative;box-shadow:0 2px 6px rgba(0,0,0,.1);
     }
-    .descricao h3 { color: #0e7270; margin-bottom: 8px; }
-    .descricao p { font-size: 0.95rem; color: #444; line-height: 1.5; }
+    .logo-container{display:flex;align-items:center;cursor:pointer}
+    .logo-container img{height:40px;margin-right:10px}
+    .logo{font-size:1.5rem;font-weight:bold}
+    .logo .mostre{color:#00C2BF}.logo .aki{color:#FA1E39}
 
-    footer { background-color: #c2e7df; padding: 20px; text-align: center; color: #555; font-size: 0.9rem; }
+    .menu-icon{font-size:1.5rem;cursor:pointer;user-select:none}
+    .menu-list{
+      position:absolute;top:60px;right:20px;background:#16807C;border:2px solid #000;border-radius:6px;
+      display:none;flex-direction:column;padding:10px;z-index:10000;
+    }
+    .menu-list a{
+      background:#FA1E39;color:#fff;text-decoration:none;padding:10px;margin-bottom:8px;border-radius:6px;
+      text-align:center;font-weight:bold;
+    }
+    .menu-list a:hover{background:#b8313b}
 
-    /* Modal Termos (sem PDF) */
-    :root{--brand:#15b0af;--brandLight:#c2e7df;--accent:#FA1E39;--ink:#063b39;}
-    .btn{border:0;border-radius:10px;padding:10px 14px;font-weight:bold;cursor:pointer}
-    .btn-primary{background:var(--brand);color:#fff}
-    .btn-ghost{background:#fff;border:2px solid var(--brand);color:var(--brand)}
+    .user-circle{
+      background:#15b0af;color:#fff;font-weight:bold;border-radius:50%;
+      width:32px;height:32px;display:flex;align-items:center;justify-content:center;
+      background-size:cover;background-position:center;font-size:.9rem;overflow:hidden;
+    }
+
+    main{max-width:1200px;margin:40px auto;padding:0 18px}
+
+    /* ===== Pricing ===== */
+    .pricing-head{
+      text-align:center;margin-bottom:22px;
+    }
+    .pricing-head h1{color:var(--ink);font-size:1.9rem;margin-bottom:6px}
+    .pricing-head p{color:#333;font-size:1.05rem}
+
+    .grid{
+      display:grid;gap:18px;
+      grid-template-columns:1fr;
+    }
+    @media (min-width:720px){ .grid{grid-template-columns:repeat(2,1fr)} }
+    @media (min-width:1040px){ .grid{grid-template-columns:repeat(3,1fr)} }
+
+    .card{
+      background:var(--card);border:1px solid #e6f3f1;border-radius:14px;
+      box-shadow:0 6px 20px rgba(0,0,0,.06);overflow:hidden;display:flex;flex-direction:column;
+      transition:transform .15s, box-shadow .15s;
+    }
+    .card:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(0,0,0,.10)}
+    .card-head{
+      background:linear-gradient(90deg,var(--brandLight),var(--brand));
+      padding:16px 16px 14px;border-bottom:1px solid #cfeee9;
+      display:flex;align-items:center;gap:10px;justify-content:space-between;
+    }
+    .card-title{font-weight:bold;color:var(--ink);font-size:1.15rem}
+    .selector{display:flex;align-items:center;gap:8px;color:#0b4d4c;font-weight:bold}
+    .selector input{width:18px;height:18px}
+
+    .card-body{padding:16px 16px 8px;flex:1}
+    .feat{list-style:none;color:#273;line-height:1.55;font-size:1rem}
+    .feat li{display:flex;gap:8px;margin:8px 0}
+    .feat li::before{content:"✔";color:var(--brand);font-weight:bold}
+
+    .price-row{
+      margin-top:12px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap
+    }
+    .price{
+      font-size:1.6rem;color:#0e7270;font-weight:900;letter-spacing:.3px
+    }
+    .mp-slot{
+      display:flex;align-items:center;gap:8px
+    }
+    .mp-slot img{
+      height:30px;width:auto;display:block;filter:saturate(.95) contrast(1.05)
+    }
+    .assinar{
+      margin:14px 16px 16px;
+      background:var(--brand);color:#fff;border:0;border-radius:10px;padding:12px 14px;
+      font-weight:bold;cursor:pointer;width:100%;font-size:1.05rem
+    }
+    .assinar:hover{filter:brightness(.95)}
+
+    .sub{
+      margin-top:10px;color:#566;font-size:.92rem
+    }
+
+    footer{background:#c2e7df;padding:20px;text-align:center;color:#555;font-size:.9rem;margin-top:40px}
+
+    /* ===== Modal Termos (sem PDF) ===== */
     .tm-bg{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:9999;padding:16px}
     .tm-card{background:#fff;border:2px solid var(--brandLight);border-radius:14px;max-width:720px;width:100%;box-shadow:0 22px 70px rgba(0,0,0,.25);overflow:hidden}
     .tm-head{display:flex;align-items:center;gap:10px;background:linear-gradient(90deg,var(--brandLight),var(--brand));padding:12px 14px}
@@ -105,9 +122,12 @@
     .tm-check{display:flex;align-items:center;gap:10px;padding:8px 16px;color:#234}
     .tm-actions{display:flex;gap:10px;justify-content:flex-end;padding:0 16px 16px}
 
-    /* Popup de aviso simples (não logado) */
+    /* Toast de aviso (não logado) */
     .toast{position:fixed;top:16px;right:16px;background:#FA1E39;color:#fff;padding:12px 14px;border-radius:10px;
       box-shadow:0 6px 18px rgba(0,0,0,.2);display:none;z-index:99999;font-weight:bold}
+
+    /* Navegação (igual às outras páginas) */
+    .header-auth{display:flex;align-items:center;gap:10px}
   </style>
 </head>
 <body>
@@ -117,7 +137,7 @@
     <img src="logo.png" alt="Logo">
     <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
   </div>
-  <div style="display:flex;align-items:center;gap:10px;">
+  <div class="header-auth">
     <span id="authText" style="font-weight:bold;color:#15b0af;cursor:pointer;display:none">Entrar</span>
     <div id="userCircle" class="user-circle" title="Perfil">F</div>
     <div id="menuBtn" class="menu-icon" aria-controls="menu" aria-expanded="false">☰</div>
@@ -134,44 +154,109 @@
 </header>
 
 <main>
-  <div class="planos-imagens">
-    <div class="plano">
-      <a href="#" class="cta" data-plan="basico" aria-label="Assinar Plano Básico">
-        <img src="/plano-basico.svg" alt="Plano Básico"/>
-      </a>
-      <div class="descricao">
-        <h3>Plano Básico</h3>
-        <p>Para quem quer presença digital sem complicação: site moderno, Instagram ativo e suporte direto pelo WhatsApp.</p>
-      </div>
-    </div>
-
-    <div class="plano">
-      <a href="#" class="cta" data-plan="essencial" aria-label="Assinar Plano Essencial">
-        <img src="/plano-intermediario.svg" alt="Plano Essencial"/>
-      </a>
-      <div class="descricao">
-        <h3>Plano Essencial</h3>
-        <p>Perfeito para negócios em crescimento que querem se destacar.</p>
-      </div>
-    </div>
-
-    <div class="plano">
-      <a href="#" class="cta" data-plan="avancado" aria-label="Assinar Plano Avançado">
-        <img src="/plano-avancado.svg" alt="Plano Avançado"/>
-      </a>
-      <div class="descricao">
-        <h3>Plano Avançado</h3>
-        <p>A escolha de empresas que buscam máxima visibilidade e resultados rápidos.</p>
-      </div>
-    </div>
+  <div class="pricing-head">
+    <h1>Escolha seu plano</h1>
+    <p>Planos claros, texto grande, leitura fácil. Quando estiver logado, clique em <b>AssineAki</b>.</p>
   </div>
+
+  <section class="grid" aria-label="Planos MostreAki">
+    <!-- ===== Plano Básico ===== -->
+    <article class="card" data-plan="basico">
+      <div class="card-head">
+        <div class="card-title">Plano Básico</div>
+        <label class="selector" for="sel-basico">
+          <input id="sel-basico" type="radio" name="plano" value="basico" />
+          <span>Escolher plano</span>
+        </label>
+      </div>
+      <div class="card-body">
+        <ul class="feat">
+          <li><b>Site Responsivo</b> e <b>Instagram Profissional</b>.</li>
+          <li>Limite de <b>30 fotos/mês</b> para catálogo.</li>
+          <li>Até <b>1× atualização por semana</b> no site e <b>1×/semana</b> no Instagram.</li>
+          <li>Atendimento diferenciado via <b>WhatsApp</b> com o suporte técnico do MostreAki.</li>
+          <li>Após <b>7 dias</b> de assinatura: <b>1 ano de domínio</b> no registro.br (se ainda não possuir) + <b>E-mail profissional Zoho</b> com <b>5 GB</b> de recebimento e <b>25 MB</b> por envio.</li>
+        </ul>
+
+        <div class="price-row" aria-label="Preço e pagamento">
+          <div class="price">R$ 250,00</div>
+          <div class="mp-slot">
+            <!-- Coloque aqui o logo do Mercado Pago -->
+            <!-- Exemplo: <img src="mercado-pago-logo.svg" alt="Mercado Pago"> -->
+            <div style="font-size:.85rem;color:#556">Logo Mercado Pago</div>
+          </div>
+        </div>
+
+        <button class="assinar" type="button">AssineAki</button>
+        <div class="sub">Plano ideal para começar com segurança e simplicidade.</div>
+      </div>
+    </article>
+
+    <!-- ===== Plano Intermediário ===== -->
+    <article class="card" data-plan="essencial">
+      <div class="card-head">
+        <div class="card-title">Plano Intermediário</div>
+        <label class="selector" for="sel-essencial">
+          <input id="sel-essencial" type="radio" name="plano" value="essencial" />
+          <span>Escolher plano</span>
+        </label>
+      </div>
+      <div class="card-body">
+        <ul class="feat">
+          <li><b>Todos os recursos do Plano Básico</b>.</li>
+          <li>Limite de <b>60 fotos/mês</b> para catálogo de produtos <b>com preço</b> e <b>botão de WhatsApp</b>.</li>
+          <li>Até <b>3× atualizações por semana</b> no site e <b>3×/semana</b> no Instagram.</li>
+          <li><b>3× banners</b> com loop automático a cada <b>7 s</b>.</li>
+        </ul>
+
+        <div class="price-row" aria-label="Preço e pagamento">
+          <div class="price">R$ 390,00</div>
+          <div class="mp-slot">
+            <!-- Exemplo: <img src="mercado-pago-logo.svg" alt="Mercado Pago"> -->
+            <div style="font-size:.85rem;color:#556">Logo Mercado Pago</div>
+          </div>
+        </div>
+
+        <button class="assinar" type="button">AssineAki</button>
+        <div class="sub">Para acelerar sua presença e vender com mais consistência.</div>
+      </div>
+    </article>
+
+    <!-- ===== Plano Avançado ===== -->
+    <article class="card" data-plan="avancado">
+      <div class="card-head">
+        <div class="card-title">Plano Avançado</div>
+        <label class="selector" for="sel-avancado">
+          <input id="sel-avancado" type="radio" name="plano" value="avancado" />
+          <span>Escolher plano</span>
+        </label>
+      </div>
+      <div class="card-body">
+        <ul class="feat">
+          <li><b>Todos os recursos do Intermediário</b>.</li>
+          <li>Limite de <b>100 fotos/mês</b> para catálogo com preço e WhatsApp.</li>
+          <li>Até <b>2× atualizações por dia</b> no site e <b>2×/dia</b> no Instagram.</li>
+          <li>Até <b>6× banners</b> com loop automático a cada <b>7 s</b>.</li>
+        </ul>
+
+        <div class="price-row" aria-label="Preço e pagamento">
+          <div class="price">R$ 500,00</div>
+          <div class="mp-slot">
+            <!-- Exemplo: <img src="mercado-pago-logo.svg" alt="Mercado Pago"> -->
+            <div style="font-size:.85rem;color:#556">Logo Mercado Pago</div>
+          </div>
+        </div>
+
+        <button class="assinar" type="button">AssineAki</button>
+        <div class="sub">Para máxima frequência, catálogo robusto e alto alcance.</div>
+      </div>
+    </article>
+  </section>
 </main>
 
-<footer>
-  &copy; 2025 MostreAki. Todos os direitos reservados.
-</footer>
+<footer>&copy; 2025 MostreAki. Todos os direitos reservados.</footer>
 
-<!-- Modal de Termos (sem PDF) -->
+<!-- ===== Modal de Termos (sem PDF) ===== -->
 <div id="termosModal" class="tm-bg" style="display:none" aria-hidden="true">
   <div class="tm-card" role="dialog" aria-modal="true" aria-labelledby="tmTitle">
     <div class="tm-head">
@@ -199,7 +284,7 @@
 
 <div id="toast" class="toast">Faça login para continuar.</div>
 
-<!-- SCRIPT: avatar + menu + gating + modal termos + registro de aceite -->
+<!-- ===== Script: menu + auth + avatar + seleção + termos + redirecionamento ===== -->
 <script type="module">
 import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
 import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
@@ -207,12 +292,12 @@ import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from 'https://www.
 import { getStorage, ref, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
 
 const cfg = {
-  apiKey: 'AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE',
-  authDomain: 'mostreaki-2025.firebaseapp.com',
-  projectId: 'mostreaki-2025',
-  storageBucket: 'mostreaki-2025.firebasestorage.app', // sem gs://
-  messagingSenderId: '748712068097',
-  appId: '1:748712068097:web:09cf043fbb45917ef6ec00'
+  apiKey:'AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE',
+  authDomain:'mostreaki-2025.firebaseapp.com',
+  projectId:'mostreaki-2025',
+  storageBucket:'mostreaki-2025.firebasestorage.app',
+  messagingSenderId:'748712068097',
+  appId:'1:748712068097:web:09cf043fbb45917ef6ec00'
 };
 const app = getApps().length ? getApp() : initializeApp(cfg);
 const auth = getAuth(app);
@@ -220,125 +305,91 @@ const db   = getFirestore(app);
 const stg  = getStorage(app, 'gs://mostreaki-2025.firebasestorage.app');
 
 const TERMS_VERSION = "1.0";
+document.getElementById('tmVer').textContent = TERMS_VERSION;
 
 const $ = s => document.querySelector(s);
+const $$ = s => document.querySelectorAll(s);
 const circle = () => document.getElementById('userCircle') || document.querySelector('.user-circle');
 
 function toast(msg='Faça login para continuar.'){
   const t = $('#toast'); t.textContent = msg; t.style.display='block';
-  setTimeout(()=> t.style.display='none', 2500);
+  setTimeout(()=> t.style.display='none', 2400);
 }
 
+/* ===== Avatar (cache → firestore → storage → photoURL) ===== */
 const cacheBust = u => u ? u + (u.includes('?')?'&':'?') + 'v=' + Date.now() : u;
-
 function setAvatar(url){
-  if (!url) return;
+  if(!url) return;
   localStorage.setItem('fotoPerfil', url);
-  const el = circle(); if (!el) return;
+  const el = circle(); if(!el) return;
   el.textContent = ''; el.style.display = 'flex';
   const img = new Image();
-  img.src = cacheBust(url); img.alt = 'Foto';
-  img.style.width='100%'; img.style.height='100%'; img.style.objectFit='cover';
+  img.src = cacheBust(url); img.alt = 'Foto'; img.style.width='100%'; img.style.height='100%'; img.style.objectFit='cover';
   el.append(img);
 }
-// Preenche rápido com cache local
-(() => { const c = localStorage.getItem('fotoPerfil'); if (c) setAvatar(c); })();
-
-// ORDEM CORRIGIDA: Firestore → Storage → photoURL do provedor
+(()=>{ const c = localStorage.getItem('fotoPerfil'); if(c) setAvatar(c); })();
 async function prefetchFoto(uid){
-  // 1) Firestore (se tem foto customizada, ela manda)
-  try {
+  try{
     const s = await getDoc(doc(db,'usuarios',uid));
     const saved = s.exists() && s.data().fotoPerfil;
-    if (saved) { setAvatar(saved); return; }
-  } catch {}
-
-  // 2) Storage direto (jpg/png/webp/gif)
-  try {
+    if(saved){ setAvatar(saved); return; }
+  }catch{}
+  try{
     const tryExt = async e => getDownloadURL(ref(stg, `usuarios/${uid}/perfil/avatar.${e}`)).catch(()=>null);
     const direct = await tryExt('jpg') || await tryExt('png') || await tryExt('webp') || await tryExt('gif');
-    if (direct) {
-      try { await setDoc(doc(db,'usuarios',uid), { fotoPerfil: direct }, { merge:true }); } catch {}
-      setAvatar(direct); return;
-    }
-  } catch {}
-
-  // 3) photoURL do provedor (Google etc.) — só se não tiver custom
-  if (auth.currentUser?.photoURL) { setAvatar(auth.currentUser.photoURL); }
+    if(direct){ try{ await setDoc(doc(db,'usuarios',uid), { fotoPerfil:direct }, { merge:true }); }catch{} setAvatar(direct); return; }
+  }catch{}
+  if(auth.currentUser?.photoURL) setAvatar(auth.currentUser.photoURL);
 }
 
-// MENU: toggle com clique fora + ESC
-function wireMenu(){
-  const btn  = document.getElementById('menuBtn') || document.querySelector('.menu-icon');
+/* ===== Menu (toggle com clique fora + ESC) ===== */
+(function wireMenu(){
+  const btn = document.getElementById('menuBtn');
   const menu = document.getElementById('menu');
-  if (!btn || !menu) return;
+  if(!btn || !menu) return;
+  btn.setAttribute('aria-controls','menu');
+  btn.setAttribute('aria-expanded','false');
+  const open=()=>{menu.style.display='flex';btn.setAttribute('aria-expanded','true');document.addEventListener('click',onDoc,true);document.addEventListener('keydown',onKey)};
+  const close=()=>{menu.style.display='none';btn.setAttribute('aria-expanded','false');document.removeEventListener('click',onDoc,true);document.removeEventListener('keydown',onKey)};
+  const toggle=()=> menu.style.display==='flex'?close():open();
+  function onDoc(e){ if(!menu.contains(e.target) && e.target!==btn) close(); }
+  function onKey(e){ if(e.key==='Escape') close(); }
+  btn.addEventListener('click',e=>{e.stopPropagation();toggle();});
+})();
 
-  btn.setAttribute('aria-controls', 'menu');
-  btn.setAttribute('aria-expanded', 'false');
-
-  if (getComputedStyle(menu).position === 'static') menu.style.position = 'absolute';
-  if (!menu.style.zIndex) menu.style.zIndex = '10000';
-
-  const open = () => {
-    menu.style.display = 'flex';
-    btn.setAttribute('aria-expanded', 'true');
-    document.addEventListener('click', onDoc, true);
-    document.addEventListener('keydown', onKey);
-  };
-  const close = () => {
-    menu.style.display = 'none';
-    btn.setAttribute('aria-expanded', 'false');
-    document.removeEventListener('click', onDoc, true);
-    document.removeEventListener('keydown', onKey);
-  };
-  const toggle = () => (menu.style.display === 'flex' ? close() : open());
-  function onDoc(e){ if (!menu.contains(e.target) && e.target !== btn) close(); }
-  function onKey(e){ if (e.key === 'Escape') close(); }
-  btn.addEventListener('click', (e)=>{ e.stopPropagation(); toggle(); });
-}
-
-// AUTH UI
-function wireAuthUI(){
+/* ===== Auth UI (Entrar/Sair) ===== */
+(function wireAuthUI(){
   const at = document.getElementById('authText');
-  onAuthStateChanged(auth, user => {
-    if (user) {
-      if (at) {
-        at.textContent = 'Sair';
-        at.style.display = 'inline';
-        at.onclick = async () => {
-          await signOut(auth);
-          localStorage.removeItem('fotoPerfil');
-          location = '/index.html';
-        };
-      }
+  onAuthStateChanged(auth, user=>{
+    if(user){
+      if(at){ at.textContent='Sair'; at.style.display='inline'; at.onclick = async ()=>{ await signOut(auth); localStorage.removeItem('fotoPerfil'); location='/index.html'; }; }
       prefetchFoto(user.uid);
-    } else {
-      if (at) {
-        at.textContent = 'Entrar';
-        at.style.display = 'inline';
-        at.onclick = () => location = '/login.html';
-      }
+    }else{
+      if(at){ at.textContent='Entrar'; at.style.display='inline'; at.onclick = ()=> location='/login.html'; }
     }
   });
-}
+})();
 
-// GATE: só permite prosseguir se estiver logado
-function wirePlanCTAs(){
-  const links = document.querySelectorAll('a.cta[data-plan]');
-  links.forEach(a=>{
-    a.addEventListener('click', (ev)=>{
-      ev.preventDefault();
-      const user = auth.currentUser;
-      if(!user){ toast(); location.href = '/login.html'; return; }
-      abrirTermos(a.dataset.plan);
-    });
+/* ===== Seleção por rádio (sincroniza com botão AssineAki) ===== */
+$$('.card').forEach(card=>{
+  const radio = card.querySelector('input[type=radio][name=plano]');
+  const btn   = card.querySelector('.assinar');
+  const id    = card.dataset.plan;
+
+  // ao clicar em “AssineAki”, seleciona o rádio do card
+  btn.addEventListener('click', ()=>{
+    if(radio) radio.checked = true;
+    iniciarFluxoAssinatura(id);
   });
-}
 
-/* ===== Modal de Termos (sem PDF) ===== */
-document.getElementById('tmVer').textContent = TERMS_VERSION;
+  // clique na barra do título também marca o rádio
+  card.querySelector('.card-head')?.addEventListener('click', (e)=>{
+    if(e.target.tagName !== 'INPUT') { if(radio) radio.checked = true; }
+  });
+});
+
+/* ===== Termos ===== */
 let planContext = null;
-
 window.abrirTermos = (planId) => {
   planContext = planId;
   const m = document.getElementById('termosModal');
@@ -352,10 +403,7 @@ window.abrirTermos = (planId) => {
   let scrolledBottom = false;
   const onScroll = () => {
     const atBottom = Math.ceil(b.scrollTop + b.clientHeight) >= b.scrollHeight;
-    if(atBottom && !scrolledBottom){
-      scrolledBottom = true;
-      ace.disabled = false;
-    }
+    if(atBottom && !scrolledBottom){ scrolledBottom = true; ace.disabled = false; }
   };
   b.addEventListener('scroll', onScroll, { passive:true });
 
@@ -365,41 +413,39 @@ window.abrirTermos = (planId) => {
     const user = auth.currentUser;
     if(!user){ toast(); location.href='/login.html'; return; }
 
-    try {
-      const ref = doc(db, 'consentimentos', `${user.uid}_${TERMS_VERSION}`);
+    try{
+      const ref = doc(db,'consentimentos',`${user.uid}_` + '1.0');
       await setDoc(ref, {
-        uid: user.uid,
-        version: TERMS_VERSION,
-        plan: planContext,
-        acceptedAt: serverTimestamp(),
-        userAgent: navigator.userAgent
+        uid:user.uid, version:'1.0', plan:planContext,
+        acceptedAt: serverTimestamp(), userAgent:navigator.userAgent
       }, { merge:true });
-    } catch(e){ console.error('Falha ao salvar aceite:', e); }
+    }catch(e){ console.error('Falha ao salvar aceite:', e); }
 
     fecharTermos();
-    iniciarAssinatura(planContext);
+    redirecionarPagamento(planContext);
   };
 };
-
 window.fecharTermos = () => {
   const m = document.getElementById('termosModal');
   m.style.display = 'none';
   m.setAttribute('aria-hidden','true');
 };
 
-// Troque pelos seus destinos reais (ou checkout do Mercado Pago)
-function iniciarAssinatura(planId){
+/* ===== Fluxo Assinar ===== */
+function iniciarFluxoAssinatura(planId){
+  const user = auth.currentUser;
+  if(!user){ toast(); location.href='/login.html'; return; }
+  abrirTermos(planId);
+}
+function redirecionarPagamento(planId){
+  // Substitua pelos seus checkouts reais do Mercado Pago:
   const route = {
-    basico: '/pagamento-plano-1.html',
-    essencial: '/pagamento-plano-2.html',
-    avancado: '/pagamento-plano-3.html'
+    basico:'/pagamento-plano-1.html',
+    essencial:'/pagamento-plano-2.html',
+    avancado:'/pagamento-plano-3.html'
   }[planId] || '/minha-conta.html';
   location.href = route;
 }
-
-/* boot */
-function boot(){ wireMenu(); wireAuthUI(); wirePlanCTAs(); }
-document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', boot) : boot();
 </script>
 </body>
 </html>
