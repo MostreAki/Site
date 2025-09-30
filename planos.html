@@ -24,6 +24,7 @@
     }
     @media (min-width:768px){ body{ background-image:url("fundo-desktop.png"); } }
 
+    /* ===== Header ===== */
     header{
       background:#c2e7df;height:60px;display:flex;align-items:center;justify-content:space-between;
       padding:0 20px;position:relative;box-shadow:0 2px 6px rgba(0,0,0,.1);
@@ -33,7 +34,23 @@
     .logo{font-size:1.5rem;font-weight:bold}
     .logo .mostre{color:#00C2BF}.logo .aki{color:#FA1E39}
 
-    .menu-icon{font-size:1.5rem;cursor:pointer;user-select:none}
+    /* ⬇️ Correção: avatar + hambúrguer lado a lado */
+    .header-auth{ display:flex; align-items:center; gap:10px; }
+
+    .user-circle{
+      background:#15b0af;color:#fff;font-weight:bold;border-radius:50%;
+      width:32px;height:32px;display:flex;align-items:center;justify-content:center;
+      overflow:hidden; /* garante crop da imagem */
+      font-size:.9rem;
+    }
+    .user-circle img{ width:100%; height:100%; object-fit:cover; display:block; }
+
+    .menu-icon{
+      /* ⬇️ Correção: botão com caixa fixa e centrado */
+      width:32px; height:32px; display:flex; align-items:center; justify-content:center;
+      line-height:1; font-size:1.5rem; cursor:pointer; user-select:none;
+    }
+
     .menu-list{
       position:absolute;top:60px;right:20px;background:#16807C;border:2px solid #000;border-radius:6px;
       display:none;flex-direction:column;padding:10px;z-index:10000;
@@ -44,25 +61,14 @@
     }
     .menu-list a:hover{background:#b8313b}
 
-    .user-circle{
-      background:#15b0af;color:#fff;font-weight:bold;border-radius:50%;
-      width:32px;height:32px;display:flex;align-items:center;justify-content:center;
-      background-size:cover;background-position:center;font-size:.9rem;overflow:hidden;
-    }
-
     main{max-width:1200px;margin:40px auto;padding:0 18px}
 
     /* ===== Pricing ===== */
-    .pricing-head{
-      text-align:center;margin-bottom:22px;
-    }
+    .pricing-head{ text-align:center;margin-bottom:22px; }
     .pricing-head h1{color:var(--ink);font-size:1.9rem;margin-bottom:6px}
     .pricing-head p{color:#333;font-size:1.05rem}
 
-    .grid{
-      display:grid;gap:18px;
-      grid-template-columns:1fr;
-    }
+    .grid{ display:grid; gap:18px; grid-template-columns:1fr; }
     @media (min-width:720px){ .grid{grid-template-columns:repeat(2,1fr)} }
     @media (min-width:1040px){ .grid{grid-template-columns:repeat(3,1fr)} }
 
@@ -86,12 +92,8 @@
     .feat li{display:flex;gap:8px;margin:8px 0}
     .feat li::before{content:"✔";color:var(--brand);font-weight:bold}
 
-    .price-row{
-      margin-top:12px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap
-    }
-    .price{
-      font-size:1.6rem;color:#0e7270;font-weight:900;letter-spacing:.3px
-    }
+    .price-row{ margin-top:12px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap }
+    .price{ font-size:1.6rem;color:#0e7270;font-weight:900;letter-spacing:.3px }
     .mp-slot{display:flex;align-items:center;gap:8px}
     .mp-slot img{height:30px;width:auto;display:block;filter:saturate(.95) contrast(1.05)}
 
@@ -106,7 +108,7 @@
 
     footer{background:#c2e7df;padding:20px;text-align:center;color:#555;font-size:.9rem;margin-top:40px}
 
-    /* ===== Modal Termos (sem PDF) ===== */
+    /* ===== Modal Termos ===== */
     .tm-bg{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:9999;padding:16px}
     .tm-card{background:#fff;border:2px solid var(--brandLight);border-radius:14px;max-width:720px;width:100%;box-shadow:0 22px 70px rgba(0,0,0,.25);overflow:hidden}
     .tm-head{display:flex;align-items:center;gap:10px;background:linear-gradient(90deg,var(--brandLight),var(--brand));padding:12px 14px}
@@ -132,11 +134,13 @@
     <img src="logo.png" alt="Logo">
     <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
   </div>
+
   <div class="header-auth">
     <span id="authText" style="font-weight:bold;color:#15b0af;cursor:pointer;display:none">Entrar</span>
     <div id="userCircle" class="user-circle" title="Perfil">F</div>
     <div id="menuBtn" class="menu-icon" aria-controls="menu" aria-expanded="false">☰</div>
   </div>
+
   <nav class="menu-list" id="menu">
     <a href="/index.html">Página Inicial</a>
     <a href="/sobre.html">Sobre</a>
@@ -155,7 +159,7 @@
   </div>
 
   <section class="grid" aria-label="Planos MostreAki">
-    <!-- ===== Plano Básico ===== -->
+    <!-- Básico -->
     <article class="card" data-plan="basico">
       <div class="card-head">
         <div class="card-title">Plano Básico</div>
@@ -172,7 +176,6 @@
           <li>Atendimento diferenciado via WhatsApp com o suporte técnico do MostreAki.</li>
           <li>Após 7 dias de assinatura: 1 ano de domínio no registro.br (se ainda não possuir) + E-mail profissional Zoho com 5 GB de recebimento e 25 MB por envio.</li>
         </ul>
-
         <div class="price-row" aria-label="Preço e pagamento">
           <div class="price">R$ 250,00</div>
           <div class="mp-slot">
@@ -180,13 +183,12 @@
             <div style="font-size:.85rem;color:#556">Pagamento Seguro ✅️</div>
           </div>
         </div>
-
         <button class="assinar" type="button">AssineAki</button>
         <div class="sub">Plano ideal para começar com segurança e simplicidade.</div>
       </div>
     </article>
 
-    <!-- ===== Plano Intermediário ===== -->
+    <!-- Intermediário -->
     <article class="card" data-plan="essencial">
       <div class="card-head">
         <div class="card-title">Plano Intermediário</div>
@@ -202,7 +204,6 @@
           <li>Até 3× atualizações por semana no site e 3×/semana no Instagram.</li>
           <li>3× banners com loop automático a cada 7s.</li>
         </ul>
-
         <div class="price-row" aria-label="Preço e pagamento">
           <div class="price">R$ 390,00</div>
           <div class="mp-slot">
@@ -210,13 +211,12 @@
             <div style="font-size:.85rem;color:#556">Pagamento Seguro ✅️</div>
           </div>
         </div>
-
         <button class="assinar" type="button">AssineAki</button>
         <div class="sub">Para acelerar sua presença e vender com mais consistência.</div>
       </div>
     </article>
 
-    <!-- ===== Plano Avançado ===== -->
+    <!-- Avançado -->
     <article class="card" data-plan="avancado">
       <div class="card-head">
         <div class="card-title">Plano Avançado</div>
@@ -232,7 +232,6 @@
           <li><b>Até 2× atualizações por dia no site e 2×/dia no Instagram.</b></li>
           <li><b>Até 6× banners com loop automático a cada 7s.</b></li>
         </ul>
-
         <div class="price-row" aria-label="Preço e pagamento">
           <div class="price">R$ 500,00</div>
           <div class="mp-slot">
@@ -240,7 +239,6 @@
             <div style="font-size:.85rem;color:#556">Pagamento Seguro ✅️</div>
           </div>
         </div>
-
         <button class="assinar" type="button">AssineAki</button>
         <div class="sub">Para máxima frequência, catálogo robusto e alto alcance.</div>
       </div>
@@ -250,7 +248,7 @@
 
 <footer>&copy; 2025 MostreAki. Todos os direitos reservados.</footer>
 
-<!-- ===== Modal de Termos (sem PDF) ===== -->
+<!-- ===== Modal Termos ===== -->
 <div id="termosModal" class="tm-bg" style="display:none" aria-hidden="true">
   <div class="tm-card" role="dialog" aria-modal="true" aria-labelledby="tmTitle">
     <div class="tm-head">
@@ -278,7 +276,6 @@
 
 <div id="toast" class="toast">Faça login para continuar.</div>
 
-<!-- ===== Script ===== -->
 <script type="module">
 import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
 import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
@@ -329,7 +326,7 @@ async function prefetchFoto(uid){
   if(auth.currentUser?.photoURL) setAvatar(auth.currentUser.photoURL);
 }
 
-/* ===== Menu ===== */
+/* Menu */
 (function wireMenu(){
   const btn = document.getElementById('menuBtn');
   const menu = document.getElementById('menu');
@@ -342,7 +339,7 @@ async function prefetchFoto(uid){
   btn.addEventListener('click',e=>{e.stopPropagation();toggle();});
 })();
 
-/* ===== Auth header ===== */
+/* Auth header */
 (function wireAuthUI(){
   const at = document.getElementById('authText');
   onAuthStateChanged(auth, user=>{
@@ -355,7 +352,7 @@ async function prefetchFoto(uid){
   });
 })();
 
-/* ===== Cards: rádio + botão ===== */
+/* Cards: rádio + botão */
 $$('.card').forEach(card=>{
   const radio = card.querySelector('input[type=radio][name=plano]');
   const btn   = card.querySelector('.assinar');
@@ -370,14 +367,12 @@ $$('.card').forEach(card=>{
   });
 });
 
-/* ===== Termos ===== */
+/* Termos */
 let planContext = null;
 function enableTermsIfReady(){
   const body  = document.getElementById('tmBody');
   const ace   = document.getElementById('tmAceite');
   const go    = document.getElementById('tmProsseguir');
-
-  // Se não houver rolagem possível, habilita de cara
   const fits = body.scrollHeight <= body.clientHeight + 1;
   if(fits){ ace.disabled = false; go.disabled = !ace.checked; }
 }
@@ -392,7 +387,6 @@ window.abrirTermos = (planId) => {
 
   m.style.display = 'flex'; m.setAttribute('aria-hidden','false');
 
-  // Habilita imediato se o conteúdo couber (sem rolagem)
   enableTermsIfReady();
 
   let scrolledBottom = false;
@@ -426,14 +420,13 @@ window.fecharTermos = () => {
   m.setAttribute('aria-hidden','true');
 };
 
-/* ===== Fluxo Assinar ===== */
+/* Fluxo Assinar */
 function iniciarFluxoAssinatura(planId){
   const user = auth.currentUser;
   if(!user){ toast(); location.href='/login.html'; return; }
   abrirTermos(planId);
 }
 function redirecionarPagamento(planId){
-  // Substitua pelos seus checkouts reais do Mercado Pago:
   const route = {
     basico:'/pagamento-plano-1.html',
     essencial:'/pagamento-plano-2.html',
