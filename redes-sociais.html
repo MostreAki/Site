@@ -7,9 +7,11 @@
   <link rel="icon" href="favicon.ico" type="image/x-icon"/>
   <style>
     *{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
+
     body{
       background-image:url("fundo-mobile.png");
       background-size:cover;background-repeat:no-repeat;background-attachment:fixed;
+      min-height:100vh;display:flex;flex-direction:column;
     }
     @media (min-width:768px){ body{ background-image:url("fundo-desktop.png"); } }
 
@@ -33,9 +35,15 @@
     }
     .menu-list a:hover{background:#b8313b}
 
+    .header-auth{display:flex;align-items:center;gap:10px}
+    #btnAbrirLogin{
+      background:#15b0af;color:#fff;font-weight:bold;border:none;border-radius:8px;
+      padding:8px 12px;cursor:pointer;
+    }
+    #authText{font-weight:bold;color:#15b0af;cursor:pointer;display:none}
     .user-circle{
       background:#15b0af;color:#fff;font-weight:bold;border-radius:50%;
-      width:32px;height:32px;display:flex;align-items:center;justify-content:center;
+      width:32px;height:32px;display:none;align-items:center;justify-content:center;
       background-size:cover;background-position:center;font-size:.9rem;overflow:hidden;
     }
 
@@ -49,34 +57,95 @@
     .rede a.btn{display:inline-block;background:#15b0af;color:#fff;padding:12px 20px;border-radius:8px;font-weight:bold;text-decoration:none}
     .rede a.btn:hover{filter:brightness(.9)}
 
-    footer{background:#c2e7df;padding:20px;text-align:center;color:#555;font-size:.9rem}
+    footer{background:#c2e7df;padding:20px;text-align:center;color:#555;font-size:.9rem;margin-top:auto}
 
-    /* Modal Login */
-    .modal-bg{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);
-      display:none;justify-content:center;align-items:center;z-index:9999}
-    .modal{background:#fff;padding:30px;border-radius:10px;max-width:400px;width:90%;position:relative}
-    .modal h2{margin-bottom:20px;color:#16807c;font-size:1.4rem;text-align:center}
-    .modal input{width:100%;padding:12px;margin-bottom:15px;border-radius:6px;border:1px solid #ccc}
-    .modal button{width:100%;padding:12px;background:#15b0af;border:none;color:#fff;font-weight:bold;border-radius:6px;margin-bottom:10px;cursor:pointer}
-    .modal .btn-google{background:#fff;color:#444;border:1px solid #ccc;display:flex;align-items:center;justify-content:center;gap:10px}
-    .modal .btn-google img{height:20px}
-    .modal .fechar{position:absolute;top:10px;right:15px;font-size:1.2rem;cursor:pointer;color:#999}
-    .modal a{display:block;text-align:center;margin-top:10px;color:#16807c;font-size:.9rem;text-decoration:none}
+    /* ===== Modal de autenticação (login embutido) ===== */
+    .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:9999;padding:20px}
+    .modal-card{
+      background:#fff;width:100%;max-width:420px;border-radius:16px;
+      box-shadow:0 20px 60px rgba(0,0,0,.25);overflow:hidden;border:2px solid #c2e7df;
+    }
+    .modal-head{
+      background:linear-gradient(90deg,#c2e7df,#15b0af);
+      padding:16px 18px;color:#0b4d4c;display:flex;align-items:center;justify-content:space-between;
+    }
+    .modal-head h2{font-size:1.1rem;color:#063b39}
+    .modal-close{background:transparent;border:none;font-size:22px;line-height:1;cursor:pointer;color:#063b39}
+    .modal-body{padding:18px}
+    .modal-body p.muted{color:#555;margin-bottom:10px}
+    label{display:block;margin:10px 0 6px;color:#333}
+    input{width:100%;padding:10px;border:1px solid #ddd;border-radius:8px}
+    .primary{background:#15b0af;color:#fff;border:0;border-radius:8px;padding:12px;font-weight:bold;cursor:pointer;width:100%;margin-top:12px}
+    .muted{font-size:.9rem;color:#666;margin-top:10px}
+    .muted a{color:#15b0af;text-decoration:none;font-weight:bold}
 
-    .mensagem{position:fixed;top:20px;right:20px;background:#15b0af;color:#fff;padding:15px 20px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.2);font-weight:bold;z-index:9999;display:none}
-    .mensagem.erro{background:#FA1E39}
+    /* Campo de senha com “olho” */
+    .pwd-wrap{position:relative}
+    .pwd-wrap input{padding-right:16%}           /* espaço pro botão */
+    .pwd-toggle{
+      position:absolute;right:8px;top:20%;       /* top ~20% */
+      width:36px;height:36px;display:flex;align-items:center;justify-content:center;
+      background:#fff;border:1px solid #ddd;border-radius:6px;cursor:pointer;
+      font-size:18px;line-height:1;color:#444;
+    }
+    .pwd-toggle:active{transform:scale(.98)}
+
+    /* POPUP de alerta brand */
+    .alert-bg{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:10000;padding:20px}
+    .alert-card{background:#fff;border-radius:16px;overflow:hidden;max-width:460px;width:100%;box-shadow:0 22px 70px rgba(0,0,0,.25);border:2px solid #c2e7df}
+    .alert-head{background:linear-gradient(90deg,#c2e7df,#15b0af);padding:14px 16px;display:flex;align-items:center;gap:10px}
+    .alert-dot{width:10px;height:10px;border-radius:50%;background:#FA1E39}
+    .alert-title{color:#063b39;font-weight:bold}
+    .alert-body{padding:16px;color:#2b2b2b}
+    .alert-actions{display:flex;gap:10px;flex-wrap:wrap;padding:0 16px 16px}
+    .btn-solid{background:#15b0af;color:#fff;border:0;border-radius:8px;padding:10px 14px;font-weight:bold;cursor:pointer}
+    .btn-ghost{background:#fff;border:2px solid #15b0af;color:#15b0af;border-radius:8px;padding:10px 14px;font-weight:bold}
+
+    /* links sem sublinhado dentro da modal */
+    #authModal a{text-decoration:none}
   </style>
 </head>
 <body>
+
+<!-- MODAL: LOGIN EMBUTIDO -->
+<div id="authModal" class="modal-bg" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h2 id="authTitle">Entrar no MostreAki</h2>
+      <button class="modal-close" onclick="fecharModal()" aria-label="Fechar">×</button>
+    </div>
+    <div class="modal-body">
+      <label for="email">E-mail</label>
+      <input id="email" type="email" autocomplete="username" required
+             pattern="^[^\s@]+@[^\s@]+\.[^\s@]{2,}$" placeholder="voce@exemplo.com">
+
+      <label for="senha">Senha</label>
+      <div class="pwd-wrap">
+        <input id="senha" type="password" autocomplete="current-password" required>
+        <button id="toggleSenha" class="pwd-toggle" type="button" aria-label="Mostrar senha" aria-pressed="false">👁️</button>
+      </div>
+
+      <button class="primary" id="btnEntrar">Entrar</button>
+
+      <!-- Sempre visível -->
+      <div id="recoverLine" class="muted" style="text-align:center;margin-top:6px">
+        Esqueceu a senha? <a href="/recuperar-senha.html">Recuperar senha</a>
+      </div>
+
+      <p class="muted">Não tem conta? <a href="/cadastro.html">Cadastre-se</a></p>
+    </div>
+  </div>
+</div>
 
 <header>
   <div class="logo-container" onclick="location.href='index.html'">
     <img src="logo.png" alt="Logo">
     <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
   </div>
-  <div style="display:flex;align-items:center;gap:10px;">
-    <span id="authText" style="font-weight:bold;color:#15b0af;cursor:pointer;display:none">Entrar</span>
-    <div id="userCircle" class="user-circle" title="Perfil">F</div>
+  <div class="header-auth">
+    <button id="btnAbrirLogin">Entrar</button>
+    <span id="authText">Sair</span>
+    <div id="userCircle" class="user-circle" title="Perfil"></div>
     <div id="menuBtn" class="menu-icon" aria-controls="menu" aria-expanded="false">☰</div>
   </div>
   <nav class="menu-list" id="menu">
@@ -114,195 +183,201 @@
   &copy; 2025 MostreAki. Todos os direitos reservados.
 </footer>
 
-<!-- Modal de Login -->
-<div id="modalLogin" class="modal-bg">
-  <div class="modal">
-    <div class="fechar" onclick="fecharModal()">✖</div>
-    <h2>Entrar</h2>
-    <input type="email" id="email" placeholder="E-mail">
-    <div style="position:relative">
-      <input type="password" id="senha" placeholder="Senha">
-      <span onclick="toggleSenha()" style="position:absolute;top:12px;right:12px;cursor:pointer">👁️</span>
+<!-- ALERT brand -->
+<div id="alert" class="alert-bg" role="dialog" aria-modal="true" aria-labelledby="alertTitle" aria-live="polite">
+  <div class="alert-card">
+    <div class="alert-head">
+      <div class="alert-dot"></div>
+      <div id="alertTitle" class="alert-title">Mensagem</div>
     </div>
-    <button onclick="entrarEmail()">Entrar</button>
-    <button class="btn-google" onclick="entrarGoogle()">
-      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google logo"> Entrar com Google
-    </button>
-    <a href="#" onclick="redefinirSenha()">Esqueci minha senha</a>
-    <a href="#" onclick="cadastrarUsuario()">Cadastrar</a>
+    <div id="alertMsg" class="alert-body">...</div>
+    <div id="alertActions" class="alert-actions"></div>
   </div>
 </div>
 
-<div id="mensagem" class="mensagem"></div>
-
-<!-- Script único: avatar + menu + auth (bucket .firebasestorage.app) -->
+<!-- Firebase + Script -->
 <script type="module">
-import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-import { getAuth, onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, sendPasswordResetEmail, createUserWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-import { getFirestore, doc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-import { getStorage, ref, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import {
+  getAuth, onAuthStateChanged, signOut,
+  signInWithEmailAndPassword, sendEmailVerification
+} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 
-const cfg = {
-  apiKey: 'AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE',
-  authDomain: 'mostreaki-2025.firebaseapp.com',
-  projectId: 'mostreaki-2025',
-  storageBucket: 'mostreaki-2025.firebasestorage.app', // sem gs://
-  messagingSenderId: '748712068097',
-  appId: '1:748712068097:web:09cf043fbb45917ef6ec00'
-};
-const app = getApps().length ? getApp() : initializeApp(cfg);
+const app = initializeApp({
+  apiKey:"AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
+  authDomain:"mostreaki-2025.firebaseapp.com",
+  projectId:"mostreaki-2025",
+  storageBucket:"mostreaki-2025.firebasestorage.app",
+  messagingSenderId:"748712068097",
+  appId:"1:748712068097:web:09cf043fbb45917ef6ec00"
+});
 const auth = getAuth(app);
-const db   = getFirestore(app);
-// força o bucket correto com gs://
-const stg  = getStorage(app, 'gs://mostreaki-2025.firebasestorage.app');
 
-const $ = s => document.querySelector(s);
-const circle = () => document.getElementById('userCircle') || document.querySelector('.user-circle');
-const cacheBust = u => u ? u + (u.includes('?')?'&':'?') + 'v=' + Date.now() : u;
+/* ===== helpers UI ===== */
+const $ = (id)=>document.getElementById(id);
+const modal = $("authModal");
+const btnAbrir = $("btnAbrirLogin");
+const authText = $("authText");
+const userCircle = $("userCircle");
+const menuBtn = $("menuBtn");
+const menu = $("menu");
 
-function setAvatar(url){
-  if (!url) return;
-  localStorage.setItem('fotoPerfil', url);
-  const el = circle(); if (!el) return;
-  el.textContent = ''; el.style.display = 'flex';
-  const img = new Image();
-  img.src = cacheBust(url); img.alt = 'Foto';
-  img.style.width='100%'; img.style.height='100%'; img.style.objectFit='cover';
-  el.append(img);
+function abrirModal(){ modal.style.display="flex"; document.body.style.overflow="hidden"; }
+window.fecharModal = function(){ modal.style.display="none"; document.body.style.overflow=""; }
+btnAbrir.addEventListener("click", abrirModal);
+modal.addEventListener("click", e=>{ if(e.target===modal) fecharModal(); });
+window.addEventListener("keydown", e=>{ if(e.key==="Escape" && modal.style.display==="flex") fecharModal(); });
+
+/* ===== alerta brand ===== */
+const alertBG = document.getElementById('alert');
+const alertTitle = document.getElementById('alertTitle');
+const alertMsg = document.getElementById('alertMsg');
+const alertActions = document.getElementById('alertActions');
+function showAlert({title="Aviso", html="", actions=[{text:"Fechar", kind:"solid"}]}){
+  alertTitle.textContent = title; alertMsg.innerHTML = html; alertActions.innerHTML = "";
+  actions.forEach(a=>{
+    const b=document.createElement('button');
+    b.className = (a.kind==='ghost'?'btn-ghost':'btn-solid');
+    b.textContent = a.text;
+    b.onclick = ()=>{ if(a.onClick) a.onClick(); closeAlert(); };
+    alertActions.appendChild(b);
+  });
+  alertBG.style.display='flex';
 }
-// cache imediato (evita mostrar a letra "F")
-(() => { const c = localStorage.getItem('fotoPerfil'); if (c) setAvatar(c); })();
+function closeAlert(){ alertBG.style.display='none'; }
 
-async function prefetchFoto(uid){
-  // 1) provedor (Google)
-  if (auth.currentUser?.photoURL) { setAvatar(auth.currentUser.photoURL); return; }
-  // 2) Firestore
-  try {
-    const s = await getDoc(doc(db,'usuarios',uid));
-    const saved = s.exists() && s.data().fotoPerfil;
-    if (saved) { setAvatar(saved); return; }
-  } catch {}
-  // 3) Storage direto (tenta jpg/png/webp/gif)
-  const tryExt = async e => getDownloadURL(ref(stg, `usuarios/${uid}/perfil/avatar.${e}`)).catch(()=>null);
-  const direct = await tryExt('jpg') || await tryExt('png') || await tryExt('webp') || await tryExt('gif');
-  if (direct) {
-    try { await setDoc(doc(db,'usuarios',uid), { fotoPerfil: direct }, { merge:true }); } catch {}
-    setAvatar(direct);
+/* ===== olho senha ===== */
+(function wirePasswordToggle(){
+  const input = $("senha"), btn = $("toggleSenha");
+  if(!input || !btn) return;
+  function flip(){
+    const showing = input.type === 'text';
+    input.type = showing ? 'password' : 'text';
+    btn.textContent = showing ? '👁️' : '🙈';
+    btn.setAttribute('aria-pressed', (!showing).toString());
+    btn.setAttribute('aria-label', showing ? 'Mostrar senha' : 'Ocultar senha');
+  }
+  btn.addEventListener('click', flip);
+})();
+
+/* ===== login ===== */
+const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const emailValido = v => emailRe.test(v);
+function getState(){
+  const now=Date.now();
+  const s = JSON.parse(sessionStorage.getItem('loginState')||'{}');
+  if(!s.lockUntil) s.lockUntil=0;
+  if(!s.failCount) s.failCount=0;
+  if(!s.blockMult) s.blockMult=1;
+  if(now > s.lockUntil){ s.lockUntil=0; }
+  return s;
+}
+function setState(s){ sessionStorage.setItem('loginState', JSON.stringify(s)); }
+function isLocked(){ const s=getState(); return s.lockUntil && Date.now()<s.lockUntil; }
+function lockMore(){
+  const s=getState(); const base=30000;
+  s.blockMult = Math.min(s.blockMult*2, 8);
+  s.lockUntil = Date.now() + base * s.blockMult;
+  setState(s);
+}
+function incFail(){
+  const s=getState(); s.failCount=(s.failCount||0)+1;
+  if(s.failCount>=5){ s.failCount=0; lockMore(); }
+  setState(s);
+}
+function resetFails(){ setState({failCount:0, blockMult:1, lockUntil:0}); }
+function showLockMsg(){
+  const s=getState(); const secs = Math.ceil((s.lockUntil - Date.now())/1000);
+  showAlert({title:"Muitas tentativas", html:`Aguarde <b>${secs}s</b> para tentar novamente.`});
+}
+
+async function loginEmailSenha(){
+  if(isLocked()) return showLockMsg();
+
+  const email = $("email").value.trim();
+  const senha = $("senha").value;
+
+  if(!email) return showAlert({title:"E-mail vazio", html:"Digite seu e-mail para continuar."});
+  if(!emailValido(email)) return showAlert({title:"E-mail inválido", html:"Revise o endereço digitado."});
+  if(!senha) return showAlert({title:"Senha vazia", html:"Digite sua senha para continuar."});
+
+  try{
+    const cred = await signInWithEmailAndPassword(auth, email, senha);
+
+    if(!cred.user.emailVerified){
+      await sendEmailVerification(cred.user);
+      showAlert({
+        title:"Confirme seu e-mail",
+        html:`Seu e-mail ainda não foi verificado.<br>Reenviamos o link para <b>${email}</b>. Verifique sua caixa de entrada (ou spam) e tente novamente após confirmar.`
+      });
+      return;
+    }
+
+    resetFails();
+    if(cred.user.photoURL) localStorage.setItem("fotoPerfil", cred.user.photoURL);
+    fecharModal();
+    location.href="/minha-conta.html";
+
+  }catch(e){
+    const codes = ["auth/invalid-credential","auth/wrong-password","auth/user-not-found"];
+    if(codes.includes(e.code)){
+      incFail();
+      if(isLocked()) return showLockMsg();
+      return showAlert({
+        title:"Não conseguimos entrar",
+        html:"E-mail e/ou senha incorretos. Você pode tentar novamente ou recuperar a senha.",
+        actions:[
+          {text:"Recuperar senha", kind:"ghost", onClick:()=>location.href="/recuperar-senha.html"},
+          {text:"Cadastrar", kind:"ghost", onClick:()=>location.href="/cadastro.html"},
+          {text:"Fechar", kind:"solid"}
+        ]
+      });
+    }
+    if(e.code==="auth/too-many-requests"){ lockMore(); return showLockMsg(); }
+    if(e.code==="auth/invalid-email"){ return showAlert({title:"E-mail inválido", html:"Revise o endereço digitado."}); }
+    showAlert({title:"Erro", html:`Erro inesperado (${e.code}). Tente novamente.`});
   }
 }
+$("btnEntrar").onclick = loginEmailSenha;
+document.addEventListener('keydown', e=>{ if(e.key==='Enter' && modal.style.display==='flex') loginEmailSenha(); });
 
-// MENU: toggle com clique fora + ESC
-function wireMenu(){
-  const btn  = document.getElementById('menuBtn') || document.querySelector('.menu-icon');
-  const menu = document.getElementById('menu');
-  if (!btn || !menu) return;
+/* ===== estado de auth: avatar/entrar/sair ===== */
+onAuthStateChanged(auth, (user)=>{
+  const fotoURL = localStorage.getItem("fotoPerfil");
+  if(user){
+    if(fotoURL){ userCircle.style.backgroundImage=`url('${fotoURL}')`; userCircle.textContent=""; }
+    else { const nome=(user.displayName||user.email||"?").trim(); userCircle.textContent=nome.charAt(0).toUpperCase(); userCircle.style.backgroundImage=""; }
+    userCircle.style.display="flex";
+    authText.style.display="inline";
+    btnAbrir.style.display="none";
+  }else{
+    userCircle.style.display="none";
+    authText.style.display="none";
+    btnAbrir.style.display="inline-block";
+  }
+});
 
-  btn.setAttribute('aria-controls','menu');
-  btn.setAttribute('aria-expanded','false');
+/* ===== sair ===== */
+authText.addEventListener("click", async ()=>{
+  try{
+    await signOut(auth);
+    localStorage.removeItem("fotoPerfil");
+    location = '/index.html';
+  }catch(e){ showAlert({title:"Sair", html:"Não foi possível sair. Tente de novo."}); }
+});
 
-  if (getComputedStyle(menu).position === 'static') menu.style.position = 'absolute';
-  if (!menu.style.zIndex) menu.style.zIndex = '10000';
-
-  const open = () => {
-    menu.style.display = 'flex';
-    btn.setAttribute('aria-expanded','true');
-    document.addEventListener('click', onDoc, true);
-    document.addEventListener('keydown', onKey);
-  };
-  const close = () => {
-    menu.style.display = 'none';
-    btn.setAttribute('aria-expanded','false');
-    document.removeEventListener('click', onDoc, true);
-    document.removeEventListener('keydown', onKey);
-  };
-  const toggle = () => (menu.style.display === 'flex' ? close() : open());
-
-  function onDoc(e){ if (!menu.contains(e.target) && e.target !== btn) close(); }
-  function onKey(e){ if (e.key === 'Escape') close(); }
-
-  btn.addEventListener('click', (e)=>{ e.stopPropagation(); toggle(); });
-}
-
-// AUTH UI + modal
-const provider = new GoogleAuthProvider();
-const modal = document.getElementById('modalLogin');
-const msg   = document.getElementById('mensagem');
-
-function abrirModal(){ if (modal) modal.style.display = 'flex'; }
-function fecharModal(){ if (modal) modal.style.display = 'none'; }
-function toggleSenha(){
-  const input = document.getElementById('senha'); if (!input) return;
-  input.type = input.type === 'password' ? 'text' : 'password';
-}
-function showMsg(texto, erro=false){
-  if (!msg) return;
-  msg.textContent = texto;
-  msg.classList.toggle('erro', !!erro);
-  msg.style.display = 'block';
-  setTimeout(() => { msg.style.display = 'none'; }, 3000);
-}
-
-async function entrarGoogle(){
-  try { await signInWithPopup(auth, provider); fecharModal(); }
-  catch(e){ console.error(e); showMsg('Erro ao entrar com Google.', true); }
-}
-async function entrarEmail(){
-  const email = (document.getElementById('email')||{}).value || '';
-  const senha = (document.getElementById('senha')||{}).value || '';
-  if (!email || !senha) return showMsg('Preencha email e senha', true);
-  try { await signInWithEmailAndPassword(auth, email, senha); fecharModal(); }
-  catch(e){ console.error(e); showMsg('Login inválido', true); }
-}
-async function cadastrarUsuario(){
-  const email = (document.getElementById('email')||{}).value || '';
-  const senha = (document.getElementById('senha')||{}).value || '';
-  if (!email || !senha) return showMsg('Preencha email e senha', true);
-  try {
-    const cred = await createUserWithEmailAndPassword(auth, email, senha);
-    await setDoc(doc(db,'usuarios', cred.user.uid), { createdAt: Date.now() }, { merge:true });
-    showMsg('Cadastro criado! Verifique seu e-mail.');
-    fecharModal();
-  } catch(e){ console.error(e); showMsg('Erro ao cadastrar', true); }
-}
-async function redefinirSenha(){
-  const email = (document.getElementById('email')||{}).value || '';
-  if (!email) return showMsg('Informe seu e-mail', true);
-  try { await sendPasswordResetEmail(auth, email); showMsg('E-mail de redefinição enviado.'); }
-  catch(e){ console.error(e); showMsg('Erro ao enviar redefinição', true); }
-}
-
-// expõe para os onclick da modal
-window.abrirModal = abrirModal;
-window.fecharModal = fecharModal;
-window.toggleSenha = toggleSenha;
-window.entrarGoogle = entrarGoogle;
-window.entrarEmail  = entrarEmail;
-window.cadastrarUsuario = cadastrarUsuario;
-window.redefinirSenha = redefinirSenha;
-
-function wireAuthUI(){
-  const at = document.getElementById('authText');
-  onAuthStateChanged(auth, user => {
-    if (user) {
-      if (at) {
-        at.textContent = 'Sair';
-        at.style.display = 'inline';
-        at.onclick = async () => {
-          await signOut(auth);
-          localStorage.removeItem('fotoPerfil');
-          location = '/index.html';
-        };
-      }
-      prefetchFoto(user.uid);
-    } else {
-      if (at) { at.textContent = 'Entrar'; at.style.display = 'inline'; at.onclick = () => abrirModal(); }
-      // circle()?.style.display = 'none'; // se quiser esconder deslogado
-    }
-  });
-}
-
-function boot(){ wireMenu(); wireAuthUI(); }
-document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', boot) : boot();
+/* ===== menu (toggle com clique fora + ESC) ===== */
+(function wireMenu(){
+  if(!menuBtn || !menu) return;
+  menuBtn.setAttribute('aria-controls','menu');
+  menuBtn.setAttribute('aria-expanded','false');
+  const open=()=>{menu.style.display='flex';menuBtn.setAttribute('aria-expanded','true');document.addEventListener('click',onDoc,true);document.addEventListener('keydown',onKey)};
+  const close=()=>{menu.style.display='none';menuBtn.setAttribute('aria-expanded','false');document.removeEventListener('click',onDoc,true);document.removeEventListener('keydown',onKey)};
+  const toggle=()=> menu.style.display==='flex'?close():open();
+  function onDoc(e){ if(!menu.contains(e.target) && e.target!==menuBtn) close(); }
+  function onKey(e){ if(e.key==='Escape') close(); }
+  menuBtn.addEventListener('click',e=>{e.stopPropagation();toggle();});
+})();
 </script>
 
 </body>
