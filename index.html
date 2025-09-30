@@ -132,7 +132,8 @@
 
       <button class="primary" id="btnEntrar">Entrar</button>
 
-      <div id="recoverLine" class="muted" style="display:none;text-align:center;margin-top:6px">
+      <!-- 🔧 Sempre visível agora -->
+      <div id="recoverLine" class="muted" style="text-align:center;margin-top:6px">
         Esqueceu a senha? <a href="/recuperar-senha.html">Recuperar senha</a>
       </div>
 
@@ -331,7 +332,7 @@ async function loginEmailSenha(){
   }catch(e){
     const codes = ["auth/invalid-credential","auth/wrong-password","auth/user-not-found"];
     if(codes.includes(e.code)){
-      document.getElementById("recoverLine").style.display="block";
+      // linha removida: recoverLine já é fixo
       incFail();
       if(isLocked()) return showLockMsg();
       return showAlert({
