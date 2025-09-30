@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Recuperar senha – MostreAki</title>
+<style>
+  :root{--brand:#15b0af; --brandLight:#c2e7df; --accent:#FA1E39; --ink:#063b39; --bg:#f4f7f7;}
+  *{box-sizing:border-box}
+  body{font-family:Arial,sans-serif;background:var(--bg);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px}
+  .card{
+    background:#fff;border-radius:16px;max-width:420px;width:100%;
+    padding:24px;border:2px solid var(--brandLight);
+    box-shadow:0 12px 40px rgba(0,0,0,.08)
+  }
+  h1{margin:0 0 6px;color:#0f6f6e;font-size:1.35rem}
+  p.sub{margin:0 0 16px;color:#4a6665;font-size:.95rem}
+  label{display:block;margin:10px 0 6px;color:#333}
+  input{width:100%;padding:12px;border:1px solid #e0e0e0;border-radius:10px;font-size:1rem}
+  button{width:100%;margin-top:12px;padding:12px;border-radius:10px;border:0;font-weight:bold;cursor:pointer}
+  .primary{background:var(--brand);color:#fff}
+  .ghost{background:#fff;border:2px solid var(--brand);color:var(--brand)}
+  .muted{margin-top:10px;color:#666;font-size:.9rem;text-align:center}
+  .muted a{color:var(--brand);text-decoration:none;font-weight:bold}
+
+  /* POPUP brand */
+  .alert-bg{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:9999;padding:20px}
+  .alert-card{background:#fff;border-radius:16px;overflow:hidden;max-width:480px;width:100%;box-shadow:0 22px 70px rgba(0,0,0,.25);border:2px solid var(--brandLight)}
+  .alert-head{background:linear-gradient(90deg,var(--brandLight),var(--brand));padding:14px 16px;display:flex;align-items:center;gap:10px}
+  .alert-dot{width:10px;height:10px;border-radius:50%;background:var(--accent)}
+  .alert-title{color:var(--ink);font-weight:bold}
+  .alert-body{padding:16px;color:#2b2b2b}
+  .alert-actions{display:flex;gap:10px;flex-wrap:wrap;padding:0 16px 16px}
+  .btn-solid{background:var(--brand);color:#fff;border:0;border-radius:8px;padding:10px 14px;font-weight:bold;cursor:pointer}
+  .btn-ghost{background:#fff;border:2px solid var(--brand);color:var(--brand);border-radius:8px;padding:10px 14px;font-weight:bold;cursor:pointer}
+</style>
+</head>
+<body>
+  <div class="card">
+    <h1>Recuperar senha</h1>
+    <p class="sub">Informe o e-mail cadastrado para receber o link de redefinição.</p>
+
+    <label for="email">E-mail</label>
+    <input id="email" type="email" autocomplete="email" placeholder="voce@exemplo.com"
+           pattern="^[^\s@]+@[^\s@]+\.[^\s@]{2,}$" required>
+
+    <button id="btnEnviar" class="primary">Enviar link de recuperação</button>
+    <button id="btnVoltar" class="ghost" onclick="location.href='index.html'">Voltar</button>
+
+    <p class="muted">Lembrou a senha? <a href="index.html">Voltar ao login</a></p>
+  </div>
+
+  <!-- POPUP -->
+  <div id="alert" class="alert-bg" role="dialog" aria-modal="true" aria-labelledby="alertTitle">
+    <div class="alert-card">
+      <div class="alert-head">
+        <div class="alert-dot"></div>
+        <div id="alertTitle" class="alert-title">Mensagem</div>
+      </div>
+      <div id="alertMsg" class="alert-body">...</div>
+      <div id="alertActions" class="alert-actions"></div>
+    </div>
+  </div>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { getAuth, sendPasswordResetEmail } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+
+const app = initializeApp({
+  apiKey:"AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
+  authDomain:"mostreaki-2025.firebaseapp.com",
+  projectId:"mostreaki-2025",
+  storageBucket:"mostreaki-2025.firebasestorage.app",
+  messagingSenderId:"748712068097",
+  appId:"1:748712068097:web:09cf043fbb45917ef6ec00"
+});
+const auth = getAuth(app);
+
+/* Popup helpers */
+const alertBG = document.getElementById('alert');
+const alertTitle = document.getElementById('alertTitle');
+const alertMsg = document.getElementById('alertMsg');
+const alertActions = document.getElementById('alertActions');
+function showAlert({title="Aviso", html="", actions=[{text:"Fechar", kind:"solid"}]}){
+  alertTitle.textContent = title;
+  alertMsg.innerHTML = html;
+  alertActions.innerHTML = "";
+  actions.forEach(a=>{
+    const b=document.createElement('button');
+    b.className = a.kind==='ghost' ? 'btn-ghost' : 'btn-solid';
+    b.textContent = a.text;
+    b.onclick = ()=>{ if(a.onClick) a.onClick(); closeAlert(); };
+    alertActions.appendChild(b);
+  });
+  alertBG.style.display='flex';
+}
+function closeAlert(){ alertBG.style.display='none'; }
+alertBG.addEventListener('click', e=>{ if(e.target===alertBG) closeAlert(); });
+window.addEventListener('keydown', e=>{ if(e.key==='Escape' && alertBG.style.display==='flex') closeAlert(); });
+
+/* E-mail regex */
+const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+document.getElementById('btnEnviar').addEventListener('click', async ()=>{
+  const btn = document.getElementById('btnEnviar');
+  const email = (document.getElementById('email').value||"").trim();
+
+  if(!email || !emailRe.test(email)){
+    return showAlert({title:"E-mail inválido", html:"Informe um e-mail válido para continuar."});
+  }
+
+  try{
+    btn.disabled = true; btn.textContent = "Enviando...";
+
+    // Observação: por segurança, o Firebase pode "não revelar" se o e-mail existe.
+    await sendPasswordResetEmail(auth, email);
+
+    showAlert({
+      title:"Verifique sua caixa de entrada",
+      html:`Se existir uma conta com <b>${email}</b>, você receberá o link para redefinir a senha em instantes.<br>
+            Dica: confira também o spam.`
+    });
+  }catch(e){
+    const mapa = {
+      "auth/invalid-email":"Endereço de e-mail inválido.",
+      "auth/missing-email":"Informe um e-mail para continuar."
+      // O erro "user-not-found" pode não ser retornado para evitar descoberta de usuários.
+    };
+    showAlert({title:"Não foi possível enviar", html: mapa[e.code] || `Erro inesperado (${e.code}). Tente novamente.`});
+  }finally{
+    btn.disabled = false; btn.textContent = "Enviar link de recuperação";
+  }
+});
+</script>
+</body>
+</html>
