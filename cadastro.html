@@ -45,13 +45,12 @@
 
   button,.btn{width:100%; margin-top:12px; padding:12px; border-radius:12px; border:0; font-weight:bold; cursor:pointer}
   .primary{background:var(--brand); color:#fff}
-  .google{background:#fff; border:2px solid #ddd; color:#333; display:flex; align-items:center; justify-content:center; gap:8px}
   .muted{font-size:.92rem; color:#666; margin-top:10px}
   a{color:var(--brand); text-decoration:none; font-weight:bold}
 
   /* Olho de senha — com seus ajustes */
   .pwd-wrap{position:relative}
-  .pwd-wrap input{padding-right:16%} /* espaço pro botão */
+  .pwd-wrap input{padding-right:16%}
   .pwd-toggle{
     position:absolute; right:8px; top:20%;
     width:36px; height:36px; display:flex; align-items:center; justify-content:center;
@@ -69,7 +68,7 @@
   .alert-body{padding:16px; color:#2b2b2b}
   .alert-actions{display:flex; gap:10px; flex-wrap:wrap; padding:0 16px 16px}
   .btn-solid{background:var(--brand); color:#fff}
-  .btn-ghost{background:#fff; border:2px solid var(--brand); color:var(--brand)}
+  .btn-ghost{background:#fff; border:2px solid var(--brand); color:#var(--brand)}
 </style>
 </head>
 <body>
@@ -142,9 +141,6 @@
   </div>
 
   <button class="primary" id="btnCadastrar">Criar conta</button>
-  <button class="google" id="btnGoogle">
-    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" style="height:18px;vertical-align:middle"> Cadastrar com Google
-  </button>
   <p class="muted">Já tem conta? <a href="/login.html">Entrar</a></p>
 </div>
 
@@ -164,7 +160,7 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
 import {
   getAuth, createUserWithEmailAndPassword, updateProfile,
-  signInWithPopup, GoogleAuthProvider, sendEmailVerification, signOut
+  sendEmailVerification, signOut
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 import {
   getFirestore, doc, setDoc, serverTimestamp
@@ -214,7 +210,8 @@ window.addEventListener('keydown', e=>{ if(e.key==='Escape' && alertBG.style.dis
 
 /* ===== Helpers de máscara/validação ===== */
 const $ = (id)=>document.getElementById(id);
-
+const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const emailValido = v => emailRe.test(v);
 function onlyDigits(s){ return (s||'').replace(/\D/g,''); }
 
 /* Celular */
@@ -241,7 +238,6 @@ $("cep").addEventListener("input", async ()=>{
       $("bairro").value     = data.bairro || "";
       $("cidade").value     = data.localidade || "";
       $("uf").value         = data.uf || "";
-      // atualizar labels
       ["logradouro","bairro","cidade","uf"].forEach(id=>{
         const f = $(id).closest('.field'); f?.classList.add('has-value');
       });
@@ -251,7 +247,7 @@ $("cep").addEventListener("input", async ()=>{
   }
 });
 
-/* CPF/CNPJ máscaras e validações (algoritmo) */
+/* CPF/CNPJ máscaras e validações */
 const cpfI = $("cpf"), cnpjI = $("cnpj");
 cpfI.addEventListener('input', ()=>{
   let v = onlyDigits(cpfI.value).slice(0,11);
@@ -289,10 +285,8 @@ function setTipo(tipo){
   const pf = tipo==='PF';
   grupoPF.style.display = pf ? '' : 'none';
   grupoPJ.style.display = pf ? 'none' : '';
-  // required dinâmico
   $("nome").required = pf; $("cpf").required = pf;
   $("razao").required = !pf; $("cnpj").required = !pf;
-  // IE só se não isento
   $("ie").disabled = isentoIE.checked; $("ie").required = !isentoIE.checked && !pf;
 }
 document.querySelectorAll('input[name="tipoPessoa"]').forEach(r=>{
@@ -317,12 +311,8 @@ function wirePasswordToggle(inputId, btnId){
 wirePasswordToggle('senha','toggleSenha');
 wirePasswordToggle('senha2','toggleSenha2');
 
-/* Validações auxiliares */
-const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-const emailValido = v => emailRe.test(v);
-
 /* Cadastro por e-mail */
-$("btnCadastrar").onclick = async () => {
+document.getElementById("btnCadastrar").onclick = async () => {
   const tipo = document.querySelector('input[name="tipoPessoa"]:checked').value;
 
   const nome = $("nome").value.trim();
@@ -357,7 +347,7 @@ $("btnCadastrar").onclick = async () => {
   // Contato
   const phoneDigits = (v)=>onlyDigits(v).length;
   if(!(phoneDigits(fone)===10 || phoneDigits(fone)===11)) return showAlert({title:"Celular inválido", html:"Informe um número com DDD (10 ou 11 dígitos)."});
-  if(!emailValido(email) || !emailValido(email2)) return showAlert({title:"E-mail inválido", html:"Revise os e-mails digitados."});
+  if(!emailRe.test(email) || !emailRe.test(email2)) return showAlert({title:"E-mail inválido", html:"Revise os e-mails digitados."});
   if(email!==email2) return showAlert({title:"E-mails não conferem", html:"Digite o mesmo e-mail nos dois campos."});
 
   // Endereço
@@ -372,10 +362,8 @@ $("btnCadastrar").onclick = async () => {
     const cred = await createUserWithEmailAndPassword(auth, email, s1);
     const uid = cred.user.uid;
 
-    // displayName = nome (PF) ou razão social (PJ)
     await updateProfile(cred.user,{ displayName: tipo==='PF' ? nome : razao });
 
-    // Salva perfil completo no Firestore
     const payload = {
       uid, tipoPessoa: tipo,
       nomeCompleto: tipo==='PF' ? nome : '',
@@ -393,7 +381,6 @@ $("btnCadastrar").onclick = async () => {
     };
     await setDoc(doc(db,'usuarios',uid), payload, { merge:true });
 
-    // Verificação de e-mail
     await sendEmailVerification(cred.user);
     showAlert({
       title:"Confirme seu e-mail",
@@ -411,19 +398,6 @@ $("btnCadastrar").onclick = async () => {
       "auth/network-request-failed":"Falha de rede. Verifique sua conexão."
     };
     showAlert({title:"Não foi possível cadastrar", html: mapa[e.code] || `Erro inesperado (${e.code}). Tente novamente.`});
-  }
-};
-
-/* Cadastro com Google → completar dados na Minha Conta */
-$("btnGoogle").onclick = async ()=>{
-  try{
-    const prov = new GoogleAuthProvider();
-    const r = await signInWithPopup(auth, prov);
-    if(r.user.photoURL) localStorage.setItem("fotoPerfil", r.user.photoURL);
-    // Leva para completar endereço/fiscal
-    location.href="/minha-conta.html";
-  }catch(e){
-    showAlert({title:"Google indisponível", html:"Tente novamente em instantes."});
   }
 };
 </script>
