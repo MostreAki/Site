@@ -1,270 +1,387 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MostreAki</title>
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
-  <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#ffffff" />
-  <style>
-    * { box-sizing:border-box; margin:0; padding:0; font-family: Arial, sans-serif; }
-    body{
-      background-image:url("fundo-mobile.png");
-      background-size:cover; background-repeat:no-repeat; background-attachment:fixed;
-      display:flex; flex-direction:column; min-height:100vh;
-    }
-    @media (min-width:768px){ body{ background-image:url("fundo-desktop.png"); } }
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>MostreAki</title>
+<link rel="icon" href="favicon.ico" type="image/x-icon"/>
+<link rel="manifest" href="manifest.json"/>
+<meta name="theme-color" content="#ffffff"/>
 
-    header{
-      background:#c2e7df; height:60px; display:flex; align-items:center; justify-content:space-between;
-      padding:0 20px; box-shadow:0 2px 4px rgba(0,0,0,.1); position:relative;
-    }
-    .logo-container{ display:flex; align-items:center; }
-    .logo-container img{ height:40px; margin-right:10px; }
-    .logo{ font-size:1.5rem; font-weight:bold; }
-    .logo .mostre{ color:#00C2BF; } .logo .aki{ color:#FA1E39; }
-    .menu-icon{ font-size:1.5rem; cursor:pointer; }
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
+  body{
+    background-image:url("fundo-mobile.png");
+    background-size:cover;background-repeat:no-repeat;background-attachment:fixed;
+    min-height:100vh;display:flex;flex-direction:column;
+  }
+  @media (min-width:768px){ body{ background-image:url("fundo-desktop.png"); } }
 
-    .menu-list{
-      position:absolute; top:60px; right:20px; background:#16807C; border:2px solid #000; border-radius:6px;
-      display:none; flex-direction:column; padding:10px; z-index:1000;
-    }
-    .menu-list a{
-      text-decoration:none; color:#fff; padding:10px 15px; border-radius:6px; font-weight:bold;
-      background:#FA1E39; margin-bottom:8px; text-align:center;
-    }
-    .menu-list a:hover{ background:#b8313b; }
+  header{
+    background:#c2e7df;height:60px;display:flex;align-items:center;justify-content:space-between;
+    padding:0 20px;box-shadow:0 2px 4px rgba(0,0,0,.1);position:relative;
+  }
+  .logo-container{display:flex;align-items:center}
+  .logo-container img{height:40px;margin-right:10px}
+  .logo{font-size:1.5rem;font-weight:bold}
+  .logo .mostre{color:#00C2BF}.logo .aki{color:#FA1E39}
 
-    .banner video{ width:100%; height:auto; }
+  .menu-icon{font-size:1.5rem;cursor:pointer}
+  .menu-list{
+    position:absolute;top:60px;right:20px;background:#16807C;border:2px solid #000;border-radius:6px;
+    display:none;flex-direction:column;padding:10px;z-index:1000;
+  }
+  .menu-list a{
+    text-decoration:none;color:#fff;padding:10px 15px;border-radius:6px;font-weight:bold;
+    background:#FA1E39;margin-bottom:8px;text-align:center;
+  }
+  .menu-list a:hover{background:#b8313b}
 
-    .section{
-      background:#fff; margin:40px auto; padding:20px; width:80%; border-radius:10px;
-      box-shadow:0 2px 8px rgba(0,0,0,.1); text-align:center;
-    }
-    .section h2{ color:#008b8b; margin-bottom:10px; }
+  .banner video{width:100%;height:auto}
 
-    .btn{
-      display:inline-block; margin-top:15px; padding:10px 20px; background:#d73e45; color:#fff;
-      border:none; border-radius:5px; text-decoration:none; font-weight:bold;
-    }
+  .section{
+    background:#fff;margin:40px auto;padding:20px;width:80%;border-radius:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,.1);text-align:center;
+  }
+  .section h2{color:#008b8b;margin-bottom:10px}
 
-    .user-circle{
-      background:#15b0af; color:#fff; font-weight:bold; border-radius:50%;
-      width:32px; height:32px; display:none; align-items:center; justify-content:center;
-      background-size:cover; background-position:center; font-size:.9rem;
-    }
+  .btn{
+    display:inline-block;margin-top:15px;padding:10px 20px;background:#d73e45;color:#fff;
+    border:none;border-radius:5px;text-decoration:none;font-weight:bold;
+  }
 
-    footer{ background:#c2e7df; padding:20px; text-align:center; color:#555; font-size:.9rem; margin-top:auto; }
+  .header-auth{display:flex;align-items:center;gap:10px}
+  #btnAbrirLogin{
+    background:#15b0af;color:#fff;font-weight:bold;border:none;border-radius:8px;
+    padding:8px 12px;cursor:pointer;
+  }
+  .user-circle{
+    background:#15b0af;color:#fff;font-weight:bold;border-radius:50%;
+    width:32px;height:32px;display:none;align-items:center;justify-content:center;
+    background-size:cover;background-position:center;font-size:.9rem;
+  }
 
-    /* ===== botão Entrar no header ===== */
-    .header-auth{
-      display:flex; align-items:center; gap:10px;
-    }
-    #btnAbrirLogin{
-      background:#15b0af; color:#fff; font-weight:bold; border:none; border-radius:8px;
-      padding:8px 12px; cursor:pointer;
-    }
+  footer{background:#c2e7df;padding:20px;text-align:center;color:#555;font-size:.9rem;margin-top:auto}
 
-    /* ===== Modal de autenticação ===== */
-    .modal-bg{
-      position:fixed; inset:0; background:rgba(0,0,0,.5);
-      display:none; align-items:center; justify-content:center; z-index:9999;
-      padding:20px;
-    }
-    .modal-card{
-      background:#ffffff; width:100%; max-width:420px; border-radius:16px;
-      box-shadow:0 20px 60px rgba(0,0,0,.25); overflow:hidden;
-      border:2px solid #c2e7df;
-    }
-    .modal-head{
-      background:linear-gradient(90deg,#c2e7df,#15b0af);
-      padding:16px 18px; color:#0b4d4c; display:flex; align-items:center; justify-content:space-between;
-    }
-    .modal-head h2{ font-size:1.1rem; color:#063b39; }
-    .modal-close{
-      background:transparent; border:none; font-size:22px; line-height:1; cursor:pointer; color:#063b39;
-    }
-    .modal-body{ padding:18px; }
-    .modal-body p.muted{ color:#555; margin-bottom:10px; }
+  /* ===== Modal de autenticação (com LOGIN embutido) ===== */
+  .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:9999;padding:20px}
+  .modal-card{
+    background:#fff;width:100%;max-width:420px;border-radius:16px;
+    box-shadow:0 20px 60px rgba(0,0,0,.25);overflow:hidden;border:2px solid #c2e7df;
+  }
+  .modal-head{
+    background:linear-gradient(90deg,#c2e7df,#15b0af);
+    padding:16px 18px;color:#0b4d4c;display:flex;align-items:center;justify-content:space-between;
+  }
+  .modal-head h2{font-size:1.1rem;color:#063b39}
+  .modal-close{background:transparent;border:none;font-size:22px;line-height:1;cursor:pointer;color:#063b39}
+  .modal-body{padding:18px}
+  .modal-body p.muted{color:#555;margin-bottom:10px}
 
-    .actions{ display:grid; gap:10px; }
-    .btn-auth{
-      width:100%; padding:12px; border-radius:10px; font-weight:bold; cursor:pointer; border:0;
-    }
-    .btn-primary{ background:#15b0af; color:#fff; }
-    .btn-outline{
-      background:#fff; color:#15b0af; border:2px solid #15b0af;
-    }
+  label{display:block;margin:10px 0 6px;color:#333}
+  input{width:100%;padding:10px;border:1px solid #ddd;border-radius:8px}
+  .primary{background:#15b0af;color:#fff;border:0;border-radius:8px;padding:12px;font-weight:bold;cursor:pointer;width:100%;margin-top:12px}
+  .muted{font-size:.9rem;color:#666;margin-top:10px}
+  .muted a{color:#15b0af;text-decoration:none;font-weight:bold}
 
-    /* 🔧 Sem sublinhado nos links-botão do modal (login/cadastro) */
-    #authModal .actions a,
-    #authModal .actions a:hover,
-    #authModal .actions a:focus { text-decoration: none; }
+  /* Campo de senha com “olho” – padrão que você curtiu */
+  .pwd-wrap{position:relative}
+  .pwd-wrap input{padding-right:16%}           /* espaço pro botão */
+  .pwd-toggle{
+    position:absolute;right:8px;top:20%;       /* top ~20% */
+    width:36px;height:36px;display:flex;align-items:center;justify-content:center;
+    background:#fff;border:1px solid #ddd;border-radius:6px;cursor:pointer;
+    font-size:18px;line-height:1;color:#444;
+  }
+  .pwd-toggle:active{transform:scale(.98)}
 
-    /* acessibilidade scroll lock (opcional) */
-    .no-scroll{ overflow:hidden; }
-  </style>
+  /* POPUP de alerta brand */
+  .alert-bg{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:10000;padding:20px}
+  .alert-card{background:#fff;border-radius:16px;overflow:hidden;max-width:460px;width:100%;box-shadow:0 22px 70px rgba(0,0,0,.25);border:2px solid #c2e7df}
+  .alert-head{background:linear-gradient(90deg,#c2e7df,#15b0af);padding:14px 16px;display:flex;align-items:center;gap:10px}
+  .alert-dot{width:10px;height:10px;border-radius:50%;background:#FA1E39}
+  .alert-title{color:#063b39;font-weight:bold}
+  .alert-body{padding:16px;color:#2b2b2b}
+  .alert-actions{display:flex;gap:10px;flex-wrap:wrap;padding:0 16px 16px}
+  .btn-solid{background:#15b0af;color:#fff;border:0;border-radius:8px;padding:10px 14px;font-weight:bold;cursor:pointer}
+  .btn-ghost{background:#fff;border:2px solid #15b0af;color:#15b0af;border-radius:8px;padding:10px 14px;font-weight:bold;cursor:pointer}
+
+  /* links-botão sem sublinhado dentro da modal */
+  #authModal a{ text-decoration:none }
+</style>
 </head>
 <body>
 
-  <!-- MODAL DE AUTENTICAÇÃO -->
-  <div id="authModal" class="modal-bg" role="dialog" aria-modal="true" aria-labelledby="authTitle">
-    <div class="modal-card">
-      <div class="modal-head">
-        <h2 id="authTitle">Entrar no MostreAki</h2>
-        <button class="modal-close" onclick="fecharModal()" aria-label="Fechar">×</button>
+<!-- MODAL: LOGIN EMBUTIDO -->
+<div id="authModal" class="modal-bg" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h2 id="authTitle">Entrar no MostreAki</h2>
+      <button class="modal-close" onclick="fecharModal()" aria-label="Fechar">×</button>
+    </div>
+    <div class="modal-body">
+      <label for="email">E-mail</label>
+      <input id="email" type="email" autocomplete="username" required
+             pattern="^[^\s@]+@[^\s@]+\.[^\s@]{2,}$" placeholder="voce@exemplo.com">
+
+      <label for="senha">Senha</label>
+      <div class="pwd-wrap">
+        <input id="senha" type="password" autocomplete="current-password" required>
+        <button id="toggleSenha" class="pwd-toggle" type="button" aria-label="Mostrar senha" aria-pressed="false">👁️</button>
       </div>
-      <div class="modal-body">
-        <p class="muted">Escolha como deseja continuar:</p>
-        <div class="actions">
-          <a class="btn-auth btn-primary" href="/login.html">Entrar com e-mail e senha</a>
-          <a class="btn-auth btn-outline" href="/cadastro.html">Cadastrar nova conta</a>
-        </div>
+
+      <button class="primary" id="btnEntrar">Entrar</button>
+
+      <div id="recoverLine" class="muted" style="display:none;text-align:center;margin-top:6px">
+        Esqueceu a senha? <a href="/recuperar-senha.html">Recuperar senha</a>
       </div>
-      <div class="modal-foot"></div>
+
+      <p class="muted">Não tem conta? <a href="/cadastro.html">Cadastre-se</a></p>
     </div>
   </div>
+</div>
 
-  <header>
-    <div class="logo-container">
-      <img src="logo.png" alt="Logo" />
-      <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
+<header>
+  <div class="logo-container" onclick="location.href='index.html'">
+    <img src="logo.png" alt="Logo"/>
+    <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
+  </div>
+
+  <div class="header-auth">
+    <button id="btnAbrirLogin">Entrar</button>
+    <span id="authText" style="font-weight:bold;color:#15b0af;cursor:pointer;display:none;">Sair</span>
+    <div id="userCircle" class="user-circle" title="Perfil"></div>
+    <div class="menu-icon" onclick="toggleMenu()">☰</div>
+  </div>
+
+  <div class="menu-list" id="menu">
+    <a href="/sobre.html">Sobre</a>
+    <a href="/minha-conta.html">Minha Conta</a>
+    <a href="/planos.html">Planos</a>
+    <a href="/parceiros.html">Parceiros</a>
+    <a href="/servicos-adicionais.html">Serviços Adicionais</a>
+    <a href="/redes-sociais.html">Redes Sociais</a>
+    <a href="/contatos.html">Contatos</a>
+  </div>
+</header>
+
+<div class="banner">
+  <a href="/planos.html">
+    <video autoplay muted loop playsinline preload="auto">
+      <source src="banner-mobile.webm" type="video/webm" media="(max-width: 767px)">
+      <source src="banner-desktop.webm" type="video/webm" media="(min-width: 768px)">
+      Seu navegador não suporta vídeo HTML5.
+    </video>
+  </a>
+</div>
+
+<div class="section">
+  <h2>Conheça o Nosso Trabalho e os Nossos Parceiros</h2>
+  <p>Aqui voce vai poder ver o nosso trabalho e os Templates que temos disponíveis.</p>
+  <a href="/parceiros.html" class="btn">Clique Aqui</a>
+</div>
+
+<div class="section">
+  <h2>Redes Sociais</h2>
+  <p>Conecte-se com o público nas redes sociais por meio do MostreAki.</p>
+  <a href="/redes-sociais.html" class="btn">Clique Aqui</a>
+</div>
+
+<div class="section">
+  <h2>Serviços Adicionais</h2>
+  <p>Descubra como potencializar sua presença com nossos serviços extras.</p>
+  <a href="/servicos-adicionais.html" class="btn">Clique Aqui</a>
+</div>
+
+<footer>&copy; 2025 MostreAki. Todos os direitos reservados.</footer>
+
+<!-- ALERT brand -->
+<div id="alert" class="alert-bg" role="dialog" aria-modal="true" aria-labelledby="alertTitle" aria-live="polite">
+  <div class="alert-card">
+    <div class="alert-head">
+      <div class="alert-dot"></div>
+      <div id="alertTitle" class="alert-title">Mensagem</div>
     </div>
-
-    <div class="header-auth">
-      <!-- ÚNICO botão visível quando deslogado -->
-      <button id="btnAbrirLogin">Entrar</button>
-
-      <!-- Quando logado mostramos 'Sair' + avatar -->
-      <span id="authText" style="font-weight:bold; color:#15b0af; cursor:pointer; display:none;">Sair</span>
-      <div id="userCircle" class="user-circle" title="Perfil"></div>
-
-      <div class="menu-icon" onclick="toggleMenu()">☰</div>
-    </div>
-
-    <div class="menu-list" id="menu">
-      <a href="/sobre.html">Sobre</a>
-      <a href="/minha-conta.html">Minha Conta</a>
-      <a href="/planos.html">Planos</a>
-      <a href="/parceiros.html">Parceiros</a>
-      <a href="/servicos-adicionais.html">Serviços Adicionais</a>
-      <a href="/redes-sociais.html">Redes Sociais</a>
-      <a href="/contatos.html">Contatos</a>
-    </div>
-  </header>
-
-  <div class="banner">
-    <a href="/planos.html">
-      <video autoplay muted loop playsinline preload="auto" style="width:100%; height:auto;">
-        <source src="banner-mobile.webm" type="video/webm" media="(max-width: 767px)">
-        <source src="banner-desktop.webm" type="video/webm" media="(min-width: 768px)">
-        Seu navegador não suporta vídeo HTML5.
-      </video>
-    </a>
+    <div id="alertMsg" class="alert-body">...</div>
+    <div id="alertActions" class="alert-actions"></div>
   </div>
+</div>
 
-  <div class="section">
-    <h2>Conheça o Nosso Trabalho e os Nossos Parceiros</h2>
-    <p>Aqui voce vai poder ver o nosso trabalho e os Templates que temos disponíveis.</p>
-    <a href="/parceiros.html" class="btn">Clique Aqui</a>
-  </div>
+<!-- Firebase + Script -->
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import {
+  getAuth, onAuthStateChanged, signOut,
+  signInWithEmailAndPassword, sendEmailVerification
+} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 
-  <div class="section">
-    <h2>Redes Sociais</h2>
-    <p>Conecte-se com o público nas redes sociais por meio do MostreAki.</p>
-    <a href="/redes-sociais.html" class="btn">Clique Aqui</a>
-  </div>
+const app = initializeApp({
+  apiKey:"AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
+  authDomain:"mostreaki-2025.firebaseapp.com",
+  projectId:"mostreaki-2025",
+  storageBucket:"mostreaki-2025.firebasestorage.app",
+  messagingSenderId:"748712068097",
+  appId:"1:748712068097:web:09cf043fbb45917ef6ec00"
+});
+const auth = getAuth(app);
 
-  <div class="section">
-    <h2>Serviços Adicionais</h2>
-    <p>Descubra como potencializar sua presença com nossos serviços extras.</p>
-    <a href="/servicos-adicionais.html" class="btn">Clique Aqui</a>
-  </div>
+/* ===== helpers UI ===== */
+const $ = (id)=>document.getElementById(id);
+const modal = $("authModal");
+const btnAbrir = $("btnAbrirLogin");
+const authText = $("authText");
+const userCircle = $("userCircle");
 
-  <footer>
-    &copy; 2025 MostreAki. Todos os direitos reservados.
-  </footer>
+function abrirModal(){ modal.style.display="flex"; document.body.style.overflow="hidden"; }
+window.fecharModal = function(){ modal.style.display="none"; document.body.style.overflow=""; }
+btnAbrir.addEventListener("click", abrirModal);
+modal.addEventListener("click", e=>{ if(e.target===modal) fecharModal(); });
+window.addEventListener("keydown", e=>{ if(e.key==="Escape" && modal.style.display==="flex") fecharModal(); });
 
-  <!-- Firebase + Scripts -->
-  <script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-    import {
-      getAuth,
-      onAuthStateChanged,
-      signOut
-    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+/* ===== alerta brand ===== */
+const alertBG = document.getElementById('alert');
+const alertTitle = document.getElementById('alertTitle');
+const alertMsg = document.getElementById('alertMsg');
+const alertActions = document.getElementById('alertActions');
+function showAlert({title="Aviso", html="", actions=[{text:"Fechar", kind:"solid"}]}){
+  alertTitle.textContent = title; alertMsg.innerHTML = html; alertActions.innerHTML = "";
+  actions.forEach(a=>{
+    const b=document.createElement('button');
+    b.className = (a.kind==='ghost'?'btn-ghost':'btn-solid');
+    b.textContent = a.text;
+    b.onclick = ()=>{ if(a.onClick) a.onClick(); closeAlert(); };
+    alertActions.appendChild(b);
+  });
+  alertBG.style.display='flex';
+}
+function closeAlert(){ alertBG.style.display='none'; }
 
-    const app = initializeApp({
-      apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
-      authDomain: "mostreaki-2025.firebaseapp.com",
-      projectId: "mostreaki-2025",
-      storageBucket: "mostreaki-2025.appspot.com",
-      messagingSenderId: "748712068097",
-      appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
-    });
+/* ===== olho senha ===== */
+(function wirePasswordToggle(){
+  const input = $("senha"), btn = $("toggleSenha");
+  if(!input || !btn) return;
+  function flip(){
+    const showing = input.type === 'text';
+    input.type = showing ? 'password' : 'text';
+    btn.textContent = showing ? '👁️' : '🙈';
+    btn.setAttribute('aria-pressed', (!showing).toString());
+    btn.setAttribute('aria-label', showing ? 'Mostrar senha' : 'Ocultar senha');
+  }
+  btn.addEventListener('click', flip);
+})();
 
-    const auth = getAuth(app);
+/* ===== login ===== */
+const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const emailValido = v => emailRe.test(v);
+function getState(){
+  const now=Date.now();
+  const s = JSON.parse(sessionStorage.getItem('loginState')||'{}');
+  if(!s.lockUntil) s.lockUntil=0;
+  if(!s.failCount) s.failCount=0;
+  if(!s.blockMult) s.blockMult=1;
+  if(now > s.lockUntil){ s.lockUntil=0; }
+  return s;
+}
+function setState(s){ sessionStorage.setItem('loginState', JSON.stringify(s)); }
+function isLocked(){ const s=getState(); return s.lockUntil && Date.now()<s.lockUntil; }
+function lockMore(){
+  const s=getState(); const base=30000;
+  s.blockMult = Math.min(s.blockMult*2, 8);
+  s.lockUntil = Date.now() + base * s.blockMult;
+  setState(s);
+}
+function incFail(){
+  const s=getState(); s.failCount=(s.failCount||0)+1;
+  if(s.failCount>=5){ s.failCount=0; lockMore(); }
+  setState(s);
+}
+function resetFails(){ setState({failCount:0, blockMult:1, lockUntil:0}); }
+function showLockMsg(){
+  const s=getState(); const secs = Math.ceil((s.lockUntil - Date.now())/1000);
+  showAlert({title:"Muitas tentativas", html:`Aguarde <b>${secs}s</b> para tentar novamente.`});
+}
 
-    // Handlers Modal
-    const $ = (id)=>document.getElementById(id);
-    const modal = $("authModal");
-    const btnAbrir = $("btnAbrirLogin");
-    const authText = $("authText");
-    const userCircle = $("userCircle");
+async function loginEmailSenha(){
+  if(isLocked()) return showLockMsg();
 
-    function abrirModal(){
-      modal.style.display = "flex";
-      document.body.classList.add("no-scroll");
+  const email = $("email").value.trim();
+  const senha = $("senha").value;
+
+  if(!email) return showAlert({title:"E-mail vazio", html:"Digite seu e-mail para continuar."});
+  if(!emailValido(email)) return showAlert({title:"E-mail inválido", html:"Revise o endereço digitado."});
+  if(!senha) return showAlert({title:"Senha vazia", html:"Digite sua senha para continuar."});
+
+  try{
+    const cred = await signInWithEmailAndPassword(auth, email, senha);
+
+    if(!cred.user.emailVerified){
+      await sendEmailVerification(cred.user);
+      showAlert({
+        title:"Confirme seu e-mail",
+        html:`Seu e-mail ainda não foi verificado.<br>Reenviamos o link para <b>${email}</b>. Verifique sua caixa de entrada (ou spam) e tente novamente após confirmar.`
+      });
+      return;
     }
-    window.fecharModal = function(){
-      modal.style.display = "none";
-      document.body.classList.remove("no-scroll");
+
+    resetFails();
+    if(cred.user.photoURL) localStorage.setItem("fotoPerfil", cred.user.photoURL);
+    fecharModal();
+    location.href="/minha-conta.html";
+
+  }catch(e){
+    const codes = ["auth/invalid-credential","auth/wrong-password","auth/user-not-found"];
+    if(codes.includes(e.code)){
+      document.getElementById("recoverLine").style.display="block";
+      incFail();
+      if(isLocked()) return showLockMsg();
+      return showAlert({
+        title:"Não conseguimos entrar",
+        html:"E-mail e/ou senha incorretos. Você pode tentar novamente ou recuperar a senha.",
+        actions:[
+          {text:"Recuperar senha", kind:"ghost", onClick:()=>location.href="/recuperar-senha.html"},
+          {text:"Cadastrar", kind:"ghost", onClick:()=>location.href="/cadastro.html"},
+          {text:"Fechar", kind:"solid"}
+        ]
+      });
     }
-    btnAbrir.addEventListener("click", abrirModal);
-    modal.addEventListener("click", (e)=>{ if(e.target===modal) fecharModal(); });
-    window.addEventListener("keydown",(e)=>{ if(e.key==="Escape" && modal.style.display==="flex") fecharModal(); });
+    if(e.code==="auth/too-many-requests"){ lockMore(); return showLockMsg(); }
+    if(e.code==="auth/invalid-email"){ return showAlert({title:"E-mail inválido", html:"Revise o endereço digitado."}); }
+    showAlert({title:"Erro", html:`Erro inesperado (${e.code}). Tente novamente.`});
+  }
+}
+document.getElementById("btnEntrar").onclick = loginEmailSenha;
+document.addEventListener('keydown', e=>{ if(e.key==='Enter' && modal.style.display==='flex') loginEmailSenha(); });
 
-    // Estado de auth → controla Entrar/Sair/Avatar
-    onAuthStateChanged(auth, (user) => {
-      const fotoURL = localStorage.getItem("fotoPerfil");
-      if (user) {
-        // avatar
-        if (fotoURL) {
-          userCircle.style.backgroundImage = `url('${fotoURL}')`;
-          userCircle.textContent = "";
-        } else {
-          const nome = (user.displayName || user.email || "?").trim();
-          userCircle.textContent = nome.charAt(0).toUpperCase();
-          userCircle.style.backgroundImage = "";
-        }
-        userCircle.style.display = "flex";
+/* ===== estado de auth: avatar/entrar/sair ===== */
+onAuthStateChanged(auth, (user)=>{
+  const fotoURL = localStorage.getItem("fotoPerfil");
+  if(user){
+    if(fotoURL){ userCircle.style.backgroundImage=`url('${fotoURL}')`; userCircle.textContent=""; }
+    else { const nome=(user.displayName||user.email||"?").trim(); userCircle.textContent=nome.charAt(0).toUpperCase(); userCircle.style.backgroundImage=""; }
+    userCircle.style.display="flex";
+    authText.style.display="inline";
+    btnAbrir.style.display="none";
+  }else{
+    userCircle.style.display="none";
+    authText.style.display="none";
+    btnAbrir.style.display="inline-block";
+  }
+});
 
-        // mostra "Sair" e oculta botão Entrar
-        authText.style.display = "inline";
-        btnAbrir.style.display = "none";
-      } else {
-        userCircle.style.display = "none";
-        authText.style.display = "none";
-        btnAbrir.style.display = "inline-block";
-      }
-    });
+/* ===== sair ===== */
+authText.addEventListener("click", async ()=>{
+  try{
+    await signOut(auth);
+    localStorage.removeItem("fotoPerfil");
+    location.reload();
+  }catch(e){ showAlert({title:"Sair", html:"Não foi possível sair. Tente de novo."}); }
+});
 
-    // Sair
-    authText.addEventListener("click", async ()=>{
-      try{
-        await signOut(auth);
-        localStorage.removeItem("fotoPerfil");
-        location.reload();
-      }catch(e){ alert("Não foi possível sair: " + e.message); }
-    });
-  </script>
-
-  <script>
-    function toggleMenu(){
-      const menu=document.getElementById("menu");
-      menu.style.display = menu.style.display === "flex" ? "none" : "flex";
-    }
-  </script>
+/* ===== menu ===== */
+window.toggleMenu = function(){
+  const menu=document.getElementById("menu");
+  menu.style.display = menu.style.display==="flex" ? "none" : "flex";
+};
+</script>
 </body>
 </html>
