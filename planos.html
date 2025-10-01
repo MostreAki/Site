@@ -15,6 +15,8 @@
       --ink:#063b39;
       --card:#ffffff;
       --muted:#445;
+      /* nova cor solicitada para o título/subtítulo */
+      --titleAccent:#c6f2e0;
     }
 
     body{
@@ -34,11 +36,14 @@
     .logo{font-size:1.5rem;font-weight:bold}
     .logo .mostre{color:#00C2BF}.logo .aki{color:#FA1E39}
 
+    /* avatar + hambúrguer lado a lado */
     .header-auth{ display:flex; align-items:center; gap:10px; }
+
     .user-circle{
       background:#15b0af;color:#fff;font-weight:bold;border-radius:50%;
       width:32px;height:32px;display:flex;align-items:center;justify-content:center;
-      overflow:hidden;font-size:.9rem;
+      overflow:hidden;
+      font-size:.9rem;
     }
     .user-circle img{ width:100%; height:100%; object-fit:cover; display:block; }
 
@@ -62,13 +67,14 @@
     /* ===== Pricing ===== */
     .pricing-head{ text-align:center;margin-bottom:22px; }
     .pricing-head h1{
-      color:#c6f2e0;              /* << cor solicitada */
-      font-size:1.9rem;
-      margin-bottom:6px;
+      color:var(--titleAccent);
+      font-size:1.9rem;margin-bottom:6px;
+      text-shadow:0 1px 0 rgba(0,0,0,.2), 0 2px 4px rgba(0,0,0,.25);
     }
     .pricing-head p{
-      color:#c6f2e0;              /* << cor solicitada */
+      color:var(--titleAccent);
       font-size:1.05rem;
+      text-shadow:0 1px 0 rgba(0,0,0,.18);
     }
 
     .grid{ display:grid; gap:18px; grid-template-columns:1fr; }
@@ -95,7 +101,7 @@
     .feat li{display:flex;gap:8px;margin:8px 0}
     .feat li::before{content:"✔";color:var(--brand);font-weight:bold}
 
-    /* NOTA elegante (informativo) */
+    /* NOTA elegante (substitui o alerta com emoji) */
     .note{
       margin:12px 0 4px;
       padding:12px 14px;
@@ -111,17 +117,34 @@
     .mp-slot{display:flex;align-items:center;gap:8px}
     .mp-slot img{height:30px;width:auto;display:block;filter:saturate(.95) contrast(1.05)}
 
-    .cta{
-      background:var(--brand);color:#fff;border:none;border-radius:10px;
-      padding:14px 18px;font-size:1.05rem;font-weight:800;cursor:pointer;width:100%;
-      box-shadow:0 6px 16px rgba(21,176,175,.25);
+    .assinar{
+      margin:14px 16px 16px;
+      background:var(--brand);color:#fff;border:0;border-radius:10px;padding:12px 14px;
+      font-weight:bold;cursor:pointer;width:90%;font-size:1.05rem
     }
-    .cta:hover{ filter:brightness(.96) }
-    .cta:active{ transform:translateY(1px) }
+    .assinar:hover{filter:brightness(.95)}
 
-    footer{
-      text-align:center;color:#555;padding:22px 12px;margin:40px 0 10px
+    .sub{margin-top:10px;color:#566;font-size:.92rem}
+
+    footer{background:#c2e7df;padding:20px;text-align:center;color:#555;font-size:.9rem;margin-top:40px}
+
+    /* ===== Modal Termos ===== */
+    .tm-bg{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:9999;padding:16px}
+    .tm-card{background:#fff;border:2px solid var(--brandLight);border-radius:14px;max-width:720px;width:100%;box-shadow:0 22px 70px rgba(0,0,0,.25);overflow:hidden}
+    .tm-head{display:flex;align-items:center;gap:10px;background:linear-gradient(90deg,var(--brandLight),var(--brand));padding:12px 14px}
+    .tm-dot{width:10px;height:10px;border-radius:50%;background:var(--accent)}
+    .tm-title{color:var(--ink);font-weight:bold}
+    .tm-x{margin-left:auto;background:transparent;border:0;font-size:18px;cursor:pointer;color:#355}
+    .tm-body{
+      max-height:50vh;overflow:auto;padding:16px 16px 8px;color:#223;line-height:1.55;
+      -webkit-overflow-scrolling:touch; overscroll-behavior:contain; touch-action:pan-y;
     }
+    .tm-check{display:flex;align-items:center;gap:10px;padding:8px 16px;color:#234}
+    .tm-actions{display:flex;gap:10px;justify-content:flex-end;padding:0 16px 16px}
+
+    /* Toast */
+    .toast{position:fixed;top:16px;right:16px;background:#FA1E39;color:#fff;padding:12px 14px;border-radius:10px;
+      box-shadow:0 6px 18px rgba(0,0,0,.2);display:none;z-index:99999;font-weight:bold}
   </style>
 </head>
 <body>
@@ -137,6 +160,7 @@
     <div id="userCircle" class="user-circle" title="Perfil">F</div>
     <div id="menuBtn" class="menu-icon" aria-controls="menu" aria-expanded="false">☰</div>
   </div>
+
   <nav class="menu-list" id="menu">
     <a href="/index.html">Página Inicial</a>
     <a href="/sobre.html">Sobre</a>
@@ -155,16 +179,15 @@
   </div>
 
   <section class="grid" aria-label="Planos MostreAki">
-    <!-- ===== Plano Básico ===== -->
+    <!-- Básico -->
     <article class="card" data-plan="basico">
       <div class="card-head">
         <div class="card-title">Plano Básico</div>
         <label class="selector" for="sel-basico">
-          <input id="sel-basico" type="radio" name="plano" value="basico" />
+          <input id="sel-basico" type="radio" name="plano" value="basico"/>
           <span>Escolher plano</span>
         </label>
       </div>
-
       <div class="card-body">
         <ul class="feat">
           <li><b>Site Responsivo e Instagram Profissional.</b></li>
@@ -174,19 +197,76 @@
           <li>O MostreAki dará assistência para configurar o domínio (Registro.br) e o e-mail profissional (Zoho Mail).</li>
         </ul>
 
+        <!-- Nova NOTA (sem emoji) -->
         <div class="note">
           <b>Nota:</b> a contratação e o pagamento do <b>Registro.br</b> e do <b>Zoho Mail</b> são de responsabilidade do cliente. O MostreAki auxilia na configuração.
         </div>
 
-        <div class="price-row">
+        <div class="price-row" aria-label="Preço e pagamento">
           <div class="price">R$ 250,00</div>
           <div class="mp-slot">
-            <img src="https://logospng.org/download/mercado-pago/logo-mercado-pago-4096.png" alt="Mercado Pago" />
-            <span>Pagamento Seguro ✅</span>
+            <img src="mercado-pago-logo.svg" alt="Mercado Pago">
+            <div style="font-size:.85rem;color:#556">Pagamento Seguro ✅️</div>
           </div>
         </div>
+        <button class="assinar" type="button">AssineAki</button>
+        <div class="sub">Plano ideal para começar com segurança e simplicidade.</div>
+      </div>
+    </article>
 
-        <button class="cta" id="btnAssine">AssineAki</button>
+    <!-- Intermediário -->
+    <article class="card" data-plan="essencial">
+      <div class="card-head">
+        <div class="card-title">Plano Intermediário</div>
+        <label class="selector" for="sel-essencial">
+          <input id="sel-essencial" type="radio" name="plano" value="essencial"/>
+          <span>Escolher plano</span>
+        </label>
+      </div>
+      <div class="card-body">
+        <ul class="feat">
+          <li><b>Todos os recursos do Plano Básico.</b></li>
+          <li>Limite de 60 fotos/mês para catálogo de produtos com preço e botão de WhatsApp.</li>
+          <li>Até 3× atualizações por semana no site e 3×/semana no Instagram.</li>
+          <li>3× banners com loop automático a cada 7s.</li>
+        </ul>
+        <div class="price-row" aria-label="Preço e pagamento">
+          <div class="price">R$ 390,00</div>
+          <div class="mp-slot">
+            <img src="mercado-pago-logo.svg" alt="Mercado Pago">
+            <div style="font-size:.85rem;color:#556">Pagamento Seguro ✅️</div>
+          </div>
+        </div>
+        <button class="assinar" type="button">AssineAki</button>
+        <div class="sub">Para acelerar sua presença e vender com mais consistência.</div>
+      </div>
+    </article>
+
+    <!-- Avançado -->
+    <article class="card" data-plan="avancado">
+      <div class="card-head">
+        <div class="card-title">Plano Avançado</div>
+        <label class="selector" for="sel-avancado">
+          <input id="sel-avancado" type="radio" name="plano" value="avancado"/>
+          <span>Escolher plano</span>
+        </label>
+      </div>
+      <div class="card-body">
+        <ul class="feat">
+          <li><b>Todos os recursos do Intermediário.</b></li>
+          <li><b>Limite de 100 fotos/mês para catálogo com preço e WhatsApp.</b></li>
+          <li><b>Até 2× atualizações por dia no site e 2×/dia no Instagram.</b></li>
+          <li><b>Até 6× banners com loop automático a cada 7s.</b></li>
+        </ul>
+        <div class="price-row" aria-label="Preço e pagamento">
+          <div class="price">R$ 500,00</div>
+          <div class="mp-slot">
+            <img src="mercado-pago-logo.svg" alt="Mercado Pago">
+            <div style="font-size:.85rem;color:#556">Pagamento Seguro ✅️</div>
+          </div>
+        </div>
+        <button class="assinar" type="button">AssineAki</button>
+        <div class="sub">Para máxima frequência, catálogo robusto e alto alcance.</div>
       </div>
     </article>
   </section>
@@ -194,68 +274,193 @@
 
 <footer>&copy; 2025 MostreAki. Todos os direitos reservados.</footer>
 
-<!-- Firebase + Script -->
+<!-- ===== Modal Termos ===== -->
+<div id="termosModal" class="tm-bg" style="display:none" aria-hidden="true">
+  <div class="tm-card" role="dialog" aria-modal="true" aria-labelledby="tmTitle">
+    <div class="tm-head">
+      <div class="tm-dot"></div>
+      <div class="tm-title" id="tmTitle">Termos de Assinatura – MostreAki</div>
+      <button class="tm-x" onclick="fecharTermos()" aria-label="Fechar">✖</button>
+    </div>
+    <div id="tmBody" class="tm-body">
+      <p><b>Teste (D0–D7):</b> site no subdomínio da MostreAki. <b>D8:</b> captura do 1º ciclo e registro do domínio em nome do cliente.</p>
+      <p><b>Arrependimento (CDC art. 49):</b> até 7 dias, reembolso integral. Após o 7º dia, não há pró-rata do mês corrente.</p>
+      <p>Domínio em nome do cliente; portabilidade e snapshot de DNS na saída; LGPD; limite de responsabilidade (1 ciclo); foro do consumidor.</p>
+      <p>Leia a versão completa em <a href="/termos.html" target="_blank" rel="noopener">/termos.html</a>.</p>
+      <p style="margin:0;color:#666"><i>Role até o fim para habilitar o aceite.</i></p>
+    </div>
+    <label class="tm-check">
+      <input id="tmAceite" type="checkbox" disabled>
+      <span>Li e aceito os Termos (versão <b id="tmVer">1.0</b>).</span>
+    </label>
+    <div class="tm-actions">
+      <button class="btn" onclick="fecharTermos()">Cancelar</button>
+      <button id="tmProsseguir" class="btn" style="background:var(--brand);color:#fff" disabled>Concordo e prosseguir</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast">Faça login para continuar.</div>
+
 <script type="module">
-  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-  import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+import { getStorage, ref, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
 
-  const app = initializeApp({
-    apiKey:"AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
-    authDomain:"mostreaki-2025.firebaseapp.com",
-    projectId:"mostreaki-2025",
-    storageBucket:"mostreaki-2025.firebasestorage.app",
-    messagingSenderId:"748712068097",
-    appId:"1:748712068097:web:09cf043fbb45917ef6ec00"
-  });
+const cfg = {
+  apiKey:'AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE',
+  authDomain:'mostreaki-2025.firebaseapp.com',
+  projectId:'mostreaki-2025',
+  storageBucket:'mostreaki-2025.firebasestorage.app',
+  messagingSenderId:'748712068097',
+  appId:'1:748712068097:web:09cf043fbb45917ef6ec00'
+};
+const app = getApps().length ? getApp() : initializeApp(cfg);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+const stg  = getStorage(app, 'gs://mostreaki-2025.firebasestorage.app');
 
-  const auth = getAuth(app);
+const TERMS_VERSION = "1.0";
+document.getElementById('tmVer').textContent = TERMS_VERSION;
 
-  // Menu toggle + clique fora
-  const menuBtn = document.getElementById('menuBtn');
-  const menu    = document.getElementById('menu');
-  menuBtn?.addEventListener('click', () => {
-    const show = getComputedStyle(menu).display === 'none';
-    menu.style.display = show ? 'flex' : 'none';
-    menuBtn.setAttribute('aria-expanded', show ? 'true':'false');
-  });
-  document.addEventListener('click', (e) => {
-    if (!menu.contains(e.target) && e.target !== menuBtn) menu.style.display = 'none';
-  });
+const $  = s => document.querySelector(s);
+const $$ = s => document.querySelectorAll(s);
+const toast = (m='Faça login para continuar.')=>{ const t=$('#toast'); t.textContent=m; t.style.display='block'; setTimeout(()=>t.style.display='none',2400); };
 
-  // Avatar rápido via cache, se existir
-  const circle = document.getElementById('userCircle');
-  const cached = localStorage.getItem('fotoPerfil');
-  if (cached && circle) {
-    circle.textContent = '';
-    const img = new Image(); img.src = cached; img.alt = 'Foto'; img.style.width='100%'; img.style.height='100%'; img.style.objectFit='cover';
-    circle.append(img);
-  }
+const cacheBust = u => u ? u + (u.includes('?')?'&':'?') + 'v=' + Date.now() : u;
+function setAvatar(url){
+  if(!url) return;
+  localStorage.setItem('fotoPerfil', url);
+  const el = $('#userCircle'); if(!el) return;
+  el.textContent=''; el.style.display='flex';
+  const img = new Image(); img.src = cacheBust(url); img.alt='Foto'; img.style.width='100%'; img.style.height='100%'; img.style.objectFit='cover';
+  el.append(img);
+}
+(()=>{ const c = localStorage.getItem('fotoPerfil'); if(c) setAvatar(c); })();
+async function prefetchFoto(uid){
+  try{
+    const s = await getDoc(doc(db,'usuarios',uid));
+    const saved = s.exists() && s.data().fotoPerfil;
+    if(saved){ setAvatar(saved); return; }
+  }catch{}
+  try{
+    const tryExt = async e => getDownloadURL(ref(stg, `usuarios/${uid}/perfil/avatar.${e}`)).catch(()=>null);
+    const direct = await tryExt('jpg') || await tryExt('png') || await tryExt('webp') || await tryExt('gif');
+    if(direct){ try{ await setDoc(doc(db,'usuarios',uid), { fotoPerfil:direct }, { merge:true }); }catch{} setAvatar(direct); return; }
+  }catch{}
+  if(auth.currentUser?.photoURL) setAvatar(auth.currentUser.photoURL);
+}
 
-  // Estado de autenticação
-  const authText = document.getElementById('authText');
-  onAuthStateChanged(auth, (u) => {
-    if (u) {
-      authText.textContent = 'Sair';
-      authText.style.display = 'inline';
-      authText.onclick = () => signOut(auth);
-      if (u.photoURL && circle) {
-        circle.textContent = '';
-        const img = new Image(); img.src = u.photoURL; img.alt = 'Foto'; img.style.width='100%'; img.style.height='100%'; img.style.objectFit='cover';
-        circle.append(img);
-      }
-    } else {
-      authText.textContent = 'Entrar';
-      authText.style.display = 'inline';
-      authText.onclick = () => location.href = '/minha-conta.html';
-      if (circle) { circle.textContent = 'F'; circle.innerHTML='F'; }
+/* Menu */
+(function wireMenu(){
+  const btn = document.getElementById('menuBtn');
+  const menu = document.getElementById('menu');
+  if(!btn||!menu) return;
+  const open=()=>{menu.style.display='flex';btn.setAttribute('aria-expanded','true');document.addEventListener('click',onDoc,true);document.addEventListener('keydown',onKey)};
+  const close=()=>{menu.style.display='none';btn.setAttribute('aria-expanded','false');document.removeEventListener('click',onDoc,true);document.removeEventListener('keydown',onKey)};
+  const toggle=()=> menu.style.display==='flex'?close():open();
+  function onDoc(e){ if(!menu.contains(e.target) && e.target!==btn) close(); }
+  function onKey(e){ if(e.key==='Escape') close(); }
+  btn.addEventListener('click',e=>{e.stopPropagation();toggle();});
+})();
+
+/* Auth header */
+(function wireAuthUI(){
+  const at = document.getElementById('authText');
+  onAuthStateChanged(auth, user=>{
+    if(user){
+      if(at){ at.textContent='Sair'; at.style.display='inline'; at.onclick = async ()=>{ await signOut(auth); localStorage.removeItem('fotoPerfil'); location='/index.html'; }; }
+      prefetchFoto(user.uid);
+    }else{
+      if(at){ at.textContent='Entrar'; at.style.display='inline'; at.onclick = ()=> location='/login.html'; }
     }
   });
+})();
 
-  // CTA (padrão)
-  document.getElementById('btnAssine')?.addEventListener('click', () => {
-    const sel = document.querySelector('input[name="plano"]:checked')?.value || 'basico';
-    location.href = `/assinar.html?plano=${encodeURIComponent(sel)}`;
+/* Cards: rádio + botão */
+$$('.card').forEach(card=>{
+  const radio = card.querySelector('input[type=radio][name=plano]');
+  const btn   = card.querySelector('.assinar');
+  const id    = card.dataset.plan;
+
+  btn.addEventListener('click', ()=>{
+    if(radio) radio.checked = true;
+    iniciarFluxoAssinatura(id);
   });
+  card.querySelector('.card-head')?.addEventListener('click', (e)=>{
+    if(e.target.tagName !== 'INPUT') { if(radio) radio.checked = true; }
+  });
+});
+
+/* Termos */
+let planContext = null;
+function enableTermsIfReady(){
+  const body  = document.getElementById('tmBody');
+  const ace   = document.getElementById('tmAceite');
+  const go    = document.getElementById('tmProsseguir');
+  const fits = body.scrollHeight <= body.clientHeight + 1;
+  if(fits){ ace.disabled = false; go.disabled = !ace.checked; }
+}
+window.abrirTermos = (planId) => {
+  planContext = planId;
+  const m = document.getElementById('termosModal');
+  const b = document.getElementById('tmBody');
+  const ace = document.getElementById('tmAceite');
+  const go = document.getElementById('tmProsseguir');
+
+  ace.checked = false; ace.disabled = true; go.disabled = true;
+
+  m.style.display = 'flex'; m.setAttribute('aria-hidden','false');
+
+  enableTermsIfReady();
+
+  let scrolledBottom = false;
+  const onScroll = () => {
+    const atBottom = Math.ceil(b.scrollTop + b.clientHeight) >= b.scrollHeight;
+    if(atBottom && !scrolledBottom){
+      scrolledBottom = true;
+      ace.disabled = false;
+    }
+  };
+  b.addEventListener('scroll', onScroll, { passive:true });
+
+  ace.onchange = () => { go.disabled = !ace.checked; };
+
+  go.onclick = async () => {
+    const user = auth.currentUser;
+    if(!user){ toast(); location.href='/login.html'; return; }
+    try{
+      await setDoc(doc(db,'consentimentos',`${user.uid}_` + '1.0'), {
+        uid:user.uid, version:'1.0', plan:planContext,
+        acceptedAt: serverTimestamp(), userAgent:navigator.userAgent
+      }, { merge:true });
+    }catch(e){ console.error('Falha ao salvar aceite:', e); }
+    fecharTermos();
+    redirecionarPagamento(planContext);
+  };
+};
+window.fecharTermos = () => {
+  const m = document.getElementById('termosModal');
+  m.style.display = 'none';
+  m.setAttribute('aria-hidden','true');
+};
+
+/* Fluxo Assinar */
+function iniciarFluxoAssinatura(planId){
+  const user = auth.currentUser;
+  if(!user){ toast(); location.href='/login.html'; return; }
+  abrirTermos(planId);
+}
+function redirecionarPagamento(planId){
+  const route = {
+    basico:   'https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=ce0e5a155db04917b2a79a435e8b4b0e', // ✅ link do MP – Plano Básico
+    essencial:'https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=5ca06daa66b649188a8d2e23470d2f33',
+    avancado: 'https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=9545b20e2d01418bac34e421626de39a'
+  }[planId] || '/minha-conta.html';
+  location.href = route;
+}
 </script>
 </body>
 </html>
+```1
