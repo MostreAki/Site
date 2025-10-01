@@ -91,6 +91,17 @@
     .feat li{display:flex;gap:8px;margin:8px 0}
     .feat li::before{content:"✔";color:var(--brand);font-weight:bold}
 
+    /* NOTA elegante (substitui o alerta com emoji) */
+    .note{
+      margin:12px 0 4px;
+      padding:12px 14px;
+      background:#f3fbfa;
+      border-left:4px solid var(--brand);
+      border-radius:10px;
+      color:#234;
+      font-size:.95rem;
+    }
+
     .price-row{ margin-top:12px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap }
     .price{ font-size:1.6rem;color:#0e7270;font-weight:900;letter-spacing:.3px }
     .mp-slot{display:flex;align-items:center;gap:8px}
@@ -173,9 +184,14 @@
           <li>Limite de 30 fotos/mês para catálogo.</li>
           <li>Até 1× atualização por semana no site e 1×/semana no Instagram.</li>
           <li>Atendimento diferenciado via WhatsApp com o suporte técnico do MostreAki.</li>
-          <li>O MostreAki dará assistência para configurar o domínio (Registro.br) e o e-mail profissional (Zoho Mail) 
-          <li>⚠️ Atenção: A contratação e o pagamento do Registro.br e o Zoho Mail são responsabilidades do cliente.</li>
+          <li>O MostreAki dará assistência para configurar o domínio (Registro.br) e o e-mail profissional (Zoho Mail).</li>
         </ul>
+
+        <!-- Nova NOTA (sem emoji) -->
+        <div class="note">
+          <b>Nota:</b> a contratação e o pagamento do <b>Registro.br</b> e do <b>Zoho Mail</b> são de responsabilidade do cliente. O MostreAki auxilia na configuração.
+        </div>
+
         <div class="price-row" aria-label="Preço e pagamento">
           <div class="price">R$ 250,00</div>
           <div class="mp-slot">
