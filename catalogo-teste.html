@@ -1,216 +1,295 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Catálogo – MostreAki</title>
-<style>
-  :root{
-    --brand:#15b0af; --brandSoft:#c6f2e0; --ink:#063b39;
-    --card:#fff; --line:#e6f3f1; --muted:#456;
-  }
-  *{box-sizing:border-box}
-  body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f6fbfa;color:#123}
-  header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#c2e7df}
-  header .logo{display:flex;align-items:center;gap:8px; font-weight:800}
-  header .logo span:nth-child(1){color:#00C2BF} header .logo span:nth-child(2){color:#FA1E39}
-  #authBtn{background:#15b0af;color:#fff;border:0;border-radius:8px;padding:8px 12px;cursor:pointer;font-weight:700}
-  main{max-width:1100px;margin:24px auto;padding:0 16px}
-  h1{margin:6px 0 16px;color:#0b4d4c}
-  .grid{display:grid;grid-template-columns:1fr;gap:16px}
-  @media(min-width:680px){ .grid{grid-template-columns:repeat(2,1fr)} }
-  @media(min-width:980px){ .grid{grid-template-columns:repeat(3,1fr)} }
-  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,.06);display:flex;flex-direction:column}
-  .thumb{position:relative;background:#eef;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;overflow:hidden}
-  .thumb img{width:100%;height:100%;object-fit:cover;display:block}
-  .card-body{padding:12px 14px 8px;display:flex;flex-direction:column;gap:8px}
-  .title{font-weight:800;color:#0b4d4c}
-  .meta{display:flex;gap:8px;flex-wrap:wrap;color:#345}
-  .meta b{color:#0d6}
-  .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-  input[type="number"], input[type="text"]{
-    border:1px solid #cfeee9;border-radius:8px;padding:8px 10px;min-width:0
-  }
-  .price{font-size:1.2rem;font-weight:900;color:#0e7270}
-  .cta{margin:10px 0;background:var(--brand);color:#fff;border:0;border-radius:10px;padding:12px 14px;font-weight:800;cursor:pointer}
-  .cta:hover{filter:brightness(.96)}
-  .owner-tools{background:#f3fbfa;border-top:1px solid var(--line);padding:10px 12px;display:flex;flex-direction:column;gap:8px}
-  .owner-tools .row{justify-content:space-between}
-  .mini{font-size:.86rem;color:#567}
-  .upload{display:flex;gap:8px;align-items:center}
-  .switch{display:flex;align-items:center;gap:6px;font-size:.92rem}
-  .note{margin:12px 0 4px;padding:10px 12px;background:#f3fbfa;border-left:4px solid var(--brand);border-radius:10px;color:#234;font-size:.92rem}
-  .toast{position:fixed;top:16px;right:16px;background:#FA1E39;color:#fff;padding:10px 12px;border-radius:10px;display:none;box-shadow:0 6px 18px rgba(0,0,0,.2);z-index:9999;font-weight:700}
-</style>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Catálogo – Editor do Cliente</title>
+  <link rel="icon" href="/favicon.ico"/>
+  <style>
+    /* ======== base visual alinhada ao site ======== */
+    body{
+      font-family: Arial, Helvetica, sans-serif;
+      background-image:url("fundo-mobile.png");
+      background-size:cover; background-repeat:no-repeat; background-attachment:fixed; background-position:center;
+      margin:0; color:#123;
+    }
+    @media (min-width:768px){ body{ background-image:url("fundo-desktop.png"); } }
+    *,*:before,*:after{ box-sizing:border-box; margin:0; padding:0; }
+
+    header{
+      background:#c2e7df;height:60px;display:flex;align-items:center;justify-content:space-between;
+      padding:0 20px;position:relative;border-radius:8px;box-shadow:0 2px 6px #0002; margin:20px;
+    }
+    .logo-container{display:flex;align-items:center;gap:8px;cursor:pointer}
+    .logo-container img{height:40px}
+    .logo{font-size:1.5rem;font-weight:700}
+    .logo .mostre{color:#00c2bf}.logo .aki{color:#fa1e39}
+    .menu-icon{font-size:1.7rem;cursor:pointer;user-select:none}
+    #menu{
+      position:absolute;top:60px;right:20px;background:#16807c;border:2px solid #000;border-radius:6px;
+      display:none;flex-direction:column;width:180px;padding:10px;z-index:100
+    }
+    #menu a{
+      background:#fa1e39;color:#fff;text-decoration:none;font-weight:600;border-radius:6px;padding:10px 0;margin-bottom:8px;text-align:center
+    }
+    #menu a:hover{ background:#b8313b }
+    .user-circle{
+      background:#15b0af;color:#fff;font-weight:700;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;
+      position:relative;overflow:hidden;font-size:.85rem
+    }
+    .user-circle img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover }
+
+    main{ max-width:1100px; margin:24px auto 40px; padding:0 18px; }
+    h1{ color:#16807c; margin:8px 0 6px; text-align:center; }
+    .sub{ text-align:center; color:#456; margin-bottom:16px; }
+
+    .alerta-login{
+      background:#fff0f0;border:2px solid #fa1e39;color:#b30000;
+      padding:15px; margin:30px auto; max-width:600px; border-radius:8px;
+      text-align:center; font-weight:bold; font-size:1.05rem; display:none;
+    }
+
+    /* ======== grid de items ======== */
+    .grid{ display:grid; gap:16px; grid-template-columns:1fr; }
+    @media (min-width:680px){ .grid{ grid-template-columns:repeat(2,1fr); } }
+    @media (min-width:980px){ .grid{ grid-template-columns:repeat(3,1fr); } }
+
+    .card{
+      background:#fff; border:1px solid #e6f3f1; border-radius:14px; overflow:hidden;
+      box-shadow:0 6px 18px rgba(0,0,0,.06); display:flex; flex-direction:column;
+    }
+    .thumb{ position:relative; background:#eef; aspect-ratio:1/1; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+    .thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+
+    .body{ padding:12px 14px 10px; display:flex; flex-direction:column; gap:10px; }
+    .title{ font-weight:800; color:#0b4d4c; }
+    .meta{ display:flex; gap:8px; flex-wrap:wrap; color:#345; }
+    .price{ font-size:1.1rem; font-weight:900; color:#0e7270; }
+
+    .owner{
+      background:#f3fbfa; border-top:1px solid #e6f3f1; padding:12px 12px 10px; display:flex; flex-direction:column; gap:8px;
+    }
+    .row{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+    .row label{ font-size:.92rem; color:#234; }
+    input[type="number"]{
+      border:1px solid #cfeee9; border-radius:8px; padding:8px 10px; min-width:0; width:120px;
+    }
+    .row input[readonly]{ background:#f6fbfa; }
+
+    .mini{ font-size:.86rem; color:#567; }
+    .btn{ background:#15b0af; color:#fff; border:0; border-radius:10px; padding:10px 12px; font-weight:800; cursor:pointer; }
+    .btn:hover{ filter:brightness(.96); }
+    .btn-ghost{ background:#fff; color:#15b0af; border:2px solid #15b0af; }
+    .btn-danger{ background:#dc3545; }
+    .toolbar{ display:flex; justify-content:space-between; align-items:center; gap:10px; margin:12px 0 6px; }
+    .note{
+      margin:12px 0 4px; padding:10px 12px; background:#f3fbfa; border-left:4px solid #15b0af; border-radius:10px; color:#234; font-size:.92rem;
+    }
+    .toast{
+      position:fixed; top:16px; right:16px; background:#FA1E39; color:#fff; padding:10px 12px; border-radius:10px;
+      display:none; box-shadow:0 6px 18px rgba(0,0,0,.2); z-index:9999; font-weight:700
+    }
+
+    footer{ background:#c2e7df; padding:20px; text-align:center; color:#555; font-size:.9rem; }
+  </style>
 </head>
 <body>
 
 <header>
-  <div class="logo"><img src="logo.png" alt="Logo" style="height:28px"><span>Mostre</span><span>Aki</span></div>
-  <button id="authBtn">Entrar</button>
+  <div class="logo-container" onclick="location='/'">
+    <img src="/logo.png" alt="Logo">
+    <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px">
+    <span id="authText" style="display:none;font-weight:700;color:#15b0af;cursor:pointer"></span>
+    <div id="userCircle" class="user-circle" style="display:none">F</div>
+    <div id="menuBtn" class="menu-icon">☰</div>
+  </div>
+  <nav id="menu" aria-label="Menu">
+    <a href="/index.html">Página Inicial</a>
+    <a href="/sobre.html">Sobre</a>
+    <a href="/planos.html">Planos</a>
+    <a href="/parceiros.html">Parceiros</a>
+    <a href="/servicos-adicionais.html">Serviços Adicionais</a>
+    <a href="/redes-sociais.html">Redes Sociais</a>
+    <a href="/contatos.html">Contatos</a>
+  </nav>
 </header>
 
 <main>
-  <h1>Catálogo</h1>
-  <p class="mini">Fotos sobem para o Storage pelo MostreAki. O cliente (logado) pode ajustar <b>Preço</b> e <b>Quantidade</b>.</p>
+  <h1>Catálogo – Edição do Cliente</h1>
+  <p class="sub">Atualize <b>Preço</b> e <b>Quantidade</b>. As alterações refletem na página pública automaticamente.</p>
+
+  <div class="toolbar">
+    <div class="note"><b>Dica:</b> só aparecem aqui os itens do seu catálogo.</div>
+    <div style="display:flex;gap:8px">
+      <button id="btnSalvarTudo" class="btn">Salvar Tudo</button>
+      <button id="btnSair" class="btn btn-ghost">Sair</button>
+    </div>
+  </div>
 
   <div id="grid" class="grid"></div>
 
-  <div class="note"><b>Nota:</b> clique em <b>WhatsApp</b> para chamar com a peça pré-preenchida. Preços são responsabilidade do lojista.</div>
+  <div id="alertaLogin" class="alerta-login">⚠️ Você precisa estar logado para editar o catálogo. Redirecionando…</div>
 </main>
 
 <div id="toast" class="toast"></div>
 
+<footer>© 2025 MostreAki – Todos os direitos reservados.</footer>
+
 <script type="module">
-  /* Firebase */
-  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-  import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-  import { getFirestore, collection, query, where, orderBy, onSnapshot, doc, updateDoc, setDoc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-  import { getStorage, ref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
+  import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+  import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+  import { getFirestore, collection, query, where, orderBy, onSnapshot, doc, updateDoc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+  import { getStorage, ref, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
 
-  const app = initializeApp({
-    apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
-    authDomain: "mostreaki-2025.firebaseapp.com",
-    projectId: "mostreaki-2025",
-    storageBucket: "mostreaki-2025.firebasestorage.app",
-    messagingSenderId: "748712068097",
-    appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
-  });
-
+  /* ===== Firebase (mesma config do site) ===== */
+  const cfg = {
+    apiKey:'AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE',
+    authDomain:'mostreaki-2025.firebaseapp.com',
+    projectId:'mostreaki-2025',
+    storageBucket:'mostreaki-2025.firebasestorage.app',
+    messagingSenderId:'748712068097',
+    appId:'1:748712068097:web:09cf043fbb45917ef6ec00'
+  };
+  const app = getApps().length ? getApp() : initializeApp(cfg);
   const auth = getAuth(app);
   const db   = getFirestore(app);
   const stg  = getStorage(app, 'gs://mostreaki-2025.firebasestorage.app');
 
-  /* UI helpers */
+  /* ===== helpers UI ===== */
   const $ = s => document.querySelector(s);
+  const $$ = s => document.querySelectorAll(s);
   const grid = $('#grid');
-  const toast = (m)=>{ const t=$('#toast'); t.textContent=m; t.style.display='block'; setTimeout(()=>t.style.display='none',2200); };
+  const toast = (m)=>{ const t=$('#toast'); t.textContent=m; t.style.display='block'; setTimeout(()=>t.style.display='none',2000); };
 
-  /* WhatsApp link */
-  function waLink(telefoneBR, titulo, preco){
-    const fone = telefoneBR.replace(/\D/g,''); // ex: 5599999999999
-    const msg = encodeURIComponent(`Olá! Tenho interesse em "${titulo}" (${preco}). Pode me informar disponibilidade?`);
-    return `https://wa.me/${fone}?text=${msg}`;
+  /* menu */
+  (()=>{ const btn=$('#menuBtn'), menu=$('#menu');
+    const open=()=>{menu.style.display='flex';btn.setAttribute('aria-expanded','true');document.addEventListener('click',onDoc,true);document.addEventListener('keydown',onKey)};
+    const close=()=>{menu.style.display='none';btn.setAttribute('aria-expanded','false');document.removeEventListener('click',onDoc,true);document.removeEventListener('keydown',onKey)};
+    const toggle=()=> menu.style.display==='flex'?close():open();
+    function onDoc(e){ if(!menu.contains(e.target) && e.target!==btn) close(); }
+    function onKey(e){ if(e.key==='Escape') close(); }
+    btn.addEventListener('click',e=>{e.stopPropagation();toggle();});
+  })();
+
+  /* avatar */
+  function setAvatar(url){
+    if(!url) return;
+    localStorage.setItem('fotoPerfil', url);
+    const el = $('#userCircle'); el.textContent=''; el.style.display='flex';
+    const img = new Image(); img.src = url; img.alt = 'Foto'; img.style.width='100%'; img.style.height='100%'; img.style.objectFit='cover';
+    el.append(img);
+  }
+  (()=>{
+    const cache = localStorage.getItem('fotoPerfil');
+    if(cache) setAvatar(cache);
+  })();
+  async function prefetchFoto(uid){
+    // tenta recuperar a foto salva no Firestore (mesmo padrão do site)
+    try{
+      const u = await getDoc(doc(db,'usuarios',uid));
+      const url = u.exists() && u.data().fotoPerfil;
+      if(url) setAvatar(url);
+      else if (auth.currentUser?.photoURL) setAvatar(auth.currentUser.photoURL);
+    }catch{}
   }
 
-  /* formatações */
-  const fmtBRL = v => (typeof v==='number'? v : Number(v||0)).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+  /* ===== render ===== */
+  const edits = new Map(); // itemId -> {preco, quantidade}
 
-  /* render de card */
-  function renderItem(id, data, user){
-    const isOwner = user && data.ownerUID === user.uid;
-    const card = document.createElement('article');
-    card.className = 'card';
-    card.dataset.id = id;
+  function fmtBRL(n){ return (Number(n)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); }
+
+  function renderItem(id, data){
+    const el = document.createElement('article');
+    el.className = 'card';
+    el.dataset.id = id;
 
     const foto = data.fotoURL || 'https://via.placeholder.com/800x800?text=Foto';
-
-    card.innerHTML = `
+    el.innerHTML = `
       <div class="thumb"><img src="${foto}" alt="${data.titulo||'Item'}"></div>
-      <div class="card-body">
+      <div class="body">
         <div class="title">${data.titulo||'Sem título'}</div>
-        <div class="meta">
-          <span class="price">${fmtBRL(data.preco||0)}</span>
-          <span>•</span>
-          <span>Qtd: <b>${data.quantidade??0}</b></span>
-        </div>
-        <button class="cta">WhatsApp</button>
+        <div class="meta"><span class="price">${fmtBRL(data.preco||0)}</span> • <span>Qtd: <b>${data.quantidade??0}</b></span></div>
       </div>
-      ${isOwner ? `
-      <div class="owner-tools">
+      <div class="owner">
         <div class="row">
-          <label>Preço (R$): <input type="number" step="0.01" min="0" value="${Number(data.preco||0)}" class="in-preco"></label>
-          <label>Quantidade: <input type="number" step="1" min="0" value="${Number(data.quantidade||0)}" class="in-qty"></label>
+          <label>Preço (R$): <input class="in-preco" type="number" step="0.01" min="0" value="${Number(data.preco||0)}"></label>
+          <label>Quantidade: <input class="in-qty"   type="number" step="1"    min="0" value="${Number(data.quantidade||0)}"></label>
+          <button class="btn btn-ghost btn-salvar" type="button">Salvar</button>
         </div>
-        <div class="upload">
-          <input type="file" accept="image/*" class="in-foto">
-          <button class="mini-btn" data-act="save">Salvar</button>
-        </div>
-        <label class="switch">
-          <input type="checkbox" class="in-ativo" ${data.ativo!==false?'checked':''}> Ativo
-        </label>
-        <div class="mini">Somente você vê estes controles.</div>
-      </div>` : ``}
+        <div class="mini">Foto e título são gerenciados pelo MostreAki. Você altera apenas preço e quantidade.</div>
+      </div>
     `;
 
-    /* ações */
-    const btn = card.querySelector('.cta');
-    btn.onclick = () => {
-      const tel = data.whatsapp || '5599999999999'; // troque para o tel do lojista
-      location.href = waLink(tel, data.titulo||'Produto', fmtBRL(data.preco||0));
+    const inPreco = el.querySelector('.in-preco');
+    const inQty   = el.querySelector('.in-qty');
+    const btnSave = el.querySelector('.btn-salvar');
+
+    const markEdited = ()=>{
+      edits.set(id, { preco:Number(inPreco.value||0), quantidade:Number(inQty.value||0) });
+    };
+    inPreco.addEventListener('input', markEdited);
+    inQty.addEventListener('input', markEdited);
+
+    btnSave.onclick = async ()=>{
+      try{
+        const payload = edits.get(id) || { preco:Number(inPreco.value||0), quantidade:Number(inQty.value||0) };
+        await updateDoc(doc(db,'catalogo', id), payload);
+        toast('Item atualizado!');
+        edits.delete(id);
+      }catch(e){ console.error(e); toast('Falha ao salvar.'); }
     };
 
-    if (isOwner){
-      const inPreco = card.querySelector('.in-preco');
-      const inQty   = card.querySelector('.in-qty');
-      const inFoto  = card.querySelector('.in-foto');
-      const inAtivo = card.querySelector('.in-ativo');
-      const btnSave = card.querySelector('[data-act="save"]');
-
-      btnSave.onclick = async ()=>{
-        try{
-          const refDoc = doc(db,'catalogo', id);
-          const payload = {
-            preco: Number(inPreco.value||0),
-            quantidade: Number(inQty.value||0),
-            ativo: inAtivo.checked
-          };
-          await updateDoc(refDoc, payload);
-          toast('Dados salvos!');
-        }catch(e){ console.error(e); toast('Falha ao salvar.'); }
-      };
-
-      inFoto.onchange = async (ev)=>{
-        const file = ev.target.files?.[0];
-        if(!file) return;
-        try{
-          const path = `catalogo/${data.ownerUID}/${id}.${(file.type.split('/')[1]||'jpg')}`;
-          const refFoto = ref(stg, path);
-          await uploadBytes(refFoto, file, {contentType:file.type});
-          const url = await getDownloadURL(refFoto);
-          await updateDoc(doc(db,'catalogo', id), { fotoURL:url });
-          card.querySelector('img').src = url;
-          toast('Foto atualizada!');
-        }catch(e){ console.error(e); toast('Erro no upload.'); }
-      };
-    }
-
-    return card;
+    return el;
   }
 
-  /* carrega catálogo (somente itens ativos para público) */
-  let unsub = null, currentUser = null;
-  function loadCatalog(){
+  /* ===== carregar dados do dono ===== */
+  let unsub = null, currentUID = null;
+  function loadOwned(){
     if (unsub) { unsub(); unsub = null; }
+    if (!currentUID) return;
+
     const base = collection(db,'catalogo');
-    const q = currentUser
-      ? query(base, orderBy('titulo'))               // dono vê tudo (inclusive inativo) no layout atual
-      : query(base, where('ativo','==',true), orderBy('titulo'));  // público vê só ativos
+    const q = query(base, where('ownerUID','==', currentUID), orderBy('titulo'));
     unsub = onSnapshot(q, snap=>{
       grid.innerHTML = '';
       snap.forEach(docSnap=>{
-        const el = renderItem(docSnap.id, docSnap.data(), currentUser);
-        grid.appendChild(el);
+        grid.appendChild( renderItem(docSnap.id, docSnap.data()) );
       });
-      if (!snap.size) grid.innerHTML = '<p class="mini">Nenhum item disponível.</p>';
+      if(!snap.size) grid.innerHTML = '<p class="mini">Nenhum item no seu catálogo ainda.</p>';
     });
   }
 
-  /* auth simples (troque por seu modal) */
-  const authBtn = $('#authBtn');
-  onAuthStateChanged(auth, async (u)=>{
-    currentUser = u || null;
-    authBtn.textContent = u ? 'Sair' : 'Entrar';
-    loadCatalog();
+  /* ===== boot auth ===== */
+  onAuthStateChanged(auth, user=>{
+    const a = $('#authText');
+    if(user){
+      a.textContent='Sair'; a.style.display='inline';
+      a.onclick = async ()=>{ await signOut(auth); localStorage.removeItem('fotoPerfil'); location='/index.html'; };
+      currentUID = user.uid;
+      prefetchFoto(user.uid);
+      $('#alertaLogin').style.display='none';
+      loadOwned();
+    }else{
+      $('#alertaLogin').style.display='block';
+      setTimeout(()=> location='/index.html', 3000);
+    }
   });
-  authBtn.onclick = async ()=>{
-    if (currentUser) { await signOut(auth); return; }
-    // exemplo rápido: login fixo (troque por seu fluxo)
-    const email = prompt('E-mail:');
-    const senha = prompt('Senha:');
-    if(!email || !senha) return;
-    try{ await signInWithEmailAndPassword(auth,email,senha); }
-    catch(e){ console.error(e); toast('Falha no login.'); }
+
+  /* ===== ações topo ===== */
+  $('#btnSair').onclick = async ()=>{ await signOut(auth); };
+  $('#btnSalvarTudo').onclick = async ()=>{
+    if(edits.size===0){ toast('Nada para salvar.'); return; }
+    try{
+      const ops = [];
+      for (const [id, payload] of edits.entries()){
+        ops.push( updateDoc(doc(db,'catalogo', id), payload) );
+      }
+      await Promise.all(ops);
+      toast('Alterações salvas!');
+      edits.clear();
+    }catch(e){ console.error(e); toast('Falha ao salvar.'); }
   };
 </script>
 </body>
