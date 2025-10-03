@@ -1,165 +1,265 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Catálogo • MostreAki</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --header:#e9e3dc;
-    --paper:#fdfcfb;
-    --ink:#222;
-    --muted:#6b7280;
-    --accent:#fa1e39;
-    --container:#ffffff;
-    --btn:#fa1e39;
-    --text:#000000;
-    --bg:#ffffff;
+    --bg1:#0f6f69; --bg2:#179b93;
+    --card:#f3f5f6; --ink:#24423f; --ink-soft:#5e7b76;
+    --accent:#1fb394; --title:#c6f2e0;
+    --shadow: 0 10px 24px rgba(0,0,0,.18), 0 4px 12px rgba(0,0,0,.12);
+    --r:20px;
   }
-  html,body{margin:0;padding:0}
-  body{background:var(--paper);color:var(--ink);font-family:Arial,Helvetica,sans-serif}
-  header{background:var(--header);padding:10px 16px;display:flex;align-items:center;justify-content:space-between}
-  .logo{font-weight:800}
-  .who{opacity:.7;font-size:.9rem}
-  .wrap{max-width:1200px;margin:0 auto;padding:16px}
-  .grid{display:grid;gap:20px;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
-  .tile{background:#fff;border-radius:14px;box-shadow:0 6px 18px rgba(0,0,0,.06);overflow:hidden;display:flex;flex-direction:column}
-  .tile img{width:100%;height:200px;object-fit:cover;display:block;background:#f3f3f3}
-  .meta{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;color:#6b7280;font-size:.8rem}
-  .info{padding:12px;display:grid;gap:8px}
-  .title{font-weight:800;letter-spacing:.02em}
-  .swatches{display:flex;gap:6px}
-  .sw{width:14px;height:14px;border-radius:4px;border:1px solid rgba(0,0,0,.08)}
-  .price{font-weight:900}
-  .edit{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-  .edit input{padding:8px 10px;border:1px solid #e5e7eb;border-radius:8px;font-size:.95rem}
-  .edit .save{padding:8px 12px;border:none;border-radius:8px;background:var(--btn);color:#fff;font-weight:800;cursor:pointer}
-  .muted{background:#fff;border:1px solid #eee;color:#555;border-radius:8px;padding:6px 10px;cursor:pointer}
-  .danger{border-color:#fecaca;color:#b91c1c}
-  /* add tile */
-  .add-tile{height:200px;border:2px dashed #d6d3d1;border-radius:14px;display:flex;align-items:center;justify-content:center;background:#fffaf3;box-shadow:0 6px 18px rgba(0,0,0,.04);cursor:pointer;transition:transform .06s,border-color .15s}
-  .add-tile:hover{border-color:#c8b6a6}
-  .add-tile:active{transform:scale(.99)}
-  .add-inner{text-align:center;color:#7c6f64}
-  .add-inner .plus{font-size:42px;line-height:1}
-  .add-inner small{display:block;margin-top:6px;color:#9a9088}
-  .add-tile.dragover{background:#fff4e6;border-color:#c58f5c}
-  .uploading::after{content:"Enviando...";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.5);color:#fff;font-weight:800;border-radius:14px}
-  footer{background:var(--header);padding:14px;text-align:center;color:#555}
-  .badge{font-size:.8rem;padding:4px 8px;border-radius:999px;background:#fff;border:1px solid #eee}
+  *{box-sizing:border-box}
+  body{
+    margin:0; font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    color:var(--ink);
+    background: radial-gradient(1200px 600px at 20% -10%, #1aa79f22 0%, #0000 60%),
+                linear-gradient(180deg, var(--bg1), var(--bg2));
+    min-height:100dvh;
+  }
+
+  /* ====== TOP BAR ====== */
+  .topbar{display:flex;align-items:center;gap:12px;padding:12px 16px;
+    background:linear-gradient(90deg,#b8efe1aa,#b8efe122);backdrop-filter:saturate(120%) blur(6px);
+    border-bottom:1px solid #ffffff2e;position:sticky;top:0;z-index:50}
+  .mini-brand{display:flex;align-items:center;gap:10px}
+  .mini-brand img{width:34px;height:34px;border-radius:999px;object-fit:cover}
+  .mini-brand .name{font-weight:800;color:#fff;text-shadow:0 1px 0 #0003;font-size:20px}
+  .hamb{margin-left:auto;width:40px;height:32px;border:none;background:#ffffff1a;border-radius:10px;
+        display:grid;place-items:center;cursor:pointer}
+  .hamb span,.hamb::before,.hamb::after{
+    content:"";display:block;width:18px;height:2px;background:#fff;border-radius:3px;box-shadow:0 1px 0 #0003
+  }
+  .hamb::before{transform:translateY(-5px)}
+  .hamb::after{transform:translateY(5px)}
+  .drawer{position:fixed;inset:0;display:none}
+  .drawer.open{display:block}
+  .drawer .shade{position:absolute;inset:0;background:#0008}
+  .drawer nav{position:absolute;right:0;top:0;height:100%;width:min(86vw,340px);background:#0e5c57;color:#eafff9;
+              padding:22px;box-shadow:var(--shadow)}
+  .drawer nav a{display:block;color:#eafff9;text-decoration:none;font-weight:700;padding:10px 0;border-bottom:1px solid #ffffff26}
+
+  /* ====== HERO ====== */
+  .hero{max-width:1100px;margin:18px auto 10px;padding:0 16px;text-align:center}
+  .logo{margin:6px auto 14px;width:140px;height:140px;border-radius:999px;background:#fff;border:6px solid #ffffffcc;
+        display:grid;place-items:center;box-shadow:var(--shadow);overflow:hidden}
+  .logo img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+  .banner{height:190px;border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden;border:1px solid #fff;background:#dff5ff}
+  .banner img,.banner video{width:100%;height:100%;object-fit:cover;display:block}
+  .title{margin:16px 0 4px;font-size:clamp(26px,4.2vw,40px);font-weight:800;letter-spacing:.3px;
+         color:var(--title);text-shadow:0 4px 16px rgba(0,0,0,.35),0 1px 0 #0003}
+  .subtitle{margin:0 0 8px;color:#e9fbf6;font-weight:600;text-shadow:0 1px 0 #0003}
+
+  /* ====== GRID ====== */
+  .wrap{max-width:1100px;margin:16px auto 60px;padding:0 16px}
+  .grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
+  .card{background:#eee;border-radius:18px;box-shadow:var(--shadow);border:1px solid #e7ebee;overflow:hidden}
+  .frame{background:#e9e9e9;border:12px solid #e5e5e5;border-bottom-width:10px;border-radius:12px;margin:10px}
+  .thumb{aspect-ratio:4/3;background:linear-gradient(#bfe8ff,#e7f5ff);border:1px solid #d0dbe2;display:grid;place-items:center;overflow:hidden}
+  .thumb img{width:100%;height:100%;object-fit:cover}
+
+  .strip{
+    display:grid;grid-template-columns:auto 1fr 60px;gap:8px;align-items:center;
+    background:#efefef;border-top:1px solid #d9e1e6;padding:10px;border-bottom-left-radius:10px;border-bottom-right-radius:10px;
+  }
+  .labels{font-weight:800;color:#2f4e49;line-height:1.15}
+  .inputs{display:grid;gap:6px}
+  .inputs input{
+    width:100%;max-width:130px;padding:7px 10px;border-radius:10px;border:1px solid #cfd8dd;background:#fff;
+    font:600 14px Poppins,sans-serif;color:#263532;outline:none;
+  }
+  /* logo do Whats (imagem) dentro de “bolacha” */
+  .waWrap{
+    background:radial-gradient(#0000 68%, #0001 70%) 0 0/16px 16px #e8ecef;
+    border-radius:12px;display:grid;place-items:center;padding:4px;
+  }
+  .waLink{display:grid;place-items:center;width:44px;height:44px;border-radius:999px;overflow:hidden}
+  .waLink img{width:100%;height:100%;object-fit:cover;display:block}
+
+  footer{color:#cfe9e4;text-align:center;padding:26px 16px 44px;background:linear-gradient(180deg,#0e6b65,#0a4e4a);border-top:1px solid #ffffff22}
+  footer small{opacity:.9}
 </style>
 </head>
 <body>
-<header>
-  <div class="logo">MostreAki • Catálogo</div>
-  <div class="who">
-    <span id="modeBadge" class="badge">Carregando…</span>
+  <div class="topbar">
+    <div class="mini-brand">
+      <img id="miniLogo" alt="logo">
+      <div class="name" id="miniName">nome/empresa</div>
+    </div>
+    <button class="hamb" id="btnHamb"><span></span></button>
   </div>
-</header>
 
-<main class="wrap">
-  <div id="notice" style="display:none;margin:10px 0;padding:10px;border:1px solid #fde68a;background:#fef9c3;border-radius:8px;color:#7c6f64"></div>
-  <div class="grid" id="grid"></div>
-</main>
+  <!-- Drawer simples -->
+  <div class="drawer" id="drawer">
+    <div class="shade"></div>
+    <nav>
+      <h3 style="margin:0 0 10px">Menu</h3>
+      <a href="/">Home</a>
+      <a href="/minha-conta.html">Minha conta</a>
+      <a href="/planos.html">Planos</a>
+      <a href="/contato.html">Contato</a>
+    </nav>
+  </div>
 
-<footer>© <span id="year"></span> MostreAki</footer>
+  <header class="hero">
+    <div class="logo"><img id="logoImg" alt="logo"></div>
 
-<script>
-  // aplica tema vindo do CrieAki (localStorage)
-  (function applyTheme(){
-    try{
-      const root=document.documentElement.style;
-      const bg=localStorage.getItem('bgColor')||'#ffffff';
-      const text=localStorage.getItem('textColor')||'#000000';
-      const header=localStorage.getItem('headerColor')||'#e9e3dc';
-      const footer=localStorage.getItem('footerColor')||'#e9e3dc';
-      const cont=localStorage.getItem('containerColor')||'#ffffff';
-      const btn=localStorage.getItem('btnColor')||'#fa1e39';
-      root.setProperty('--bg',bg);
-      root.setProperty('--text',text);
-      root.setProperty('--header',header);
-      root.setProperty('--btn',btn);
-      root.setProperty('--container',cont);
-    }catch(e){}
-    document.getElementById('year').textContent=new Date().getFullYear();
-  })();
+    <!-- Banner aceita imagem ou .webm (detecção automática) -->
+    <div class="banner" id="banner"></div>
 
-  // parse #uid=...&name=...
-  function parseHash(){
-    const h=(location.hash||'').replace(/^#/,'');
-    const params=new URLSearchParams(h);
-    return { uid: params.get('uid')||null, name: params.get('name')||null };
-  }
-</script>
+    <div class="title" id="catTitle">Catálogo do Cliente</div>
+    <div class="subtitle" id="catSubtitle">Escolha um item e chame no WhatsApp</div>
+  </header>
 
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { getFirestore, collection, addDoc, serverTimestamp, query, orderBy, getDocs, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-  import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+  <main class="wrap"><section class="grid" id="grid"></section></main>
 
-  // >>> Firebase do seu projeto
-  const app = initializeApp({
-    apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
-    authDomain: "mostreaki-2025.firebaseapp.com",
-    projectId: "mostreaki-2025",
-    storageBucket: "mostreaki-2025.appspot.com",
-    messagingSenderId: "748712068097",
-    appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
-  });
+  <footer><small>© <span id="year"></span> MostreAki. Todos os direitos reservados.</small></footer>
 
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-  const storage = getStorage(app);
+  <!-- Firebase (modular) -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+    import { getFirestore, collection, doc, getDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
-  const grid = document.getElementById('grid');
-  const notice = document.getElementById('notice');
-  const modeBadge = document.getElementById('modeBadge');
+    /* ===== CONFIG ===== */
+    const firebaseConfig = {
+      apiKey:"AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
+      authDomain:"mostreaki-2025.firebaseapp.com",
+      databaseURL:"https://mostreaki-2025-default-rtdb.firebaseio.com",
+      projectId:"mostreaki-2025",
+      storageBucket:"mostreaki-2025.firebasestorage.app",
+      messagingSenderId:"748712068097",
+      appId:"1:748712068097:web:09cf043fbb45917ef6ec00"
+    };
 
-  const moneyToNumber = (v)=> {
-    if(typeof v==='number') return v;
-    return Number(String(v).replace(/[^0-9,.-]/g,'').replace(/\./g,'').replace(',','.'))||0;
-  };
-  const numberToBRL = (n)=>{
-    try{ return (+n).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});}
-    catch{ return `R$ ${( +n || 0).toFixed(2)}`;}
-  };
+    /* Onde você guarda as mídias públicas (pode ser GitHub/Pages/Cloudflare/etc.) */
+    const ASSETS_HOST = "https://assets.mostreaki.com.br";
+    /* Nome dos arquivos padrão no catálogo */
+    const IMG_PREFIX = "produto-";     // produto-01.png ... produto-30.png
+    const IMG_EXT    = ".png";
+    const PLACEHOLDER_WA = `${ASSETS_HOST}/icons/whats.png`; // sua figurinha do WA
 
-  // input file invisível
-  const picker = document.createElement('input');
-  picker.type='file'; picker.accept='image/*'; picker.multiple=true; document.body.appendChild(picker);
+    /* ===== /CONFIG ===== */
 
-  function readContext(){
-    const { uid, name } = parseHash();
-    return { pageUid: uid, pageName: name };
-  }
+    const app = initializeApp(firebaseConfig);
+    const db  = getFirestore(app);
 
-  function setModeBadge(canEdit, name){
-    modeBadge.textContent = canEdit ? 'Modo edição' : 'Modo público';
-    modeBadge.style.background = canEdit ? '#eef6ff' : '#fff';
-    modeBadge.style.borderColor = canEdit ? '#bfdbfe' : '#eee';
-    const who = name ? ` • ${name}` : '';
-    modeBadge.title = (canEdit?'Você pode editar este catálogo':'Visualização pública') + who;
-  }
+    const $ = (id)=>document.getElementById(id);
+    const ui = { year:$("year"), grid:$("grid"), banner:$("banner"),
+                 title:$("catTitle"), subtitle:$("catSubtitle"),
+                 logo:$("logoImg"), miniLogo:$("miniLogo"), miniName:$("miniName") };
 
-  async function uploadSingle(file, userId){
-    return new Promise((resolve, reject)=>{
-      const path = `catalog/${userId}/images/${Date.now()}-${file.name}`;
-      const r = ref(storage, path);
-      const t = uploadBytesResumable(r, file, {contentType:file.type});
-      t.on('state_changed', ()=>{}, reject, async ()=>{
-        const url = await getDownloadURL(t.snapshot.ref);
-        await addDoc(collection(db, 'catalogos', userId, 'imagens'), {
-          url, path, createdAt: serverTimestamp(), titulo:'', preco:0, quantidade:1
-        });
-        resolve();
+    ui.year.textContent = new Date().getFullYear();
+
+    const params = new URLSearchParams(location.search);
+    const slug   = params.get("c") || "demo";
+
+    const imgURL = f => `${ASSETS_HOST}/catalogo/${slug}/${f}`;
+    const digits = s => (s||"").replace(/\D/g,"");
+    const waMsg  = (n,p,q)=>`Olá! Tenho interesse no item *${n}*.\nQtde: ${q||1}\nPreço: R$ ${Number(p||0).toFixed(2)}`;
+
+    // Drawer
+    const drawer = document.getElementById('drawer');
+    const btnHamb = document.getElementById('btnHamb');
+    btnHamb.addEventListener('click',()=>drawer.classList.add('open'));
+    drawer.querySelector('.shade').addEventListener('click',()=>drawer.classList.remove('open'));
+
+    function makeBanner(file){
+      if(!file){ ui.banner.innerHTML = ""; return; }
+      const isVideo = /\.webm$/i.test(file) || /\.mp4$/i.test(file);
+      const src = imgURL(file);
+      ui.banner.innerHTML = isVideo
+        ? `<video src="${src}" autoplay muted loop playsinline></video>`
+        : `<img src="${src}" alt="banner">`;
+    }
+
+    function makeCard(id,data,whats){
+      const nome = data.nome || `Produto ${id}`;
+      const preco= (data.preco ?? "").toString();
+      const qtd  = (data.quantidade ?? "").toString();
+      const file = data.imagem || `${IMG_PREFIX}${String(id).padStart(2,"0")}${IMG_EXT}`;
+
+      const wrap = document.createElement("article");
+      wrap.className = "card";
+      wrap.innerHTML = `
+        <div class="frame">
+          <div class="thumb">
+            <img src="${imgURL(file)}" alt="">
+          </div>
+          <div class="strip">
+            <div class="labels">Preço<br>Qtde</div>
+            <div class="inputs">
+              <input class="in-price" type="text" inputmode="decimal" value="${preco}" placeholder="0,00" disabled>
+              <input class="in-qty"   type="number" step="1" min="0" value="${qtd}" placeholder="0" disabled>
+            </div>
+            <div class="waWrap">
+              <a class="waLink" target="_blank" rel="noopener" title="WhatsApp">
+                <img src="${PLACEHOLDER_WA}" alt="WhatsApp">
+              </a>
+            </div>
+          </div>
+        </div>
+      `;
+      const wa = wrap.querySelector('.waLink');
+      wa.addEventListener('click', ()=>{
+        const price = wrap.querySelector('.in-price').value || data.preco || 0;
+        const qty   = wrap.querySelector('.in-qty').value   || data.quantidade || 1;
+        const msg = encodeURIComponent(waMsg(nome, price, qty));
+        const phone = digits(whats||'55');
+        window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
       });
-    });
-  }
+      return wrap;
+    }
 
-  async function handleUploads(files, userId){
-    const tile = document.querySelector('.add-tile');
-    if(tile) tile.classList.add('uploading');
-    for(const f of files){ await uploadSingle(f, userId); }
-    if(tile) tile.classList.remove('uploading');
-    await
+    async function loadMeta(){
+      try{
+        const cfgRef = doc(db,"catalogos",slug,"meta","config");
+        const snap   = await getDoc(cfgRef);
+        return snap.exists()? snap.data(): {};
+      }catch{ return {}; }
+    }
+    async function loadItens(){
+      try{
+        const itRef = collection(db,"catalogos",slug,"itens");
+        const qRef  = query(itRef, orderBy("ordem","asc"));
+        const snap  = await getDocs(qRef);
+        const arr=[]; snap.forEach(d=>arr.push({id:d.id,...d.data()}));
+        return arr;
+      }catch{ return []; }
+    }
+
+    async function boot(){
+      const meta  = await loadMeta();
+      const itens = await loadItens();
+
+      // topo/mini
+      ui.miniLogo.src = meta.miniLogo ? imgURL(meta.miniLogo) : (meta.logo ? imgURL(meta.logo): "https://dummyimage.com/120x120/ffffff/cccccc.png&text=LOGO");
+      ui.miniName.textContent = meta.nome || meta.titulo || "nome/empresa";
+
+      // logo central, título/sub
+      ui.logo.src = meta.logo ? imgURL(meta.logo) : "https://dummyimage.com/240x240/ffffff/cccccc.png&text=LOGO";
+      ui.title.textContent    = meta.titulo    || "Catálogo do Cliente";
+      ui.subtitle.textContent = meta.subtitulo || "Escolha um item e chame no WhatsApp";
+
+      // banner: aceita .webm
+      makeBanner(meta.banner);
+
+      // grid
+      const whats = meta.whats;
+      ui.grid.innerHTML = "";
+      if(itens.length){
+        itens.forEach((d,i)=> ui.grid.appendChild( makeCard(i+1, d, whats) ));
+      }else{
+        // placeholders 30 itens
+        for(let i=1;i<=30;i++){
+          ui.grid.appendChild( makeCard(i, {nome:`Produto ${i}`}, whats) );
+        }
+      }
+    }
+    boot();
+  </script>
+</body>
+</html>
