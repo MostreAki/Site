@@ -31,7 +31,7 @@
     .card .head{padding:14px 16px;border-bottom:1px solid #e7f3f1;font-weight:700;color:#0b3e3c}
     .card .body{padding:16px}
     label{display:block;margin:10px 0 6px;color:#124b49;font-weight:600}
-    input[type="text"],input[type="file"],input[disabled]{width:100%;padding:10px 12px;border:1px solid #cfe9e3;border-radius:10px}
+    input[type="text"],input[type="file"]{width:100%;padding:10px 12px;border:1px solid #cfe9e3;border-radius:10px}
     #fotoPreview{display:block;margin-top:10px;max-width:180px;border-radius:12px}
 
     .row-btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
@@ -80,25 +80,13 @@
       <section class="card">
         <div class="head">Perfil e Redes</div>
         <div class="body">
-          <!-- Identidade -->
-          <label for="nomeCompleto">Nome completo</label>
-          <input id="nomeCompleto" type="text" placeholder="Ex.: Felipe Hypolito Fagionato">
-
-          <label for="username">Usuário (username)</label>
-          <input id="username" type="text" placeholder="ex.: felipe-fagionato">
-
-          <label for="emailView">E-mail (somente leitura)</label>
-          <input id="emailView" type="text" disabled>
-
-          <!-- Avatar -->
-          <label for="foto" style="margin-top:14px">Foto de Perfil</label>
+          <label for="foto">Foto de Perfil</label>
           <input id="foto" type="file" accept="image/*">
           <img id="fotoPreview" alt="Preview">
           <div class="row-btns">
             <button id="btnExcluirFoto" class="btn remove">Remover foto</button>
           </div>
 
-          <!-- Redes -->
           <label>Instagram</label><input id="instagram" type="text" placeholder="@seuusuario">
           <label>Facebook</label><input id="facebook" type="text" placeholder="link da página">
           <label>WhatsApp</label><input id="whatsapp" type="text" placeholder="55DDD999999999">
@@ -110,26 +98,18 @@
         </div>
       </section>
 
-      <!-- ASSINATURA + CATÁLOGO -->
+      <!-- ASSINATURA -->
       <section class="card">
         <div class="head">Assinatura</div>
         <div class="body">
           <div id="statusChip" class="chip sem-plano">Sem plano</div>
           <p id="planoLabel" style="margin:10px 0 6px">Plano atual: —</p>
           <small id="assinaturaMeta" style="color:#557"></small>
-
           <div class="row-btns" style="margin-top:14px">
             <button id="btnAssinar"  class="btn save">Assinar</button>
             <button id="btnAlterar"  class="btn ghost" style="display:none">Alterar plano</button>
             <button id="btnCancelar" class="btn remove" style="display:none">Cancelar plano</button>
           </div>
-
-          <!-- Botões de Catálogo -->
-          <div class="row-btns" style="margin-top:8px">
-            <button id="btnEditarCatalogo" class="btn ghost" style="display:none">Editar catálogo</button>
-            <button id="btnVerCatalogo" class="btn ghost" style="display:none">Ver catálogo</button>
-          </div>
-          <small id="infoCatalogo" style="display:none;color:#376;opacity:.9"></small>
         </div>
       </section>
     </div>
@@ -138,11 +118,8 @@
   <script type="module">
     import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
     import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-    import {
-      getFirestore, doc, getDoc, setDoc, onSnapshot, serverTimestamp,
-      collectionGroup, query, where, getDocs
-    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-    import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
+    import { getFirestore, doc, getDoc, setDoc, onSnapshot, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+    import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject, listAll } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
 
     const cfg = {
       apiKey: 'AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE',
@@ -236,54 +213,24 @@
       alert(removed? 'Foto removida.' : 'Nenhuma foto encontrada para remover.');
     }
 
-    // normaliza username (slug seguro)
-    function normalizeUsername(v){
-      return v.trim().toLowerCase()
-              .replace(/\s+/g,'-')
-              .replace(/[^a-z0-9._-]/g,'')
-              .replace(/-+/g,'-')
-              .slice(0,40);
-    }
-
     async function salvar(uid){
-      const nomeCompleto = $('#nomeCompleto').value.trim();
-      const usernameRaw  = $('#username').value;
-      const username     = normalizeUsername(usernameRaw);
-
       const data={
-        nomeCompleto,
-        username,
         instagram: $('#instagram').value.trim(),
         facebook : $('#facebook').value.trim(),
         whatsapp : $('#whatsapp').value.trim(),
         youtube  : $('#youtube').value.trim()
       };
       await setDoc(doc(db,'usuarios',uid), data, { merge:true });
-      if(usernameRaw !== username){
-        $('#username').value = username; // reflete normalização
-      }
       alert('Dados salvos!');
     }
-
     async function carregar(uid){
       const s = await getDoc(doc(db,'usuarios',uid));
-      const u = auth.currentUser;
-
-      if(s.exists()){
-        const d=s.data();
-        $('#nomeCompleto').value = d.nomeCompleto || u?.displayName || '';
-        $('#username').value     = d.username ? normalizeUsername(d.username) : '';
-        $('#instagram').value    = d.instagram || '';
-        $('#facebook').value     = d.facebook  || '';
-        $('#whatsapp').value     = d.whatsapp  || '';
-        $('#youtube').value      = d.youtube   || '';
-      }else{
-        // fallback inicial com dados do Auth
-        $('#nomeCompleto').value = u?.displayName || '';
-        $('#username').value     = '';
-      }
-
-      $('#emailView').value = u?.email || '';
+      if(!s.exists()) return;
+      const d=s.data();
+      $('#instagram').value = d.instagram || '';
+      $('#facebook').value  = d.facebook  || '';
+      $('#whatsapp').value  = d.whatsapp  || '';
+      $('#youtube').value   = d.youtube   || '';
     }
 
     /* ===== Assinaturas (Firestore) ===== */
@@ -351,63 +298,8 @@
       if(['pendente','ativo','cancelado'].includes(status)) patch.status = status;
       if(['basico','essencial','avancado'].includes(plano)) patch.plano = plano;
       if(Object.keys(patch).length) await setAssinatura(uid, patch);
+      // limpa a query
       history.replaceState({}, '', location.pathname);
-    }
-
-    /* ===== Catálogo – mostra botões quando houver catálogo ativo do usuário ===== */
-    async function wireCatalogo(uid){
-      const btnEdit = $('#btnEditarCatalogo');
-      const btnView = $('#btnVerCatalogo');
-      const info    = $('#infoCatalogo');
-
-      try{
-        // procura qualquer /catalogos/{slug}/meta/config cujo ownerUid == uid e catalogoAtivo == true
-        const q = query(
-          collectionGroup(db,'meta'),
-          where('ownerUid','==', uid)
-        );
-        const snap = await getDocs(q);
-
-        // pega o primeiro que estiver ativo
-        let cat=null;
-        snap.forEach(d=>{
-          const data=d.data();
-          const ativo = !!data.catalogoAtivo;
-          const slug  = data.catalogoSlug || d.ref.parent.parent?.id;
-          if(ativo && slug) cat = {
-            slug,
-            ativo,
-            edicaoAtiva: !!data.edicaoAtiva
-          };
-        });
-
-        if(cat && cat.ativo){
-          const urlPublico = `/catalogo-template.html?c=${encodeURIComponent(cat.slug)}`;
-          const urlEditar  = `${urlPublico}&edit=1`;
-
-          btnView.style.display='inline-block';
-          btnView.onclick = ()=> location.href = urlPublico;
-
-          if(cat.edicaoAtiva){
-            btnEdit.style.display='inline-block';
-            btnEdit.onclick = ()=> location.href = urlEditar;
-          }else{
-            btnEdit.style.display='none';
-          }
-
-          info.style.display='block';
-          info.textContent = `Catálogo "${cat.slug}" está ativo${cat.edicaoAtiva?' e com edição liberada.':'.'}`;
-        }else{
-          btnEdit.style.display='none';
-          btnView.style.display='none';
-          info.style.display='none';
-        }
-      }catch(e){
-        console.error('Erro ao buscar catálogo:', e);
-        btnEdit.style.display='none';
-        btnView.style.display='none';
-        info.style.display='none';
-      }
     }
 
     /* ===== Auth ===== */
@@ -420,15 +312,12 @@
         $('#btnSalvar').onclick = () => salvar(user.uid);
         $('#btnExcluirFoto').onclick = () => removerFoto(user.uid);
 
-        await ensureAssinaturaDoc(user.uid);
-        wireAssinatura(user.uid);
-        await aplicarParametrosURL(user.uid);
+        await ensureAssinaturaDoc(user.uid);        // <-- cria doc padrão se não existir
+        wireAssinatura(user.uid);                   // escuta mudanças
+        await aplicarParametrosURL(user.uid);       // aplica retorno do checkout
 
-        await carregar(user.uid);
+        carregar(user.uid);
         prefetchFoto(user.uid);
-
-        // ativa botões do Catálogo (se houver)
-        wireCatalogo(user.uid);
       }else{
         $('#alertaLogin').style.display='block';
         document.querySelector('main.container').style.display='none';
