@@ -31,7 +31,7 @@
     .card .head{padding:14px 16px;border-bottom:1px solid #e7f3f1;font-weight:700;color:#0b3e3c}
     .card .body{padding:16px}
     label{display:block;margin:10px 0 6px;color:#124b49;font-weight:600}
-    input[type="text"],input[type="file"]{width:100%;padding:10px 12px;border:1px solid #cfe9e3;border-radius:10px}
+    input[type="text"],input[type="file"],input[disabled]{width:100%;padding:10px 12px;border:1px solid #cfe9e3;border-radius:10px}
     #fotoPreview{display:block;margin-top:10px;max-width:180px;border-radius:12px}
 
     .row-btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
@@ -80,13 +80,25 @@
       <section class="card">
         <div class="head">Perfil e Redes</div>
         <div class="body">
-          <label for="foto">Foto de Perfil</label>
+          <!-- Identidade -->
+          <label for="nomeCompleto">Nome completo</label>
+          <input id="nomeCompleto" type="text" placeholder="Ex.: Felipe Hypolito Fagionato">
+
+          <label for="username">Usuário (username)</label>
+          <input id="username" type="text" placeholder="ex.: felipe-fagionato">
+
+          <label for="emailView">E-mail (somente leitura)</label>
+          <input id="emailView" type="text" disabled>
+
+          <!-- Avatar -->
+          <label for="foto" style="margin-top:14px">Foto de Perfil</label>
           <input id="foto" type="file" accept="image/*">
           <img id="fotoPreview" alt="Preview">
           <div class="row-btns">
             <button id="btnExcluirFoto" class="btn remove">Remover foto</button>
           </div>
 
+          <!-- Redes -->
           <label>Instagram</label><input id="instagram" type="text" placeholder="@seuusuario">
           <label>Facebook</label><input id="facebook" type="text" placeholder="link da página">
           <label>WhatsApp</label><input id="whatsapp" type="text" placeholder="55DDD999999999">
@@ -112,7 +124,7 @@
             <button id="btnCancelar" class="btn remove" style="display:none">Cancelar plano</button>
           </div>
 
-          <!-- Botões de Catálogo (mostrados dinamicamente) -->
+          <!-- Botões de Catálogo -->
           <div class="row-btns" style="margin-top:8px">
             <button id="btnEditarCatalogo" class="btn ghost" style="display:none">Editar catálogo</button>
             <button id="btnVerCatalogo" class="btn ghost" style="display:none">Ver catálogo</button>
@@ -177,12 +189,15 @@
     (()=>{ const c = localStorage.getItem('fotoPerfil'); if(c) setAvatar(c); })();
 
     async function prefetchFoto(uid){
+      // 1) provedor (se existir)
       if(auth.currentUser?.photoURL){ setAvatar(auth.currentUser.photoURL); return; }
+      // 2) Firestore
       try{
         const s = await getDoc(doc(db,'usuarios',uid));
         const saved = s.exists() && s.data().fotoPerfil;
         if(saved){ setAvatar(saved); return; }
       }catch{}
+      // 3) tenta direto no Storage (jpg/png/webp/gif)
       const tryExt = e => getDownloadURL(ref(storage, `usuarios/${uid}/perfil/avatar.${e}`)).catch(()=>null);
       const direct = await tryExt('jpg') || await tryExt('png') || await tryExt('webp') || await tryExt('gif');
       if(direct){
@@ -203,6 +218,7 @@
         await uploadBytes(storageRef, file, { contentType:file.type });
         const url = await getDownloadURL(storageRef);
         await setDoc(doc(db,'usuarios',uid), { fotoPerfil:url }, { merge:true });
+        // remove variantes antigas
         for(const e of ['jpg','png','webp','gif']) if(e!==ext)
           try{ await deleteObject(ref(storage, `usuarios/${uid}/perfil/avatar.${e}`)); }catch{}
         setAvatar(url);
@@ -220,24 +236,54 @@
       alert(removed? 'Foto removida.' : 'Nenhuma foto encontrada para remover.');
     }
 
+    // normaliza username (slug seguro)
+    function normalizeUsername(v){
+      return v.trim().toLowerCase()
+              .replace(/\s+/g,'-')
+              .replace(/[^a-z0-9._-]/g,'')
+              .replace(/-+/g,'-')
+              .slice(0,40);
+    }
+
     async function salvar(uid){
+      const nomeCompleto = $('#nomeCompleto').value.trim();
+      const usernameRaw  = $('#username').value;
+      const username     = normalizeUsername(usernameRaw);
+
       const data={
+        nomeCompleto,
+        username,
         instagram: $('#instagram').value.trim(),
         facebook : $('#facebook').value.trim(),
         whatsapp : $('#whatsapp').value.trim(),
         youtube  : $('#youtube').value.trim()
       };
       await setDoc(doc(db,'usuarios',uid), data, { merge:true });
+      if(usernameRaw !== username){
+        $('#username').value = username; // reflete normalização
+      }
       alert('Dados salvos!');
     }
+
     async function carregar(uid){
       const s = await getDoc(doc(db,'usuarios',uid));
-      if(!s.exists()) return;
-      const d=s.data();
-      $('#instagram').value = d.instagram || '';
-      $('#facebook').value  = d.facebook  || '';
-      $('#whatsapp').value  = d.whatsapp  || '';
-      $('#youtube').value   = d.youtube   || '';
+      const u = auth.currentUser;
+
+      if(s.exists()){
+        const d=s.data();
+        $('#nomeCompleto').value = d.nomeCompleto || u?.displayName || '';
+        $('#username').value     = d.username ? normalizeUsername(d.username) : '';
+        $('#instagram').value    = d.instagram || '';
+        $('#facebook').value     = d.facebook  || '';
+        $('#whatsapp').value     = d.whatsapp  || '';
+        $('#youtube').value      = d.youtube   || '';
+      }else{
+        // fallback inicial com dados do Auth
+        $('#nomeCompleto').value = u?.displayName || '';
+        $('#username').value     = '';
+      }
+
+      $('#emailView').value = u?.email || '';
     }
 
     /* ===== Assinaturas (Firestore) ===== */
@@ -308,28 +354,29 @@
       history.replaceState({}, '', location.pathname);
     }
 
-    /* ===== Catálogo – mostra botões quando houver catálogo ativo ===== */
+    /* ===== Catálogo – mostra botões quando houver catálogo ativo do usuário ===== */
     async function wireCatalogo(uid){
       const btnEdit = $('#btnEditarCatalogo');
       const btnView = $('#btnVerCatalogo');
       const info    = $('#infoCatalogo');
 
       try{
-        // procura qualquer /catalogos/{slug}/meta/config que pertença ao usuário
+        // procura qualquer /catalogos/{slug}/meta/config cujo ownerUid == uid e catalogoAtivo == true
         const q = query(
           collectionGroup(db,'meta'),
           where('ownerUid','==', uid)
         );
         const snap = await getDocs(q);
 
+        // pega o primeiro que estiver ativo
         let cat=null;
         snap.forEach(d=>{
           const data=d.data();
-          // o doc da collectionGroup é o próprio "config"
-          const slug = data.catalogoSlug || d.ref.parent.parent?.id;
-          if(slug) cat = {
+          const ativo = !!data.catalogoAtivo;
+          const slug  = data.catalogoSlug || d.ref.parent.parent?.id;
+          if(ativo && slug) cat = {
             slug,
-            ativo: !!data.catalogoAtivo,
+            ativo,
             edicaoAtiva: !!data.edicaoAtiva
           };
         });
@@ -351,13 +398,15 @@
           info.style.display='block';
           info.textContent = `Catálogo "${cat.slug}" está ativo${cat.edicaoAtiva?' e com edição liberada.':'.'}`;
         }else{
-          // não há catálogo ativo para este usuário
           btnEdit.style.display='none';
           btnView.style.display='none';
           info.style.display='none';
         }
       }catch(e){
         console.error('Erro ao buscar catálogo:', e);
+        btnEdit.style.display='none';
+        btnView.style.display='none';
+        info.style.display='none';
       }
     }
 
@@ -365,8 +414,7 @@
     onAuthStateChanged(auth, async (user)=>{
       const a = $('#authText');
       if(user){
-        a.textContent='Sair';
-        a.onclick=async()=>{ await signOut(auth); localStorage.removeItem('fotoPerfil'); location='/index.html'; };
+        a.textContent='Sair'; a.onclick=async()=>{ await signOut(auth); localStorage.removeItem('fotoPerfil'); location='/index.html'; };
 
         $('#foto').onchange = ev => previewImagem(ev, user.uid);
         $('#btnSalvar').onclick = () => salvar(user.uid);
@@ -376,10 +424,10 @@
         wireAssinatura(user.uid);
         await aplicarParametrosURL(user.uid);
 
-        carregar(user.uid);
+        await carregar(user.uid);
         prefetchFoto(user.uid);
 
-        // <<< ativa botões do Catálogo
+        // ativa botões do Catálogo (se houver)
         wireCatalogo(user.uid);
       }else{
         $('#alertaLogin').style.display='block';
