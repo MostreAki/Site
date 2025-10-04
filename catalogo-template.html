@@ -178,8 +178,9 @@
     };
     ui.year.textContent = new Date().getFullYear();
 
+    // URL param (pode ser "me" ou vazio; se for, usamos o username do usuário logado)
     const params = new URLSearchParams(location.search);
-    const slug   = params.get("c") || "demo";
+    let slug = params.get("c") || "";      // pode ser sobrescrito depois
     const imgURL = f => `${ASSETS_HOST}/catalogo/${slug}/${f}`;
 
     // Drawer
@@ -190,11 +191,22 @@
     // Avatar abre Minha Conta
     ui.avatar.addEventListener("click", ()=> location.href="/minha-conta.html");
 
+    // helpers
     const moneyToNumber = (v)=> {
       if(v==null) return 0;
       return Number(String(v).replace(/\./g,"").replace(",",".").replace(/[^\d.]/g,"")) || 0;
     };
     const numberToMoney = (n)=> (Number(n||0)).toLocaleString("pt-BR",{minimumFractionDigits:2, maximumFractionDigits:2});
+
+    // normaliza nome/username em um slug seguro
+    function normalizeUsername(v){
+      if(!v) return "";
+      return String(v).trim().toLowerCase()
+        .replace(/\s+/g,'-')
+        .replace(/[^a-z0-9._-]/g,'')
+        .replace(/-+/g,'-')
+        .slice(0,40);
+    }
 
     function makeBanner(file){
       if(!file){ ui.banner.innerHTML = ""; return; }
@@ -291,7 +303,8 @@
       ui.avatar.src = url || "https://dummyimage.com/96x96/e0f7f3/7aa39b.png&text=%F0%9F%99%82";
     }
 
-    async function boot(user){
+    // ======== BOOT com checagem por UID e por USERNAME ========
+    async function boot(user, myUsername){
       const meta  = await loadMeta();
       const itens = await loadItens();
 
@@ -308,10 +321,14 @@
       // banner
       makeBanner(meta.banner);
 
-      // permissões
-      const ok = !!meta.edicaoAtiva ||
-                 (Array.isArray(meta.editores) && meta.editores.includes(user.uid)) ||
-                 (meta.ownerUid && meta.ownerUid===user.uid);
+      // permissões:
+      const usuariosOK = Array.isArray(meta.editores) && meta.editores.includes(user.uid);
+      const usuariosNomeOK = Array.isArray(meta.editoresUsernames) && meta.editoresUsernames.includes(myUsername);
+      const isOwnerUid = meta.ownerUid && meta.ownerUid === user.uid;
+      const isOwnerUsername = meta.ownerUsername && normalizeUsername(meta.ownerUsername) === myUsername;
+
+      const ok = !!meta.edicaoAtiva || usuariosOK || usuariosNomeOK || isOwnerUid || isOwnerUsername;
+
       if(!ok){
         ui.perm.textContent = "Você não tem permissão para editar este catálogo. Peça ao MostreAki para habilitar.";
         ui.grid.innerHTML = "";
@@ -333,7 +350,7 @@
       ui.save.addEventListener("click", saveAll);
     }
 
-    // ===== auth & carregar avatar do usuário (usuarios/{uid}.fotoPerfil) =====
+    // ===== auth & username→slug =====
     onAuthStateChanged(auth, async (user)=>{
       if(!user){
         setAvatar("");
@@ -342,7 +359,7 @@
         return;
       }
 
-      // tenta foto de /usuarios/{uid}.fotoPerfil
+      // avatar: tenta /usuarios/{uid}.fotoPerfil, senão photoURL
       try{
         const us = await getDoc(doc(db,"usuarios", user.uid));
         const foto = us.exists() && us.data().fotoPerfil ? us.data().fotoPerfil : (user.photoURL || "");
@@ -352,7 +369,31 @@
         setAvatar(user.photoURL || "");
       }
 
-      boot(user);
+      // pega username do Firestore; se não existir, normaliza displayName ou parte do e-mail
+      let myUsername = "";
+      try{
+        const s = await getDoc(doc(db,'usuarios', user.uid));
+        if(s.exists()){
+          const d = s.data();
+          myUsername = normalizeUsername(d.username || d.nomeCompleto || "");
+        }
+      }catch{}
+      if(!myUsername){
+        const fallback = user.displayName || (user.email ? user.email.split("@")[0] : "usuario");
+        myUsername = normalizeUsername(fallback);
+      }
+
+      // se a URL não trouxe ?c=... ou trouxe ?c=me, usamos o username como slug
+      if(!slug || slug.toLowerCase()==="me"){
+        slug = myUsername;
+        // opcional: atualizar a URL sem recarregar
+        const u = new URL(location.href);
+        u.searchParams.set("c", slug);
+        history.replaceState({}, "", u.toString());
+      }
+
+      // agora que o slug está definido, roda o boot
+      boot(user, myUsername);
     });
   </script>
 </body>
