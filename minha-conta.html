@@ -5,9 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Minha Conta – MostreAki</title>
   <style>
-    :root{
-      --brand:#16b0af; --brandLight:#c4e8de; --ink:#083f3e; --bg:#f6fbfa; --danger:#d73e45;
-    }
+    :root{ --brand:#16b0af; --brandLight:#c4e8de; --ink:#083f3e; --bg:#f6fbfa; --danger:#d73e45; }
     *{box-sizing:border-box}
     body{margin:0;background:url(/bg-circuit.svg) center/cover fixed, var(--bg);font:16px/1.4 system-ui,Segoe UI,Roboto,Arial}
     header{position:sticky;top:0;z-index:1000;background:#cceee6;display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid #bfe3da}
@@ -19,8 +17,7 @@
     .menu-icon span:nth-child(1){top:2px}
     .menu-icon span:nth-child(2){top:11px}
     .menu-icon span:nth-child(3){bottom:2px}
-    nav#menu{display:none;position:absolute;right:12px;top:64px;background:#fff;border:1px solid #e8f2ef;border-radius:12px;
-             box-shadow:0 18px 50px rgba(0,0,0,.12);padding:10px 12px;gap:8px;flex-direction:column}
+    nav#menu{display:none;position:absolute;right:12px;top:64px;background:#fff;border:1px solid #e8f2ef;border-radius:12px;box-shadow:0 18px 50px rgba(0,0,0,.12);padding:10px 12px;gap:8px;flex-direction:column}
     nav#menu a{padding:10px 12px;border-radius:8px;color:#0b3e3c;text-decoration:none}
     nav#menu a:hover{background:#eef8f5}
 
@@ -39,6 +36,7 @@
     .btn.save{background:var(--brand);color:#fff}
     .btn.remove{background:var(--danger);color:#fff}
     .btn.ghost{background:#fff;border:2px solid var(--brand);color:var(--brand)}
+    .btn.link{background:#0b3e3c;color:#fff;text-decoration:none;display:inline-flex;align-items:center}
 
     .chip{display:inline-block;padding:6px 10px;border-radius:999px;font-weight:700;border:1px solid #e8f2ef}
     .chip.sem-plano{background:#fff;color:#666}
@@ -47,6 +45,7 @@
     .chip.cancelamento_solicitado{background:#fff1f1;color:#a72d2d;border-color:#f3c3c3}
     .chip.cancelado{background:#f1f3f4;color:#666}
 
+    .help{font-size:.85rem;color:#567;margin-top:2px}
     .alerta-login{display:none;margin:14px auto;max-width:980px;background:#fffbe6;border:1px solid #ffe8a3;border-radius:12px;padding:10px 14px;color:#7a5600}
     @media(max-width:860px){.grid{grid-template-columns:1fr}}
   </style>
@@ -80,21 +79,28 @@
       <section class="card">
         <div class="head">Perfil e Redes</div>
         <div class="body">
-          <label for="foto">Foto de Perfil</label>
+          <label for="nomeCompleto">Nome completo</label>
+          <input id="nomeCompleto" type="text" placeholder="Seu nome e sobrenome">
+
+          <label for="username">Nome de usuário</label>
+          <input id="username" type="text" placeholder="ex.: joao-silva">
+          <div class="help">Use letras/números e hífen. Isso vira seu <b>slug</b> (ex.: <i>joao-silva</i>).</div>
+
+          <label for="foto" style="margin-top:12px">Foto de Perfil</label>
           <input id="foto" type="file" accept="image/*">
           <img id="fotoPreview" alt="Preview">
-          <div class="row-btns">
-            <button id="btnExcluirFoto" class="btn remove">Remover foto</button>
-          </div>
 
-          <label>Instagram</label><input id="instagram" type="text" placeholder="@seuusuario">
+          <label style="margin-top:12px">Instagram</label><input id="instagram" type="text" placeholder="@seuusuario">
           <label>Facebook</label><input id="facebook" type="text" placeholder="link da página">
           <label>WhatsApp</label><input id="whatsapp" type="text" placeholder="55DDD999999999">
           <label>YouTube</label><input id="youtube" type="text" placeholder="link do canal">
 
           <div class="row-btns">
             <button id="btnSalvar" class="btn save">Salvar alterações</button>
+            <button id="btnExcluirFoto" class="btn remove">Remover foto</button>
+            <a id="btnEditarCatalogo" class="btn link" style="display:none" href="#">✏️ Editar catálogo</a>
           </div>
+          <div id="catalogoInfo" class="help" style="display:none;margin-top:6px"></div>
         </div>
       </section>
 
@@ -119,7 +125,7 @@
     import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
     import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
     import { getFirestore, doc, getDoc, setDoc, onSnapshot, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-    import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject, listAll } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
+    import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
 
     const cfg = {
       apiKey: 'AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE',
@@ -135,7 +141,6 @@
     const storage = getStorage(app, 'gs://mostreaki-2025.firebasestorage.app');
 
     const $ = s => document.querySelector(s);
-    const circle = () => document.getElementById('userCircle') || document.querySelector('.user-circle');
     const cacheBust = u => u ? u + (u.includes('?')?'&':'?') + 'v=' + Date.now() : u;
 
     /* MENU */
@@ -150,110 +155,101 @@
       btn.addEventListener('click', toggle);
     })();
 
-    /* ===== AVATAR – cache + busca (Firestore, Storage) ===== */
+    /* ===== AVATAR ===== */
     function setAvatar(url){
       if(!url) return;
       localStorage.setItem('fotoPerfil', url);
-      const el = circle(); if(!el) return;
+      const el = document.getElementById('userCircle'); if(!el) return;
       el.textContent = ''; el.style.display='flex';
       const img = new Image();
-      img.src = cacheBust(url); img.alt='Foto';
-      img.style.width='100%'; img.style.height='100%'; img.style.objectFit='cover';
+      img.src = cacheBust(url); img.alt='Foto'; img.style.width='100%'; img.style.height='100%'; img.style.objectFit='cover';
       el.append(img);
       const prev = $('#fotoPreview'); if(prev) prev.src = url;
     }
-    // cache imediato para evitar “F”
     (()=>{ const c = localStorage.getItem('fotoPerfil'); if(c) setAvatar(c); })();
 
     async function prefetchFoto(uid){
-      // 1) provedor (se existir)
-      if(auth.currentUser?.photoURL){ setAvatar(auth.currentUser.photoURL); return; }
-      // 2) Firestore
-      try{
-        const s = await getDoc(doc(db,'usuarios',uid));
-        const saved = s.exists() && s.data().fotoPerfil;
-        if(saved){ setAvatar(saved); return; }
-      }catch{}
-      // 3) tenta direto no Storage (jpg/png/webp/gif)
       const tryExt = e => getDownloadURL(ref(storage, `usuarios/${uid}/perfil/avatar.${e}`)).catch(()=>null);
       const direct = await tryExt('jpg') || await tryExt('png') || await tryExt('webp') || await tryExt('gif');
-      if(direct){
-        try{ await setDoc(doc(db,'usuarios',uid), { fotoPerfil:direct }, { merge:true }); }catch{}
-        setAvatar(direct);
-      }
+      if(direct){ setAvatar(direct); try{ await setDoc(doc(db,'usuarios',uid), { fotoPerfil:direct }, { merge:true }); }catch{} }
     }
-
     function extFromType(t){ return (t?.split('/')[1]||'jpg').replace('jpeg','jpg'); }
-
     async function previewImagem(ev, uid){
       const file = ev.target.files?.[0]; if(!file) return;
       $('#fotoPreview').src = URL.createObjectURL(file);
       const ext = extFromType(file.type);
-      const path = `usuarios/${uid}/perfil/avatar.${ext}`;
-      const storageRef = ref(storage, path);
-      try{
-        await uploadBytes(storageRef, file, { contentType:file.type });
-        const url = await getDownloadURL(storageRef);
-        await setDoc(doc(db,'usuarios',uid), { fotoPerfil:url }, { merge:true });
-        // remove variantes antigas
-        for(const e of ['jpg','png','webp','gif']) if(e!==ext)
-          try{ await deleteObject(ref(storage, `usuarios/${uid}/perfil/avatar.${e}`)); }catch{}
-        setAvatar(url);
-        alert('Foto atualizada com sucesso!');
-      }catch(e){ console.error(e); alert('Erro ao salvar imagem no Storage.'); }
+      const storageRef = ref(storage, `usuarios/${uid}/perfil/avatar.${ext}`);
+      await uploadBytes(storageRef, file, { contentType:file.type });
+      const url = await getDownloadURL(storageRef);
+      await setDoc(doc(db,'usuarios',uid), { fotoPerfil:url }, { merge:true });
+      for(const e of ['jpg','png','webp','gif']) if(e!==ext) try{ await deleteObject(ref(storage, `usuarios/${uid}/perfil/avatar.${e}`)); }catch{}
+      setAvatar(url);
+      alert('Foto atualizada com sucesso!');
     }
     async function removerFoto(uid){
       let removed=false;
-      for(const e of ['jpg','png','webp','gif']){
-        try{ await deleteObject(ref(storage, `usuarios/${uid}/perfil/avatar.${e}`)); removed=true; }catch{}
-      }
-      try{ await setDoc(doc(db,'usuarios',uid),{ fotoPerfil:'' },{ merge:true }); }catch{}
+      for(const e of ['jpg','png','webp','gif']){ try{ await deleteObject(ref(storage, `usuarios/${uid}/perfil/avatar.${e}`)); removed=true; }catch{} }
+      await setDoc(doc(db,'usuarios',uid),{ fotoPerfil:'' },{ merge:true });
       localStorage.removeItem('fotoPerfil');
       $('#fotoPreview').src=''; $('#userCircle').style.display='none';
       alert(removed? 'Foto removida.' : 'Nenhuma foto encontrada para remover.');
     }
 
+    /* ===== PERFIL (nome, username, redes) ===== */
+    function slugify(v){
+      return v.toLowerCase()
+        .normalize('NFD').replace(/[\u0300-\u036f]/g,'') // remove acentos
+        .replace(/[^a-z0-9-_.]/g,'-')                   // somente seguros
+        .replace(/-{2,}/g,'-').replace(/^[-_.]+|[-_.]+$/g,'');
+    }
     async function salvar(uid){
+      const nomeCompleto = $('#nomeCompleto').value.trim();
+      const usernameRaw  = $('#username').value.trim();
+      const username     = slugify(usernameRaw);
+      if(usernameRaw && !username){
+        alert('Nome de usuário inválido. Use letras, números e hífen.'); return;
+      }
       const data={
+        nomeCompleto,
+        username,
+        catalogoSlug: username || undefined, // se quiser usar o mesmo slug do usuário
         instagram: $('#instagram').value.trim(),
         facebook : $('#facebook').value.trim(),
         whatsapp : $('#whatsapp').value.trim(),
-        youtube  : $('#youtube').value.trim()
+        youtube  : $('#youtube').value.trim(),
+        updatedAt: serverTimestamp()
       };
       await setDoc(doc(db,'usuarios',uid), data, { merge:true });
       alert('Dados salvos!');
+      // atualiza botao do catálogo caso tenha alterado username/slug
+      wireCatalogo(uid);
     }
     async function carregar(uid){
       const s = await getDoc(doc(db,'usuarios',uid));
       if(!s.exists()) return;
       const d=s.data();
-      $('#instagram').value = d.instagram || '';
-      $('#facebook').value  = d.facebook  || '';
-      $('#whatsapp').value  = d.whatsapp  || '';
-      $('#youtube').value   = d.youtube   || '';
+      $('#nomeCompleto').value = d.nomeCompleto || '';
+      $('#username').value     = d.username || d.catalogoSlug || '';
+      $('#instagram').value    = d.instagram || '';
+      $('#facebook').value     = d.facebook  || '';
+      $('#whatsapp').value     = d.whatsapp  || '';
+      $('#youtube').value      = d.youtube   || '';
     }
 
     /* ===== Assinaturas (Firestore) ===== */
     const PLANOS = { basico:'Plano Básico', essencial:'Plano Intermediário', avancado:'Plano Avançado' };
     const STATUS_LABEL = {
-      'sem-plano':'Sem plano',
-      'pendente':'Pendente',
-      'ativo':'Ativo',
-      'cancelamento_solicitado':'Cancelamento solicitado',
-      'cancelado':'Cancelado'
+      'sem-plano':'Sem plano','pendente':'Pendente','ativo':'Ativo',
+      'cancelamento_solicitado':'Cancelamento solicitado','cancelado':'Cancelado'
     };
-
     function renderAssinatura(data){
       const status = data?.status || 'sem-plano';
       const plano  = data?.plano  || null;
       const chip = $('#statusChip'); chip.className='chip '+status; chip.textContent = STATUS_LABEL[status]||'—';
       $('#planoLabel').textContent = 'Plano atual: ' + (plano? PLANOS[plano] : '—');
-
-      const meta=[];
-      if(data?.createdAt?.toDate) meta.push('Início: ' + data.createdAt.toDate().toLocaleDateString());
+      const meta=[]; if(data?.createdAt?.toDate) meta.push('Início: ' + data.createdAt.toDate().toLocaleDateString());
       if(data?.updatedAt?.toDate) meta.push('Atualizado: ' + data.updatedAt.toDate().toLocaleString());
       $('#assinaturaMeta').textContent = meta.join(' · ');
-
       const btnAssinar=$('#btnAssinar'), btnAlterar=$('#btnAlterar'), btnCancelar=$('#btnCancelar');
       if(status==='sem-plano' || !plano){
         btnAssinar.style.display='inline-block'; btnAlterar.style.display='none'; btnCancelar.style.display='none';
@@ -263,7 +259,6 @@
         btnAssinar.style.display='inline-block'; btnAlterar.style.display='none'; btnCancelar.style.display='none';
       }
     }
-
     async function ensureAssinaturaDoc(uid){
       const r = await getDoc(doc(db,'assinaturas',uid));
       if(!r.exists()){
@@ -298,26 +293,62 @@
       if(['pendente','ativo','cancelado'].includes(status)) patch.status = status;
       if(['basico','essencial','avancado'].includes(plano)) patch.plano = plano;
       if(Object.keys(patch).length) await setAssinatura(uid, patch);
-      // limpa a query
       history.replaceState({}, '', location.pathname);
+    }
+
+    /* ===== Catálogo: mostra botão "Editar catálogo" quando habilitado ===== */
+    async function wireCatalogo(uid){
+      const btn = $('#btnEditarCatalogo');
+      const info = $('#catalogoInfo');
+      btn.style.display='none'; info.style.display='none'; info.textContent='';
+
+      const uSnap = await getDoc(doc(db,'usuarios',uid));
+      const u = uSnap.exists()? uSnap.data() : {};
+      const slug = (u.catalogoSlug || u.username || '').trim();
+
+      // helper: exibe botão
+      const show = (slugToUse, origem='')=>{
+        if(!slugToUse) return;
+        btn.href = `/editar-catalogo.html?c=${encodeURIComponent(slugToUse)}`;
+        btn.style.display='inline-flex';
+        info.textContent = `Catálogo habilitado (${origem}). Slug: ${slugToUse}`;
+        info.style.display='block';
+      };
+
+      // 1) Se usuário já tem flag local
+      if(u.catalogoAtivo && slug){ show(slug,'perfil'); return; }
+
+      // 2) Olha o doc /catalogos/<slug>/meta/config (se souber o slug)
+      if(slug){
+        const cfgRef = doc(db,'catalogos',slug,'meta','config');
+        try {
+          const cfg = await getDoc(cfgRef);
+          if(cfg.exists() && cfg.data().ownerUid===uid && cfg.data().catalogoAtivo===true){
+            show(slug,'config'); return;
+          }
+        } catch {}
+      }
+      // 3) nada encontrado -> deixa oculto
     }
 
     /* ===== Auth ===== */
     onAuthStateChanged(auth, async (user)=>{
       const a = $('#authText');
       if(user){
-        a.textContent='Sair'; a.onclick=async()=>{ await signOut(auth); localStorage.removeItem('fotoPerfil'); location='/index.html'; };
+        a.textContent='Sair';
+        a.onclick=async()=>{ await signOut(auth); localStorage.removeItem('fotoPerfil'); location='/index.html'; };
 
         $('#foto').onchange = ev => previewImagem(ev, user.uid);
         $('#btnSalvar').onclick = () => salvar(user.uid);
         $('#btnExcluirFoto').onclick = () => removerFoto(user.uid);
 
-        await ensureAssinaturaDoc(user.uid);        // <-- cria doc padrão se não existir
-        wireAssinatura(user.uid);                   // escuta mudanças
-        await aplicarParametrosURL(user.uid);       // aplica retorno do checkout
+        await ensureAssinaturaDoc(user.uid);
+        wireAssinatura(user.uid);
+        await aplicarParametrosURL(user.uid);
 
-        carregar(user.uid);
-        prefetchFoto(user.uid);
+        await carregar(user.uid);
+        await prefetchFoto(user.uid);
+        await wireCatalogo(user.uid);
       }else{
         $('#alertaLogin').style.display='block';
         document.querySelector('main.container').style.display='none';
