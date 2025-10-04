@@ -48,7 +48,7 @@
   .muted{font-size:.92rem; color:#666; margin-top:10px}
   a{color:var(--brand); text-decoration:none; font-weight:bold}
 
-  /* Olho de senha — com seus ajustes */
+  /* Olho de senha — seus ajustes */
   .pwd-wrap{position:relative}
   .pwd-wrap input{padding-right:16%}
   .pwd-toggle{
@@ -82,6 +82,13 @@
     <label><input type="radio" name="tipoPessoa" value="PF" checked> Pessoa Física</label>
     <label><input type="radio" name="tipoPessoa" value="PJ"> Pessoa Jurídica</label>
   </div>
+
+  <!-- NOVO: Identidade no MostreAki -->
+  <div class="section-title">Identidade no MostreAki</div>
+  <div class="form-grid">
+    <div class="field"><label for="username">Nome de usuário *</label><input id="username" required placeholder=""></div>
+  </div>
+  <div class="hint">Use 3–40 caracteres. Permitidos: letras, números, ponto, hífen e underline. Ex.: <b>la-maggie</b>, <b>dentista.joao</b></div>
 
   <div class="form-grid" id="grupoPF">
     <div class="field"><label for="nome">Nome completo *</label><input id="nome" required autocomplete="name" placeholder=""></div>
@@ -214,6 +221,17 @@ const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const emailValido = v => emailRe.test(v);
 function onlyDigits(s){ return (s||'').replace(/\D/g,''); }
 
+// Username: normalização + validação
+function stripDiacritics(s){ return (s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,''); }
+function normalizeUsername(s){
+  return stripDiacritics(String(s).toLowerCase())
+    .replace(/\s+/g,'-')
+    .replace(/[^a-z0-9._-]/g,'')
+    .replace(/-+/g,'-')
+    .slice(0,40);
+}
+function isUsernameValid(u){ return /^[a-z0-9._-]{3,40}$/.test(u); }
+
 /* Celular */
 const fone = $("fone");
 fone.addEventListener("input", () => {
@@ -315,6 +333,9 @@ wirePasswordToggle('senha2','toggleSenha2');
 document.getElementById("btnCadastrar").onclick = async () => {
   const tipo = document.querySelector('input[name="tipoPessoa"]:checked').value;
 
+  const usernameRaw = $("username").value.trim();
+  const username    = normalizeUsername(usernameRaw);
+
   const nome = $("nome").value.trim();
   const cpf  = $("cpf").value.trim();
   const razao= $("razao").value.trim();
@@ -333,6 +354,14 @@ document.getElementById("btnCadastrar").onclick = async () => {
   const logradouro = $("logradouro").value.trim();
   const numero = $("numero").value.trim();
   const complemento = $("complemento").value.trim();
+
+  // Username obrigatório + formato
+  if(!isUsernameValid(username)){
+    return showAlert({
+      title:"Nome de usuário inválido",
+      html:"Use 3–40 caracteres minúsculos: letras, números, ponto, hífen ou underline."
+    });
+  }
 
   // Regras PF/PJ
   if(tipo==='PF'){
@@ -366,6 +395,7 @@ document.getElementById("btnCadastrar").onclick = async () => {
 
     const payload = {
       uid, tipoPessoa: tipo,
+      username, // ← novo campo obrigatório
       nomeCompleto: tipo==='PF' ? nome : '',
       cpf: tipo==='PF' ? onlyDigits(cpf) : '',
       razaoSocial: tipo==='PJ' ? razao : '',
