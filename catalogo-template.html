@@ -23,14 +23,22 @@
   }
 
   /* === TOPBAR / DRAWER === */
-  .topbar{display:flex;align-items:center;gap:12px;padding:12px 16px;
-    background:linear-gradient(90deg,#b8efe1aa,#b8efe122);backdrop-filter:saturate(120%) blur(6px);
-    border-bottom:1px solid #ffffff2e;position:sticky;top:0;z-index:50}
+  .topbar{
+    display:flex;align-items:center;gap:12px;padding:12px 16px;
+    background:linear-gradient(90deg,#b8efe1aa,#b8efe122);
+    backdrop-filter:saturate(120%) blur(6px);
+    border-bottom:1px solid #ffffff2e;position:sticky;top:0;z-index:50
+  }
   .mini-brand{display:flex;align-items:center;gap:10px}
-  .mini-brand img{width:34px;height:34px;border-radius:999px;object-fit:cover}
+  .mini-brand img{width:34px;height:34px;border-radius:999px;object-fit:cover;border:2px solid #ffffffbb;box-shadow:0 1px 0 #0003}
   .mini-brand .name{font-weight:800;color:#fff;text-shadow:0 1px 0 #0003;font-size:20px}
-  .hamb{margin-left:auto;width:40px;height:32px;border:none;background:#ffffff1a;border-radius:10px;
-        display:grid;place-items:center;cursor:pointer}
+  .spacer{flex:1}
+  .avatar{
+    width:36px;height:36px;border-radius:999px;object-fit:cover;
+    border:2px solid #ffffffcc;box-shadow:0 1px 0 #0003;cursor:pointer
+  }
+  .hamb{width:40px;height:32px;border:none;background:#ffffff1a;border-radius:10px;
+        display:grid;place-items:center;cursor:pointer;margin-left:8px}
   .hamb span,.hamb::before,.hamb::after{
     content:"";display:block;width:18px;height:2px;background:#fff;border-radius:3px;box-shadow:0 1px 0 #0003
   }
@@ -45,8 +53,10 @@
 
   /* === HERO === */
   .hero{max-width:1100px;margin:18px auto 10px;padding:0 16px;text-align:center}
-  .logo{margin:6px auto 14px;width:140px;height:140px;border-radius:999px;background:#fff;border:6px solid #ffffffcc;
-        display:grid;place-items:center;box-shadow:var(--shadow);overflow:hidden}
+  .logo{
+    margin:6px auto 14px;width:140px;height:140px;border-radius:999px;background:#fff;border:6px solid #ffffffcc;
+    display:grid;place-items:center;box-shadow:var(--shadow);overflow:hidden
+  }
   .logo img{width:100%;height:100%;object-fit:cover;border-radius:50%}
   .banner{height:190px;border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden;border:1px solid #fff;background:#dff5ff}
   .banner img,.banner video{width:100%;height:100%;object-fit:cover;display:block}
@@ -61,7 +71,6 @@
   .frame{background:#e9e9e9;border:12px solid #e5e5e5;border-bottom-width:10px;border-radius:12px;margin:10px}
   .thumb{aspect-ratio:4/3;background:linear-gradient(#bfe8ff,#e7f5ff);border:1px solid #d0dbe2;display:grid;place-items:center;overflow:hidden}
   .thumb img{width:100%;height:100%;object-fit:cover}
-
   .strip{
     display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:center;
     background:#efefef;border-top:1px solid #d9e1e6;padding:10px;border-bottom-left-radius:10px;border-bottom-right-radius:10px;
@@ -93,10 +102,14 @@
 <body>
   <div class="topbar">
     <div class="mini-brand">
-      <img id="miniLogo" alt="logo" />
+      <!-- mini logo do catálogo (placeholder até carregar) -->
+      <img id="miniLogo" alt="logo" src="https://dummyimage.com/80x80/e0f7f3/7aa39b.png&text=LOGO" referrerpolicy="no-referrer"/>
       <div class="name" id="miniName">nome/empresa</div>
     </div>
-    <button class="hamb" id="btnHamb"><span></span></button>
+    <div class="spacer"></div>
+    <!-- avatar do usuário logado -->
+    <img id="userAvatar" class="avatar" alt="Você" title="Minha conta" src="https://dummyimage.com/96x96/e0f7f3/7aa39b.png&text=%F0%9F%99%82" referrerpolicy="no-referrer"/>
+    <button class="hamb" id="btnHamb" aria-label="Abrir menu"><span></span></button>
   </div>
 
   <div class="drawer" id="drawer">
@@ -111,7 +124,7 @@
   </div>
 
   <header class="hero">
-    <div class="logo"><img id="logoImg" alt="logo"></div>
+    <div class="logo"><img id="logoImg" alt="logo" src="https://dummyimage.com/240x240/ffffff/cccccc.png&text=LOGO" referrerpolicy="no-referrer"></div>
     <div class="banner" id="banner"></div>
     <div class="title" id="catTitle">Editar catálogo</div>
     <div class="subtitle" id="catSubtitle">Altere preço e quantidade e clique em “Salvar alterações”.</div>
@@ -134,10 +147,10 @@
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
     import {
       getFirestore, doc, getDoc, collection, getDocs, query, orderBy,
-      writeBatch, setDoc
+      writeBatch
     } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
-    /* ===== CONFIG (mesma do público) ===== */
+    /* ===== CONFIG ===== */
     const firebaseConfig = {
       apiKey:"AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
       authDomain:"mostreaki-2025.firebaseapp.com",
@@ -156,27 +169,32 @@
     const db   = getFirestore(app);
 
     const $ = (id)=>document.getElementById(id);
-    const ui = { year:$("year"), grid:$("grid"), banner:$("banner"),
-                 title:$("catTitle"), subtitle:$("catSubtitle"),
-                 logo:$("logoImg"), miniLogo:$("miniLogo"), miniName:$("miniName"),
-                 perm:$("permMsg"), save:$("btnSave") };
+    const ui = {
+      year:$("year"), grid:$("grid"), banner:$("banner"),
+      title:$("catTitle"), subtitle:$("catSubtitle"),
+      logo:$("logoImg"), miniLogo:$("miniLogo"), miniName:$("miniName"),
+      perm:$("permMsg"), save:$("btnSave"),
+      avatar:$("userAvatar")
+    };
     ui.year.textContent = new Date().getFullYear();
 
     const params = new URLSearchParams(location.search);
     const slug   = params.get("c") || "demo";
-
     const imgURL = f => `${ASSETS_HOST}/catalogo/${slug}/${f}`;
+
+    // Drawer
+    const drawer = $("drawer");
+    $("btnHamb").addEventListener('click',()=>drawer.classList.add('open'));
+    drawer.querySelector('.shade').addEventListener('click',()=>drawer.classList.remove('open'));
+
+    // Avatar abre Minha Conta
+    ui.avatar.addEventListener("click", ()=> location.href="/minha-conta.html");
+
     const moneyToNumber = (v)=> {
       if(v==null) return 0;
       return Number(String(v).replace(/\./g,"").replace(",",".").replace(/[^\d.]/g,"")) || 0;
     };
     const numberToMoney = (n)=> (Number(n||0)).toLocaleString("pt-BR",{minimumFractionDigits:2, maximumFractionDigits:2});
-
-    // Drawer
-    const drawer = document.getElementById('drawer');
-    const btnHamb = document.getElementById('btnHamb');
-    btnHamb.addEventListener('click',()=>drawer.classList.add('open'));
-    drawer.querySelector('.shade').addEventListener('click',()=>drawer.classList.remove('open'));
 
     function makeBanner(file){
       if(!file){ ui.banner.innerHTML = ""; return; }
@@ -188,14 +206,13 @@
     }
 
     function makeEditorCard(idx, data){
-      const nome = data.nome || `Produto ${idx}`;
       const file = data.imagem || `${IMG_PREFIX}${String(idx).padStart(2,"0")}${IMG_EXT}`;
       const preco= data.preco ?? "";
       const qtd  = data.quantidade ?? "";
 
       const el = document.createElement("article");
       el.className = "card";
-      el.dataset.doc = String(idx).padStart(2,"0");   // docId "01", "02", ...
+      el.dataset.doc = String(idx).padStart(2,"0");
       el.innerHTML = `
         <div class="frame">
           <div class="thumb"><img src="${imgURL(file)}" alt=""></div>
@@ -211,15 +228,12 @@
       const price = el.querySelector(".in-price");
       const qty   = el.querySelector(".in-qty");
 
-      // feedback “dirty”
       [price, qty].forEach(inp=>{
         inp.addEventListener("input", ()=>{
           el.classList.add("dirty");
           ui.save.classList.add("active");
         });
       });
-
-      // máscara leve de moeda (aceita 12,34)
       price.addEventListener("blur", ()=>{
         const n = moneyToNumber(price.value);
         price.value = n ? numberToMoney(n) : "";
@@ -252,12 +266,12 @@
         if(!cards.length){ ui.save.classList.remove("active"); return; }
 
         const batch = writeBatch(db);
-        cards.forEach((card, i)=>{
-          const id   = card.dataset.doc;              // "01"
+        cards.forEach((card)=>{
+          const id   = card.dataset.doc;
           const ref  = doc(db, "catalogos", slug, "itens", id);
           const price= moneyToNumber(card.querySelector(".in-price").value);
           const qty  = Number(card.querySelector(".in-qty").value || 0);
-          const ordem= Number(id);                    // usa 01..30 como ordem
+          const ordem= Number(id);
           batch.set(ref, { preco:price, quantidade:qty, ordem }, { merge:true });
         });
         await batch.commit();
@@ -273,24 +287,31 @@
       }
     }
 
+    function setAvatar(url){
+      ui.avatar.src = url || "https://dummyimage.com/96x96/e0f7f3/7aa39b.png&text=%F0%9F%99%82";
+    }
+
     async function boot(user){
       const meta  = await loadMeta();
       const itens = await loadItens();
 
-      // topo/mini
-      ui.miniLogo.src = meta.miniLogo ? imgURL(meta.miniLogo) : (meta.logo ? imgURL(meta.logo): "https://dummyimage.com/120x120/ffffff/cccccc.png&text=LOGO");
+      // topo/mini (catálogo)
+      ui.miniLogo.src = meta.miniLogo ? imgURL(meta.miniLogo) :
+                        (meta.logo ? imgURL(meta.logo) : ui.miniLogo.src);
       ui.miniName.textContent = meta.nome || meta.titulo || "nome/empresa";
 
       // logo central, título/sub
-      ui.logo.src = meta.logo ? imgURL(meta.logo) : "https://dummyimage.com/240x240/ffffff/cccccc.png&text=LOGO";
+      ui.logo.src = meta.logo ? imgURL(meta.logo) : ui.logo.src;
       ui.title.textContent    = meta.titulo    || "Editar catálogo";
       ui.subtitle.textContent = "Altere preço e quantidade dos itens e clique em Salvar.";
 
       // banner
       makeBanner(meta.banner);
 
-      // permissões simples
-      const ok = !!meta.edicaoAtiva || (Array.isArray(meta.editores) && meta.editores.includes(user.uid)) || (meta.ownerUid && meta.ownerUid===user.uid);
+      // permissões
+      const ok = !!meta.edicaoAtiva ||
+                 (Array.isArray(meta.editores) && meta.editores.includes(user.uid)) ||
+                 (meta.ownerUid && meta.ownerUid===user.uid);
       if(!ok){
         ui.perm.textContent = "Você não tem permissão para editar este catálogo. Peça ao MostreAki para habilitar.";
         ui.grid.innerHTML = "";
@@ -301,12 +322,10 @@
       // render
       ui.grid.innerHTML = "";
       if(itens.length){
-        // respeita a ordem dos docs existentes
         itens.forEach((d,idx)=> ui.grid.appendChild( makeEditorCard(idx+1, d) ));
       }else{
-        // gera 30 cartões “vazios” para começar
         for(let i=1;i<=30;i++){
-          ui.grid.appendChild( makeEditorCard(i, {nome:`Produto ${i}`} ) );
+          ui.grid.appendChild( makeEditorCard(i, {} ) );
         }
       }
 
@@ -314,12 +333,25 @@
       ui.save.addEventListener("click", saveAll);
     }
 
+    // ===== auth & carregar avatar do usuário (usuarios/{uid}.fotoPerfil) =====
     onAuthStateChanged(auth, async (user)=>{
       if(!user){
+        setAvatar("");
         ui.perm.innerHTML = 'Você precisa estar logado para editar. <a href="/entrar" style="color:#fff;font-weight:800">Entrar</a>';
         ui.save.remove();
         return;
       }
+
+      // tenta foto de /usuarios/{uid}.fotoPerfil
+      try{
+        const us = await getDoc(doc(db,"usuarios", user.uid));
+        const foto = us.exists() && us.data().fotoPerfil ? us.data().fotoPerfil : (user.photoURL || "");
+        setAvatar(foto);
+      }catch(e){
+        console.warn("avatar:", e);
+        setAvatar(user.photoURL || "");
+      }
+
       boot(user);
     });
   </script>
