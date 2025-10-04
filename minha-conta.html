@@ -98,18 +98,26 @@
         </div>
       </section>
 
-      <!-- ASSINATURA -->
+      <!-- ASSINATURA + CATÁLOGO -->
       <section class="card">
         <div class="head">Assinatura</div>
         <div class="body">
           <div id="statusChip" class="chip sem-plano">Sem plano</div>
           <p id="planoLabel" style="margin:10px 0 6px">Plano atual: —</p>
           <small id="assinaturaMeta" style="color:#557"></small>
+
           <div class="row-btns" style="margin-top:14px">
             <button id="btnAssinar"  class="btn save">Assinar</button>
             <button id="btnAlterar"  class="btn ghost" style="display:none">Alterar plano</button>
             <button id="btnCancelar" class="btn remove" style="display:none">Cancelar plano</button>
           </div>
+
+          <!-- Botões de Catálogo (mostrados dinamicamente) -->
+          <div class="row-btns" style="margin-top:8px">
+            <button id="btnEditarCatalogo" class="btn ghost" style="display:none">Editar catálogo</button>
+            <button id="btnVerCatalogo" class="btn ghost" style="display:none">Ver catálogo</button>
+          </div>
+          <small id="infoCatalogo" style="display:none;color:#376;opacity:.9"></small>
         </div>
       </section>
     </div>
@@ -118,8 +126,11 @@
   <script type="module">
     import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
     import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-    import { getFirestore, doc, getDoc, setDoc, onSnapshot, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-    import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject, listAll } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
+    import {
+      getFirestore, doc, getDoc, setDoc, onSnapshot, serverTimestamp,
+      collectionGroup, query, where, getDocs
+    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+    import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
 
     const cfg = {
       apiKey: 'AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE',
@@ -166,15 +177,12 @@
     (()=>{ const c = localStorage.getItem('fotoPerfil'); if(c) setAvatar(c); })();
 
     async function prefetchFoto(uid){
-      // 1) provedor (se existir)
       if(auth.currentUser?.photoURL){ setAvatar(auth.currentUser.photoURL); return; }
-      // 2) Firestore
       try{
         const s = await getDoc(doc(db,'usuarios',uid));
         const saved = s.exists() && s.data().fotoPerfil;
         if(saved){ setAvatar(saved); return; }
       }catch{}
-      // 3) tenta direto no Storage (jpg/png/webp/gif)
       const tryExt = e => getDownloadURL(ref(storage, `usuarios/${uid}/perfil/avatar.${e}`)).catch(()=>null);
       const direct = await tryExt('jpg') || await tryExt('png') || await tryExt('webp') || await tryExt('gif');
       if(direct){
@@ -195,7 +203,6 @@
         await uploadBytes(storageRef, file, { contentType:file.type });
         const url = await getDownloadURL(storageRef);
         await setDoc(doc(db,'usuarios',uid), { fotoPerfil:url }, { merge:true });
-        // remove variantes antigas
         for(const e of ['jpg','png','webp','gif']) if(e!==ext)
           try{ await deleteObject(ref(storage, `usuarios/${uid}/perfil/avatar.${e}`)); }catch{}
         setAvatar(url);
@@ -298,26 +305,82 @@
       if(['pendente','ativo','cancelado'].includes(status)) patch.status = status;
       if(['basico','essencial','avancado'].includes(plano)) patch.plano = plano;
       if(Object.keys(patch).length) await setAssinatura(uid, patch);
-      // limpa a query
       history.replaceState({}, '', location.pathname);
+    }
+
+    /* ===== Catálogo – mostra botões quando houver catálogo ativo ===== */
+    async function wireCatalogo(uid){
+      const btnEdit = $('#btnEditarCatalogo');
+      const btnView = $('#btnVerCatalogo');
+      const info    = $('#infoCatalogo');
+
+      try{
+        // procura qualquer /catalogos/{slug}/meta/config que pertença ao usuário
+        const q = query(
+          collectionGroup(db,'meta'),
+          where('ownerUid','==', uid)
+        );
+        const snap = await getDocs(q);
+
+        let cat=null;
+        snap.forEach(d=>{
+          const data=d.data();
+          // o doc da collectionGroup é o próprio "config"
+          const slug = data.catalogoSlug || d.ref.parent.parent?.id;
+          if(slug) cat = {
+            slug,
+            ativo: !!data.catalogoAtivo,
+            edicaoAtiva: !!data.edicaoAtiva
+          };
+        });
+
+        if(cat && cat.ativo){
+          const urlPublico = `/catalogo-template.html?c=${encodeURIComponent(cat.slug)}`;
+          const urlEditar  = `${urlPublico}&edit=1`;
+
+          btnView.style.display='inline-block';
+          btnView.onclick = ()=> location.href = urlPublico;
+
+          if(cat.edicaoAtiva){
+            btnEdit.style.display='inline-block';
+            btnEdit.onclick = ()=> location.href = urlEditar;
+          }else{
+            btnEdit.style.display='none';
+          }
+
+          info.style.display='block';
+          info.textContent = `Catálogo "${cat.slug}" está ativo${cat.edicaoAtiva?' e com edição liberada.':'.'}`;
+        }else{
+          // não há catálogo ativo para este usuário
+          btnEdit.style.display='none';
+          btnView.style.display='none';
+          info.style.display='none';
+        }
+      }catch(e){
+        console.error('Erro ao buscar catálogo:', e);
+      }
     }
 
     /* ===== Auth ===== */
     onAuthStateChanged(auth, async (user)=>{
       const a = $('#authText');
       if(user){
-        a.textContent='Sair'; a.onclick=async()=>{ await signOut(auth); localStorage.removeItem('fotoPerfil'); location='/index.html'; };
+        a.textContent='Sair';
+        a.onclick=async()=>{ await signOut(auth); localStorage.removeItem('fotoPerfil'); location='/index.html'; };
 
         $('#foto').onchange = ev => previewImagem(ev, user.uid);
         $('#btnSalvar').onclick = () => salvar(user.uid);
         $('#btnExcluirFoto').onclick = () => removerFoto(user.uid);
 
-        await ensureAssinaturaDoc(user.uid);        // <-- cria doc padrão se não existir
-        wireAssinatura(user.uid);                   // escuta mudanças
-        await aplicarParametrosURL(user.uid);       // aplica retorno do checkout
+        await ensureAssinaturaDoc(user.uid);
+        wireAssinatura(user.uid);
+        await aplicarParametrosURL(user.uid);
 
         carregar(user.uid);
         prefetchFoto(user.uid);
+
+        // <<< ativa botões do Catálogo
+        wireCatalogo(user.uid);
       }else{
         $('#alertaLogin').style.display='block';
         document.querySelector('main.container').style.display='none';
