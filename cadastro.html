@@ -48,7 +48,7 @@
   .muted{font-size:.92rem; color:#666; margin-top:10px}
   a{color:var(--brand); text-decoration:none; font-weight:bold}
 
-  /* Olho de senha — seus ajustes */
+  /* Olho de senha */
   .pwd-wrap{position:relative}
   .pwd-wrap input{padding-right:16%}
   .pwd-toggle{
@@ -83,22 +83,22 @@
     <label><input type="radio" name="tipoPessoa" value="PJ"> Pessoa Jurídica</label>
   </div>
 
-  <!-- NOVO: Identidade no MostreAki -->
+  <!-- Identidade no MostreAki -->
   <div class="section-title">Identidade no MostreAki</div>
   <div class="form-grid">
-    <div class="field"><label for="username">Nome de usuário *</label><input id="username" required placeholder=""></div>
+    <div class="field"><label for="username">Nome de usuário *</label><input id="username" required></div>
   </div>
   <div class="hint">Use 3–40 caracteres. Permitidos: letras, números, ponto, hífen e underline. Ex.: <b>la-maggie</b>, <b>dentista.joao</b></div>
 
   <div class="form-grid" id="grupoPF">
-    <div class="field"><label for="nome">Nome completo *</label><input id="nome" required autocomplete="name" placeholder=""></div>
-    <div class="field"><label for="cpf">CPF *</label><input id="cpf" inputmode="numeric" placeholder=""></div>
+    <div class="field"><label for="nome">Nome completo *</label><input id="nome" required autocomplete="name"></div>
+    <div class="field"><label for="cpf">CPF *</label><input id="cpf" inputmode="numeric"></div>
   </div>
 
   <div class="form-grid" id="grupoPJ" style="display:none">
-    <div class="field"><label for="razao">Razão Social *</label><input id="razao" placeholder=""></div>
-    <div class="field"><label for="cnpj">CNPJ *</label><input id="cnpj" inputmode="numeric" placeholder=""></div>
-    <div class="field"><label for="ie">Inscrição Estadual</label><input id="ie" placeholder=""></div>
+    <div class="field"><label for="razao">Razão Social *</label><input id="razao"></div>
+    <div class="field"><label for="cnpj">CNPJ *</label><input id="cnpj" inputmode="numeric"></div>
+    <div class="field"><label for="ie">Inscrição Estadual</label><input id="ie"></div>
     <div class="radio-row" style="margin-top:-6px">
       <label><input type="checkbox" id="isentoIE"> Isento de IE</label>
     </div>
@@ -107,17 +107,17 @@
   <!-- Contato -->
   <div class="section-title">Contato</div>
   <div class="form-grid cols-2">
-    <div class="field"><label for="fone">Celular / WhatsApp *</label><input id="fone" type="tel" inputmode="tel" required autocomplete="tel" placeholder=""></div>
-    <div class="field"><label for="email">E-mail *</label><input id="email" type="email" required autocomplete="email" placeholder=""></div>
+    <div class="field"><label for="fone">Celular / WhatsApp *</label><input id="fone" type="tel" inputmode="tel" required autocomplete="tel"></div>
+    <div class="field"><label for="email">E-mail *</label><input id="email" type="email" required autocomplete="email"></div>
   </div>
   <div class="form-grid cols-2">
-    <div class="field"><label for="email2">Confirmar e-mail *</label><input id="email2" type="email" required placeholder=""></div>
+    <div class="field"><label for="email2">Confirmar e-mail *</label><input id="email2" type="email" required></div>
   </div>
 
-  <!-- Endereço para NFS-e -->
+  <!-- Endereço -->
   <div class="section-title">Endereço (faturamento/NFS-e)</div>
   <div class="form-grid cols-3">
-    <div class="field"><label for="cep">CEP *</label><input id="cep" inputmode="numeric" placeholder=""></div>
+    <div class="field"><label for="cep">CEP *</label><input id="cep" inputmode="numeric"></div>
     <div class="field"><label for="uf">UF *</label>
       <select id="uf">
         <option value="">Selecione</option>
@@ -129,22 +129,22 @@
         <option>SE</option><option>TO</option>
       </select>
     </div>
-    <div class="field"><label for="cidade">Cidade *</label><input id="cidade" placeholder=""></div>
+    <div class="field"><label for="cidade">Cidade *</label><input id="cidade"></div>
   </div>
   <div class="form-grid cols-2">
-    <div class="field"><label for="bairro">Bairro *</label><input id="bairro" placeholder=""></div>
-    <div class="field"><label for="logradouro">Logradouro (rua/avenida) *</label><input id="logradouro" placeholder=""></div>
+    <div class="field"><label for="bairro">Bairro *</label><input id="bairro"></div>
+    <div class="field"><label for="logradouro">Logradouro (rua/avenida) *</label><input id="logradouro"></div>
   </div>
   <div class="form-grid cols-2">
-    <div class="field"><label for="numero">Número *</label><input id="numero" inputmode="numeric" placeholder=""></div>
-    <div class="field"><label for="complemento">Complemento</label><input id="complemento" placeholder=""></div>
+    <div class="field"><label for="numero">Número *</label><input id="numero" inputmode="numeric"></div>
+    <div class="field"><label for="complemento">Complemento</label><input id="complemento"></div>
   </div>
 
   <!-- Acesso -->
   <div class="section-title">Acesso</div>
   <div class="form-grid cols-2">
-    <div class="field pwd-wrap"><label for="senha">Senha (mín. 6) *</label><input id="senha" type="password" required autocomplete="new-password" placeholder=""><button id="toggleSenha" class="pwd-toggle" type="button" aria-label="Mostrar senha" aria-pressed="false">👁️</button></div>
-    <div class="field pwd-wrap"><label for="senha2">Confirmar senha *</label><input id="senha2" type="password" required placeholder=""><button id="toggleSenha2" class="pwd-toggle" type="button" aria-label="Mostrar confirmação" aria-pressed="false">👁️</button></div>
+    <div class="field pwd-wrap"><label for="senha">Senha (mín. 6) *</label><input id="senha" type="password" required autocomplete="new-password"><button id="toggleSenha" class="pwd-toggle" type="button">👁️</button></div>
+    <div class="field pwd-wrap"><label for="senha2">Confirmar senha *</label><input id="senha2" type="password" required><button id="toggleSenha2" class="pwd-toggle" type="button">👁️</button></div>
   </div>
 
   <button class="primary" id="btnCadastrar">Criar conta</button>
@@ -391,8 +391,10 @@ document.getElementById("btnCadastrar").onclick = async () => {
     const cred = await createUserWithEmailAndPassword(auth, email, s1);
     const uid = cred.user.uid;
 
+    // displayName no Auth
     await updateProfile(cred.user,{ displayName: tipo==='PF' ? nome : razao });
 
+    // salva no Firestore
     const payload = {
       uid, tipoPessoa: tipo,
       username, // ← novo campo obrigatório
