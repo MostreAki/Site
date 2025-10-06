@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Editar Catálogo – MostreAki</title>
+  <style>
+    :root{
+      --brand:#16b0af; --brandLight:#c4e8de; --ink:#083f3e; --bg:#f6fbfa;
+      --danger:#d73e45; --line:#e7f3f1;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);font:16px/1.4 system-ui,Segoe UI,Roboto,Arial}
+    header{position:sticky;top:0;z-index:1000;background:#cceee6;display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid #bfe3da}
+    header .logo{display:flex;align-items:center;gap:10px;font-weight:800;color:#0b3e3c}
+    .user-wrap{margin-left:auto;display:flex;align-items:center;gap:10px}
+    .user-circle{width:56px;height:56px;border-radius:50%;overflow:hidden;display:none;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+    .menu-icon{width:36px;height:26px;position:relative;display:flex;align-items:center;justify-content:center;cursor:pointer}
+    .menu-icon span{position:absolute;width:24px;height:3px;background:#1b1b1b;border-radius:3px}
+    .menu-icon span:nth-child(1){top:2px}
+    .menu-icon span:nth-child(2){top:11px}
+    .menu-icon span:nth-child(3){bottom:2px}
+    nav#menu{display:none;position:absolute;right:12px;top:64px;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 18px 50px rgba(0,0,0,.12);padding:10px 12px;gap:8px;flex-direction:column}
+    nav#menu a{padding:10px 12px;border-radius:8px;color:#0b3e3c;text-decoration:none}
+    nav#menu a:hover{background:#eef8f5}
+
+    main.container{max-width:1100px;margin:22px auto;padding:0 16px}
+    h2{color:#0b3e3c;margin:12px 0 8px;font-size:1.8rem}
+    .sub{color:#4a6665;margin-bottom:16px}
+
+    .card{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.06);margin-bottom:16px}
+    .card .head{padding:14px 16px;border-bottom:1px solid var(--line);font-weight:700;color:#0b3e3c;display:flex;gap:10px;align-items:center;justify-content:space-between}
+    .card .body{padding:16px}
+    .hint{font-size:.9rem;color:#567}
+
+    .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+    @media(max-width:980px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:640px){.grid{grid-template-columns:1fr}}
+
+    .item{border:1px solid var(--line);border-radius:12px;padding:12px;background:#fff}
+    .item h4{margin:0 0 8px;color:#0b3e3c}
+    .row{display:grid;grid-template-columns:1fr 130px 120px;gap:8px}
+    @media(max-width:560px){.row{grid-template-columns:1fr 1fr;}.row .col-qty{grid-column:1 / -1}}
+    label{display:block;font-weight:600;color:#124b49;margin:4px 0}
+    input[type="text"], input[type="number"]{
+      width:100%;padding:10px 12px;border:1px solid #cfe9e3;border-radius:10px;outline:0
+    }
+
+    .toolbar{display:flex;gap:10px;flex-wrap:wrap}
+    .btn{border:0;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer}
+    .btn.save{background:var(--brand);color:#fff}
+    .btn.ghost{background:#fff;border:2px solid var(--brand);color:var(--brand)}
+    .btn.danger{background:var(--danger);color:#fff}
+    .status-ok{background:#eafff7;border:1px solid #bcefe0;color:#0b7558;border-radius:10px;padding:10px 12px}
+    .status-err{background:#fff1f1;border:1px solid #f1c6c6;color:#a33;border-radius:10px;padding:10px 12px}
+    .row-switch{display:flex;align-items:center;gap:10px}
+
+    .alerta-login{display:none;margin:14px auto;max-width:1100px;background:#fffbe6;border:1px solid #ffe8a3;border-radius:12px;padding:10px 14px;color:#7a5600}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo"><img src="/logo.svg" alt="" height="28"> MostreAki</div>
+    <div class="user-wrap">
+      <div id="userCircle" class="user-circle"></div>
+      <a id="authText" href="/login.html" class="btn ghost" style="text-decoration:none">Entrar</a>
+      <div id="menuBtn" class="menu-icon" aria-label="Abrir menu" role="button" tabindex="0">
+        <span></span><span></span><span></span>
+      </div>
+      <nav id="menu">
+        <a href="/index.html">Página Inicial</a>
+        <a href="/sobre.html">Sobre</a>
+        <a href="/parceiros.html">Parceiros</a>
+        <a href="/servicos-adicionais.html">Serviços Adicionais</a>
+        <a href="/redes-sociais.html">Redes Sociais</a>
+        <a href="/contatos.html">Contatos</a>
+        <a href="/minha-conta.html">Minha Conta</a>
+      </nav>
+    </div>
+  </header>
+
+  <div id="alertaLogin" class="alerta-login">⚠️ Você precisa estar logado para editar o catálogo. Redirecionando…</div>
+
+  <main class="container">
+    <h2>Editar Catálogo</h2>
+    <div class="sub">
+      Slug: <b id="slugLabel">—</b> ·
+      <a id="publicLink" href="#" target="_blank" rel="noopener">ver página pública</a>
+    </div>
+
+    <section class="card">
+      <div class="head">
+        <div>Configurações</div>
+        <div class="toolbar">
+          <button id="btnSalvarTudo" class="btn save">Salvar tudo</button>
+        </div>
+      </div>
+      <div class="body">
+        <div class="row-switch">
+          <label><input id="chkAtivo" type="checkbox"> Catálogo ativo</label>
+          <span id="statusSave" class="hint"></span>
+        </div>
+        <p class="hint" style="margin-top:8px">
+          As imagens do catálogo são gerenciadas por você (GitHub/host estático). Aqui o cliente edita apenas <b>nome</b>, <b>preço</b> e <b>quantidade</b>.
+        </p>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="head">Itens do Catálogo (1–30)</div>
+      <div class="body">
+        <div id="grid" class="grid"></div>
+      </div>
+    </section>
+  </main>
+
+  <script type="module">
+    import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+    import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+    import {
+      getFirestore, doc, getDoc, setDoc, getDocs, collection, writeBatch, serverTimestamp
+    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+    import { getStorage, ref, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
+
+    // ===== Firebase init =====
+    const cfg = {
+      apiKey: 'AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE',
+      authDomain: 'mostreaki-2025.firebaseapp.com',
+      projectId: 'mostreaki-2025',
+      storageBucket: 'mostreaki-2025.firebasestorage.app',
+      messagingSenderId: '748712068097',
+      appId: '1:748712068097:web:09cf043fbb45917ef6ec00'
+    };
+    const app = getApps().length ? getApp() : initializeApp(cfg);
+    const auth = getAuth(app);
+    const db   = getFirestore(app);
+    const storage = getStorage(app, 'gs://mostreaki-2025.firebasestorage.app');
+
+    const $ = sel => document.querySelector(sel);
+
+    // ===== Menu =====
+    (function wireMenu(){
+      const btn = $('#menuBtn'), menu = $('#menu');
+      if(!btn || !menu) return;
+      const open=()=>{ menu.style.display='flex'; document.addEventListener('click', onDoc, true); document.addEventListener('keydown', onKey); };
+      const close=()=>{ menu.style.display='none'; document.removeEventListener('click', onDoc, true); document.removeEventListener('keydown', onKey); };
+      const toggle=()=> (menu.style.display==='flex'?close():open());
+      function onDoc(e){ if(!menu.contains(e.target) && e.target!==btn) close(); }
+      function onKey(e){ if(e.key==='Escape') close(); }
+      btn.addEventListener('click', toggle);
+    })();
+
+    // ===== Avatar =====
+    function cacheBust(u){ return u ? u + (u.includes('?')?'&':'?') + 'v=' + Date.now() : u; }
+    function setAvatar(url){
+      if(!url) return;
+      localStorage.setItem('fotoPerfil', url);
+      const el = document.getElementById('userCircle'); if(!el) return;
+      el.textContent = ''; el.style.display='flex';
+      const img = new Image();
+      img.src = cacheBust(url); img.alt='Foto'; img.style.width='100%'; img.style.height='100%'; img.style.objectFit='cover';
+      el.append(img);
+    }
+    (()=>{
+      const c = localStorage.getItem('fotoPerfil');
+      if(c) setAvatar(c);
+    })();
+    async function prefetchFoto(uid){
+      async function tryExt(e){ try{ return await getDownloadURL(ref(storage, `usuarios/${uid}/perfil/avatar.${e}`)); }catch{return null;} }
+      const direct = await tryExt('jpg') || await tryExt('png') || await tryExt('webp') || await tryExt('gif');
+      if(direct) setAvatar(direct);
+    }
+
+    // ===== Helpers BRL =====
+    const fmtBRL = (cents)=> 'R$ ' + (cents/100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const parseBRL = (s)=>{
+      if(s==null) return 0;
+      const only = String(s).replace(/[^\d,.-]/g,'').replace(/\./g,'').replace(',','.');
+      const n = parseFloat(only);
+      if(isNaN(n)) return 0;
+      return Math.round(n*100);
+    };
+
+    // ===== Query param (slug) =====
+    const params = new URLSearchParams(location.search);
+    const slug = (params.get('c') || '').trim();
+    $('#slugLabel').textContent = slug || '—';
+    $('#publicLink').href = slug ? `/catalogo-template.html?c=${encodeURIComponent(slug)}` : '#';
+
+    // ===== UI builder (30 itens) =====
+    function buildGrid(){
+      const grid = $('#grid'); grid.innerHTML='';
+      for(let i=1;i<=30;i++){
+        const id = String(i).padStart(2,'0');
+        const card = document.createElement('div');
+        card.className = 'item';
+        card.innerHTML = `
+          <h4>Item ${id}</h4>
+          <div class="row">
+            <div>
+              <label>Nome</label>
+              <input type="text" id="nome_${id}" placeholder="Ex.: Moletom MostreAki">
+            </div>
+            <div>
+              <label>Preço</label>
+              <input type="text" id="preco_${id}" placeholder="R$ 0,00">
+            </div>
+            <div class="col-qty">
+              <label>Quantidade</label>
+              <input type="number" id="qtd_${id}" min="0" step="1" placeholder="0">
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      }
+    }
+
+    // ===== Carrega itens existentes =====
+    async function carregarItens(slug){
+      const snap = await getDocs(collection(db, 'catalogos', slug, 'itens'));
+      const docs = {};
+      snap.forEach(d=> docs[d.id] = d.data());
+      for(let i=1;i<=30;i++){
+        const id = String(i).padStart(2,'0');
+        const d = docs[id];
+        if(d){
+          const nome = d.nome || '';
+          const qtd  = (typeof d.quantidade === 'number') ? d.quantidade : '';
+          const preco= (typeof d.precoCentavos === 'number') ? fmtBRL(d.precoCentavos) : '';
+          const nomeEl = document.getElementById('nome_'+id);
+          const qtdEl  = document.getElementById('qtd_'+id);
+          const precoEl= document.getElementById('preco_'+id);
+          if(nomeEl) nomeEl.value = nome;
+          if(qtdEl)  qtdEl.value  = qtd;
+          if(precoEl)precoEl.value= preco;
+        }
+      }
+    }
+
+    // ===== Salvar tudo (batch) =====
+    async function salvarTudo(slug){
+      const status = document.getElementById('statusSave');
+      status.textContent = 'Salvando...';
+      try{
+        const batch = writeBatch(db);
+        for(let i=1;i<=30;i++){
+          const id = String(i).padStart(2,'0');
+          const nome  = (document.getElementById('nome_'+id)?.value || '').trim();
+          const qtd   = parseInt(document.getElementById('qtd_'+id)?.value || '0', 10);
+          const precoCents = parseBRL(document.getElementById('preco_'+id)?.value || '');
+          const ref = doc(db, 'catalogos', slug, 'itens', id);
+          const payload = {
+            ordem: i,
+            nome,
+            quantidade: isNaN(qtd) ? 0 : qtd,
+            precoCentavos: precoCents,
+            atualizadoEm: serverTimestamp()
+          };
+          batch.set(ref, payload, { merge:true });
+        }
+        await batch.commit();
+        status.textContent = 'Salvo com sucesso!';
+        setTimeout(()=> status.textContent='', 2500);
+      }catch(e){
+        console.error(e);
+        status.textContent = 'Falha ao salvar. Verifique as permissões das regras.';
+        status.className = 'status-err';
+      }
+    }
+
+    // ===== Carrega/Salva meta (ativo) =====
+    async function carregarMeta(slug){
+      const ref = doc(db,'catalogos',slug,'meta','config');
+      const s = await getDoc(ref);
+      if(s.exists()){
+        $('#chkAtivo').checked = !!s.data().catalogoAtivo;
+      }
+    }
+    async function salvarMeta(slug, ownerUid){
+      const ref = doc(db,'catalogos',slug,'meta','config');
+      await setDoc(ref, {
+        ownerUid,
+        catalogoAtivo: $('#chkAtivo').checked,
+        atualizadoEm: serverTimestamp()
+      }, { merge:true });
+    }
+
+    // ===== Guardião: só o dono pode editar =====
+    async function exigirDono(uid, slug){
+      const ref = doc(db,'catalogos',slug,'meta','config');
+      const s = await getDoc(ref);
+      if(!s.exists()) throw new Error('CONFIG_NOT_FOUND');
+      const data = s.data();
+      if(data.ownerUid !== uid){
+        throw new Error('NOT_OWNER');
+      }
+    }
+
+    // ===== Auth flow =====
+    onAuthStateChanged(auth, async (user)=>{
+      const a = $('#authText');
+      if(!user){
+        $('#alertaLogin').style.display='block';
+        document.querySelector('main.container').style.display='none';
+        setTimeout(()=> location='/index.html', 3500);
+        return;
+      }
+      a.textContent = 'Sair';
+      a.onclick = async()=>{ await signOut(auth); localStorage.removeItem('fotoPerfil'); location='/index.html'; };
+
+      // avatar
+      await prefetchFoto(user.uid);
+
+      // slug obrigatório
+      if(!slug){
+        document.querySelector('main.container').innerHTML = `
+          <div class="card"><div class="body status-err">
+            Catálogo não informado. Acesse por <code>/editar-catalogo.html?c=&lt;slug&gt;</code>
+          </div></div>`;
+        return;
+      }
+
+      try{
+        // permissão
+        await exigirDono(user.uid, slug);
+
+        // UI builder
+        buildGrid();
+
+        // meta + itens
+        await carregarMeta(slug);
+        await carregarItens(slug);
+
+        // handlers
+        document.getElementById('btnSalvarTudo').onclick = () => salvarTudo(slug);
+        document.getElementById('chkAtivo').addEventListener('change', ()=> salvarMeta(slug, user.uid));
+
+      }catch(e){
+        console.error(e);
+        let msg = 'Erro ao carregar. ';
+        if(e.message==='NOT_OWNER') msg += 'Você não tem permissão para editar este catálogo.';
+        else if(e.message==='CONFIG_NOT_FOUND') msg += 'Configuração não encontrada. Crie /catalogos/'+slug+'/meta/config.';
+        else msg += 'Verifique as regras do Firestore.';
+        document.querySelector('main.container').innerHTML = `
+          <div class="card"><div class="body status-err">${msg}</div></div>`;
+      }
+    });
+  </script>
+</body>
+</html>
