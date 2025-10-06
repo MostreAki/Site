@@ -98,6 +98,7 @@
           <div class="row-btns">
             <button id="btnSalvar" class="btn save">Salvar alterações</button>
             <button id="btnExcluirFoto" class="btn remove">Remover foto</button>
+            <!-- EDITAR CATÁLOGO: só aparece se assinatura ATIVA + catálogo ativo -->
             <a id="btnEditarCatalogo" class="btn link" style="display:none" href="#">✏️ Editar catálogo</a>
           </div>
           <div id="catalogoInfo" class="help" style="display:none;margin-top:6px"></div>
@@ -198,8 +199,8 @@
     /* ===== PERFIL (nome, username, redes) ===== */
     function slugify(v){
       return v.toLowerCase()
-        .normalize('NFD').replace(/[\u0300-\u036f]/g,'') // remove acentos
-        .replace(/[^a-z0-9-_.]/g,'-')                   // somente seguros
+        .normalize('NFD').replace(/[\u0300-\u036f]/g,'') // acentos
+        .replace(/[^a-z0-9-_.]/g,'-')                   // seguros
         .replace(/-{2,}/g,'-').replace(/^[-_.]+|[-_.]+$/g,'');
     }
     async function salvar(uid){
@@ -212,7 +213,7 @@
       const data={
         nomeCompleto,
         username,
-        catalogoSlug: username || undefined, // se quiser usar o mesmo slug do usuário
+        catalogoSlug: username || undefined,
         instagram: $('#instagram').value.trim(),
         facebook : $('#facebook').value.trim(),
         whatsapp : $('#whatsapp').value.trim(),
@@ -221,7 +222,7 @@
       };
       await setDoc(doc(db,'usuarios',uid), data, { merge:true });
       alert('Dados salvos!');
-      // atualiza botao do catálogo caso tenha alterado username/slug
+      // reavalia botões do catálogo
       wireCatalogo(uid);
     }
     async function carregar(uid){
@@ -284,7 +285,7 @@
       };
     }
 
-    // Le retorno do Mercado Pago via URL (ex.: ?status=ativo&plano=basico)
+    // Lê retorno do Mercado Pago via URL (ex.: ?status=ativo&plano=basico)
     async function aplicarParametrosURL(uid){
       const p = new URLSearchParams(location.search);
       const status = p.get('status'); const plano = p.get('plano');
@@ -296,39 +297,37 @@
       history.replaceState({}, '', location.pathname);
     }
 
-    /* ===== Catálogo: mostra botão "Editar catálogo" quando habilitado ===== */
+    /* ===== Catálogo: botão só para ASSINANTE ATIVO + catálogo ativo ===== */
     async function wireCatalogo(uid){
-      const btn = $('#btnEditarCatalogo');
+      const btn  = $('#btnEditarCatalogo');
       const info = $('#catalogoInfo');
       btn.style.display='none'; info.style.display='none'; info.textContent='';
 
+      // 0) Assinatura precisa estar ATIVA
+      const assSnap = await getDoc(doc(db,'assinaturas',uid));
+      const ass = assSnap.exists() ? assSnap.data() : null;
+      const ativo = ass && String(ass.status||'').toLowerCase()==='ativo';
+      if(!ativo){ return; } // não mostra nada se não for assinante ativo
+
+      // 1) pega slug
       const uSnap = await getDoc(doc(db,'usuarios',uid));
       const u = uSnap.exists()? uSnap.data() : {};
       const slug = (u.catalogoSlug || u.username || '').trim();
+      if(!slug){ return; } // sem slug, sem botão
 
-      // helper: exibe botão
-      const show = (slugToUse, origem='')=>{
-        if(!slugToUse) return;
-        btn.href = `/editar-catalogo.html?c=${encodeURIComponent(slugToUse)}`;
-        btn.style.display='inline-flex';
-        info.textContent = `Catálogo habilitado (${origem}). Slug: ${slugToUse}`;
-        info.style.display='block';
-      };
-
-      // 1) Se usuário já tem flag local
-      if(u.catalogoAtivo && slug){ show(slug,'perfil'); return; }
-
-      // 2) Olha o doc /catalogos/<slug>/meta/config (se souber o slug)
-      if(slug){
-        const cfgRef = doc(db,'catalogos',slug,'meta','config');
-        try {
-          const cfg = await getDoc(cfgRef);
-          if(cfg.exists() && cfg.data().ownerUid===uid && cfg.data().catalogoAtivo===true){
-            show(slug,'config'); return;
-          }
-        } catch {}
+      // 2) confere config do catálogo
+      const cfgRef = doc(db,'catalogos',slug,'meta','config');
+      try {
+        const cfg = await getDoc(cfgRef);
+        if(cfg.exists() && cfg.data().ownerUid===uid && cfg.data().catalogoAtivo===true){
+          btn.href = `/editar-catalogo.html?c=${encodeURIComponent(slug)}`;
+          btn.style.display='inline-flex';
+          info.textContent = `Catálogo habilitado. Slug: ${slug}`;
+          info.style.display='block';
+        }
+      } catch {
+        /* silencia */
       }
-      // 3) nada encontrado -> deixa oculto
     }
 
     /* ===== Auth ===== */
