@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Catálogo • MostreAki</title>
+  <meta name="theme-color" content="#0f766e" />
+  <style>
+    :root{
+      --teal-900:#134e4a; --teal-800:#115e59; --teal-700:#0f766e;
+      --teal-600:#0d9488; --teal-100:#ccfbf1; --bg:#f8fafc; --card:#ffffff;
+      --ink:#0b1324; --muted:#6b7280; --ring:rgba(13,148,136,.25);
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:linear-gradient(180deg,var(--teal-900),#0a2537 45%, #05202a);color:#ecfeff;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial}
+    a{color:inherit;text-decoration:none}
+    header{
+      position:sticky;top:0;z-index:50;
+      background:linear-gradient(90deg,var(--teal-900),var(--teal-700));
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+    .bar{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:16px;padding:14px 16px}
+    .brand{font-weight:800;letter-spacing:.4px;font-size:1.25rem}
+    .spacer{flex:1}
+    main{max-width:1100px;margin:0 auto;padding:28px 16px 80px}
+    .hero{display:flex;flex-direction:column;align-items:center;gap:18px;margin-top:6px}
+    .logoRing{
+      width:140px;height:140px;border-radius:999px;background:#fff;
+      display:grid;place-items:center;position:relative;box-shadow:0 12px 40px rgba(0,0,0,.35), inset 0 0 0 6px var(--ring)
+    }
+    .logoRing img{width:86%;height:86%;object-fit:cover;border-radius:999px}
+    .banner{
+      width:100%;max-width:980px;min-height:160px;border-radius:18px;
+      background:linear-gradient(180deg,#e0f7f4,#c7f1ec);
+      box-shadow: 0 20px 60px rgba(0,0,0,.25);
+      overflow:hidden
+    }
+    .banner img{width:100%;height:100%;object-fit:cover;display:block}
+    h1.title{
+      margin:0;margin-top:8px;font-size:clamp(1.35rem,2.2vw,1.8rem);
+      font-weight:900;letter-spacing:.3px;text-shadow:0 2px 14px rgba(0,0,0,.35)
+    }
+
+    .grid{
+      margin-top:26px;display:grid;gap:16px;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+    }
+    @media (min-width:860px){ .grid{grid-template-columns:repeat(4,minmax(0,1fr));} }
+
+    .card{
+      background:linear-gradient(180deg,#fdfefe,#eef7f6);
+      border:1px solid rgba(3,94,86,.12);
+      border-radius:16px;overflow:hidden;
+      box-shadow:0 12px 30px rgba(0,0,0,.18);
+      transition:transform .15s ease, box-shadow .15s ease;
+    }
+    .card:hover{ transform:translateY(-2px); box-shadow:0 18px 44px rgba(0,0,0,.26); }
+    .imgWrap{aspect-ratio:1/1;background:#e6f6f4;display:grid;place-items:center;overflow:hidden}
+    .imgWrap img{width:100%;height:100%;object-fit:cover}
+    .info{
+      display:flex;align-items:center;gap:12px;padding:10px 12px 12px 12px
+    }
+    .left{flex:1;min-width:0}
+    .preco{font-weight:800;color:var(--ink);font-size:1rem}
+    .qtde{color:var(--muted);font-size:.86rem;margin-top:2px}
+    .zap{
+      border:0;background:#22c55e;color:#052814;
+      width:42px;height:42px;border-radius:999px;cursor:pointer;
+      display:grid;place-items:center;font-weight:900;
+      box-shadow:0 6px 18px rgba(34,197,94,.35);
+    }
+    .zap:active{transform:scale(.97)}
+    .zap svg{width:22px;height:22px;fill:#052814}
+    .muted{
+      margin:22px auto 0;max-width:780px;color:#b6e9e2;
+      text-align:center;font-size:.95rem
+    }
+    footer{
+      color:#bbf7d0;font-size:.8rem;text-align:center;
+      padding:32px 16px;border-top:1px solid rgba(255,255,255,.07)
+    }
+    .warn{
+      background:#fee2e2;color:#7f1d1d;border:1px solid #fecaca;
+      padding:12px 14px;border-radius:12px;margin:18px auto;max-width:840px
+    }
+  </style>
+
+  <!-- Firebase (Compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+</head>
+<body>
+  <header>
+    <div class="bar">
+      <div class="brand" id="empresaBar">MostreAki</div>
+      <div class="spacer"></div>
+      <!-- espaço para um menu no futuro -->
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="logoRing" id="logoRing">
+        <img id="logoImg" alt="Logo" src="" onerror="this.style.display='none'">
+      </div>
+      <h1 class="title" id="tituloEmpresa">Catálogo</h1>
+      <div class="banner" id="bannerBox">
+        <!-- banner opcional -->
+      </div>
+    </section>
+
+    <div id="avisos"></div>
+
+    <section class="grid" id="grid"></section>
+
+    <p class="muted" id="rodapeObs">
+      Clique no ícone do WhatsApp em qualquer item para falar com o vendedor.
+    </p>
+  </main>
+
+  <footer>© <span id="ano"></span> MostreAki · Catálogo</footer>
+
+  <script>
+    // ======= CONFIGURAR SE PRECISAR =======
+    // Use sempre o mesmo config das suas outras páginas
+    const firebaseConfig = {
+      apiKey: "SUA_API_KEY",
+      authDomain: "SEU_AUTH_DOMAIN",
+      projectId: "SEU_PROJECT_ID",
+      storageBucket: "SEU_BUCKET",
+      messagingSenderId: "SEU_SENDER",
+      appId: "SEU_APP_ID"
+    };
+    if (firebase.apps.length === 0) firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // Slug fixo deste arquivo (pode trocar para ler por parâmetro se quiser)
+    const SLUG = 'almanyx'; // este arquivo é o catalogo-almanyx.html
+
+    const $ = sel => document.querySelector(sel);
+    const avisos = $('#avisos');
+    const grid = $('#grid');
+
+    const moedaBRL = (v) => {
+      if (v === null || v === undefined || v === '') return '—';
+      const n = typeof v === 'string' ? Number(v.toString().replace(',','.')) : Number(v);
+      if (Number.isFinite(n)) return n.toLocaleString('pt-BR', { style:'currency', currency:'BRL' });
+      return v;
+    };
+
+    const waLink = (phone, text) => {
+      if(!phone) return null;
+      let p = phone.toString().replace(/\D/g,'');
+      if (p.startsWith('0')) p = p.slice(1);
+      // se não veio DDI, assume Brasil (55)
+      if (p.length <= 11 && !p.startsWith('55')) p = '55' + p;
+      return `https://wa.me/${p}?text=${encodeURIComponent(text)}`;
+    };
+
+    async function carregar(){
+      try{
+        // 1) Lê meta/config
+        const cfgRef = db.doc(`catalogos/${SLUG}/meta/config`);
+        const cfgSnap = await cfgRef.get();
+        if (!cfgSnap.exists){
+          avisos.innerHTML = `<div class="warn">Catálogo não encontrado.</div>`;
+          return;
+        }
+        const cfg = cfgSnap.data();
+
+        if (!cfg.catalogoAtivo){
+          avisos.innerHTML = `<div class="warn">Este catálogo está desativado no momento.</div>`;
+          return;
+        }
+
+        // Header/branding
+        const nome = cfg.nomeEmpresa || SLUG;
+        document.title = `Catálogo • ${nome}`;
+        $('#empresaBar').textContent = nome;
+        $('#tituloEmpresa').textContent = nome;
+        if (cfg.logoUrl){
+          $('#logoImg').src = cfg.logoUrl;
+          $('#logoImg').style.display = 'block';
+        }
+        if (cfg.bannerUrl){
+          const img = new Image();
+          img.alt = 'Banner';
+          img.src = cfg.bannerUrl;
+          img.loading = 'lazy';
+          $('#bannerBox').appendChild(img);
+        }
+
+        // 2) Define WhatsApp (meta.whats ou usuarios/{ownerUid}.whats)
+        let whats = (cfg.whats || '').toString();
+        if (!whats && cfg.ownerUid){
+          const uSnap = await db.doc(`usuarios/${cfg.ownerUid}`).get();
+          if (uSnap.exists && uSnap.data().whats) whats = uSnap.data().whats.toString();
+        }
+
+        // 3) Lê itens
+        const itensRef = db.collection(`catalogos/${SLUG}/itens`).orderBy('ordem','asc');
+        const itensSnap = await itensRef.get();
+
+        if (itensSnap.empty){
+          avisos.innerHTML = `<div class="warn">Ainda não há itens publicados neste catálogo.</div>`;
+          return;
+        }
+
+        const frag = document.createDocumentFragment();
+        let idx = 0;
+        itensSnap.forEach(doc=>{
+          const d = doc.data();
+          if (d.ativo === false) return; // pular inativos
+
+          idx++;
+          const idVis = d.titulo ? d.titulo : `Item ${idx}`;
+          const preco = moedaBRL(d.preco);
+          const qtd = (d.qtde || d.qtde === 0) ? d.qtde : '—';
+
+          const card = document.createElement('div');
+          card.className = 'card';
+          card.innerHTML = `
+            <div class="imgWrap">
+              <img loading="lazy" alt="${idVis}" src="${d.imgUrl || ''}" onerror="this.src='https://cdn.jsdelivr.net/gh/placeholderjs/placeholder-images@latest/512x512.png';">
+            </div>
+            <div class="info">
+              <div class="left">
+                <div class="preco">${preco}</div>
+                <div class="qtde">Estoque: ${qtd}</div>
+              </div>
+              <button class="zap" aria-label="WhatsApp">
+                <svg viewBox="0 0 32 32" role="img" aria-hidden="true"><path d="M19.1 17.1c-.3-.2-1.7-.8-2-.9-.3-.1-.5-.2-.7.2-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.2-1.1-.4-2-1.2-.7-.6-1.2-1.4-1.3-1.6-.1-.3 0-.4.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2.1-.4 0-.6-.1-.2-.7-1.7-.9-2.3-.2-.5-.5-.4-.7-.4h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.7 0 1.6 1.1 3.1 1.2 3.3.1.2 2.2 3.4 5.4 4.7.8.4 1.4.6 1.9.8.8.3 1.6.3 2.2.2.7-.1 2- .8 2.2-1.6.3-.8.3-1.5.2-1.6 0-.1-.2-.1-.4-.2zM16 3C9.9 3 5 7.9 5 14c0 2.4.8 4.6 2.1 6.3L6 29l8-1.9c1.5.4 3.1.7 4.7.7 6.1 0 11-4.9 11-11S22.1 3 16 3z"/></svg>
+              </button>
+            </div>
+          `;
+          // ação do zap
+          card.querySelector('.zap').addEventListener('click', ()=>{
+            const msg = `Olá! Tenho interesse no *${idVis}* do catálogo ${nome}.`;
+            const link = waLink(whats, msg);
+            if (!link){
+              alert('WhatsApp não configurado para este catálogo.');
+              return;
+            }
+            window.open(link, '_blank');
+          });
+
+          frag.appendChild(card);
+        });
+
+        grid.appendChild(frag);
+        $('#ano').textContent = new Date().getFullYear();
+
+      }catch(err){
+        console.error(err);
+        avisos.innerHTML = `<div class="warn">Não foi possível carregar o catálogo. Tente novamente mais tarde.</div>`;
+      }
+    }
+
+    carregar();
+  </script>
+</body>
+</html>
