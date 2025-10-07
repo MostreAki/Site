@@ -178,7 +178,7 @@
       const start = page * PER_PAGE;
       const slice = itens.slice(start, start + PER_PAGE);
 
-      const gridEl = document.getElementById('grid'); // pega sempre depois do DOM
+      const gridEl = document.getElementById('grid');
       if(!gridEl){ return; }
 
       if(slice.length === 0){
@@ -216,23 +216,26 @@
     function goPrev(){ if(page>0){ page--; renderPage(); window.scrollTo({top:0,behavior:'smooth'}); } }
     function goNext(){ if(page < totalPages()-1){ page++; renderPage(); window.scrollTo({top:0,behavior:'smooth'}); } }
 
-    // >>> Expor para os botões com onclick
+    // Expor para os botões com onclick
     window.goPrev = goPrev;
     window.goNext = goNext;
 
-    // ===== Carregamento
-    async function carregar(){
+    // Inserir área de avisos (funciona mesmo se o DOM já estiver pronto)
+    function insertAvisos(){
       const avisos = document.createElement('div');
       avisos.id = 'avisos';
-      document.addEventListener('DOMContentLoaded', ()=> {
-        const anchor = document.getElementById('pagerTop');
-        if (anchor && anchor.parentNode) {
-          anchor.parentNode.insertBefore(avisos, anchor);
-        }
-        // redundância: listeners também via JS (além do onclick no HTML)
-        document.querySelectorAll('.btnPrev').forEach(btn=> btn.addEventListener('click', goPrev));
-        document.querySelectorAll('.btnNext').forEach(btn=> btn.addEventListener('click', goNext));
-      });
+      const anchor = document.getElementById('pagerTop');
+      if (anchor && anchor.parentNode) anchor.parentNode.insertBefore(avisos, anchor);
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', insertAvisos);
+    } else {
+      insertAvisos();
+    }
+
+    // ===== Carregamento
+    async function carregar(){
+      const avisos = document.getElementById('avisos') || document.body;
 
       if(!slug){
         avisos.innerHTML = `<div class="warn">Catálogo não encontrado. Informe o slug (?c=slug).</div>`;
@@ -309,7 +312,7 @@
           idx++;
           const nomeItem = d.nome || `Item ${idx}`;
 
-          // Preço → em BRL (aceita precoCentavos ou preco numérico/string)
+          // Preço → em BRL
           let precoBRL = '—';
           if (typeof d.precoCentavos === 'number') {
             precoBRL = (d.precoCentavos/100).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
