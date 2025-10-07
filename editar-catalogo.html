@@ -100,14 +100,15 @@
           <label><input id="chkAtivo" type="checkbox"> Catálogo ativo</label>
           <span id="statusSave" class="hint"></span>
         </div>
+        <p id="hintLimite" class="hint" style="margin-top:8px"></p>
         <p class="hint" style="margin-top:8px">
-          As imagens do catálogo são gerenciadas por você (GitHub/host estático). Aqui o cliente edita apenas <b>nome</b>, <b>preço</b> e <b>quantidade</b>.
+          As imagens são hospedadas por você (ex.: GitHub). Aqui o cliente edita <b>nome</b>, <b>preço</b> e <b>quantidade</b>.
         </p>
       </div>
     </section>
 
     <section class="card">
-      <div class="head">Itens do Catálogo (1–30)</div>
+      <div class="head">Itens do Catálogo</div>
       <div class="body">
         <div id="grid" class="grid"></div>
       </div>
@@ -175,22 +176,56 @@
     const fmtBRL = (cents)=> 'R$ ' + (cents/100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const parseBRL = (s)=>{
       if(s==null) return 0;
-      const only = String(s).replace(/[^\d,.-]/g,'').replace(/\./g,'').replace(',','.');
+      const only = String(s).replace(/[^\d,,-.]/g,'').replace(/\./g,'').replace(',','.');
       const n = parseFloat(only);
       if(isNaN(n)) return 0;
       return Math.round(n*100);
     };
 
     // ===== Query param (slug) =====
-    const params = new URLSearchParams(location.search);
-    const slug = (params.get('c') || '').trim();
+    function getSlug(){
+      const u = new URL(location.href);
+      return u.searchParams.get('c') || u.searchParams.get('slug') || '';
+    }
+    const slug = getSlug();
     $('#slugLabel').textContent = slug || '—';
     $('#publicLink').href = slug ? `/catalogo-template.html?c=${encodeURIComponent(slug)}` : '#';
 
-    // ===== UI builder (30 itens) =====
-    function buildGrid(){
+    // ===== Plano/limite =====
+    function normalizePlano(p=''){
+      return p.normalize('NFD').replace(/\p{Diacritic}/gu,'').toLowerCase();
+    }
+    function maxByPlano(plano){
+      const p = normalizePlano(plano||'');
+      if (p.includes('avancado')) return 100;
+      if (p.includes('intermedi') || p.includes('essencial')) return 60;
+      return 30;
+    }
+    async function resolveLimiteAssinatura(ownerUid){
+      const s = await getDoc(doc(db,'assinaturas',ownerUid));
+      if(!s.exists()) return { ativo:false, limite:30, plano:'sem-plano' };
+      const d = s.data();
+      const status = String(d.status||'').toLowerCase();
+      const plano  = d.plano || d.planoAtual?.nome || 'basico';
+      return { ativo: status==='ativo', limite: maxByPlano(plano), plano };
+    }
+
+    // ===== Permissão: dono OU editor =====
+    async function exigirDonoOuEditor(uid, slug){
+      const refCfg = doc(db,'catalogos',slug,'meta','config');
+      const s = await getDoc(refCfg);
+      if(!s.exists()) throw new Error('CONFIG_NOT_FOUND');
+      const data = s.data();
+      const ehDono = data.ownerUid === uid;
+      const ehEditor = Array.isArray(data.editores) && data.editores.includes(uid);
+      if(!(ehDono || ehEditor)) throw new Error('NOT_OWNER');
+      return data; // retorna config
+    }
+
+    // ===== UI builder =====
+    function buildGrid(limite){
       const grid = $('#grid'); grid.innerHTML='';
-      for(let i=1;i<=30;i++){
+      for(let i=1;i<=limite;i++){
         const id = String(i).padStart(2,'0');
         const card = document.createElement('div');
         card.className = 'item';
@@ -199,7 +234,7 @@
           <div class="row">
             <div>
               <label>Nome</label>
-              <input type="text" id="nome_${id}" placeholder="Ex.: Moletom MostreAki">
+              <input type="text" id="nome_${id}" placeholder="Ex.: Produto ${id}">
             </div>
             <div>
               <label>Preço</label>
@@ -215,18 +250,18 @@
       }
     }
 
-    // ===== Carrega itens existentes =====
-    async function carregarItens(slug){
+    async function carregarItens(slug, limite){
       const snap = await getDocs(collection(db, 'catalogos', slug, 'itens'));
       const docs = {};
       snap.forEach(d=> docs[d.id] = d.data());
-      for(let i=1;i<=30;i++){
+      for(let i=1;i<=limite;i++){
         const id = String(i).padStart(2,'0');
         const d = docs[id];
         if(d){
           const nome = d.nome || '';
-          const qtd  = (typeof d.quantidade === 'number') ? d.quantidade : '';
-          const preco= (typeof d.precoCentavos === 'number') ? fmtBRL(d.precoCentavos) : '';
+          const qtd  = (typeof d.quantidade === 'number') ? d.quantidade : (typeof d.qtde==='number'? d.qtde: '');
+          const preco= (typeof d.precoCentavos === 'number') ? fmtBRL(d.precoCentavos)
+                       : (typeof d.preco === 'number') ? fmtBRL(Math.round(d.preco*100)) : '';
           const nomeEl = document.getElementById('nome_'+id);
           const qtdEl  = document.getElementById('qtd_'+id);
           const precoEl= document.getElementById('preco_'+id);
@@ -237,13 +272,13 @@
       }
     }
 
-    // ===== Salvar tudo (batch) =====
-    async function salvarTudo(slug){
+    async function salvarTudo(slug, limite){
       const status = document.getElementById('statusSave');
       status.textContent = 'Salvando...';
       try{
         const batch = writeBatch(db);
-        for(let i=1;i<=30;i++){
+        let count = 0;
+        for(let i=1;i<=limite;i++){
           const id = String(i).padStart(2,'0');
           const nome  = (document.getElementById('nome_'+id)?.value || '').trim();
           const qtd   = parseInt(document.getElementById('qtd_'+id)?.value || '0', 10);
@@ -257,24 +292,26 @@
             atualizadoEm: serverTimestamp()
           };
           batch.set(ref, payload, { merge:true });
+          count++;
         }
         await batch.commit();
-        status.textContent = 'Salvo com sucesso!';
-        setTimeout(()=> status.textContent='', 2500);
+        status.textContent = `Salvo com sucesso (${count}/${limite} itens).`;
+        status.className = 'status-ok';
+        setTimeout(()=> { status.textContent=''; status.className='hint'; }, 2500);
       }catch(e){
         console.error(e);
-        status.textContent = 'Falha ao salvar. Verifique as permissões das regras.';
+        status.textContent = 'Falha ao salvar. Verifique permissões das regras.';
         status.className = 'status-err';
       }
     }
 
-    // ===== Carrega/Salva meta (ativo) =====
     async function carregarMeta(slug){
       const ref = doc(db,'catalogos',slug,'meta','config');
       const s = await getDoc(ref);
       if(s.exists()){
         $('#chkAtivo').checked = !!s.data().catalogoAtivo;
       }
+      return s.exists()? s.data() : {};
     }
     async function salvarMeta(slug, ownerUid){
       const ref = doc(db,'catalogos',slug,'meta','config');
@@ -285,64 +322,57 @@
       }, { merge:true });
     }
 
-    // ===== Guardião: só o dono pode editar =====
-    async function exigirDono(uid, slug){
-      const ref = doc(db,'catalogos',slug,'meta','config');
-      const s = await getDoc(ref);
-      if(!s.exists()) throw new Error('CONFIG_NOT_FOUND');
-      const data = s.data();
-      if(data.ownerUid !== uid){
-        throw new Error('NOT_OWNER');
-      }
+    function bloquearUI(msg){
+      document.querySelector('main.container').innerHTML = `
+        <div class="card"><div class="body status-err">${msg}</div></div>`;
     }
 
-    // ===== Auth flow =====
+    // ===== Flow Auth =====
     onAuthStateChanged(auth, async (user)=>{
       const a = $('#authText');
       if(!user){
         $('#alertaLogin').style.display='block';
         document.querySelector('main.container').style.display='none';
+        localStorage.removeItem('fotoPerfil');
         setTimeout(()=> location='/index.html', 3500);
         return;
       }
       a.textContent = 'Sair';
-      a.onclick = async()=>{ await signOut(auth); localStorage.removeItem('fotoPerfil'); location='/index.html'; };
+      a.onclick = async () => { await signOut(auth); localStorage.removeItem('fotoPerfil'); location='/index.html'; };
 
-      // avatar
       await prefetchFoto(user.uid);
 
-      // slug obrigatório
       if(!slug){
-        document.querySelector('main.container').innerHTML = `
-          <div class="card"><div class="body status-err">
-            Catálogo não informado. Acesse por <code>/editar-catalogo.html?c=&lt;slug&gt;</code>
-          </div></div>`;
+        bloquearUI('Catálogo não informado. Acesse por <code>/editar-catalogo.html?c=&lt;slug&gt;</code>.');
         return;
       }
 
       try{
-        // permissão
-        await exigirDono(user.uid, slug);
+        // Permissão (dono ou editor)
+        const metaCfg = await exigirDonoOuEditor(user.uid, slug);
 
-        // UI builder
-        buildGrid();
+        // Assinatura do dono define limite
+        const { ativo, limite, plano } = await resolveLimiteAssinatura(metaCfg.ownerUid);
+        if(!ativo){
+          bloquearUI('Sua assinatura não está ativa. Para editar o catálogo, reative seu plano.');
+          return;
+        }
+        document.getElementById('hintLimite').textContent = `Seu plano (${plano}) permite até ${limite} itens.`;
 
-        // meta + itens
+        // UI
+        buildGrid(limite);
         await carregarMeta(slug);
-        await carregarItens(slug);
+        await carregarItens(slug, limite);
 
-        // handlers
-        document.getElementById('btnSalvarTudo').onclick = () => salvarTudo(slug);
-        document.getElementById('chkAtivo').addEventListener('change', ()=> salvarMeta(slug, user.uid));
+        // Handlers
+        document.getElementById('btnSalvarTudo').onclick = () => salvarTudo(slug, limite);
+        document.getElementById('chkAtivo').addEventListener('change', ()=> salvarMeta(slug, metaCfg.ownerUid));
 
       }catch(e){
         console.error(e);
-        let msg = 'Erro ao carregar. ';
-        if(e.message==='NOT_OWNER') msg += 'Você não tem permissão para editar este catálogo.';
-        else if(e.message==='CONFIG_NOT_FOUND') msg += 'Configuração não encontrada. Crie /catalogos/'+slug+'/meta/config.';
-        else msg += 'Verifique as regras do Firestore.';
-        document.querySelector('main.container').innerHTML = `
-          <div class="card"><div class="body status-err">${msg}</div></div>`;
+        if(e.message==='NOT_OWNER') bloquearUI('Você não tem permissão para editar este catálogo.');
+        else if(e.message==='CONFIG_NOT_FOUND') bloquearUI('Configuração não encontrada. Crie /catalogos/'+slug+'/meta/config.');
+        else bloquearUI('Erro ao carregar. Verifique as regras do Firestore.');
       }
     });
   </script>
