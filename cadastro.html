@@ -1,437 +1,551 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Cadastro – MostreAki</title>
-<style>
-  :root{
-    --brand:#15b0af; --brandLight:#c2e7df; --accent:#FA1E39; --ink:#063b39;
-    --bg:#f4f7f7; --card:#ffffff; --line:#e6efed;
-  }
-  *{box-sizing:border-box}
-  body{
-    font-family:Arial, sans-serif;background:var(--bg);
-    min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px;
-  }
-  .card{
-    background:var(--card); border-radius:16px; width:100%; max-width:720px;
-    box-shadow:0 10px 40px rgba(0,0,0,.08); padding:24px 22px; border:2px solid var(--brandLight);
-  }
-  .card h1{margin:0 0 4px; color:#0f6f6e; font-size:1.35rem}
-  .sub{color:#4a6665; font-size:.92rem; margin-bottom:16px}
-  .section-title{margin-top:16px; font-weight:bold; color:#0f6f6e}
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Catálogo • MostreAki</title>
+  <meta name="theme-color" content="#0f766e" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --teal-900:#134e4a; --teal-800:#115e59; --teal-700:#0f766e;
+      --teal-600:#0d9488; --teal-100:#ccfbf1;
+      --ink:#0b1324; --muted:#6b7280;
+      --bg:#061a22; --panel:#0a2537; --card:#ffffff;
+      --ring:rgba(13,148,136,.25); --brand:#16b0af; --ok:#22c55e;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:linear-gradient(180deg,var(--teal-900),#0a2537 45%, #05202a);color:#ecfeff;font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Arial}
+    a{color:inherit;text-decoration:none}
 
-  .form-grid{display:grid; gap:12px}
-  @media (min-width:720px){ .cols-2{ grid-template-columns:1fr 1fr; } .cols-3{ grid-template-columns:1fr 1fr 1fr; } }
+    header{
+      position:sticky;top:0;z-index:50;
+      background:linear-gradient(90deg,var(--teal-900),var(--teal-700));
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+    .bar{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:16px;padding:14px 16px}
+    .brand{font-weight:800;letter-spacing:.4px;font-size:1.1rem}
+    .spacer{flex:1}
 
-  .radio-row{display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin:6px 0 2px}
+    main{max-width:1100px;margin:0 auto;padding:28px 16px 90px}
 
-  .field{
-    position:relative; background:#fff; border:1.5px solid var(--line); border-radius:12px; padding:12px 12px 10px;
-  }
-  .field:focus-within{ border-color:var(--brand); box-shadow:0 0 0 3px rgba(21,176,175,.12); }
-  .field input, .field select{
-    width:100%; border:0; outline:0; font-size:1rem; background:transparent; padding:10px 0 2px; color:#233;
-  }
-  .field label{
-    position:absolute; left:12px; top:10px; color:#667; font-size:.95rem; pointer-events:none;
-    transition: all .18s ease;
-    background:#fff; padding:0 6px; border-radius:6px; transform-origin:left top;
-  }
-  .field.focus label, .field.has-value label{ top:-8px; font-size:.78rem; color:var(--brand); }
+    .hero{display:flex;flex-direction:column;align-items:center;gap:18px;margin-top:6px}
+    .logoRing{
+      width:140px;height:140px;border-radius:999px;background:#fff;
+      display:grid;place-items:center;position:relative;box-shadow:0 12px 40px rgba(0,0,0,.35), inset 0 0 0 6px var(--ring)
+    }
+    .logoRing img{width:86%;height:86%;object-fit:cover;border-radius:999px}
+    .banner{
+      width:100%;max-width:980px;min-height:160px;border-radius:18px;
+      background:linear-gradient(180deg,#e0f7f4,#c7f1ec);
+      box-shadow: 0 20px 60px rgba(0,0,0,.25);
+      overflow:hidden
+    }
+    .banner img, .banner video{width:100%;height:100%;object-fit:cover;display:block}
 
-  .hint{font-size:.82rem; color:#667; margin-top:6px}
+    h1.title{
+      margin:0;margin-top:8px;font-size:clamp(1.35rem,2.2vw,1.9rem);
+      font-weight:900;letter-spacing:.3px;text-shadow:0 2px 14px rgba(0,0,0,.35)
+    }
 
-  button,.btn{width:100%; margin-top:12px; padding:12px; border-radius:12px; border:0; font-weight:bold; cursor:pointer}
-  .primary{background:var(--brand); color:#fff}
-  .muted{font-size:.92rem; color:#666; margin-top:10px}
-  a{color:var(--brand); text-decoration:none; font-weight:bold}
+    .pager{
+      margin-top:18px;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap
+    }
+    .navbtn{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:10px 14px;border-radius:12px;border:2px solid rgba(255,255,255,.18);
+      background:rgba(255,255,255,.06);color:#d1fae5;font-weight:800;cursor:pointer
+    }
+    .navbtn[disabled]{opacity:.4;cursor:not-allowed}
+    .navbtn svg{width:18px;height:18px;fill:#d1fae5}
+    .pageinfo{font-weight:700;color:#b6e9e2}
 
-  /* Olho de senha */
-  .pwd-wrap{position:relative}
-  .pwd-wrap input{padding-right:16%}
-  .pwd-toggle{
-    position:absolute; right:8px; top:20%;
-    width:36px; height:36px; display:flex; align-items:center; justify-content:center;
-    background:#fff; border:1px solid #ddd; border-radius:6px; cursor:pointer;
-    font-size:18px; line-height:1; color:#444;
-  }
-  .pwd-toggle:active{transform:scale(.98)}
+    /* === NÚMEROS DE PÁGINA (TOP) === */
+    .pagenums{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin:8px 0 0}
+    .pagenums button{
+      min-width:36px; height:36px; border-radius:10px; border:2px solid rgba(255,255,255,.18);
+      background:rgba(255,255,255,.06); color:#e7fffb; font-weight:800; cursor:pointer
+    }
+    .pagenums button.active{background:var(--brand); color:#05202a; border-color:rgba(0,0,0,.0)}
+    .pagenums button:active{transform:scale(.96)}
 
-  /* POPUP brand */
-  .alert-bg{position:fixed; inset:0; background:rgba(0,0,0,.55); display:none; align-items:center; justify-content:center; z-index:9999; padding:20px}
-  .alert-card{background:#fff; border-radius:16px; overflow:hidden; max-width:520px; width:100%; box-shadow:0 22px 70px rgba(0,0,0,.25); border:2px solid var(--brandLight)}
-  .alert-head{background:linear-gradient(90deg,var(--brandLight),var(--brand)); padding:14px 16px; display:flex; align-items:center; gap:10px}
-  .alert-dot{width:10px; height:10px; border-radius:50%; background:var(--accent)}
-  .alert-title{color:var(--ink); font-weight:bold}
-  .alert-body{padding:16px; color:#2b2b2b}
-  .alert-actions{display:flex; gap:10px; flex-wrap:wrap; padding:0 16px 16px}
-  .btn-solid{background:var(--brand); color:#fff}
-  .btn-ghost{background:#fff; border:2px solid var(--brand); color:#var(--brand)}
-</style>
+    .grid{
+      margin-top:18px;display:grid;gap:16px;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+    }
+    @media (min-width:860px){ .grid{grid-template-columns:repeat(4,minmax(0,1fr));} }
+
+    .card{
+      background:linear-gradient(180deg,#fdfefe,#eef7f6);
+      border:1px solid rgba(3,94,86,.12);
+      border-radius:16px;overflow:hidden;
+      box-shadow:0 12px 30px rgba(0,0,0,.18);
+      transition:transform .15s ease, box-shadow .15s ease;
+    }
+    .card:hover{ transform:translateY(-2px); box-shadow:0 18px 44px rgba(0,0,0,.26); }
+    .imgWrap{aspect-ratio:1/1;background:#e6f6f4;display:grid;place-items:center;overflow:hidden;cursor:zoom-in}
+    .imgWrap img{width:100%;height:100%;object-fit:cover}
+    .info{display:flex;align-items:center;gap:12px;padding:10px 12px 12px 12px}
+    .left{flex:1;min-width:0}
+    .nome{font-weight:700;color:#0c2d2b;margin-bottom:2px;font-size:.98rem}
+    .preco{font-weight:800;color:#0c2d2b;font-size:1rem}
+    .qtde{color:#476f6c;font-size:.86rem;margin-top:2px}
+    .zap{
+      border:0;background:var(--ok);color:#052814;
+      width:42px;height:42px;border-radius:999px;cursor:pointer;
+      display:grid;place-items:center;font-weight:900;
+      box-shadow:0 6px 18px rgba(34,197,94,.35);
+    }
+    .zap:active{transform:scale(.97)}
+    .zap svg{width:22px;height:22px;fill:#052814}
+
+    /* FAB do WhatsApp (flutuante) */
+    .wa-float{
+      position:fixed; right:16px; bottom:16px; z-index:60;
+      width:56px; height:56px; border-radius:999px;
+      background:var(--ok); display:none; align-items:center; justify-content:center;
+      box-shadow:0 12px 32px rgba(34,197,94,.35);
+    }
+    .wa-float:active{ transform:scale(.97) }
+    .wa-float svg{ width:28px; height:28px; fill:#052814 }
+    @media (min-width:860px){
+      .wa-float{ right:24px; bottom:24px; width:64px; height:64px }
+      .wa-float svg{ width:30px; height:30px }
+    }
+
+    .muted{
+      margin:22px auto 0;max-width:780px;color:#b6e9e2;
+      text-align:center;font-size:.95rem
+    }
+    .warn{
+      background:#fee2e2;color:#7f1d1d;border:1px solid #fecaca;
+      padding:12px 14px;border-radius:12px;margin:18px auto;max-width:840px
+    }
+
+    /* === Lightbox (popup de imagem) === */
+    .lb-bg{
+      position:fixed; inset:0; z-index:70;
+      display:none; align-items:center; justify-content:center;
+      background:rgba(0,0,0,.7); backdrop-filter:saturate(120%) blur(2px);
+      padding:16px;
+    }
+    .lb-card{
+      position:relative; max-width:96vw; max-height:90vh; background:#031d24; border:1px solid rgba(255,255,255,.12);
+      border-radius:16px; box-shadow:0 20px 80px rgba(0,0,0,.55); padding:10px;
+    }
+    .lb-img{
+      display:block; max-width:92vw; max-height:82vh; width:auto; height:auto; object-fit:contain; border-radius:10px;
+      background:#0a2a33;
+    }
+    .lb-close{
+      position:absolute; top:8px; right:8px; border:0; width:36px; height:36px; border-radius:10px;
+      background:rgba(255,255,255,.12); color:#e8ffff; cursor:pointer; font-size:22px; line-height:36px;
+    }
+    .lb-close:active{ transform:scale(.95) }
+
+    /* === SOCIALS (antes do rodapé) === */
+    .socials{
+      margin:32px auto 10px; max-width:980px; padding:18px;
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid rgba(255,255,255,.12); border-radius:16px;
+    }
+    .socials h3{
+      margin:0 0 12px; font-size:1rem; letter-spacing:.2px; color:#d9fffb; text-align:center;
+    }
+    .social-grid{
+      display:flex; align-items:center; justify-content:center; gap:16px; flex-wrap:wrap;
+    }
+    .s-cell{
+      width:72px; height:72px; border-radius:14px;
+      background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.14);
+      display:grid; place-items:center; padding:10px; cursor:pointer;
+      transition:transform .12s ease, box-shadow .12s ease;
+    }
+    .s-cell:hover{ transform:translateY(-2px); box-shadow:0 10px 28px rgba(0,0,0,.25) }
+    .s-cell img{max-width:100%; max-height:100%; object-fit:contain}
+    .s-cell svg{width:36px; height:36px; fill:#d1fae5}
+
+    footer{
+      color:#bbf7d0;font-size:.8rem;text-align:center;
+      padding:32px 16px;border-top:1px solid rgba(255,255,255,.07)
+    }
+  </style>
+
+  <!-- Firebase (modular) -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
+    import { getFirestore, doc, getDoc, collection, query, orderBy, onSnapshot, limit as qLimit } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+
+    // === Config Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
+      authDomain: "mostreaki-2025.firebaseapp.com",
+      projectId: "mostreaki-2025",
+      storageBucket: "mostreaki-2025.firebasestorage.app",
+      messagingSenderId: "748712068097",
+      appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
+    };
+    const app = initializeApp(firebaseConfig);
+    const db  = getFirestore(app);
+
+    // ===== utils =====
+    const $ = s => document.querySelector(s);
+    function getSlug() {
+      const m = location.pathname.match(/catalogo-([^/.]+)\.html$/);
+      if (m) return m[1];
+      const u = new URL(location.href);
+      return u.searchParams.get('c') || u.searchParams.get('slug') || '';
+    }
+
+    const slug = getSlug();
+
+    // placeholder base64 (quadrado claro)
+    const PLACEHOLDER = 'data:image/svg+xml;utf8,' + encodeURIComponent(
+      `<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512">
+        <rect width="100%" height="100%" fill="#e6f6f4"/>
+        <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" fill="#7fb4ad" font-size="28" font-family="Arial">sem imagem</text>
+      </svg>`
+    );
+
+    function waLink(phone, text) {
+      if(!phone) return null;
+      let p = String(phone).replace(/\D/g,'');
+      if (p.startsWith('0')) p = p.slice(1);
+      if (p.length <= 11 && !p.startsWith('55')) p = '55' + p;
+      return `https://wa.me/${p}?text=${encodeURIComponent(text)}`;
+    }
+
+    // ===== Estado de paginação
+    const PER_PAGE = 10;
+    let itens = [];        // array normalizado dos itens ativos
+    let page = 0;          // 0-based
+
+    function totalPages(){ return Math.max(1, Math.ceil(itens.length / PER_PAGE)); }
+    function clampPage(){ page = Math.min(page, totalPages()-1); if(page<0) page=0; }
+
+    function goPrev(){ if(page>0){ page--; renderPage(); window.scrollTo({top:0,behavior:'smooth'}); } }
+    function goNext(){ if(page < totalPages()-1){ page++; renderPage(); window.scrollTo({top:0,behavior:'smooth'}); } }
+    window.goPrev = goPrev;
+    window.goNext = goNext;
+
+    // === NÚMEROS DE PÁGINA (render dinâmico)
+    function renderPageNumbers(){
+      const cont = $('#pagerNumsTop');
+      if (!cont) return;
+      const t = totalPages();
+      let html = '';
+      for (let i=0;i<t;i++){
+        const active = (i===page) ? 'active' : '';
+        html += `<button type="button" class="${active}" data-pg="${i+1}" aria-label="Ir para página ${i+1}">${i+1}</button>`;
+      }
+      cont.innerHTML = html;
+      cont.querySelectorAll('button').forEach(btn=>{
+        btn.onclick = () => {
+          const n = parseInt(btn.dataset.pg,10)-1;
+          if (!Number.isNaN(n)){ page = n; renderPage(); window.scrollTo({top:0,behavior:'smooth'}); }
+        };
+      });
+    }
+
+    function renderPage(){
+      clampPage();
+      const start = page * PER_PAGE;
+      const slice = itens.slice(start, start + PER_PAGE);
+
+      const gridEl = document.getElementById('grid');
+      if(!gridEl){ return; }
+
+      if(slice.length === 0){
+        gridEl.innerHTML = `<div class="warn" style="grid-column:1/-1">Ainda não há itens publicados neste catálogo.</div>`;
+      } else {
+        gridEl.innerHTML = slice.map(d => `
+          <article class="card">
+            <div class="imgWrap">
+              <img loading="lazy" alt="${d.nome}" src="${d.img}" data-full="${d.full||d.img}" onerror="this.src='${PLACEHOLDER}'">
+            </div>
+            <div class="info">
+              <div class="left">
+                <div class="nome">${d.nome}</div>
+                <div class="preco">${d.precoBRL}</div>
+                <div class="qtde">Estoque: ${d.qtd}</div>
+              </div>
+              ${d.zap ? `
+              <button class="zap" aria-label="WhatsApp" onclick="window.open('${d.zap}','_blank')">
+                <svg viewBox="0 0 32 32" role="img" aria-hidden="true"><path d="M19.1 17.1c-.3-.2-1.7-.8-2-.9-.3-.1-.5-.2-.7.2-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.2-1.1-.4-2-1.2-.7-.6-1.2-1.4-1.3-1.6-.1-.3 0-.4.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2.1-.4 0-.6-.1-.2-.7-1.7-.9-2.3-.2-.5-.5-.4-.7-.4h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.7 0 1.6 1.1 3.1 1.2 3.3.1.2 2.2 3.4 5.4 4.7.8.4 1.4.6 1.9.8.8.3 1.6.3 2.2.2.7-.1 2-.8 2.2-1.6.3-.8.3-1.5.2-1.6 0-.1-.2-.1-.4-.2zM16 3C9.9 3 5 7.9 5 14c0 2.4.8 4.6 2.1 6.3L6 29l8-1.9c1.5.4 3.1.7 4.7.7 6.1 0 11-4.9 11-11S22.1 3 16 3z"/></svg>
+              </button>` : ``}
+            </div>
+          </article>
+        `).join('');
+      }
+
+      // atualizar pagers
+      document.querySelectorAll('.pageinfo').forEach(el=>{
+        el.textContent = `Página ${Math.min(page+1,totalPages())} de ${totalPages()}`;
+      });
+      document.querySelectorAll('.btnPrev').forEach(b=> b.disabled = (page<=0));
+      document.querySelectorAll('.btnNext').forEach(b=> b.disabled = (page>=totalPages()-1));
+
+      // números (top)
+      renderPageNumbers();
+    }
+
+    // ===== Lightbox
+    const lbBg   = document.getElementById('lbBg');
+    const lbImg  = document.getElementById('lbImg');
+    const lbBtn  = document.getElementById('lbClose');
+
+    function openLightbox(src, alt){
+      if(!src) return;
+      lbImg.src = src;
+      lbImg.alt = alt || '';
+      lbBg.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+    function closeLightbox(){
+      lbBg.style.display = 'none';
+      lbImg.src = '';
+      document.body.style.overflow = '';
+    }
+    lbBtn.addEventListener('click', closeLightbox);
+    lbBg.addEventListener('click', (e)=>{ if(e.target === lbBg) closeLightbox(); });
+    window.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeLightbox(); });
+    document.addEventListener('click', (e)=>{
+      const img = e.target.closest('.imgWrap img');
+      if (!img) return;
+      const full = img.getAttribute('data-full') || img.src;
+      openLightbox(full, img.alt || '');
+    });
+
+    // ===== Carregamento
+    async function carregar(){
+      const avisos = document.getElementById('avisos');
+
+      if(!slug){
+        avisos.innerHTML = `<div class="warn">Catálogo não encontrado. Informe o slug (?c=slug).</div>`;
+        return;
+      }
+
+      // 1) meta/config
+      const cfgRef = doc(db, `catalogos/${slug}/meta/config`);
+      const cfgSnap = await getDoc(cfgRef);
+      if (!cfgSnap.exists()){
+        avisos.innerHTML = `<div class="warn">Catálogo não encontrado.</div>`;
+        return;
+      }
+      const cfg = cfgSnap.data();
+
+      // Header/branding
+      const nome = cfg.nomeEmpresa || cfg.titulo || slug;
+      document.title = `Catálogo • ${nome}`;
+      $('#empresaBar').textContent = nome;
+      $('#tituloEmpresa').textContent = nome;
+
+      if (cfg.logoUrl){
+        const el = $('#logoImg');
+        el.src = cfg.logoUrl; el.style.display = 'block';
+      }
+
+      if (cfg.bannerUrl){
+        const box = $('#bannerBox');
+        const low = cfg.bannerUrl.toLowerCase();
+        if (low.endsWith('.webm') || low.endsWith('.mp4')) {
+          const vid = document.createElement('video');
+          vid.src = cfg.bannerUrl; vid.muted = true; vid.autoplay = true; vid.loop = true; vid.playsInline = true;
+          box.appendChild(vid);
+        } else {
+          const img = new Image();
+          img.alt = 'Banner'; img.src = cfg.bannerUrl; img.loading = 'lazy';
+          box.appendChild(img);
+        }
+      }
+
+      if (cfg.catalogoAtivo !== true){
+        avisos.innerHTML = `<div class="warn">Este catálogo está desativado no momento.</div>`;
+        return;
+      } else {
+        avisos.innerHTML = '';
+      }
+
+      // 2) WhatsApp (FAB)
+      const whats = (cfg.whats || '').toString().trim();
+      const waFab = $('#waFloat');
+      if (whats) {
+        const msg = `Olá! Tenho interesse no catálogo ${nome}.`;
+        const link = waLink(whats, msg);
+        if (link) { waFab.href = link; waFab.style.display = 'flex'; }
+      } else {
+        waFab.style.display = 'none';
+      }
+
+      // 3) SOCIALS (links + ícones personalizados opcionais)
+      // Campos esperados no config:
+      //  - facebookUrl / facebookIcon (opcional)
+      //  - instagramUrl / instagramIcon (opcional)
+      //  - whatsGroupUrl / whatsGroupIcon (opcional)
+      const sFB = $('#sFacebook'), sIG = $('#sInstagram'), sWA = $('#sWhats');
+      const iFB = $('#iFacebook'), iIG = $('#iInstagram'), iWA = $('#iWhats');
+
+      function setSocial(aEl, imgEl, url, iconUrl, svgFallback){
+        if (url){
+          aEl.href = url; aEl.style.display = 'grid';
+          if (iconUrl){ imgEl.src = iconUrl; imgEl.style.display='block'; imgEl.previousElementSibling?.remove(); }
+          else { imgEl.style.display='none'; aEl.insertAdjacentHTML('afterbegin', svgFallback); }
+        } else {
+          aEl.style.display = 'none';
+        }
+      }
+
+      const svgFB = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 12.07C22 6.49 17.52 2 11.93 2S2 6.49 2 12.07c0 5 3.66 9.15 8.44 9.94v-7.03H7.9V12.1h2.54V9.8c0-2.5 1.49-3.89 3.77-3.89 1.09 0 2.22.2 2.22.2v2.44h-1.25c-1.24 0-1.63.77-1.63 1.56v1.89h2.78l-.44 2.88h-2.34v7.03C18.34 21.22 22 17.07 22 12.07z"/></svg>`;
+      const svgIG = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2C4.24 2 2 4.24 2 7v10c0 2.76 2.24 5 5 5h10c2.76 0 5-2.24 5-5V7c0-2.76-2.24-5-5-5H7zm10 2c1.66 0 3 1.34 3 3v10c0 1.66-1.34 3-3 3H7c-1.66 0-3-1.34-3-3V7c0-1.66 1.34-3 3-3h10zm-5 3a5 5 0 100 10 5 5 0 000-10zm0 2.2A2.8 2.8 0 1112 16a2.8 2.8 0 010-5.8zM17.5 6A1.5 1.5 0 1017.5 9 1.5 1.5 0 0017.5 6z"/></svg>`;
+      const svgWA = `<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M19.1 17.1c-.3-.2-1.7-.8-2-.9-.3-.1-.5-.2-.7.2-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.2-1.1-.4-2-1.2-.7-.6-1.2-1.4-1.3-1.6-.1-.3 0-.4.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2.1-.4 0-.6-.1-.2-.7-1.7-.9-2.3-.2-.5-.5-.4-.7-.4h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.7 0 1.6 1.1 3.1 1.2 3.3.1.2 2.2 3.4 5.4 4.7.8.4 1.4.6 1.9.8.8.3 1.6.3 2.2.2.7-.1 2-.8 2.2-1.6.3-.8.3-1.5.2-1.6 0-.1-.2-.1-.4-.2zM16 3C9.9 3 5 7.9 5 14c0 2.4.8 4.6 2.1 6.3L6 29l8-1.9c1.5.4 3.1.7 4.7.7 6.1 0 11-4.9 11-11S22.1 3 16 3z"/></svg>`;
+
+      setSocial(sFB, iFB, cfg.facebookUrl,  cfg.facebookIcon,  svgFB);
+      setSocial(sIG, iIG, cfg.instagramUrl, cfg.instagramIcon, svgIG);
+      setSocial(sWA, iWA, cfg.whatsGroupUrl, cfg.whatsGroupIcon, svgWA);
+
+      // 4) Limite público opcional
+      const limitePublico = Number.isFinite(cfg.limitePublico) ? cfg.limitePublico : null;
+
+      // 5) Itens
+      const q = query(
+        collection(db, `catalogos/${slug}/itens`),
+        orderBy('ordem','asc'),
+        ...(limitePublico ? [qLimit(limitePublico)] : [])
+      );
+
+      onSnapshot(q, snap=>{
+        const arr = [];
+        let idx = 0;
+        snap.forEach(docSnap=>{
+          const d = docSnap.data(); if (d.ativo === false) return;
+          idx++;
+          const nomeItem = d.nome || `Item ${idx}`;
+          let precoBRL = '—';
+          if (typeof d.precoCentavos === 'number') {
+            precoBRL = (d.precoCentavos/100).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+          } else if (typeof d.preco === 'number') {
+            precoBRL = d.preco.toLocaleString('pt-BR',{style:'currency','currency':'BRL'});
+          } else if (typeof d.preco === 'string') {
+            const n = Number(d.preco.replace(',','.')); if (Number.isFinite(n)) precoBRL = n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+          }
+          const qtd = (typeof d.quantidade === 'number') ? d.quantidade
+                    : (typeof d.qtde === 'number') ? d.qtde : '—';
+          const img = d.urlImagem || PLACEHOLDER;
+          const msg = `Olá! Tenho interesse no *${nomeItem}* do catálogo ${nome}.`;
+          const zap = waLink(d.whats || whats, msg);
+          arr.push({ nome: nomeItem, precoBRL, qtd, img, full: d.urlImagemFull || null, zap });
+        });
+        itens = arr;
+        clampPage();
+        renderPage();
+      });
+
+      // teclado ← →
+      window.addEventListener('keydown', (ev)=>{
+        if (ev.key === 'ArrowRight') goNext();
+        else if (ev.key === 'ArrowLeft') goPrev();
+      });
+    }
+
+    // área de avisos
+    (function insertAvisos(){
+      const avisos = document.createElement('div');
+      avisos.id = 'avisos';
+      const anchor = document.getElementById('pagerTop');
+      if (anchor && anchor.parentNode) anchor.parentNode.insertBefore(avisos, anchor);
+    })();
+
+    carregar();
+  </script>
 </head>
 <body>
-<div class="card">
-  <h1>Criar conta</h1>
-  <div class="sub">Preencha seus dados para começar a usar o MostreAki.</div>
+  <header>
+    <div class="bar">
+      <div class="brand" id="empresaBar">MostreAki</div>
+      <div class="spacer"></div>
+    </div>
+  </header>
 
-  <!-- Tipo de pessoa -->
-  <div class="section-title">Tipo de cadastro</div>
-  <div class="radio-row">
-    <label><input type="radio" name="tipoPessoa" value="PF" checked> Pessoa Física</label>
-    <label><input type="radio" name="tipoPessoa" value="PJ"> Pessoa Jurídica</label>
-  </div>
+  <main>
+    <section class="hero">
+      <div class="logoRing" id="logoRing">
+        <img id="logoImg" alt="Logo" src="" onerror="this.style.display='none'">
+      </div>
+      <h1 class="title" id="tituloEmpresa">Catálogo</h1>
+      <div class="banner" id="bannerBox"></div>
+    </section>
 
-  <!-- Identidade no MostreAki -->
-  <div class="section-title">Identidade no MostreAki</div>
-  <div class="form-grid">
-    <div class="field"><label for="username">Nome de usuário *</label><input id="username" required></div>
-  </div>
-  <div class="hint">Use 3–40 caracteres. Permitidos: letras, números, ponto, hífen e underline. Ex.: <b>la-maggie</b>, <b>dentista.joao</b></div>
+    <!-- Pager Top (mantido) -->
+    <div id="pagerTop" class="pager">
+      <button class="navbtn btnPrev" onclick="goPrev()" aria-label="Anterior">
+        <svg viewBox="0 0 24 24"><path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+        Anterior
+      </button>
+      <span class="pageinfo">Página 1 de 1</span>
+      <button class="navbtn btnNext" onclick="goNext()" aria-label="Próximo">
+        Próximo
+        <svg viewBox="0 0 24 24"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+      </button>
+    </div>
 
-  <div class="form-grid" id="grupoPF">
-    <div class="field"><label for="nome">Nome completo *</label><input id="nome" required autocomplete="name"></div>
-    <div class="field"><label for="cpf">CPF *</label><input id="cpf" inputmode="numeric"></div>
-  </div>
+    <!-- NÚMEROS DE PÁGINA (novo, logo abaixo do pager top) -->
+    <div id="pagerNumsTop" class="pagenums" aria-label="Escolher página"></div>
 
-  <div class="form-grid" id="grupoPJ" style="display:none">
-    <div class="field"><label for="razao">Razão Social *</label><input id="razao"></div>
-    <div class="field"><label for="cnpj">CNPJ *</label><input id="cnpj" inputmode="numeric"></div>
-    <div class="field"><label for="ie">Inscrição Estadual</label><input id="ie"></div>
-    <div class="radio-row" style="margin-top:-6px">
-      <label><input type="checkbox" id="isentoIE"> Isento de IE</label>
+    <section class="grid" id="grid"></section>
+
+    <!-- Pager Bottom (mantido) -->
+    <div class="pager" style="margin-top:16px">
+      <button class="navbtn btnPrev" onclick="goPrev()" aria-label="Anterior">
+        <svg viewBox="0 0 24 24"><path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+        Anterior
+      </button>
+      <span class="pageinfo">Página 1 de 1</span>
+      <button class="navbtn btnNext" onclick="goNext()" aria-label="Próximo">
+        Próximo
+        <svg viewBox="0 0 24 24"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+      </button>
+    </div>
+
+    <p class="muted">
+      Toque numa imagem para ampliar. Use as setas do teclado ou os botões para navegar entre as páginas. Clique no ícone de WhatsApp em qualquer item para falar com o vendedor.
+    </p>
+
+    <!-- SOCIALS (novo, antes do rodapé) -->
+    <section class="socials" aria-label="Redes sociais">
+      <h3>Conecte-se com a gente</h3>
+      <div class="social-grid">
+        <!-- Facebook -->
+        <a id="sFacebook" class="s-cell" href="#" target="_blank" rel="noopener" style="display:none" aria-label="Facebook">
+          <img id="iFacebook" alt="Facebook" style="display:none">
+        </a>
+        <!-- Instagram -->
+        <a id="sInstagram" class="s-cell" href="#" target="_blank" rel="noopener" style="display:none" aria-label="Instagram">
+          <img id="iInstagram" alt="Instagram" style="display:none">
+        </a>
+        <!-- Grupo WhatsApp -->
+        <a id="sWhats" class="s-cell" href="#" target="_blank" rel="noopener" style="display:none" aria-label="Grupo no WhatsApp">
+          <img id="iWhats" alt="WhatsApp" style="display:none">
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <!-- FAB do WhatsApp -->
+  <a id="waFloat" class="wa-float" href="#" target="_blank" rel="noopener" aria-label="WhatsApp">
+    <svg viewBox="0 0 32 32" role="img" aria-hidden="true"><path d="M19.1 17.1c-.3-.2-1.7-.8-2-.9-.3-.1-.5-.2-.7.2-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.2-1.1-.4-2-1.2-.7-.6-1.2-1.4-1.3-1.6-.1-.3 0-.4.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2.1-.4 0-.6-.1-.2-.7-1.7-.9-2.3-.2-.5-.5-.4-.7-.4h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.7 0 1.6 1.1 3.1 1.2 3.3.1.2 2.2 3.4 5.4 4.7.8.4 1.4.6 1.9.8.8.3 1.6.3 2.2.2.7-.1 2-.8 2.2-1.6.3-.8.3-1.5.2-1.6 0-.1-.2-.1-.4-.2zM16 3C9.9 3 5 7.9 5 14c0 2.4.8 4.6 2.1 6.3L6 29l8-1.9c1.5.4 3.1.7 4.7.7 6.1 0 11-4.9 11-11S22.1 3 16 3z"/></svg>
+  </a>
+
+  <!-- Lightbox -->
+  <div id="lbBg" class="lb-bg" role="dialog" aria-modal="true" aria-label="Imagem ampliada" style="display:none">
+    <div class="lb-card">
+      <button id="lbClose" class="lb-close" aria-label="Fechar">×</button>
+      <img id="lbImg" class="lb-img" alt="">
     </div>
   </div>
 
-  <!-- Contato -->
-  <div class="section-title">Contato</div>
-  <div class="form-grid cols-2">
-    <div class="field"><label for="fone">Celular / WhatsApp *</label><input id="fone" type="tel" inputmode="tel" required autocomplete="tel"></div>
-    <div class="field"><label for="email">E-mail *</label><input id="email" type="email" required autocomplete="email"></div>
-  </div>
-  <div class="form-grid cols-2">
-    <div class="field"><label for="email2">Confirmar e-mail *</label><input id="email2" type="email" required></div>
-  </div>
-
-  <!-- Endereço -->
-  <div class="section-title">Endereço (faturamento/NFS-e)</div>
-  <div class="form-grid cols-3">
-    <div class="field"><label for="cep">CEP *</label><input id="cep" inputmode="numeric"></div>
-    <div class="field"><label for="uf">UF *</label>
-      <select id="uf">
-        <option value="">Selecione</option>
-        <option>AC</option><option>AL</option><option>AP</option><option>AM</option><option>BA</option>
-        <option>CE</option><option>DF</option><option>ES</option><option>GO</option><option>MA</option>
-        <option>MT</option><option>MS</option><option>MG</option><option>PA</option><option>PB</option>
-        <option>PR</option><option>PE</option><option>PI</option><option>RJ</option><option>RN</option>
-        <option>RS</option><option>RO</option><option>RR</option><option>SC</option><option>SP</option>
-        <option>SE</option><option>TO</option>
-      </select>
-    </div>
-    <div class="field"><label for="cidade">Cidade *</label><input id="cidade"></div>
-  </div>
-  <div class="form-grid cols-2">
-    <div class="field"><label for="bairro">Bairro *</label><input id="bairro"></div>
-    <div class="field"><label for="logradouro">Logradouro (rua/avenida) *</label><input id="logradouro"></div>
-  </div>
-  <div class="form-grid cols-2">
-    <div class="field"><label for="numero">Número *</label><input id="numero" inputmode="numeric"></div>
-    <div class="field"><label for="complemento">Complemento</label><input id="complemento"></div>
-  </div>
-
-  <!-- Acesso -->
-  <div class="section-title">Acesso</div>
-  <div class="form-grid cols-2">
-    <div class="field pwd-wrap"><label for="senha">Senha (mín. 6) *</label><input id="senha" type="password" required autocomplete="new-password"><button id="toggleSenha" class="pwd-toggle" type="button">👁️</button></div>
-    <div class="field pwd-wrap"><label for="senha2">Confirmar senha *</label><input id="senha2" type="password" required><button id="toggleSenha2" class="pwd-toggle" type="button">👁️</button></div>
-  </div>
-
-  <button class="primary" id="btnCadastrar">Criar conta</button>
-  <p class="muted">Já tem conta? <a href="/login.html">Entrar</a></p>
-</div>
-
-<!-- POPUP -->
-<div id="alert" class="alert-bg" role="dialog" aria-modal="true" aria-labelledby="alertTitle">
-  <div class="alert-card">
-    <div class="alert-head">
-      <div class="alert-dot"></div>
-      <div id="alertTitle" class="alert-title">Mensagem</div>
-    </div>
-    <div id="alertMsg" class="alert-body">...</div>
-    <div id="alertActions" class="alert-actions"></div>
-  </div>
-</div>
-
-<script type="module">
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-import {
-  getAuth, createUserWithEmailAndPassword, updateProfile,
-  sendEmailVerification, signOut
-} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-import {
-  getFirestore, doc, setDoc, serverTimestamp
-} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-
-const app = initializeApp({
-  apiKey:"AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
-  authDomain:"mostreaki-2025.firebaseapp.com",
-  projectId:"mostreaki-2025",
-  storageBucket:"mostreaki-2025.firebasestorage.app",
-  messagingSenderId:"748712068097",
-  appId:"1:748712068097:web:09cf043fbb45917ef6ec00"
-});
-const auth = getAuth(app);
-const db   = getFirestore(app);
-
-/* ===== floating label UX ===== */
-document.querySelectorAll('.field').forEach(f=>{
-  const i=f.querySelector('input,select');
-  const set = ()=>{ f.classList.toggle('has-value', !!i.value); };
-  i.addEventListener('focus', ()=>f.classList.add('focus'));
-  i.addEventListener('blur', ()=>f.classList.remove('focus'));
-  i.addEventListener('input', set); set();
-});
-
-/* ===== POPUP helpers ===== */
-const alertBG = document.getElementById('alert');
-const alertTitle = document.getElementById('alertTitle');
-const alertMsg = document.getElementById('alertMsg');
-const alertActions = document.getElementById('alertActions');
-function showAlert({title="Aviso", html="", actions=[{text:"Fechar", kind:"solid"}]}){
-  alertTitle.textContent = title;
-  alertMsg.innerHTML = html;
-  alertActions.innerHTML = "";
-  actions.forEach(a=>{
-    const b=document.createElement('button');
-    b.className = 'btn ' + (a.kind==='ghost'?'btn-ghost':'btn-solid');
-    b.textContent = a.text;
-    b.onclick = ()=>{ if(a.onClick) a.onClick(); closeAlert(); };
-    alertActions.appendChild(b);
-  });
-  alertBG.style.display='flex';
-}
-function closeAlert(){ alertBG.style.display='none'; }
-alertBG.addEventListener('click', e=>{ if(e.target===alertBG) closeAlert(); });
-window.addEventListener('keydown', e=>{ if(e.key==='Escape' && alertBG.style.display==='flex') closeAlert(); });
-
-/* ===== Helpers de máscara/validação ===== */
-const $ = (id)=>document.getElementById(id);
-const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-const emailValido = v => emailRe.test(v);
-function onlyDigits(s){ return (s||'').replace(/\D/g,''); }
-
-// Username: normalização + validação
-function stripDiacritics(s){ return (s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,''); }
-function normalizeUsername(s){
-  return stripDiacritics(String(s).toLowerCase())
-    .replace(/\s+/g,'-')
-    .replace(/[^a-z0-9._-]/g,'')
-    .replace(/-+/g,'-')
-    .slice(0,40);
-}
-function isUsernameValid(u){ return /^[a-z0-9._-]{3,40}$/.test(u); }
-
-/* Celular */
-const fone = $("fone");
-fone.addEventListener("input", () => {
-  let v = onlyDigits(fone.value);
-  if (v.length > 11) v = v.slice(0,11);
-  if (v.length >= 3 && v.length <= 6) fone.value = `(${v.slice(0,2)}) ${v.slice(2)}`;
-  else if (v.length >= 7 && v.length <= 10) fone.value = `(${v.slice(0,2)}) ${v.slice(2,6)}-${v.slice(6)}`;
-  else if (v.length === 11) fone.value = `(${v.slice(0,2)}) ${v.slice(2,7)}-${v.slice(7)}`;
-  else fone.value = v;
-});
-
-/* CEP + ViaCEP */
-$("cep").addEventListener("input", async ()=>{
-  let v = onlyDigits($("cep").value).slice(0,8);
-  $("cep").value = v.length>5 ? `${v.slice(0,5)}-${v.slice(5)}` : v;
-  if(v.length===8){
-    try{
-      const r = await fetch(`https://viacep.com.br/ws/${v}/json/`);
-      const data = await r.json();
-      if(data.erro) return showAlert({title:"CEP não encontrado", html:"Verifique o CEP informado."});
-      $("logradouro").value = data.logradouro || "";
-      $("bairro").value     = data.bairro || "";
-      $("cidade").value     = data.localidade || "";
-      $("uf").value         = data.uf || "";
-      ["logradouro","bairro","cidade","uf"].forEach(id=>{
-        const f = $(id).closest('.field'); f?.classList.add('has-value');
-      });
-    }catch(e){
-      showAlert({title:"Falha ao buscar CEP", html:"Tente novamente em instantes."});
-    }
-  }
-});
-
-/* CPF/CNPJ máscaras e validações */
-const cpfI = $("cpf"), cnpjI = $("cnpj");
-cpfI.addEventListener('input', ()=>{
-  let v = onlyDigits(cpfI.value).slice(0,11);
-  if(v.length>9) cpfI.value = v.replace(/^(\d{3})(\d{3})(\d{3})(\d{0,2}).*$/, "$1.$2.$3-$4");
-  else if(v.length>6) cpfI.value = v.replace(/^(\d{3})(\d{3})(\d{0,3}).*$/, "$1.$2.$3");
-  else if(v.length>3) cpfI.value = v.replace(/^(\d{3})(\d{0,3}).*$/, "$1.$2");
-  else cpfI.value = v;
-});
-cnpjI.addEventListener('input', ()=>{
-  let v = onlyDigits(cnpjI.value).slice(0,14);
-  if(v.length>12) cnpjI.value = v.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{0,2}).*$/, "$1.$2.$3/$4-$5");
-  else if(v.length>8) cnpjI.value = v.replace(/^(\d{2})(\d{3})(\d{3})(\d{0,4}).*$/, "$1.$2.$3/$4");
-  else if(v.length>5) cnpjI.value = v.replace(/^(\d{2})(\d{3})(\d{0,3}).*$/, "$1.$2.$3");
-  else if(v.length>2) cnpjI.value = v.replace(/^(\d{2})(\d{0,3}).*$/, "$1.$2");
-  else cnpjI.value = v;
-});
-function validaCPF(raw){
-  const s = onlyDigits(raw); if(!s || s.length!==11 || /^(\d)\1+$/.test(s)) return false;
-  let soma=0; for(let i=0;i<9;i++) soma+=parseInt(s[i])*(10-i);
-  let d1 = 11-(soma%11); d1 = (d1>9)?0:d1; if(d1!==parseInt(s[9])) return false;
-  soma=0; for(let i=0;i<10;i++) soma+=parseInt(s[i])*(11-i);
-  let d2 = 11-(soma%11); d2 = (d2>9)?0:d2; return d2===parseInt(s[10]);
-}
-function validaCNPJ(raw){
-  const s = onlyDigits(raw); if(!s || s.length!==14 || /^(\d)\1+$/.test(s)) return false;
-  const calc=(base)=>{let soma=0,pos=base.length-7;for(let i=0;i<base.length;i++){soma+=base[i]*pos--; if(pos<2) pos=9;} return soma%11<2?0:11-soma%11;};
-  const nums = s.substring(0,12).split('').map(Number);
-  const dv1 = calc(nums); nums.push(dv1);
-  const dv2 = calc(nums); return dv1===parseInt(s[12]) && dv2===parseInt(s[13]);
-}
-
-/* Alternância PF/PJ */
-const grupoPF = $("grupoPF"), grupoPJ = $("grupoPJ"), isentoIE = $("isentoIE");
-function setTipo(tipo){
-  const pf = tipo==='PF';
-  grupoPF.style.display = pf ? '' : 'none';
-  grupoPJ.style.display = pf ? 'none' : '';
-  $("nome").required = pf; $("cpf").required = pf;
-  $("razao").required = !pf; $("cnpj").required = !pf;
-  $("ie").disabled = isentoIE.checked; $("ie").required = !isentoIE.checked && !pf;
-}
-document.querySelectorAll('input[name="tipoPessoa"]').forEach(r=>{
-  r.addEventListener('change', ()=> setTipo(r.value));
-});
-isentoIE.addEventListener('change', ()=> setTipo(document.querySelector('input[name="tipoPessoa"]:checked').value));
-setTipo('PF');
-
-/* Olhos de senha */
-function wirePasswordToggle(inputId, btnId){
-  const input = $(inputId), btn = $(btnId);
-  if(!input || !btn) return;
-  function flip(){
-    const showing = input.type === 'text';
-    input.type = showing ? 'password' : 'text';
-    btn.textContent = showing ? '👁️' : '🙈';
-    btn.setAttribute('aria-pressed', (!showing).toString());
-    btn.setAttribute('aria-label', showing ? 'Mostrar' : 'Ocultar');
-  }
-  btn.addEventListener('click', flip);
-}
-wirePasswordToggle('senha','toggleSenha');
-wirePasswordToggle('senha2','toggleSenha2');
-
-/* Cadastro por e-mail */
-document.getElementById("btnCadastrar").onclick = async () => {
-  const tipo = document.querySelector('input[name="tipoPessoa"]:checked').value;
-
-  const usernameRaw = $("username").value.trim();
-  const username    = normalizeUsername(usernameRaw);
-
-  const nome = $("nome").value.trim();
-  const cpf  = $("cpf").value.trim();
-  const razao= $("razao").value.trim();
-  const cnpj = $("cnpj").value.trim();
-  const ie   = $("ie").value.trim();
-  const ieIsento = $("isentoIE").checked;
-
-  const fone = $("fone").value.trim();
-  const email = $("email").value.trim(), email2 = $("email2").value.trim();
-  const s1 = $("senha").value, s2 = $("senha2").value;
-
-  const cep = $("cep").value.trim();
-  const uf = $("uf").value.trim();
-  const cidade = $("cidade").value.trim();
-  const bairro = $("bairro").value.trim();
-  const logradouro = $("logradouro").value.trim();
-  const numero = $("numero").value.trim();
-  const complemento = $("complemento").value.trim();
-
-  // Username obrigatório + formato
-  if(!isUsernameValid(username)){
-    return showAlert({
-      title:"Nome de usuário inválido",
-      html:"Use 3–40 caracteres minúsculos: letras, números, ponto, hífen ou underline."
-    });
-  }
-
-  // Regras PF/PJ
-  if(tipo==='PF'){
-    if(!nome) return showAlert({title:"Nome obrigatório", html:"Informe seu <b>nome completo</b>."});
-    if(!validaCPF(cpf)) return showAlert({title:"CPF inválido", html:"Revise o CPF informado."});
-  }else{
-    if(!razao) return showAlert({title:"Razão Social obrigatória", html:"Informe a <b>razão social</b>."});
-    if(!validaCNPJ(cnpj)) return showAlert({title:"CNPJ inválido", html:"Revise o CNPJ informado."});
-    if(!ieIsento && !ie) return showAlert({title:"IE obrigatória", html:"Informe a Inscrição Estadual ou marque <b>Isento</b>."});
-  }
-
-  // Contato
-  const phoneDigits = (v)=>onlyDigits(v).length;
-  if(!(phoneDigits(fone)===10 || phoneDigits(fone)===11)) return showAlert({title:"Celular inválido", html:"Informe um número com DDD (10 ou 11 dígitos)."});
-  if(!emailRe.test(email) || !emailRe.test(email2)) return showAlert({title:"E-mail inválido", html:"Revise os e-mails digitados."});
-  if(email!==email2) return showAlert({title:"E-mails não conferem", html:"Digite o mesmo e-mail nos dois campos."});
-
-  // Endereço
-  if(onlyDigits(cep).length!==8) return showAlert({title:"CEP inválido", html:"Informe 8 dígitos de CEP."});
-  if(!uf || !cidade || !bairro || !logradouro || !numero) return showAlert({title:"Endereço incompleto", html:"Preencha UF, cidade, bairro, logradouro e número."});
-
-  // Senha
-  if(s1.length<6) return showAlert({title:"Senha fraca", html:"Use pelo menos 6 caracteres."});
-  if(s1!==s2) return showAlert({title:"Senhas não conferem", html:"Digite a mesma senha nos dois campos."});
-
-  try{
-    const cred = await createUserWithEmailAndPassword(auth, email, s1);
-    const uid = cred.user.uid;
-
-    // displayName no Auth
-    await updateProfile(cred.user,{ displayName: tipo==='PF' ? nome : razao });
-
-    // salva no Firestore
-    const payload = {
-      uid, tipoPessoa: tipo,
-      username, // ← novo campo obrigatório
-      nomeCompleto: tipo==='PF' ? nome : '',
-      cpf: tipo==='PF' ? onlyDigits(cpf) : '',
-      razaoSocial: tipo==='PJ' ? razao : '',
-      cnpj: tipo==='PJ' ? onlyDigits(cnpj) : '',
-      ie: (tipo==='PJ' ? (ieIsento ? 'ISENTO' : ie) : ''),
-      isentoIE: tipo==='PJ' ? !!ieIsento : null,
-      fone, email,
-      endereco: {
-        cep: onlyDigits(cep),
-        uf, cidade, bairro, logradouro, numero, complemento
-      },
-      createdAt: serverTimestamp()
-    };
-    await setDoc(doc(db,'usuarios',uid), payload, { merge:true });
-
-    await sendEmailVerification(cred.user);
-    showAlert({
-      title:"Confirme seu e-mail",
-      html:`Enviamos um link para <b>${email}</b>.<br>
-            Depois de confirmar, você poderá <b>Fazer Login</b>. Se não encontrar, verifique o spam.`,
-      actions:[{text:"OK, vou verificar", kind:"solid", onClick:()=>{ location.href='/login.html'; }}]
-    });
-    await signOut(auth);
-
-  }catch(e){
-    const mapa={
-      "auth/email-already-in-use":"Este e-mail já possui cadastro.<br><a href='/login.html' style='color:var(--brand);font-weight:bold;'>Ir para o login</a>",
-      "auth/invalid-email":"E-mail inválido. Revise o endereço.",
-      "auth/weak-password":"Senha fraca (mínimo 6 caracteres).",
-      "auth/network-request-failed":"Falha de rede. Verifique sua conexão."
-    };
-    showAlert({title:"Não foi possível cadastrar", html: mapa[e.code] || `Erro inesperado (${e.code}). Tente novamente.`});
-  }
-};
-</script>
+  <footer>© <span id="ano"></span> MostreAki · Catálogo</footer>
+  <script>document.getElementById('ano').textContent = new Date().getFullYear();</script>
 </body>
 </html>
