@@ -62,6 +62,15 @@
     .navbtn svg{width:18px;height:18px;fill:#d1fae5}
     .pageinfo{font-weight:700;color:#b6e9e2}
 
+    /* === NÚMEROS DE PÁGINA (TOP) === */
+    .pagenums{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin:8px 0 0}
+    .pagenums button{
+      min-width:36px; height:36px; border-radius:10px; border:2px solid rgba(255,255,255,.18);
+      background:rgba(255,255,255,.06); color:#e7fffb; font-weight:800; cursor:pointer
+    }
+    .pagenums button.active{background:var(--brand); color:#05202a; border-color:rgba(0,0,0,.0)}
+    .pagenums button:active{transform:scale(.96)}
+
     .grid{
       margin-top:18px;display:grid;gap:16px;
       grid-template-columns:repeat(2,minmax(0,1fr));
@@ -114,10 +123,6 @@
       background:#fee2e2;color:#7f1d1d;border:1px solid #fecaca;
       padding:12px 14px;border-radius:12px;margin:18px auto;max-width:840px
     }
-    footer{
-      color:#bbf7d0;font-size:.8rem;text-align:center;
-      padding:32px 16px;border-top:1px solid rgba(255,255,255,.07)
-    }
 
     /* === Lightbox (popup de imagem) === */
     .lb-bg{
@@ -139,6 +144,33 @@
       background:rgba(255,255,255,.12); color:#e8ffff; cursor:pointer; font-size:22px; line-height:36px;
     }
     .lb-close:active{ transform:scale(.95) }
+
+    /* === SOCIALS (antes do rodapé) === */
+    .socials{
+      margin:32px auto 10px; max-width:980px; padding:18px;
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid rgba(255,255,255,.12); border-radius:16px;
+    }
+    .socials h3{
+      margin:0 0 12px; font-size:1rem; letter-spacing:.2px; color:#d9fffb; text-align:center;
+    }
+    .social-grid{
+      display:flex; align-items:center; justify-content:center; gap:16px; flex-wrap:wrap;
+    }
+    .s-cell{
+      width:72px; height:72px; border-radius:14px;
+      background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.14);
+      display:grid; place-items:center; padding:10px; cursor:pointer;
+      transition:transform .12s ease, box-shadow .12s ease;
+    }
+    .s-cell:hover{ transform:translateY(-2px); box-shadow:0 10px 28px rgba(0,0,0,.25) }
+    .s-cell img{max-width:100%; max-height:100%; object-fit:contain}
+    .s-cell svg{width:36px; height:36px; fill:#d1fae5}
+
+    footer{
+      color:#bbf7d0;font-size:.8rem;text-align:center;
+      padding:32px 16px;border-top:1px solid rgba(255,255,255,.07)
+    }
   </style>
 
   <!-- Firebase (modular) -->
@@ -159,6 +191,7 @@
     const db  = getFirestore(app);
 
     // ===== utils =====
+    const $ = s => document.querySelector(s);
     function getSlug() {
       const m = location.pathname.match(/catalogo-([^/.]+)\.html$/);
       if (m) return m[1];
@@ -191,6 +224,30 @@
 
     function totalPages(){ return Math.max(1, Math.ceil(itens.length / PER_PAGE)); }
     function clampPage(){ page = Math.min(page, totalPages()-1); if(page<0) page=0; }
+
+    function goPrev(){ if(page>0){ page--; renderPage(); window.scrollTo({top:0,behavior:'smooth'}); } }
+    function goNext(){ if(page < totalPages()-1){ page++; renderPage(); window.scrollTo({top:0,behavior:'smooth'}); } }
+    window.goPrev = goPrev;
+    window.goNext = goNext;
+
+    // === NÚMEROS DE PÁGINA (render dinâmico)
+    function renderPageNumbers(){
+      const cont = $('#pagerNumsTop');
+      if (!cont) return;
+      const t = totalPages();
+      let html = '';
+      for (let i=0;i<t;i++){
+        const active = (i===page) ? 'active' : '';
+        html += `<button type="button" class="${active}" data-pg="${i+1}" aria-label="Ir para página ${i+1}">${i+1}</button>`;
+      }
+      cont.innerHTML = html;
+      cont.querySelectorAll('button').forEach(btn=>{
+        btn.onclick = () => {
+          const n = parseInt(btn.dataset.pg,10)-1;
+          if (!Number.isNaN(n)){ page = n; renderPage(); window.scrollTo({top:0,behavior:'smooth'}); }
+        };
+      });
+    }
 
     function renderPage(){
       clampPage();
@@ -229,15 +286,10 @@
       });
       document.querySelectorAll('.btnPrev').forEach(b=> b.disabled = (page<=0));
       document.querySelectorAll('.btnNext').forEach(b=> b.disabled = (page>=totalPages()-1));
+
+      // números (top)
+      renderPageNumbers();
     }
-
-    // Navegação
-    function goPrev(){ if(page>0){ page--; renderPage(); window.scrollTo({top:0,behavior:'smooth'}); } }
-    function goNext(){ if(page < totalPages()-1){ page++; renderPage(); window.scrollTo({top:0,behavior:'smooth'}); } }
-
-    // Expor para os botões com onclick
-    window.goPrev = goPrev;
-    window.goNext = goNext;
 
     // ===== Lightbox
     const lbBg   = document.getElementById('lbBg');
@@ -259,8 +311,6 @@
     lbBtn.addEventListener('click', closeLightbox);
     lbBg.addEventListener('click', (e)=>{ if(e.target === lbBg) closeLightbox(); });
     window.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeLightbox(); });
-
-    // Delegação: clicar na imagem do card abre o lightbox
     document.addEventListener('click', (e)=>{
       const img = e.target.closest('.imgWrap img');
       if (!img) return;
@@ -277,7 +327,7 @@
         return;
       }
 
-      // 1) Lê meta/config
+      // 1) meta/config
       const cfgRef = doc(db, `catalogos/${slug}/meta/config`);
       const cfgSnap = await getDoc(cfgRef);
       if (!cfgSnap.exists()){
@@ -289,16 +339,16 @@
       // Header/branding
       const nome = cfg.nomeEmpresa || cfg.titulo || slug;
       document.title = `Catálogo • ${nome}`;
-      document.getElementById('empresaBar').textContent = nome;
-      document.getElementById('tituloEmpresa').textContent = nome;
+      $('#empresaBar').textContent = nome;
+      $('#tituloEmpresa').textContent = nome;
 
       if (cfg.logoUrl){
-        const el = document.getElementById('logoImg');
+        const el = $('#logoImg');
         el.src = cfg.logoUrl; el.style.display = 'block';
       }
 
       if (cfg.bannerUrl){
-        const box = document.getElementById('bannerBox');
+        const box = $('#bannerBox');
         const low = cfg.bannerUrl.toLowerCase();
         if (low.endsWith('.webm') || low.endsWith('.mp4')) {
           const vid = document.createElement('video');
@@ -318,9 +368,9 @@
         avisos.innerHTML = '';
       }
 
-      // 2) WhatsApp (FAB + itens)
+      // 2) WhatsApp (FAB)
       const whats = (cfg.whats || '').toString().trim();
-      const waFab = document.getElementById('waFloat');
+      const waFab = $('#waFloat');
       if (whats) {
         const msg = `Olá! Tenho interesse no catálogo ${nome}.`;
         const link = waLink(whats, msg);
@@ -329,10 +379,36 @@
         waFab.style.display = 'none';
       }
 
-      // 3) Limite público opcional
+      // 3) SOCIALS (links + ícones personalizados opcionais)
+      // Campos esperados no config:
+      //  - facebookUrl / facebookIcon (opcional)
+      //  - instagramUrl / instagramIcon (opcional)
+      //  - whatsGroupUrl / whatsGroupIcon (opcional)
+      const sFB = $('#sFacebook'), sIG = $('#sInstagram'), sWA = $('#sWhats');
+      const iFB = $('#iFacebook'), iIG = $('#iInstagram'), iWA = $('#iWhats');
+
+      function setSocial(aEl, imgEl, url, iconUrl, svgFallback){
+        if (url){
+          aEl.href = url; aEl.style.display = 'grid';
+          if (iconUrl){ imgEl.src = iconUrl; imgEl.style.display='block'; imgEl.previousElementSibling?.remove(); }
+          else { imgEl.style.display='none'; aEl.insertAdjacentHTML('afterbegin', svgFallback); }
+        } else {
+          aEl.style.display = 'none';
+        }
+      }
+
+      const svgFB = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 12.07C22 6.49 17.52 2 11.93 2S2 6.49 2 12.07c0 5 3.66 9.15 8.44 9.94v-7.03H7.9V12.1h2.54V9.8c0-2.5 1.49-3.89 3.77-3.89 1.09 0 2.22.2 2.22.2v2.44h-1.25c-1.24 0-1.63.77-1.63 1.56v1.89h2.78l-.44 2.88h-2.34v7.03C18.34 21.22 22 17.07 22 12.07z"/></svg>`;
+      const svgIG = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2C4.24 2 2 4.24 2 7v10c0 2.76 2.24 5 5 5h10c2.76 0 5-2.24 5-5V7c0-2.76-2.24-5-5-5H7zm10 2c1.66 0 3 1.34 3 3v10c0 1.66-1.34 3-3 3H7c-1.66 0-3-1.34-3-3V7c0-1.66 1.34-3 3-3h10zm-5 3a5 5 0 100 10 5 5 0 000-10zm0 2.2A2.8 2.8 0 1112 16a2.8 2.8 0 010-5.8zM17.5 6A1.5 1.5 0 1017.5 9 1.5 1.5 0 0017.5 6z"/></svg>`;
+      const svgWA = `<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M19.1 17.1c-.3-.2-1.7-.8-2-.9-.3-.1-.5-.2-.7.2-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.2-1.1-.4-2-1.2-.7-.6-1.2-1.4-1.3-1.6-.1-.3 0-.4.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2.1-.4 0-.6-.1-.2-.7-1.7-.9-2.3-.2-.5-.5-.4-.7-.4h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.7 0 1.6 1.1 3.1 1.2 3.3.1.2 2.2 3.4 5.4 4.7.8.4 1.4.6 1.9.8.8.3 1.6.3 2.2.2.7-.1 2-.8 2.2-1.6.3-.8.3-1.5.2-1.6 0-.1-.2-.1-.4-.2zM16 3C9.9 3 5 7.9 5 14c0 2.4.8 4.6 2.1 6.3L6 29l8-1.9c1.5.4 3.1.7 4.7.7 6.1 0 11-4.9 11-11S22.1 3 16 3z"/></svg>`;
+
+      setSocial(sFB, iFB, cfg.facebookUrl,  cfg.facebookIcon,  svgFB);
+      setSocial(sIG, iIG, cfg.instagramUrl, cfg.instagramIcon, svgIG);
+      setSocial(sWA, iWA, cfg.whatsGroupUrl, cfg.whatsGroupIcon, svgWA);
+
+      // 4) Limite público opcional
       const limitePublico = Number.isFinite(cfg.limitePublico) ? cfg.limitePublico : null;
 
-      // 4) Assina itens e monta array normalizado
+      // 5) Itens
       const q = query(
         collection(db, `catalogos/${slug}/itens`),
         orderBy('ordem','asc'),
@@ -346,8 +422,6 @@
           const d = docSnap.data(); if (d.ativo === false) return;
           idx++;
           const nomeItem = d.nome || `Item ${idx}`;
-
-          // Preço → em BRL
           let precoBRL = '—';
           if (typeof d.precoCentavos === 'number') {
             precoBRL = (d.precoCentavos/100).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
@@ -356,18 +430,13 @@
           } else if (typeof d.preco === 'string') {
             const n = Number(d.preco.replace(',','.')); if (Number.isFinite(n)) precoBRL = n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
           }
-
           const qtd = (typeof d.quantidade === 'number') ? d.quantidade
                     : (typeof d.qtde === 'number') ? d.qtde : '—';
           const img = d.urlImagem || PLACEHOLDER;
-
           const msg = `Olá! Tenho interesse no *${nomeItem}* do catálogo ${nome}.`;
           const zap = waLink(d.whats || whats, msg);
-
-          // Se quiser usar imagem maior no popup, pode preencher d.urlImagemFull no Firestore
           arr.push({ nome: nomeItem, precoBRL, qtd, img, full: d.urlImagemFull || null, zap });
         });
-
         itens = arr;
         clampPage();
         renderPage();
@@ -408,7 +477,7 @@
       <div class="banner" id="bannerBox"></div>
     </section>
 
-    <!-- Pager Top -->
+    <!-- Pager Top (mantido) -->
     <div id="pagerTop" class="pager">
       <button class="navbtn btnPrev" onclick="goPrev()" aria-label="Anterior">
         <svg viewBox="0 0 24 24"><path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
@@ -421,9 +490,12 @@
       </button>
     </div>
 
+    <!-- NÚMEROS DE PÁGINA (novo, logo abaixo do pager top) -->
+    <div id="pagerNumsTop" class="pagenums" aria-label="Escolher página"></div>
+
     <section class="grid" id="grid"></section>
 
-    <!-- Pager Bottom -->
+    <!-- Pager Bottom (mantido) -->
     <div class="pager" style="margin-top:16px">
       <button class="navbtn btnPrev" onclick="goPrev()" aria-label="Anterior">
         <svg viewBox="0 0 24 24"><path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
@@ -439,6 +511,25 @@
     <p class="muted">
       Toque numa imagem para ampliar. Use as setas do teclado ou os botões para navegar entre as páginas. Clique no ícone de WhatsApp em qualquer item para falar com o vendedor.
     </p>
+
+    <!-- SOCIALS (novo, antes do rodapé) -->
+    <section class="socials" aria-label="Redes sociais">
+      <h3>Conecte-se com a gente</h3>
+      <div class="social-grid">
+        <!-- Facebook -->
+        <a id="sFacebook" class="s-cell" href="#" target="_blank" rel="noopener" style="display:none" aria-label="Facebook">
+          <img id="iFacebook" alt="Facebook" style="display:none">
+        </a>
+        <!-- Instagram -->
+        <a id="sInstagram" class="s-cell" href="#" target="_blank" rel="noopener" style="display:none" aria-label="Instagram">
+          <img id="iInstagram" alt="Instagram" style="display:none">
+        </a>
+        <!-- Grupo WhatsApp -->
+        <a id="sWhats" class="s-cell" href="#" target="_blank" rel="noopener" style="display:none" aria-label="Grupo no WhatsApp">
+          <img id="iWhats" alt="WhatsApp" style="display:none">
+        </a>
+      </div>
+    </section>
   </main>
 
   <!-- FAB do WhatsApp -->
