@@ -14,8 +14,7 @@
       --teal-600:#0d9488; --teal-100:#ccfbf1;
       --ink:#0b1324; --muted:#6b7280;
       --bg:#061a22; --panel:#0a2537; --card:#ffffff;
-      --ring:rgba(13,148,136,.25); --brand:#16b0af;
-      --ok:#22c55e;
+      --ring:rgba(13,148,136,.25); --brand:#16b0af; --ok:#22c55e;
     }
     *{box-sizing:border-box}
     html,body{margin:0;padding:0;background:linear-gradient(180deg,var(--teal-900),#0a2537 45%, #05202a);color:#ecfeff;font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Arial}
@@ -149,12 +148,8 @@
     }
 
     const slug = getSlug();
-    const avisos = document.createElement('div');
-    avisos.id = 'avisos';
-    document.addEventListener('DOMContentLoaded', ()=> {
-      document.querySelector('main').insertBefore(avisos, document.getElementById('pagerTop'));
-    });
 
+    // placeholder base64 (quadrado claro)
     const PLACEHOLDER = 'data:image/svg+xml;utf8,' + encodeURIComponent(
       `<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512">
         <rect width="100%" height="100%" fill="#e6f6f4"/>
@@ -174,7 +169,6 @@
     const PER_PAGE = 10;
     let itens = [];        // array normalizado dos itens ativos
     let page = 0;          // 0-based
-    const gridEl = document.getElementById('grid');
 
     function totalPages(){ return Math.max(1, Math.ceil(itens.length / PER_PAGE)); }
     function clampPage(){ page = Math.min(page, totalPages()-1); if(page<0) page=0; }
@@ -183,6 +177,9 @@
       clampPage();
       const start = page * PER_PAGE;
       const slice = itens.slice(start, start + PER_PAGE);
+
+      const gridEl = document.getElementById('grid'); // pega sempre depois do DOM
+      if(!gridEl){ return; }
 
       if(slice.length === 0){
         gridEl.innerHTML = `<div class="warn" style="grid-column:1/-1">Ainda não há itens publicados neste catálogo.</div>`;
@@ -216,12 +213,27 @@
     }
 
     // Navegação
-    function goPrev(){ if(page>0){ page--; renderPage(); scrollToTop(); } }
-    function goNext(){ if(page < totalPages()-1){ page++; renderPage(); scrollToTop(); } }
-    function scrollToTop(){ window.scrollTo({ top: 0, behavior: 'smooth' }); }
+    function goPrev(){ if(page>0){ page--; renderPage(); window.scrollTo({top:0,behavior:'smooth'}); } }
+    function goNext(){ if(page < totalPages()-1){ page++; renderPage(); window.scrollTo({top:0,behavior:'smooth'}); } }
+
+    // >>> Expor para os botões com onclick
+    window.goPrev = goPrev;
+    window.goNext = goNext;
 
     // ===== Carregamento
     async function carregar(){
+      const avisos = document.createElement('div');
+      avisos.id = 'avisos';
+      document.addEventListener('DOMContentLoaded', ()=> {
+        const anchor = document.getElementById('pagerTop');
+        if (anchor && anchor.parentNode) {
+          anchor.parentNode.insertBefore(avisos, anchor);
+        }
+        // redundância: listeners também via JS (além do onclick no HTML)
+        document.querySelectorAll('.btnPrev').forEach(btn=> btn.addEventListener('click', goPrev));
+        document.querySelectorAll('.btnNext').forEach(btn=> btn.addEventListener('click', goNext));
+      });
+
       if(!slug){
         avisos.innerHTML = `<div class="warn">Catálogo não encontrado. Informe o slug (?c=slug).</div>`;
         return;
@@ -239,16 +251,16 @@
       // Header/branding
       const nome = cfg.nomeEmpresa || cfg.titulo || slug;
       document.title = `Catálogo • ${nome}`;
-      $('#empresaBar').textContent = nome;
-      $('#tituloEmpresa').textContent = nome;
+      document.getElementById('empresaBar').textContent = nome;
+      document.getElementById('tituloEmpresa').textContent = nome;
 
       if (cfg.logoUrl){
-        $('#logoImg').src = cfg.logoUrl;
-        $('#logoImg').style.display = 'block';
+        const el = document.getElementById('logoImg');
+        el.src = cfg.logoUrl; el.style.display = 'block';
       }
 
       if (cfg.bannerUrl){
-        const box = $('#bannerBox');
+        const box = document.getElementById('bannerBox');
         const low = cfg.bannerUrl.toLowerCase();
         if (low.endsWith('.webm') || low.endsWith('.mp4')) {
           const vid = document.createElement('video');
@@ -282,7 +294,7 @@
       // 3) Limite público opcional
       const limitePublico = Number.isFinite(cfg.limitePublico) ? cfg.limitePublico : null;
 
-      // 4) Assina itens e monta array normalizado (sem render imediato)
+      // 4) Assina itens e monta array normalizado
       const q = query(
         collection(db, `catalogos/${slug}/itens`),
         orderBy('ordem','asc'),
@@ -318,7 +330,6 @@
         });
 
         itens = arr;
-        // se a página atual passou do total, volta pro fim
         clampPage();
         renderPage();
       });
