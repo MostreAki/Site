@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Catálogo • MostreAki</title>
+  <meta name="theme-color" content="#0f766e" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --teal-900:#134e4a; --teal-800:#115e59; --teal-700:#0f766e;
+      --teal-600:#0d9488; --teal-100:#ccfbf1;
+      --ink:#0b1324; --muted:#6b7280;
+      --bg:#061a22; --panel:#0a2537; --card:#ffffff;
+      --ring:rgba(13,148,136,.25); --brand:#16b0af; --ok:#22c55e;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:linear-gradient(180deg,var(--teal-900),#0a2537 45%, #05202a);color:#ecfeff;font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Arial}
+    a{color:inherit;text-decoration:none}
+
+    header{
+      position:sticky;top:0;z-index:50;
+      background:linear-gradient(90deg,var(--teal-900),var(--teal-700));
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+    .bar{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:16px;padding:14px 16px}
+    .brand{font-weight:800;letter-spacing:.4px;font-size:1.1rem}
+    .spacer{flex:1}
+
+    main{max-width:1100px;margin:0 auto;padding:28px 16px 90px}
+
+    .hero{display:flex;flex-direction:column;align-items:center;gap:18px;margin-top:6px}
+    .logoRing{
+      width:140px;height:140px;border-radius:999px;background:#fff;
+      display:grid;place-items:center;position:relative;box-shadow:0 12px 40px rgba(0,0,0,.35), inset 0 0 0 6px var(--ring)
+    }
+    .logoRing img{width:86%;height:86%;object-fit:cover;border-radius:999px}
+    .banner{
+      width:100%;max-width:980px;min-height:160px;border-radius:18px;
+      background:linear-gradient(180deg,#e0f7f4,#c7f1ec);
+      box-shadow: 0 20px 60px rgba(0,0,0,.25);
+      overflow:hidden
+    }
+    .banner img, .banner video{width:100%;height:100%;object-fit:cover;display:block}
+
+    h1.title{
+      margin:0;margin-top:8px;font-size:clamp(1.35rem,2.2vw,1.9rem);
+      font-weight:900;letter-spacing:.3px;text-shadow:0 2px 14px rgba(0,0,0,.35)
+    }
+
+    .pager{
+      margin-top:18px;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap
+    }
+    .navbtn{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:10px 14px;border-radius:12px;border:2px solid rgba(255,255,255,.18);
+      background:rgba(255,255,255,.06);color:#d1fae5;font-weight:800;cursor:pointer
+    }
+    .navbtn[disabled]{opacity:.4;cursor:not-allowed}
+    .navbtn svg{width:18px;height:18px;fill:#d1fae5}
+    .pageinfo{font-weight:700;color:#b6e9e2}
+
+    .grid{
+      margin-top:18px;display:grid;gap:16px;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+    }
+    @media (min-width:860px){ .grid{grid-template-columns:repeat(4,minmax(0,1fr));} }
+
+    .card{
+      background:linear-gradient(180deg,#fdfefe,#eef7f6);
+      border:1px solid rgba(3,94,86,.12);
+      border-radius:16px;overflow:hidden;
+      box-shadow:0 12px 30px rgba(0,0,0,.18);
+      transition:transform .15s ease, box-shadow .15s ease;
+    }
+    .card:hover{ transform:translateY(-2px); box-shadow:0 18px 44px rgba(0,0,0,.26); }
+    .imgWrap{aspect-ratio:1/1;background:#e6f6f4;display:grid;place-items:center;overflow:hidden;cursor:zoom-in}
+    .imgWrap img{width:100%;height:100%;object-fit:cover}
+    .info{display:flex;align-items:center;gap:12px;padding:10px 12px 12px 12px}
+    .left{flex:1;min-width:0}
+    .nome{font-weight:700;color:#0c2d2b;margin-bottom:2px;font-size:.98rem}
+    .preco{font-weight:800;color:#0c2d2b;font-size:1rem}
+    .qtde{color:#476f6c;font-size:.86rem;margin-top:2px}
+    .zap{
+      border:0;background:var(--ok);color:#052814;
+      width:42px;height:42px;border-radius:999px;cursor:pointer;
+      display:grid;place-items:center;font-weight:900;
+      box-shadow:0 6px 18px rgba(34,197,94,.35);
+    }
+    .zap:active{transform:scale(.97)}
+    .zap svg{width:22px;height:22px;fill:#052814}
+
+    /* FAB do WhatsApp (flutuante) */
+    .wa-float{
+      position:fixed; right:16px; bottom:16px; z-index:60;
+      width:56px; height:56px; border-radius:999px;
+      background:var(--ok); display:none; align-items:center; justify-content:center;
+      box-shadow:0 12px 32px rgba(34,197,94,.35);
+    }
+    .wa-float:active{ transform:scale(.97) }
+    .wa-float svg{ width:28px; height:28px; fill:#052814 }
+    @media (min-width:860px){
+      .wa-float{ right:24px; bottom:24px; width:64px; height:64px }
+      .wa-float svg{ width:30px; height:30px }
+    }
+
+    .muted{
+      margin:22px auto 0;max-width:780px;color:#b6e9e2;
+      text-align:center;font-size:.95rem
+    }
+    .warn{
+      background:#fee2e2;color:#7f1d1d;border:1px solid #fecaca;
+      padding:12px 14px;border-radius:12px;margin:18px auto;max-width:840px
+    }
+    footer{
+      color:#bbf7d0;font-size:.8rem;text-align:center;
+      padding:32px 16px;border-top:1px solid rgba(255,255,255,.07)
+    }
+
+    /* === Lightbox (popup de imagem) === */
+    .lb-bg{
+      position:fixed; inset:0; z-index:70;
+      display:none; align-items:center; justify-content:center;
+      background:rgba(0,0,0,.7); backdrop-filter:saturate(120%) blur(2px);
+      padding:16px;
+    }
+    .lb-card{
+      position:relative; max-width:96vw; max-height:90vh; background:#031d24; border:1px solid rgba(255,255,255,.12);
+      border-radius:16px; box-shadow:0 20px 80px rgba(0,0,0,.55); padding:10px;
+    }
+    .lb-img{
+      display:block; max-width:92vw; max-height:82vh; width:auto; height:auto; object-fit:contain; border-radius:10px;
+      background:#0a2a33;
+    }
+    .lb-close{
+      position:absolute; top:8px; right:8px; border:0; width:36px; height:36px; border-radius:10px;
+      background:rgba(255,255,255,.12); color:#e8ffff; cursor:pointer; font-size:22px; line-height:36px;
+    }
+    .lb-close:active{ transform:scale(.95) }
+  </style>
+
+  <!-- Firebase (modular) -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
+    import { getFirestore, doc, getDoc, collection, query, orderBy, onSnapshot, limit as qLimit } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+
+    // === Config Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
+      authDomain: "mostreaki-2025.firebaseapp.com",
+      projectId: "mostreaki-2025",
+      storageBucket: "mostreaki-2025.firebasestorage.app",
+      messagingSenderId: "748712068097",
+      appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
+    };
+    const app = initializeApp(firebaseConfig);
+    const db  = getFirestore(app);
+
+    // ===== utils =====
+    function getSlug() {
+      const m = location.pathname.match(/catalogo-([^/.]+)\.html$/);
+      if (m) return m[1];
+      const u = new URL(location.href);
+      return u.searchParams.get('c') || u.searchParams.get('slug') || '';
+    }
+
+    const slug = getSlug();
+
+    // placeholder base64 (quadrado claro)
+    const PLACEHOLDER = 'data:image/svg+xml;utf8,' + encodeURIComponent(
+      `<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512">
+        <rect width="100%" height="100%" fill="#e6f6f4"/>
+        <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" fill="#7fb4ad" font-size="28" font-family="Arial">sem imagem</text>
+      </svg>`
+    );
+
+    function waLink(phone, text) {
+      if(!phone) return null;
+      let p = String(phone).replace(/\D/g,'');
+      if (p.startsWith('0')) p = p.slice(1);
+      if (p.length <= 11 && !p.startsWith('55')) p = '55' + p;
+      return `https://wa.me/${p}?text=${encodeURIComponent(text)}`;
+    }
+
+    // ===== Estado de paginação
+    const PER_PAGE = 10;
+    let itens = [];        // array normalizado dos itens ativos
+    let page = 0;          // 0-based
+
+    function totalPages(){ return Math.max(1, Math.ceil(itens.length / PER_PAGE)); }
+    function clampPage(){ page = Math.min(page, totalPages()-1); if(page<0) page=0; }
+
+    function renderPage(){
+      clampPage();
+      const start = page * PER_PAGE;
+      const slice = itens.slice(start, start + PER_PAGE);
+
+      const gridEl = document.getElementById('grid');
+      if(!gridEl){ return; }
+
+      if(slice.length === 0){
+        gridEl.innerHTML = `<div class="warn" style="grid-column:1/-1">Ainda não há itens publicados neste catálogo.</div>`;
+      } else {
+        gridEl.innerHTML = slice.map(d => `
+          <article class="card">
+            <div class="imgWrap">
+              <img loading="lazy" alt="${d.nome}" src="${d.img}" data-full="${d.full||d.img}" onerror="this.src='${PLACEHOLDER}'">
+            </div>
+            <div class="info">
+              <div class="left">
+                <div class="nome">${d.nome}</div>
+                <div class="preco">${d.precoBRL}</div>
+                <div class="qtde">Estoque: ${d.qtd}</div>
+              </div>
+              ${d.zap ? `
+              <button class="zap" aria-label="WhatsApp" onclick="window.open('${d.zap}','_blank')">
+                <svg viewBox="0 0 32 32" role="img" aria-hidden="true"><path d="M19.1 17.1c-.3-.2-1.7-.8-2-.9-.3-.1-.5-.2-.7.2-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.2-1.1-.4-2-1.2-.7-.6-1.2-1.4-1.3-1.6-.1-.3 0-.4.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2.1-.4 0-.6-.1-.2-.7-1.7-.9-2.3-.2-.5-.5-.4-.7-.4h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.7 0 1.6 1.1 3.1 1.2 3.3.1.2 2.2 3.4 5.4 4.7.8.4 1.4.6 1.9.8.8.3 1.6.3 2.2.2.7-.1 2-.8 2.2-1.6.3-.8.3-1.5.2-1.6 0-.1-.2-.1-.4-.2zM16 3C9.9 3 5 7.9 5 14c0 2.4.8 4.6 2.1 6.3L6 29l8-1.9c1.5.4 3.1.7 4.7.7 6.1 0 11-4.9 11-11S22.1 3 16 3z"/></svg>
+              </button>` : ``}
+            </div>
+          </article>
+        `).join('');
+      }
+
+      // atualizar pagers
+      document.querySelectorAll('.pageinfo').forEach(el=>{
+        el.textContent = `Página ${Math.min(page+1,totalPages())} de ${totalPages()}`;
+      });
+      document.querySelectorAll('.btnPrev').forEach(b=> b.disabled = (page<=0));
+      document.querySelectorAll('.btnNext').forEach(b=> b.disabled = (page>=totalPages()-1));
+    }
+
+    // Navegação
+    function goPrev(){ if(page>0){ page--; renderPage(); window.scrollTo({top:0,behavior:'smooth'}); } }
+    function goNext(){ if(page < totalPages()-1){ page++; renderPage(); window.scrollTo({top:0,behavior:'smooth'}); } }
+
+    // Expor para os botões com onclick
+    window.goPrev = goPrev;
+    window.goNext = goNext;
+
+    // ===== Lightbox
+    const lbBg   = document.getElementById('lbBg');
+    const lbImg  = document.getElementById('lbImg');
+    const lbBtn  = document.getElementById('lbClose');
+
+    function openLightbox(src, alt){
+      if(!src) return;
+      lbImg.src = src;
+      lbImg.alt = alt || '';
+      lbBg.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+    function closeLightbox(){
+      lbBg.style.display = 'none';
+      lbImg.src = '';
+      document.body.style.overflow = '';
+    }
+    lbBtn.addEventListener('click', closeLightbox);
+    lbBg.addEventListener('click', (e)=>{ if(e.target === lbBg) closeLightbox(); });
+    window.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeLightbox(); });
+
+    // Delegação: clicar na imagem do card abre o lightbox
+    document.addEventListener('click', (e)=>{
+      const img = e.target.closest('.imgWrap img');
+      if (!img) return;
+      const full = img.getAttribute('data-full') || img.src;
+      openLightbox(full, img.alt || '');
+    });
+
+    // ===== Carregamento
+    async function carregar(){
+      const avisos = document.getElementById('avisos');
+
+      if(!slug){
+        avisos.innerHTML = `<div class="warn">Catálogo não encontrado. Informe o slug (?c=slug).</div>`;
+        return;
+      }
+
+      // 1) Lê meta/config
+      const cfgRef = doc(db, `catalogos/${slug}/meta/config`);
+      const cfgSnap = await getDoc(cfgRef);
+      if (!cfgSnap.exists()){
+        avisos.innerHTML = `<div class="warn">Catálogo não encontrado.</div>`;
+        return;
+      }
+      const cfg = cfgSnap.data();
+
+      // Header/branding
+      const nome = cfg.nomeEmpresa || cfg.titulo || slug;
+      document.title = `Catálogo • ${nome}`;
+      document.getElementById('empresaBar').textContent = nome;
+      document.getElementById('tituloEmpresa').textContent = nome;
+
+      if (cfg.logoUrl){
+        const el = document.getElementById('logoImg');
+        el.src = cfg.logoUrl; el.style.display = 'block';
+      }
+
+      if (cfg.bannerUrl){
+        const box = document.getElementById('bannerBox');
+        const low = cfg.bannerUrl.toLowerCase();
+        if (low.endsWith('.webm') || low.endsWith('.mp4')) {
+          const vid = document.createElement('video');
+          vid.src = cfg.bannerUrl; vid.muted = true; vid.autoplay = true; vid.loop = true; vid.playsInline = true;
+          box.appendChild(vid);
+        } else {
+          const img = new Image();
+          img.alt = 'Banner'; img.src = cfg.bannerUrl; img.loading = 'lazy';
+          box.appendChild(img);
+        }
+      }
+
+      if (cfg.catalogoAtivo !== true){
+        avisos.innerHTML = `<div class="warn">Este catálogo está desativado no momento.</div>`;
+        return;
+      } else {
+        avisos.innerHTML = '';
+      }
+
+      // 2) WhatsApp (FAB + itens)
+      const whats = (cfg.whats || '').toString().trim();
+      const waFab = document.getElementById('waFloat');
+      if (whats) {
+        const msg = `Olá! Tenho interesse no catálogo ${nome}.`;
+        const link = waLink(whats, msg);
+        if (link) { waFab.href = link; waFab.style.display = 'flex'; }
+      } else {
+        waFab.style.display = 'none';
+      }
+
+      // 3) Limite público opcional
+      const limitePublico = Number.isFinite(cfg.limitePublico) ? cfg.limitePublico : null;
+
+      // 4) Assina itens e monta array normalizado
+      const q = query(
+        collection(db, `catalogos/${slug}/itens`),
+        orderBy('ordem','asc'),
+        ...(limitePublico ? [qLimit(limitePublico)] : [])
+      );
+
+      onSnapshot(q, snap=>{
+        const arr = [];
+        let idx = 0;
+        snap.forEach(docSnap=>{
+          const d = docSnap.data(); if (d.ativo === false) return;
+          idx++;
+          const nomeItem = d.nome || `Item ${idx}`;
+
+          // Preço → em BRL
+          let precoBRL = '—';
+          if (typeof d.precoCentavos === 'number') {
+            precoBRL = (d.precoCentavos/100).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+          } else if (typeof d.preco === 'number') {
+            precoBRL = d.preco.toLocaleString('pt-BR',{style:'currency','currency':'BRL'});
+          } else if (typeof d.preco === 'string') {
+            const n = Number(d.preco.replace(',','.')); if (Number.isFinite(n)) precoBRL = n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+          }
+
+          const qtd = (typeof d.quantidade === 'number') ? d.quantidade
+                    : (typeof d.qtde === 'number') ? d.qtde : '—';
+          const img = d.urlImagem || PLACEHOLDER;
+
+          const msg = `Olá! Tenho interesse no *${nomeItem}* do catálogo ${nome}.`;
+          const zap = waLink(d.whats || whats, msg);
+
+          // Se quiser usar imagem maior no popup, pode preencher d.urlImagemFull no Firestore
+          arr.push({ nome: nomeItem, precoBRL, qtd, img, full: d.urlImagemFull || null, zap });
+        });
+
+        itens = arr;
+        clampPage();
+        renderPage();
+      });
+
+      // teclado ← →
+      window.addEventListener('keydown', (ev)=>{
+        if (ev.key === 'ArrowRight') goNext();
+        else if (ev.key === 'ArrowLeft') goPrev();
+      });
+    }
+
+    // área de avisos
+    (function insertAvisos(){
+      const avisos = document.createElement('div');
+      avisos.id = 'avisos';
+      const anchor = document.getElementById('pagerTop');
+      if (anchor && anchor.parentNode) anchor.parentNode.insertBefore(avisos, anchor);
+    })();
+
+    carregar();
+  </script>
+</head>
+<body>
+  <header>
+    <div class="bar">
+      <div class="brand" id="empresaBar">MostreAki</div>
+      <div class="spacer"></div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="logoRing" id="logoRing">
+        <img id="logoImg" alt="Logo" src="" onerror="this.style.display='none'">
+      </div>
+      <h1 class="title" id="tituloEmpresa">Catálogo</h1>
+      <div class="banner" id="bannerBox"></div>
+    </section>
+
+    <!-- Pager Top -->
+    <div id="pagerTop" class="pager">
+      <button class="navbtn btnPrev" onclick="goPrev()" aria-label="Anterior">
+        <svg viewBox="0 0 24 24"><path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+        Anterior
+      </button>
+      <span class="pageinfo">Página 1 de 1</span>
+      <button class="navbtn btnNext" onclick="goNext()" aria-label="Próximo">
+        Próximo
+        <svg viewBox="0 0 24 24"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+      </button>
+    </div>
+
+    <section class="grid" id="grid"></section>
+
+    <!-- Pager Bottom -->
+    <div class="pager" style="margin-top:16px">
+      <button class="navbtn btnPrev" onclick="goPrev()" aria-label="Anterior">
+        <svg viewBox="0 0 24 24"><path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+        Anterior
+      </button>
+      <span class="pageinfo">Página 1 de 1</span>
+      <button class="navbtn btnNext" onclick="goNext()" aria-label="Próximo">
+        Próximo
+        <svg viewBox="0 0 24 24"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+      </button>
+    </div>
+
+    <p class="muted">
+      Toque numa imagem para ampliar. Use as setas do teclado ou os botões para navegar entre as páginas. Clique no ícone de WhatsApp em qualquer item para falar com o vendedor.
+    </p>
+  </main>
+
+  <!-- FAB do WhatsApp -->
+  <a id="waFloat" class="wa-float" href="#" target="_blank" rel="noopener" aria-label="WhatsApp">
+    <svg viewBox="0 0 32 32" role="img" aria-hidden="true"><path d="M19.1 17.1c-.3-.2-1.7-.8-2-.9-.3-.1-.5-.2-.7.2-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.2-1.1-.4-2-1.2-.7-.6-1.2-1.4-1.3-1.6-.1-.3 0-.4.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2.1-.4 0-.6-.1-.2-.7-1.7-.9-2.3-.2-.5-.5-.4-.7-.4h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.7 0 1.6 1.1 3.1 1.2 3.3.1.2 2.2 3.4 5.4 4.7.8.4 1.4.6 1.9.8.8.3 1.6.3 2.2.2.7-.1 2-.8 2.2-1.6.3-.8.3-1.5.2-1.6 0-.1-.2-.1-.4-.2zM16 3C9.9 3 5 7.9 5 14c0 2.4.8 4.6 2.1 6.3L6 29l8-1.9c1.5.4 3.1.7 4.7.7 6.1 0 11-4.9 11-11S22.1 3 16 3z"/></svg>
+  </a>
+
+  <!-- Lightbox -->
+  <div id="lbBg" class="lb-bg" role="dialog" aria-modal="true" aria-label="Imagem ampliada" style="display:none">
+    <div class="lb-card">
+      <button id="lbClose" class="lb-close" aria-label="Fechar">×</button>
+      <img id="lbImg" class="lb-img" alt="">
+    </div>
+  </div>
+
+  <footer>© <span id="ano"></span> MostreAki · Catálogo</footer>
+  <script>document.getElementById('ano').textContent = new Date().getFullYear();</script>
+</body>
+</html>
