@@ -189,7 +189,7 @@
     }
     const slug = getSlug();
     $('#slugLabel').textContent = slug || '—';
-    $('#publicLink').href = slug ? `/catalogo-template.html?c=${encodeURIComponent(slug)}` : '#';
+    $('#publicLink').href = slug ? `/catalogo.html?c=${encodeURIComponent(slug)}` : '#';
 
     // ===== Plano/limite =====
     function normalizePlano(p=''){
