@@ -47,23 +47,44 @@
       background-size:cover;background-position:center;font-size:.9rem;overflow:hidden;
     }
 
-    .section{
-      background:#fff;margin:60px auto;padding:30px;border-radius:10px;box-shadow:0 0 10px #0001;
-      max-width:1100px;text-align:center;
+    /* ===== LAYOUT PRINCIPAL: containers flutuantes ===== */
+    main{
+      padding:60px 20px;
+      max-width:1200px;
+      margin:0 auto;
     }
 
-    footer{background:#c2e7df;padding:20px;text-align:center;color:#555;font-size:.9rem;margin-top:auto}
+    .section-title,
+    .section-cta{
+      background:#fff;
+      margin:0 auto 32px auto;
+      padding:24px;
+      border-radius:10px;
+      box-shadow:0 0 10px #0002;
+      max-width:1100px;
+      text-align:center;
+    }
 
-    /* Galeria */
-    .intro{max-width:800px;margin:0 auto 24px;color:#333;line-height:1.5}
+    .section-title h2{ color:#0e7270; margin-bottom:10px; }
+    .intro{ max-width:800px; margin:0 auto; color:#333; line-height:1.5; }
+
+    /* ===== Galeria de cards ===== */
     .galeria{display:grid;grid-template-columns:1fr;gap:18px;margin-top:10px}
     @media (min-width:640px){ .galeria{grid-template-columns:repeat(2,1fr)} }
     @media (min-width:1024px){ .galeria{grid-template-columns:repeat(3,1fr)} }
-    .card{background:#fff;border:1px solid #e7e7e7;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06);display:flex;flex-direction:column;transition:transform .15s, box-shadow .15s}
+
+    .card{
+      background:#fff;border:1px solid #e7e7e7;border-radius:12px;overflow:hidden;
+      box-shadow:0 2px 8px rgba(0,0,0,.06);display:flex;flex-direction:column;
+      transition:transform .15s, box-shadow .15s
+    }
     .card:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.10)}
     .thumb-wrap{position:relative;aspect-ratio:16/9;background:#f3f7f6;overflow:hidden}
     .thumb-wrap img{width:100%;height:100%;object-fit:cover;display:block}
-    .badge{position:absolute;top:10px;left:10px;background:#15b0af;color:#fff;font-size:.78rem;padding:6px 10px;border-radius:999px;font-weight:bold;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+    .badge{
+      position:absolute;top:10px;left:10px;background:#15b0af;color:#fff;font-size:.78rem;
+      padding:6px 10px;border-radius:999px;font-weight:bold;box-shadow:0 2px 6px rgba(0,0,0,.15)
+    }
     .card-body{padding:14px 14px 18px;display:flex;flex-direction:column;gap:8px;text-align:left}
     .card h3{font-size:1.05rem;color:#0e7270}
     .card p{font-size:.92rem;color:#444;min-height:2.6em}
@@ -75,6 +96,8 @@
     .btn-outline:hover{background:#e8f7f6}
 
     .divider{margin:28px 0;height:1px;background:#eaeaea}
+
+    footer{background:#c2e7df;padding:20px;text-align:center;color:#555;font-size:.9rem;margin-top:auto}
 
     /* ===== Modal de autenticação (login embutido) ===== */
     .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:9999;padding:20px}
@@ -96,7 +119,7 @@
     .muted{font-size:.9rem;color:#666;margin-top:10px}
     .muted a{color:#15b0af;text-decoration:none;font-weight:bold}
 
-    /* Campo de senha com “olho” – padrão que você curtiu */
+    /* Campo de senha com “olho” – padrão */
     .pwd-wrap{position:relative}
     .pwd-wrap input{padding-right:16%}
     .pwd-toggle{
@@ -177,99 +200,104 @@
 </header>
 
 <main>
-  <div class="section">
+  <!-- Título + Intro em container branco isolado -->
+  <div class="section-title">
     <h2>Nossos Parceiros e Templates</h2>
     <p class="intro">
       Uma seleção dos sites e modelos que desenvolvemos. Explore os templates, veja funcionando ao vivo
       e escolha o que combina com o seu projeto. Quando estiver pronto, fale com a gente e colocamos no ar para você.
     </p>
+  </div>
 
-    <div class="galeria">
-      <!-- CARD 1 -->
-      <div class="card">
-        <div class="thumb-wrap">
-          <img src="template1.svg" alt="Template Moderno – MostreAki" loading="lazy">
-          <span class="badge">Template</span>
-        </div>
-        <div class="card-body">
-          <h3>Template Moderno</h3>
-          <p>Layout vibrante, botões de ação visíveis e de projetos fãs pessoais de entretenimento.</p>
-          <div class="actions">
-            <a class="btn btn-primary" href="https://www.pokedaimon.com.br" target="_blank" rel="noopener">Ver Site</a>
-            <a class="btn btn-outline" href="/planos.html" target="_blank" rel="noopener">Contratar</a>
-          </div>
-        </div>
+  <!-- Galeria de cards (cada card já é um container branco) -->
+  <div class="galeria">
+    <!-- CARD 1 -->
+    <div class="card">
+      <div class="thumb-wrap">
+        <img src="template1.svg" alt="Template Moderno – MostreAki" loading="lazy">
+        <span class="badge">Template</span>
       </div>
-
-      <!-- CARD 2 -->
-      <div class="card">
-        <div class="thumb-wrap">
-          <img src="template2.svg" alt="Template Minimalista – MostreAki" loading="lazy">
-          <span class="badge">Template</span>
-        </div>
-        <div class="card-body">
-          <h3>Template Minimalista</h3>
-          <p>Tipografia limpa, com foco no conteúdo e carregamento super leve.</p>
-          <div class="actions">
-            <a class="btn btn-primary" href="https://www.almanyx.com.br" target="_blank" rel="noopener">Ver Site</a>
-            <a class="btn btn-outline" href="/planos.html" target="_blank" rel="noopener">Contratar</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- CARD 3 -->
-      <div class="card">
-        <div class="thumb-wrap">
-          <img src="template3.svg" alt="Landing Page Conversão – MostreAki" loading="lazy">
-          <span class="badge">Template</span>
-        </div>
-        <div class="card-body">
-          <h3>Template Avançado</h3>
-          <p>Especiais para planos avançados com serviços adicionais de assinatura e gestão combinada.</p>
-          <div class="actions">
-            <a class="btn btn-primary" href="https://www.mostreaki.com.br" target="_blank" rel="noopener">Ver Site</a>
-            <a class="btn btn-outline" href="/planos.html" target="_blank" rel="noopener">Contratar</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- CARD 4 -->
-      <div class="card">
-        <div class="thumb-wrap">
-          <img src="template4.png" alt="Catálogo Visual – MostreAki" loading="lazy">
-          <span class="badge">Template</span>
-        </div>
-        <div class="card-body">
-          <h3>Catálogo Visual</h3>
-          <p>Grade de produtos com filtros simples e exibição em destaque como exemplo produtos de artesanato.</p>
-          <div class="actions">
-            <a class="btn btn-primary" href="#" target="_blank" rel="noopener">Ver Site</a>
-            <a class="btn btn-outline" href="https://wa.me/seunumerodetelefone?text=Quero%20o%20Cat%C3%A1logo%20Visual" target="_blank" rel="noopener">Contratar</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- CARD 5 -->
-      <div class="card">
-        <div class="thumb-wrap">
-          <img src="template5.png" alt="Portfólio Criativo – MostreAki" loading="lazy">
-          <span class="badge">Template</span>
-        </div>
-        <div class="card-body">
-          <h3>Portfólio Criativo</h3>
-          <p>Opções específicas para fortalecimento da Marca com catálogo e vendas de produtos via Whatsapp.</p>
-          <div class="actions">
-            <a class="btn btn-primary" href="#" target="_blank" rel="noopener">Ver Site</a>
-            <a class="btn btn-outline" href="https://wa.me/seunumerodetelefone?text=Quero%20o%20Portf%C3%B3lio%20Criativo" target="_blank" rel="noopener">Contratar</a>
-          </div>
+      <div class="card-body">
+        <h3>Template Moderno</h3>
+        <p>Layout vibrante, botões de ação visíveis e de projetos fãs pessoais de entretenimento.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="https://www.pokedaimon.com.br" target="_blank" rel="noopener">Ver Site</a>
+          <a class="btn btn-outline" href="/planos.html" target="_blank" rel="noopener">Contratar</a>
         </div>
       </div>
     </div>
 
-    <div class="divider"></div>
+    <!-- CARD 2 -->
+    <div class="card">
+      <div class="thumb-wrap">
+        <img src="template2.svg" alt="Template Minimalista – MostreAki" loading="lazy">
+        <span class="badge">Template</span>
+      </div>
+      <div class="card-body">
+        <h3>Template Minimalista</h3>
+        <p>Tipografia limpa, com foco no conteúdo e carregamento super leve.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="https://www.almanyx.com.br" target="_blank" rel="noopener">Ver Site</a>
+          <a class="btn btn-outline" href="/planos.html" target="_blank" rel="noopener">Contratar</a>
+        </div>
+      </div>
+    </div>
 
+    <!-- CARD 3 -->
+    <div class="card">
+      <div class="thumb-wrap">
+        <img src="template3.svg" alt="Landing Page Conversão – MostreAki" loading="lazy">
+        <span class="badge">Template</span>
+      </div>
+      <div class="card-body">
+        <h3>Template Avançado</h3>
+        <p>Especiais para planos avançados com serviços adicionais de assinatura e gestão combinada.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="https://www.mostreaki.com.br" target="_blank" rel="noopener">Ver Site</a>
+          <a class="btn btn-outline" href="/planos.html" target="_blank" rel="noopener">Contratar</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 4 -->
+    <div class="card">
+      <div class="thumb-wrap">
+        <img src="template4.png" alt="Catálogo Visual – MostreAki" loading="lazy">
+        <span class="badge">Template</span>
+      </div>
+      <div class="card-body">
+        <h3>Catálogo Visual</h3>
+        <p>Grade de produtos com filtros simples e exibição em destaque como exemplo produtos de artesanato.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="#" target="_blank" rel="noopener">Ver Site</a>
+          <a class="btn btn-outline" href="https://wa.me/seunumerodetelefone?text=Quero%20o%20Cat%C3%A1logo%20Visual" target="_blank" rel="noopener">Contratar</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 5 -->
+    <div class="card">
+      <div class="thumb-wrap">
+        <img src="template5.png" alt="Portfólio Criativo – MostreAki" loading="lazy">
+        <span class="badge">Template</span>
+      </div>
+      <div class="card-body">
+        <h3>Portfólio Criativo</h3>
+        <p>Opções específicas para fortalecimento da Marca com catálogo e vendas de produtos via Whatsapp.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="#" target="_blank" rel="noopener">Ver Site</a>
+          <a class="btn btn-outline" href="https://wa.me/seunumerodetelefone?text=Quero%20o%20Portf%C3%B3lio%20Criativo" target="_blank" rel="noopener">Contratar</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- CTA final em container branco isolado -->
+  <div class="section-cta">
     <p class="intro">
-      Quer expor o seu site aqui como parceiro? Envie uma mensagem:
+      Quer expor o seu site aqui como parceiro? Envie uma mensagem:<br>
       <a class="btn btn-outline" style="margin-top:10px" href="https://wa.me/seunumerodetelefone?text=Quero%20ser%20parceiro%20MostreAki" target="_blank" rel="noopener">Quero ser parceiro</a>
     </p>
   </div>
