@@ -1,89 +1,258 @@
-<!DOCTYPE html><html lang="pt-BR">
+<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Serviços Adicionais – MostreAki</title>
   <link rel="icon" href="favicon.ico" type="image/x-icon"/>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
+  <script src="/firebase-init.js"></script>
   <style>
-    *{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}body{
-  background-image:url("fundo-mobile-mostreaki.png");
-  background-size:cover;background-repeat:no-repeat;background-attachment:fixed;
-  min-height:100vh;display:flex;flex-direction:column;
-}
-@media (min-width:768px){ body{ background-image:url("fundo-desktop-mostreaki.png"); } }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
 
-header{
-  background:#c2e7df;height:60px;display:flex;align-items:center;justify-content:space-between;
-  padding:0 20px;position:relative;box-shadow:0 2px 6px rgba(0,0,0,.1);
-}
-.logo-container{display:flex;align-items:center;cursor:pointer}
-.logo-container img{height:40px;margin-right:10px}
-.logo{font-size:1.5rem;font-weight:bold}
-.logo .mostre{color:#00C2BF}.logo .aki{color:#FA1E39}
+    body {
+      background-image: url("fundo-mobile-mostreaki.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
 
-.menu-icon{font-size:1.5rem;cursor:pointer;user-select:none}
-.menu-list{
-  position:absolute;top:60px;right:20px;background:#16807C;border:2px solid #000;border-radius:6px;
-  display:none;flex-direction:column;padding:10px;z-index:10000;
-}
-.menu-list a{
-  background:#FA1E39;color:#fff;text-decoration:none;padding:10px;margin-bottom:8px;border-radius:6px;
-  text-align:center;font-weight:bold;
-}
-.menu-list a:hover{background:#b8313b}
+    @media (min-width: 768px) {
+      body {
+        background-image: url("fundo-desktop-mostreaki.png");
+      }
+    }
 
-.header-auth{display:flex;align-items:center;gap:10px}
-#btnAbrirLogin{
-  background:#15b0af;color:#fff;font-weight:bold;border:none;border-radius:8px;
-  padding:8px 12px;cursor:pointer;
-}
-#authText{font-weight:bold;color:#15b0af;cursor:pointer;display:none}
-.user-circle{
-  background:#15b0af;color:#fff;font-weight:bold;border-radius:50%;
-  width:32px;height:32px;display:none;align-items:center;justify-content:center;
-  background-size:cover;background-position:center;font-size:.9rem;overflow:hidden;
-}
+    header {
+      background: #c2e7df;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      position: relative;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, .1);
+    }
 
-.section{
-  background:#fff;margin:40px auto;padding:20px;width:80%;border-radius:10px;
-  box-shadow:0 2px 8px rgba(0,0,0,.1);text-align:center;
-  max-width:1100px;
-}
-.section h1, .section h2{
-  text-align:center;color:#0e7270;font-size:1.8rem;margin-bottom:8px;
-}
-.section p.lead, .section p{
-  text-align:center;color:#444;margin-bottom:24px;line-height:1.6;
-}
+    .logo-container {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
 
-.cards{display:grid;grid-template-columns:1fr;gap:18px;margin-top:20px}
-@media (min-width:700px){ .cards{grid-template-columns:repeat(2,1fr)} }
-@media (min-width:1024px){ .cards{grid-template-columns:repeat(4,1fr)} }
+    .logo-container img {
+      height: 40px;
+      margin-right: 10px;
+    }
 
-.card{
-  background:#fff;border:1px solid #e7e7e7;border-radius:12px;padding:16px;
-  box-shadow:0 2px 8px rgba(0,0,0,.06);display:flex;flex-direction:column;gap:10px;
-  transition:transform .15s, box-shadow .15s;
-}
-.card:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.10)}
-.icon{
-  width:56px;height:56px;border-radius:12px;background:#e8f7f6;display:grid;place-items:center;
-  font-size:28px;color:#0e7270;
-}
-.card h3{color:#0e7270;font-size:1.05rem}
-.card p{color:#444;font-size:.95rem;line-height:1.45}
-ul.features{margin-left:16px;color:#444;line-height:1.6;font-size:.93rem}
-ul.features li+li{margin-top:6px}
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
 
-.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
-.btn{display:inline-block;padding:10px 14px;border-radius:8px;font-weight:bold;text-decoration:none;text-align:center;cursor:pointer;border:none}
-.btn-primary{background:#15b0af;color:#fff}
-.btn-primary:hover{filter:brightness(.95)}
-.btn-outline{background:#fff;color:#15b0af;border:2px solid #15b0af}
-.btn-outline:hover{background:#e8f7f6}
+    .logo .mostre { color: #00C2BF; }
+    .logo .aki { color: #FA1E39; }
 
-footer{background:#c2e7df;padding:20px;text-align:center;color:#555;font-size:.9rem;margin-top:auto}
+    .menu-icon {
+      font-size: 1.5rem;
+      cursor: pointer;
+      user-select: none;
+    }
 
+    .menu-list {
+      position: absolute;
+      top: 60px;
+      right: 20px;
+      background: #16807C;
+      border: 2px solid #000;
+      border-radius: 6px;
+      display: none;
+      flex-direction: column;
+      padding: 10px;
+      z-index: 10000;
+    }
+
+    .menu-list a {
+      background: #FA1E39;
+      color: #fff;
+      text-decoration: none;
+      padding: 10px;
+      margin-bottom: 8px;
+      border-radius: 6px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .menu-list a:hover {
+      background: #b8313b;
+    }
+
+    .header-auth {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    #btnAbrirLogin {
+      background: #15b0af;
+      color: #fff;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+
+    #authText {
+      font-weight: bold;
+      color: #15b0af;
+      cursor: pointer;
+      display: none;
+    }
+
+    .user-circle {
+      background: #15b0af;
+      color: #fff;
+      font-weight: bold;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background-size: cover;
+      background-position: center;
+      font-size: .9rem;
+      overflow: hidden;
+    }
+
+    .section {
+      background: #fff;
+      margin: 40px auto;
+      padding: 20px;
+      width: 90%;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, .1);
+      text-align: center;
+      max-width: 1100px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+      margin-top: 20px;
+    }
+
+    @media (min-width: 700px) {
+      .cards { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (min-width: 1024px) {
+      .cards { grid-template-columns: repeat(4, 1fr); }
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid #e7e7e7;
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, .06);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: transform .15s, box-shadow .15s;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, .10);
+    }
+
+    .icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 12px;
+      background: #e8f7f6;
+      display: grid;
+      place-items: center;
+      font-size: 28px;
+      color: #0e7270;
+    }
+
+    .card h3 {
+      color: #0e7270;
+      font-size: 1.05rem;
+    }
+
+    .card p {
+      color: #444;
+      font-size: .95rem;
+      line-height: 1.45;
+    }
+
+    ul.features {
+      margin-left: 16px;
+      color: #444;
+      line-height: 1.6;
+      font-size: .93rem;
+    }
+
+    ul.features li+li {
+      margin-top: 6px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-weight: bold;
+      text-decoration: none;
+      text-align: center;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-primary {
+      background: #15b0af;
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      filter: brightness(.95);
+    }
+
+    .btn-outline {
+      background: #fff;
+      color: #15b0af;
+      border: 2px solid #15b0af;
+    }
+
+    .btn-outline:hover {
+      background: #e8f7f6;
+    }
+
+    footer {
+      background: #c2e7df;
+      padding: 20px;
+      text-align: center;
+      color: #555;
+      font-size: .9rem;
+      margin-top: auto;
+    }
   </style>
 </head>
 <body>
@@ -107,14 +276,17 @@ footer{background:#c2e7df;padding:20px;text-align:center;color:#555;font-size:.9
       <a href="/redes-sociais.html">Redes Sociais</a>
       <a href="/contatos.html">Contatos</a>
     </nav>
-  </header>  <main>
+  </header>
+
+  <main>
     <div class="section">
       <h1>Serviços Adicionais</h1>
       <p class="lead">Impulsione sua marca com criações visuais sob medida e suporte operacional. Escolha o serviço e fale direto com a gente.</p>
     </div>
+
     <div class="section">
       <div class="cards">
-        <!-- LOGOTIPO SVG -->
+
         <div class="card">
           <div class="icon">🖍️</div>
           <h3>Criação de Logotipo (SVG)</h3>
@@ -125,46 +297,47 @@ footer{background:#c2e7df;padding:20px;text-align:center;color:#555;font-size:.9
             <li>Guia rápido de uso de cores e tipografia</li>
           </ul>
           <div class="actions">
-            <a class="btn btn-primary" target="_blank" rel="noopener"
-               href="https://wa.me/5511999999999?text=Quero%20um%20logotipo%20(SVG)%20para%20minha%20marca">Pedir orçamento</a>
+            <a class="btn btn-primary" target="_blank" rel="noopener" href="https://wa.me/5511999999999?text=Quero%20um%20logotipo%20(SVG)%20para%20minha%20marca">Pedir orçamento</a>
             <a class="btn btn-outline" href="/parceiros.html">Ver portfólio</a>
           </div>
-        </div><!-- MASCOTE -->
-    <div class="card">
-      <div class="icon">🦊</div>
-      <h3>Criação de Mascote</h3>
-      <p>Um personagem com a cara da sua marca para posts, banners e materiais promocionais.</p>
-      <ul class="features">
-        <li>Exploração de estilos (fofo, moderno, minimalista)</li>
-        <li>Versões em poses essenciais (avatar, aceno, apontando)</li>
-        <li>Entrega em PNG e SVG quando aplicável</li>
-      </ul>
-      <div class="actions">
-        <a class="btn btn-primary" target="_blank" rel="noopener"
-           href="https://wa.me/5511999999999?text=Quero%20um%20mascote%20para%20minha%20marca">Pedir orçamento</a>
-        <a class="btn btn-outline" href="/parceiros.html">Ver portfólio</a>
+        </div>
+
+        <div class="card">
+          <div class="icon">🦊</div>
+          <h3>Criação de Mascote</h3>
+          <p>Um personagem com a cara da sua marca para posts, banners e materiais promocionais.</p>
+          <ul class="features">
+            <li>Exploração de estilos (fofo, moderno, minimalista)</li>
+            <li>Versões em poses essenciais (avatar, aceno, apontando)</li>
+            <li>Entrega em PNG e SVG quando aplicável</li>
+          </ul>
+          <div class="actions">
+            <a class="btn btn-primary" target="_blank" rel="noopener" href="https://wa.me/5511999999999?text=Quero%20um%20mascote%20para%20minha%20marca">Pedir orçamento</a>
+            <a class="btn btn-outline" href="/parceiros.html">Ver portfólio</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="icon">🎨</div>
+          <h3>Elementos Visuais</h3>
+          <p>Pacote de ícones, padrões, banners e artes para redes sociais seguindo sua identidade.</p>
+          <ul class="features">
+            <li>Kit de ícones e stickers personalizados</li>
+            <li>3 a 6 banners otimizados para web</li>
+            <li>Arquivos prontos para Instagram e site</li>
+          </ul>
+          <div class="actions">
+            <a class="btn btn-primary" target="_blank" rel="noopener" href="https://wa.me/5511999999999?text=Quero%20elementos%20visuais%20para%20minha%20marca">Pedir orçamento</a>
+            <a class="btn btn-outline" href="/parceiros.html">Ver portfólio</a>
+          </div>
+        </div>
+
       </div>
     </div>
+  </main>
 
-    <!-- ELEMENTOS VISUAIS -->
-    <div class="card">
-      <div class="icon">🎨</div>
-      <h3>Elementos Visuais</h3>
-      <p>Pacote de ícones, padrões, banners e artes para redes sociais seguindo sua identidade.</p>
-      <ul class="features">
-        <li>Kit de ícones e stickers personalizados</li>
-        <li>3 a 6 banners otimizados para web</li>
-        <li>Arquivos prontos para Instagram e site</li>
-      </ul>
-      <div class="actions">
-        <a class="btn btn-primary" target="_blank" rel="noopener"
-           href="https://wa.me/5511999999999?text=Quero%20elementos%20visuais%20para%20minha%20marca">Pedir orçamento</a>
-        <a class="btn btn-outline" href="/parceiros.html">Ver portfólio</a>
-      </div>
-    </div>
-  </div>
-</div>
+  <footer>&copy; 2025 MostreAki. Todos os direitos reservados.</footer>
 
-  </main>  <footer>&copy; 2025 MostreAki. Todos os direitos reservados.</footer>
+  <script src="/auth-check.js"></script>
 </body>
 </html>
