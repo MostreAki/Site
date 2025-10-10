@@ -1,163 +1,435 @@
-<!doctype html>
-
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="robots" content="noindex,nofollow" />
-  <title>Cadastro – MostreAki</title>
-  <style>
-    :root{--bg:#0e0e0e;--fg:#fafafa;--muted:#b3b3b3;--brand:#c7a25a;--ok:#22c55e;--err:#ef4444}
-    *{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Arial,sans-serif;background:var(--bg);color:var(--fg);}
-    .wrap{max-width:680px;margin:40px auto;padding:24px}
-    h1{font-size:clamp(22px,3.6vw,32px);margin:0 0 12px}
-    p.sub{color:var(--muted);margin:0 0 24px}
-    form{background:#121212;border:1px solid #252525;border-radius:14px;padding:20px}
-    .row{display:flex;gap:12px;flex-wrap:wrap}
-    label{display:block;font-size:14px;margin:8px 0 6px;color:#d8d8d8}
-    input,select,textarea{width:100%;padding:12px 14px;border:1px solid #2a2a2a;background:#0b0b0b;color:#f1f1f1;border-radius:10px;outline:none}
-    input:focus,select:focus,textarea:focus{border-color:#3c3c3c;box-shadow:0 0 0 2px rgba(199,162,90,.15)}
-    .hp{position:absolute;left:-9999px;opacity:0}
-    .actions{display:flex;gap:12px;align-items:center;margin-top:18px}
-    button{background:var(--brand);color:#0a0a0a;border:0;padding:12px 16px;border-radius:12px;font-weight:600;cursor:pointer}
-    button[disabled]{opacity:.6;cursor:not-allowed}
-    .note{font-size:13px;color:var(--muted)}
-    .msg{margin-top:16px;font-size:14px}
-    .msg.ok{color:var(--ok)} .msg.err{color:var(--err)}
-    .small{font-size:12px;color:#a0a0a0}
-    .brand{display:flex;align-items:center;gap:10px;margin-bottom:16px}
-    .brand .dot{width:12px;height:12px;background:var(--brand);border-radius:50%}
-    .ver{font-size:12px;color:#7a7a7a}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cadastro – MostreAki</title>
+<style>
+  :root{
+    --brand:#15b0af; --brandLight:#c2e7df; --accent:#FA1E39; --ink:#063b39;
+    --bg:#f4f7f7; --card:#ffffff; --line:#e6efed;
+  }
+  *{box-sizing:border-box}
+  body{
+    font-family:Arial, sans-serif;background:var(--bg);
+    min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px;
+  }
+  .card{
+    background:var(--card); border-radius:16px; width:100%; max-width:720px;
+    box-shadow:0 10px 40px rgba(0,0,0,.08); padding:24px 22px; border:2px solid var(--brandLight);
+  }
+  .card h1{margin:0 0 4px; color:#0f6f6e; font-size:1.35rem}
+  .sub{color:#4a6665; font-size:.92rem; margin-bottom:16px}
+  .section-title{margin-top:16px; font-weight:bold; color:#0f6f6e}
+
+  .form-grid{display:grid; gap:12px}
+  @media (min-width:720px){ .cols-2{ grid-template-columns:1fr 1fr; } .cols-3{ grid-template-columns:1fr 1fr 1fr; } }
+
+  .radio-row{display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin:6px 0 2px}
+
+  .field{
+    position:relative; background:#fff; border:1.5px solid var(--line); border-radius:12px; padding:12px 12px 10px;
+  }
+  .field:focus-within{ border-color:var(--brand); box-shadow:0 0 0 3px rgba(21,176,175,.12); }
+  .field input, .field select{
+    width:100%; border:0; outline:0; font-size:1rem; background:transparent; padding:10px 0 2px; color:#233;
+  }
+  .field label{
+    position:absolute; left:12px; top:10px; color:#667; font-size:.95rem; pointer-events:none;
+    transition: all .18s ease;
+    background:#fff; padding:0 6px; border-radius:6px; transform-origin:left top;
+  }
+  .field.focus label, .field.has-value label{ top:-8px; font-size:.78rem; color:var(--brand); }
+
+  .hint{font-size:.82rem; color:#667; margin-top:6px}
+
+  button,.btn{width:100%; margin-top:12px; padding:12px; border-radius:12px; border:0; font-weight:bold; cursor:pointer}
+  .primary{background:var(--brand); color:#fff}
+  .muted{font-size:.92rem; color:#666; margin-top:10px}
+  a{color:var(--brand); text-decoration:none; font-weight:bold}
+
+  /* Olho de senha — seus ajustes */
+  .pwd-wrap{position:relative}
+  .pwd-wrap input{padding-right:16%}
+  .pwd-toggle{
+    position:absolute; right:8px; top:20%;
+    width:36px; height:36px; display:flex; align-items:center; justify-content:center;
+    background:#fff; border:1px solid #ddd; border-radius:6px; cursor:pointer;
+    font-size:18px; line-height:1; color:#444;
+  }
+  .pwd-toggle:active{transform:scale(.98)}
+
+  /* POPUP brand */
+  .alert-bg{position:fixed; inset:0; background:rgba(0,0,0,.55); display:none; align-items:center; justify-content:center; z-index:9999; padding:20px}
+  .alert-card{background:#fff; border-radius:16px; overflow:hidden; max-width:520px; width:100%; box-shadow:0 22px 70px rgba(0,0,0,.25); border:2px solid var(--brandLight)}
+  .alert-head{background:linear-gradient(90deg,var(--brandLight),var(--brand)); padding:14px 16px; display:flex; align-items:center; gap:10px}
+  .alert-dot{width:10px; height:10px; border-radius:50%; background:var(--accent)}
+  .alert-title{color:var(--ink); font-weight:bold}
+  .alert-body{padding:16px; color:#2b2b2b}
+  .alert-actions{display:flex; gap:10px; flex-wrap:wrap; padding:0 16px 16px}
+  .btn-solid{background:var(--brand); color:#fff}
+  .btn-ghost{background:#fff; border:2px solid var(--brand); color:#var(--brand)}
+</style>
 </head>
 <body>
-  <!-- ⚠️ PÁGINA DE CADASTRO – NÃO COLAR OUTRO ARQUIVO AQUI. -->
-  <div class="wrap">
-    <div class="brand"><span class="dot"></span><strong>MostreAki • Cadastro</strong> <span class="ver" id="ver"></span></div>
-    <h1>Quero receber novidades</h1>
-    <p class="sub">Preencha seus dados e entraremos em contato. Seus dados ficam seguros.</p><form id="cadastroForm" autocomplete="on">
-  <!-- honeypot anti-bot -->
-  <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" />
+<div class="card">
+  <h1>Criar conta</h1>
+  <div class="sub">Preencha seus dados para começar a usar o MostreAki.</div>
 
-  <div class="row">
-    <div style="flex:1 1 260px">
-      <label for="nome">Nome completo*</label>
-      <input id="nome" name="nome" required maxlength="120" />
-    </div>
-    <div style="flex:1 1 220px">
-      <label for="email">E-mail*</label>
-      <input id="email" name="email" type="email" inputmode="email" required />
+  <!-- Tipo de pessoa -->
+  <div class="section-title">Tipo de cadastro</div>
+  <div class="radio-row">
+    <label><input type="radio" name="tipoPessoa" value="PF" checked> Pessoa Física</label>
+    <label><input type="radio" name="tipoPessoa" value="PJ"> Pessoa Jurídica</label>
+  </div>
+
+  <!-- NOVO: Identidade no MostreAki -->
+  <div class="section-title">Identidade no MostreAki</div>
+  <div class="form-grid">
+    <div class="field"><label for="username">Nome de usuário *</label><input id="username" required placeholder=""></div>
+  </div>
+  <div class="hint">Use 3–40 caracteres. Permitidos: letras, números, ponto, hífen e underline. Ex.: <b>la-maggie</b>, <b>dentista.joao</b></div>
+
+  <div class="form-grid" id="grupoPF">
+    <div class="field"><label for="nome">Nome completo *</label><input id="nome" required autocomplete="name" placeholder=""></div>
+    <div class="field"><label for="cpf">CPF *</label><input id="cpf" inputmode="numeric" placeholder=""></div>
+  </div>
+
+  <div class="form-grid" id="grupoPJ" style="display:none">
+    <div class="field"><label for="razao">Razão Social *</label><input id="razao" placeholder=""></div>
+    <div class="field"><label for="cnpj">CNPJ *</label><input id="cnpj" inputmode="numeric" placeholder=""></div>
+    <div class="field"><label for="ie">Inscrição Estadual</label><input id="ie" placeholder=""></div>
+    <div class="radio-row" style="margin-top:-6px">
+      <label><input type="checkbox" id="isentoIE"> Isento de IE</label>
     </div>
   </div>
 
-  <div class="row">
-    <div style="flex:1 1 220px">
-      <label for="whats">WhatsApp</label>
-      <input id="whats" name="whats" placeholder="(11) 90000-0000" />
-    </div>
-    <div style="flex:1 1 220px">
-      <label for="origem">De qual catálogo?</label>
-      <input id="origem" name="origem" placeholder="percival-brics" />
-    </div>
+  <!-- Contato -->
+  <div class="section-title">Contato</div>
+  <div class="form-grid cols-2">
+    <div class="field"><label for="fone">Celular / WhatsApp *</label><input id="fone" type="tel" inputmode="tel" required autocomplete="tel" placeholder=""></div>
+    <div class="field"><label for="email">E-mail *</label><input id="email" type="email" required autocomplete="email" placeholder=""></div>
+  </div>
+  <div class="form-grid cols-2">
+    <div class="field"><label for="email2">Confirmar e-mail *</label><input id="email2" type="email" required placeholder=""></div>
   </div>
 
-  <label class="small"><input type="checkbox" id="aceite" required /> Concordo em receber contato e comunicações da MostreAki.</label>
-
-  <div class="actions">
-    <button id="btn" type="submit">Enviar cadastro</button>
-    <span class="note">Campos marcados com * são obrigatórios.</span>
+  <!-- Endereço para NFS-e -->
+  <div class="section-title">Endereço (faturamento/NFS-e)</div>
+  <div class="form-grid cols-3">
+    <div class="field"><label for="cep">CEP *</label><input id="cep" inputmode="numeric" placeholder=""></div>
+    <div class="field"><label for="uf">UF *</label>
+      <select id="uf">
+        <option value="">Selecione</option>
+        <option>AC</option><option>AL</option><option>AP</option><option>AM</option><option>BA</option>
+        <option>CE</option><option>DF</option><option>ES</option><option>GO</option><option>MA</option>
+        <option>MT</option><option>MS</option><option>MG</option><option>PA</option><option>PB</option>
+        <option>PR</option><option>PE</option><option>PI</option><option>RJ</option><option>RN</option>
+        <option>RS</option><option>RO</option><option>RR</option><option>SC</option><option>SP</option>
+        <option>SE</option><option>TO</option>
+      </select>
+    </div>
+    <div class="field"><label for="cidade">Cidade *</label><input id="cidade" placeholder=""></div>
   </div>
-  <div id="status" class="msg" role="status" aria-live="polite"></div>
-</form>
+  <div class="form-grid cols-2">
+    <div class="field"><label for="bairro">Bairro *</label><input id="bairro" placeholder=""></div>
+    <div class="field"><label for="logradouro">Logradouro (rua/avenida) *</label><input id="logradouro" placeholder=""></div>
+  </div>
+  <div class="form-grid cols-2">
+    <div class="field"><label for="numero">Número *</label><input id="numero" inputmode="numeric" placeholder=""></div>
+    <div class="field"><label for="complemento">Complemento</label><input id="complemento" placeholder=""></div>
+  </div>
 
-  </div>  <script type="module">
-    // ========================
-    // Versão (p/ debug rápido)
-    // ========================
-    const VERSION = "cadastro-2025-10-10"; // atualize quando editar
-    document.getElementById('ver').textContent = ` • v${VERSION}`;
+  <!-- Acesso -->
+  <div class="section-title">Acesso</div>
+  <div class="form-grid cols-2">
+    <div class="field pwd-wrap"><label for="senha">Senha (mín. 6) *</label><input id="senha" type="password" required autocomplete="new-password" placeholder=""><button id="toggleSenha" class="pwd-toggle" type="button" aria-label="Mostrar senha" aria-pressed="false">👁️</button></div>
+    <div class="field pwd-wrap"><label for="senha2">Confirmar senha *</label><input id="senha2" type="password" required placeholder=""><button id="toggleSenha2" class="pwd-toggle" type="button" aria-label="Mostrar confirmação" aria-pressed="false">👁️</button></div>
+  </div>
 
-    // ========================
-    // Firebase (edite config!)
-    // ========================
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+  <button class="primary" id="btnCadastrar">Criar conta</button>
+  <p class="muted">Já tem conta? <a href="/login.html">Entrar</a></p>
+</div>
 
-    const firebaseConfig = {
-      // TODO: SUBSTITUIR pelos seus dados reais
-      apiKey: "SEU_API_KEY",
-      authDomain: "SEU_PROJETO.firebaseapp.com",
-      projectId: "SEU_PROJETO",
-      storageBucket: "SEU_PROJETO.appspot.com",
-      messagingSenderId: "SENDER_ID",
-      appId: "APP_ID",
-    };
+<!-- POPUP -->
+<div id="alert" class="alert-bg" role="dialog" aria-modal="true" aria-labelledby="alertTitle">
+  <div class="alert-card">
+    <div class="alert-head">
+      <div class="alert-dot"></div>
+      <div id="alertTitle" class="alert-title">Mensagem</div>
+    </div>
+    <div id="alertMsg" class="alert-body">...</div>
+    <div id="alertActions" class="alert-actions"></div>
+  </div>
+</div>
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import {
+  getAuth, createUserWithEmailAndPassword, updateProfile,
+  sendEmailVerification, signOut
+} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import {
+  getFirestore, doc, setDoc, serverTimestamp
+} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
-    // ========================
-    // Helpers
-    // ========================
-    const $ = (sel)=>document.querySelector(sel);
-    const statusEl = $('#status');
-    const btn = $('#btn');
-    const form = $('#cadastroForm');
+const app = initializeApp({
+  apiKey:"AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
+  authDomain:"mostreaki-2025.firebaseapp.com",
+  projectId:"mostreaki-2025",
+  storageBucket:"mostreaki-2025.firebasestorage.app",
+  messagingSenderId:"748712068097",
+  appId:"1:748712068097:web:09cf043fbb45917ef6ec00"
+});
+const auth = getAuth(app);
+const db   = getFirestore(app);
 
-    // Preenche origem a partir de ?c=slug se existir
-    const params = new URLSearchParams(location.search);
-    const slug = params.get('c') || '';
-    if(slug && !$('#origem').value) $('#origem').value = slug;
+/* ===== floating label UX ===== */
+document.querySelectorAll('.field').forEach(f=>{
+  const i=f.querySelector('input,select');
+  const set = ()=>{ f.classList.toggle('has-value', !!i.value); };
+  i.addEventListener('focus', ()=>f.classList.add('focus'));
+  i.addEventListener('blur', ()=>f.classList.remove('focus'));
+  i.addEventListener('input', set); set();
+});
 
-    form.addEventListener('submit', async (e)=>{
-      e.preventDefault();
-      statusEl.textContent = '';
+/* ===== POPUP helpers ===== */
+const alertBG = document.getElementById('alert');
+const alertTitle = document.getElementById('alertTitle');
+const alertMsg = document.getElementById('alertMsg');
+const alertActions = document.getElementById('alertActions');
+function showAlert({title="Aviso", html="", actions=[{text:"Fechar", kind:"solid"}]}){
+  alertTitle.textContent = title;
+  alertMsg.innerHTML = html;
+  alertActions.innerHTML = "";
+  actions.forEach(a=>{
+    const b=document.createElement('button');
+    b.className = 'btn ' + (a.kind==='ghost'?'btn-ghost':'btn-solid');
+    b.textContent = a.text;
+    b.onclick = ()=>{ if(a.onClick) a.onClick(); closeAlert(); };
+    alertActions.appendChild(b);
+  });
+  alertBG.style.display='flex';
+}
+function closeAlert(){ alertBG.style.display='none'; }
+alertBG.addEventListener('click', e=>{ if(e.target===alertBG) closeAlert(); });
+window.addEventListener('keydown', e=>{ if(e.key==='Escape' && alertBG.style.display==='flex') closeAlert(); });
 
-      // Honeypot: se preenchido, descarta
-      if (form.website && form.website.value) {
-        statusEl.className = 'msg err';
-        statusEl.textContent = 'Erro de validação. Tente novamente.';
-        return;
-      }
+/* ===== Helpers de máscara/validação ===== */
+const $ = (id)=>document.getElementById(id);
+const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const emailValido = v => emailRe.test(v);
+function onlyDigits(s){ return (s||'').replace(/\D/g,''); }
 
-      if (!$('#aceite').checked){
-        statusEl.className = 'msg err';
-        statusEl.textContent = 'Você precisa aceitar o consentimento para continuar.';
-        return;
-      }
+// Username: normalização + validação
+function stripDiacritics(s){ return (s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,''); }
+function normalizeUsername(s){
+  return stripDiacritics(String(s).toLowerCase())
+    .replace(/\s+/g,'-')
+    .replace(/[^a-z0-9._-]/g,'')
+    .replace(/-+/g,'-')
+    .slice(0,40);
+}
+function isUsernameValid(u){ return /^[a-z0-9._-]{3,40}$/.test(u); }
 
-      const payload = {
-        nome: $('#nome').value?.trim(),
-        email: $('#email').value?.trim().toLowerCase(),
-        whats: $('#whats').value?.trim(),
-        origem: $('#origem').value?.trim() || slug || 'site',
-        userAgent: navigator.userAgent,
-        referrer: document.referrer || null,
-        createdAt: serverTimestamp(),
-        ativo: true, publicado: true, visivel: true
-      };
+/* Celular */
+const fone = $("fone");
+fone.addEventListener("input", () => {
+  let v = onlyDigits(fone.value);
+  if (v.length > 11) v = v.slice(0,11);
+  if (v.length >= 3 && v.length <= 6) fone.value = `(${v.slice(0,2)}) ${v.slice(2)}`;
+  else if (v.length >= 7 && v.length <= 10) fone.value = `(${v.slice(0,2)}) ${v.slice(2,6)}-${v.slice(6)}`;
+  else if (v.length === 11) fone.value = `(${v.slice(0,2)}) ${v.slice(2,7)}-${v.slice(7)}`;
+  else fone.value = v;
+});
 
-      // Validações simples
-      if (!payload.nome || !payload.email){
-        statusEl.className = 'msg err';
-        statusEl.textContent = 'Preencha nome e e-mail.';
-        return;
-      }
+/* CEP + ViaCEP */
+$("cep").addEventListener("input", async ()=>{
+  let v = onlyDigits($("cep").value).slice(0,8);
+  $("cep").value = v.length>5 ? `${v.slice(0,5)}-${v.slice(5)}` : v;
+  if(v.length===8){
+    try{
+      const r = await fetch(`https://viacep.com.br/ws/${v}/json/`);
+      const data = await r.json();
+      if(data.erro) return showAlert({title:"CEP não encontrado", html:"Verifique o CEP informado."});
+      $("logradouro").value = data.logradouro || "";
+      $("bairro").value     = data.bairro || "";
+      $("cidade").value     = data.localidade || "";
+      $("uf").value         = data.uf || "";
+      ["logradouro","bairro","cidade","uf"].forEach(id=>{
+        const f = $(id).closest('.field'); f?.classList.add('has-value');
+      });
+    }catch(e){
+      showAlert({title:"Falha ao buscar CEP", html:"Tente novamente em instantes."});
+    }
+  }
+});
 
-      try{
-        btn.disabled = true; btn.textContent = 'Enviando…';
-        await addDoc(collection(db, 'cadastros'), payload);
-        statusEl.className = 'msg ok';
-        statusEl.textContent = 'Cadastro enviado com sucesso! Em breve entraremos em contato.';
-        form.reset();
-        $('#origem').value = slug; // mantém o slug
-      }catch(err){
-        console.error(err);
-        statusEl.className = 'msg err';
-        statusEl.textContent = 'Não conseguimos enviar agora. Verifique sua conexão e tente novamente.';
-      }finally{
-        btn.disabled = false; btn.textContent = 'Enviar cadastro';
-      }
+/* CPF/CNPJ máscaras e validações */
+const cpfI = $("cpf"), cnpjI = $("cnpj");
+cpfI.addEventListener('input', ()=>{
+  let v = onlyDigits(cpfI.value).slice(0,11);
+  if(v.length>9) cpfI.value = v.replace(/^(\d{3})(\d{3})(\d{3})(\d{0,2}).*$/, "$1.$2.$3-$4");
+  else if(v.length>6) cpfI.value = v.replace(/^(\d{3})(\d{3})(\d{0,3}).*$/, "$1.$2.$3");
+  else if(v.length>3) cpfI.value = v.replace(/^(\d{3})(\d{0,3}).*$/, "$1.$2");
+  else cpfI.value = v;
+});
+cnpjI.addEventListener('input', ()=>{
+  let v = onlyDigits(cnpjI.value).slice(0,14);
+  if(v.length>12) cnpjI.value = v.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{0,2}).*$/, "$1.$2.$3/$4-$5");
+  else if(v.length>8) cnpjI.value = v.replace(/^(\d{2})(\d{3})(\d{3})(\d{0,4}).*$/, "$1.$2.$3/$4");
+  else if(v.length>5) cnpjI.value = v.replace(/^(\d{2})(\d{3})(\d{0,3}).*$/, "$1.$2.$3");
+  else if(v.length>2) cnpjI.value = v.replace(/^(\d{2})(\d{0,3}).*$/, "$1.$2");
+  else cnpjI.value = v;
+});
+function validaCPF(raw){
+  const s = onlyDigits(raw); if(!s || s.length!==11 || /^(\d)\1+$/.test(s)) return false;
+  let soma=0; for(let i=0;i<9;i++) soma+=parseInt(s[i])*(10-i);
+  let d1 = 11-(soma%11); d1 = (d1>9)?0:d1; if(d1!==parseInt(s[9])) return false;
+  soma=0; for(let i=0;i<10;i++) soma+=parseInt(s[i])*(11-i);
+  let d2 = 11-(soma%11); d2 = (d2>9)?0:d2; return d2===parseInt(s[10]);
+}
+function validaCNPJ(raw){
+  const s = onlyDigits(raw); if(!s || s.length!==14 || /^(\d)\1+$/.test(s)) return false;
+  const calc=(base)=>{let soma=0,pos=base.length-7;for(let i=0;i<base.length;i++){soma+=base[i]*pos--; if(pos<2) pos=9;} return soma%11<2?0:11-soma%11;};
+  const nums = s.substring(0,12).split('').map(Number);
+  const dv1 = calc(nums); nums.push(dv1);
+  const dv2 = calc(nums); return dv1===parseInt(s[12]) && dv2===parseInt(s[13]);
+}
+
+/* Alternância PF/PJ */
+const grupoPF = $("grupoPF"), grupoPJ = $("grupoPJ"), isentoIE = $("isentoIE");
+function setTipo(tipo){
+  const pf = tipo==='PF';
+  grupoPF.style.display = pf ? '' : 'none';
+  grupoPJ.style.display = pf ? 'none' : '';
+  $("nome").required = pf; $("cpf").required = pf;
+  $("razao").required = !pf; $("cnpj").required = !pf;
+  $("ie").disabled = isentoIE.checked; $("ie").required = !isentoIE.checked && !pf;
+}
+document.querySelectorAll('input[name="tipoPessoa"]').forEach(r=>{
+  r.addEventListener('change', ()=> setTipo(r.value));
+});
+isentoIE.addEventListener('change', ()=> setTipo(document.querySelector('input[name="tipoPessoa"]:checked').value));
+setTipo('PF');
+
+/* Olhos de senha */
+function wirePasswordToggle(inputId, btnId){
+  const input = $(inputId), btn = $(btnId);
+  if(!input || !btn) return;
+  function flip(){
+    const showing = input.type === 'text';
+    input.type = showing ? 'password' : 'text';
+    btn.textContent = showing ? '👁️' : '🙈';
+    btn.setAttribute('aria-pressed', (!showing).toString());
+    btn.setAttribute('aria-label', showing ? 'Mostrar' : 'Ocultar');
+  }
+  btn.addEventListener('click', flip);
+}
+wirePasswordToggle('senha','toggleSenha');
+wirePasswordToggle('senha2','toggleSenha2');
+
+/* Cadastro por e-mail */
+document.getElementById("btnCadastrar").onclick = async () => {
+  const tipo = document.querySelector('input[name="tipoPessoa"]:checked').value;
+
+  const usernameRaw = $("username").value.trim();
+  const username    = normalizeUsername(usernameRaw);
+
+  const nome = $("nome").value.trim();
+  const cpf  = $("cpf").value.trim();
+  const razao= $("razao").value.trim();
+  const cnpj = $("cnpj").value.trim();
+  const ie   = $("ie").value.trim();
+  const ieIsento = $("isentoIE").checked;
+
+  const fone = $("fone").value.trim();
+  const email = $("email").value.trim(), email2 = $("email2").value.trim();
+  const s1 = $("senha").value, s2 = $("senha2").value;
+
+  const cep = $("cep").value.trim();
+  const uf = $("uf").value.trim();
+  const cidade = $("cidade").value.trim();
+  const bairro = $("bairro").value.trim();
+  const logradouro = $("logradouro").value.trim();
+  const numero = $("numero").value.trim();
+  const complemento = $("complemento").value.trim();
+
+  // Username obrigatório + formato
+  if(!isUsernameValid(username)){
+    return showAlert({
+      title:"Nome de usuário inválido",
+      html:"Use 3–40 caracteres minúsculos: letras, números, ponto, hífen ou underline."
     });
-  </script></body>
+  }
+
+  // Regras PF/PJ
+  if(tipo==='PF'){
+    if(!nome) return showAlert({title:"Nome obrigatório", html:"Informe seu <b>nome completo</b>."});
+    if(!validaCPF(cpf)) return showAlert({title:"CPF inválido", html:"Revise o CPF informado."});
+  }else{
+    if(!razao) return showAlert({title:"Razão Social obrigatória", html:"Informe a <b>razão social</b>."});
+    if(!validaCNPJ(cnpj)) return showAlert({title:"CNPJ inválido", html:"Revise o CNPJ informado."});
+    if(!ieIsento && !ie) return showAlert({title:"IE obrigatória", html:"Informe a Inscrição Estadual ou marque <b>Isento</b>."});
+  }
+
+  // Contato
+  const phoneDigits = (v)=>onlyDigits(v).length;
+  if(!(phoneDigits(fone)===10 || phoneDigits(fone)===11)) return showAlert({title:"Celular inválido", html:"Informe um número com DDD (10 ou 11 dígitos)."});
+  if(!emailRe.test(email) || !emailRe.test(email2)) return showAlert({title:"E-mail inválido", html:"Revise os e-mails digitados."});
+  if(email!==email2) return showAlert({title:"E-mails não conferem", html:"Digite o mesmo e-mail nos dois campos."});
+
+  // Endereço
+  if(onlyDigits(cep).length!==8) return showAlert({title:"CEP inválido", html:"Informe 8 dígitos de CEP."});
+  if(!uf || !cidade || !bairro || !logradouro || !numero) return showAlert({title:"Endereço incompleto", html:"Preencha UF, cidade, bairro, logradouro e número."});
+
+  // Senha
+  if(s1.length<6) return showAlert({title:"Senha fraca", html:"Use pelo menos 6 caracteres."});
+  if(s1!==s2) return showAlert({title:"Senhas não conferem", html:"Digite a mesma senha nos dois campos."});
+
+  try{
+    const cred = await createUserWithEmailAndPassword(auth, email, s1);
+    const uid = cred.user.uid;
+
+    await updateProfile(cred.user,{ displayName: tipo==='PF' ? nome : razao });
+
+    const payload = {
+      uid, tipoPessoa: tipo,
+      username, // ← novo campo obrigatório
+      nomeCompleto: tipo==='PF' ? nome : '',
+      cpf: tipo==='PF' ? onlyDigits(cpf) : '',
+      razaoSocial: tipo==='PJ' ? razao : '',
+      cnpj: tipo==='PJ' ? onlyDigits(cnpj) : '',
+      ie: (tipo==='PJ' ? (ieIsento ? 'ISENTO' : ie) : ''),
+      isentoIE: tipo==='PJ' ? !!ieIsento : null,
+      fone, email,
+      endereco: {
+        cep: onlyDigits(cep),
+        uf, cidade, bairro, logradouro, numero, complemento
+      },
+      createdAt: serverTimestamp()
+    };
+    await setDoc(doc(db,'usuarios',uid), payload, { merge:true });
+
+    await sendEmailVerification(cred.user);
+    showAlert({
+      title:"Confirme seu e-mail",
+      html:`Enviamos um link para <b>${email}</b>.<br>
+            Depois de confirmar, você poderá <b>Fazer Login</b>. Se não encontrar, verifique o spam.`,
+      actions:[{text:"OK, vou verificar", kind:"solid", onClick:()=>{ location.href='/login.html'; }}]
+    });
+    await signOut(auth);
+
+  }catch(e){
+    const mapa={
+      "auth/email-already-in-use":"Este e-mail já possui cadastro.<br><a href='/login.html' style='color:var(--brand);font-weight:bold;'>Ir para o login</a>",
+      "auth/invalid-email":"E-mail inválido. Revise o endereço.",
+      "auth/weak-password":"Senha fraca (mínimo 6 caracteres).",
+      "auth/network-request-failed":"Falha de rede. Verifique sua conexão."
+    };
+    showAlert({title:"Não foi possível cadastrar", html: mapa[e.code] || `Erro inesperado (${e.code}). Tente novamente.`});
+  }
+};
+</script>
+</body>
 </html>
