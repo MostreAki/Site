@@ -14,8 +14,6 @@
       --accent:#FA1E39;
       --ink:#063b39;
       --card:#ffffff;
-      --muted:#445;
-      /* cor solicitada para título/subtítulo */
       --titleAccent:#c6f2e0;
     }
 
@@ -36,7 +34,6 @@
     .logo{font-size:1.5rem;font-weight:bold}
     .logo .mostre{color:#00C2BF}.logo .aki{color:#FA1E39}
 
-    /* avatar + hambúrguer lado a lado */
     .header-auth{ display:flex; align-items:center; gap:10px; }
     .user-circle{
       background:#15b0af;color:#fff;font-weight:bold;border-radius:50%;
@@ -44,10 +41,7 @@
       overflow:hidden;font-size:.9rem;
     }
     .user-circle img{ width:100%; height:100%; object-fit:cover; display:block; }
-    .menu-icon{
-      width:32px; height:32px; display:flex; align-items:center; justify-content:center;
-      line-height:1; font-size:1.5rem; cursor:pointer; user-select:none;
-    }
+    .menu-icon{ width:32px;height:32px;display:flex;align-items:center;justify-content:center;line-height:1;font-size:1.5rem;cursor:pointer }
     .menu-list{
       position:absolute;top:60px;right:20px;background:#16807C;border:2px solid #000;border-radius:6px;
       display:none;flex-direction:column;padding:10px;z-index:10000;
@@ -63,15 +57,10 @@
     /* ===== Pricing ===== */
     .pricing-head{ text-align:center;margin-bottom:22px; }
     .pricing-head h1{
-      color:var(--titleAccent);
-      font-size:1.9rem;margin-bottom:6px;
+      color:var(--titleAccent); font-size:1.9rem;margin-bottom:6px;
       text-shadow:0 1px 0 rgba(0,0,0,.2), 0 2px 4px rgba(0,0,0,.25);
     }
-    .pricing-head p{
-      color:var(--titleAccent);
-      font-size:1.05rem;
-      text-shadow:0 1px 0 rgba(0,0,0,.18);
-    }
+    .pricing-head p{ color:var(--titleAccent); font-size:1.05rem; text-shadow:0 1px 0 rgba(0,0,0,.18); }
 
     .grid{ display:grid; gap:18px; grid-template-columns:1fr; }
     @media (min-width:720px){ .grid{grid-template-columns:repeat(2,1fr)} }
@@ -92,21 +81,17 @@
     .selector{display:flex;align-items:center;gap:8px;color:#0b4d4c;font-weight:bold}
     .selector input{width:18px;height:18px}
 
-    .card-body{padding:16px 16px 8px;flex:1}
-    .feat{list-style:none;color:#273;line-height:1.55;font-size:1rem}
-    .feat li{display:flex;gap:8px;margin:8px 0}
-    .feat li::before{content:"✔";color:var(--brand);font-weight:bold}
-
-    /* NOTA elegante */
-    .note{
-      margin:12px 0 4px;
-      padding:12px 14px;
-      background:#f3fbfa;
-      border-left:4px solid var(--brand);
-      border-radius:10px;
-      color:#234;
-      font-size:.95rem;
+    .card-body{padding:18px 16px 10px;flex:1}
+    /* >>> Ajuste crucial: tirar flex do li para não “espaçar” palavras */
+    .feat{list-style:none;color:#273;font-size:1rem}
+    .feat li{
+      position:relative; padding-left:26px; margin:10px 0; line-height:1.55;
+      white-space:normal; word-break:normal; overflow-wrap:anywhere; text-wrap:pretty;
     }
+    .feat li::before{ content:"✔"; position:absolute; left:0; top:.15em; color:var(--brand); font-weight:bold }
+
+    .note{ margin:12px 0 4px; padding:12px 14px; background:#f3fbfa; border-left:4px solid var(--brand);
+      border-radius:10px; color:#234; font-size:.95rem }
 
     .price-row{ margin-top:12px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap }
     .price{ font-size:1.6rem;color:#0e7270;font-weight:900;letter-spacing:.3px }
@@ -138,7 +123,6 @@
     .tm-check{display:flex;align-items:center;gap:10px;padding:8px 16px;color:#234}
     .tm-actions{display:flex;gap:10px;justify-content:flex-end;padding:0 16px 16px}
 
-    /* Toast */
     .toast{position:fixed;top:16px;right:16px;background:#FA1E39;color:#fff;padding:12px 14px;border-radius:10px;
       box-shadow:0 6px 18px rgba(0,0,0,.2);display:none;z-index:99999;font-weight:bold}
   </style>
@@ -172,10 +156,9 @@
   <div class="pricing-head">
     <h1>Planos do MostreAki</h1>
     <p>Quando estiver logado, marque o plano e clique em <b>AssineAki</b>.</p>
-    <!-- Observação global sobre galeria -->
     <div class="note" style="max-width:860px;margin:12px auto 0">
-      <b>Galeria por item</b> = quantidade de fotos dentro do <i>mesmo</i> produto (abre no popup do catálogo).
-      Regras: Básico → 1 foto por item · Intermediário → 2 fotos por item · Avançado → 3 fotos por item.
+      <b>Galeria por item</b> = n° de fotos dentro do <i>mesmo</i> produto (abre no popup do catálogo).
+      Regras: Básico → 1 foto · Intermediário → 2 fotos · Avançado → 3 fotos.
     </div>
   </div>
 
@@ -301,7 +284,7 @@
     </label>
     <div class="tm-actions">
       <button class="btn" onclick="fecharTermos()">Cancelar</button>
-      <button id="tmProsseguir" class="btn" style="background:var(--brand);color:#fff" disabled>Concordo e prosseguir</button>
+      <button id="tmProsseguir" class="btn" style="background:#15b0af;color:#fff" disabled>Concordo e prosseguir</button>
     </div>
   </div>
 </div>
@@ -460,7 +443,7 @@ function iniciarFluxoAssinatura(planId){
 }
 function redirecionarPagamento(planId){
   const route = {
-    basico:   'https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=15d147b90d6347849f237cb97af164f6', // link MP – Básico
+    basico:   'https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=15d147b90d6347849f237cb97af164f6',
     essencial:'https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=32f1152b54344f5594032751de6e4ca0',
     avancado: 'https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=3740521f035d49ebb8d2897298f4344c'
   }[planId] || '/minha-conta.html';
