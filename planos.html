@@ -15,7 +15,7 @@
       --ink:#063b39;
       --card:#ffffff;
       --muted:#445;
-      /* nova cor solicitada para o título/subtítulo */
+      /* cor solicitada para título/subtítulo */
       --titleAccent:#c6f2e0;
     }
 
@@ -38,20 +38,16 @@
 
     /* avatar + hambúrguer lado a lado */
     .header-auth{ display:flex; align-items:center; gap:10px; }
-
     .user-circle{
       background:#15b0af;color:#fff;font-weight:bold;border-radius:50%;
       width:32px;height:32px;display:flex;align-items:center;justify-content:center;
-      overflow:hidden;
-      font-size:.9rem;
+      overflow:hidden;font-size:.9rem;
     }
     .user-circle img{ width:100%; height:100%; object-fit:cover; display:block; }
-
     .menu-icon{
       width:32px; height:32px; display:flex; align-items:center; justify-content:center;
       line-height:1; font-size:1.5rem; cursor:pointer; user-select:none;
     }
-
     .menu-list{
       position:absolute;top:60px;right:20px;background:#16807C;border:2px solid #000;border-radius:6px;
       display:none;flex-direction:column;padding:10px;z-index:10000;
@@ -101,7 +97,7 @@
     .feat li{display:flex;gap:8px;margin:8px 0}
     .feat li::before{content:"✔";color:var(--brand);font-weight:bold}
 
-    /* NOTA elegante (substitui o alerta com emoji) */
+    /* NOTA elegante */
     .note{
       margin:12px 0 4px;
       padding:12px 14px;
@@ -176,6 +172,11 @@
   <div class="pricing-head">
     <h1>Planos do MostreAki</h1>
     <p>Quando estiver logado, marque o plano e clique em <b>AssineAki</b>.</p>
+    <!-- Observação global sobre galeria -->
+    <div class="note" style="max-width:860px;margin:12px auto 0">
+      <b>Galeria por item</b> = quantidade de fotos dentro do <i>mesmo</i> produto (abre no popup do catálogo).
+      Regras: Básico → 1 foto por item · Intermediário → 2 fotos por item · Avançado → 3 fotos por item.
+    </div>
   </div>
 
   <section class="grid" aria-label="Planos MostreAki">
@@ -192,12 +193,12 @@
         <ul class="feat">
           <li><b>Site Responsivo + design profissional para Instagram.</b></li>
           <li>Limite de 30 fotos/mês para catálogo.</li>
-          <li>Até 1 atualização/semana no site e 1 arte/semana para Instagram (feed ou Stories), com 1 rodada de ajustes.</li>
+          <li>Galeria por item: <b>até 1 foto</b>.</li>
+          <li>Até 1 atualização/semana no site e 1 arte/semana para Instagram (feed ou Stories), com <b>1 rodada</b> de ajustes.</li>
           <li>Atendimento diferenciado via WhatsApp com o suporte técnico do MostreAki.</li>
           <li>O MostreAki dará assistência para configurar o domínio (Registro.br) e o e-mail profissional (Zoho Mail).</li>
         </ul>
 
-        <!-- Nova NOTA (sem emoji) -->
         <div class="note">
           <b>Nota:</b> A contratação do <b>Registro.br</b> e do <b>Zoho Mail</b> é de responsabilidade do cliente. O MostreAki auxilia apenas na configuração. 
         </div> 
@@ -229,9 +230,9 @@
       <div class="card-body">
         <ul class="feat">
           <li><b>Todos os recursos do Plano Básico.</b></li>
-          <li>Limite de 60 fotos/mês para catálogo de produtos com preço e botão de WhatsApp.</li>
-          <li>Até 3 atualização/semana no site e 3 arte/semana para Instagram (feed ou Stories), com 3 rodadas de ajustes.
-</li>
+          <li>Limite de <b>60 fotos/mês</b> para catálogo de produtos com preço e botão de WhatsApp.</li>
+          <li>Galeria por item: <b>até 2 fotos</b>.</li>
+          <li>Até <b>3 atualizações/semana</b> no site e <b>3 artes/semana</b> para Instagram (feed ou Stories), com <b>3 rodadas</b> de ajustes.</li>
           <li>3× banners com loop automático a cada 7s.</li>
         </ul>
         <div class="price-row" aria-label="Preço e pagamento">
@@ -258,10 +259,10 @@
       <div class="card-body">
         <ul class="feat">
           <li><b>Todos os recursos do Intermediário.</b></li>
-          <li><b>Limite de 100 fotos/mês para catálogo com preço e WhatsApp.</b></li>
-          <li><b>Até 5 atualização/semana no site e 5 arte/dia para Instagram (feed ou Stories), com 4 rodadas de ajustes.
-</b></li>
-          <li><b>Até 6× banners com loop automático a cada 7s.</b></li>
+          <li><b>Limite de 100 fotos/mês</b> para catálogo com preço e WhatsApp.</li>
+          <li>Galeria por item: <b>até 3 fotos</b>.</li>
+          <li><b>Até 5 atualizações/semana</b> no site e <b>5 artes/semana</b> para Instagram (feed ou Stories), com <b>4 rodadas</b> de ajustes.</li>
+          <li><b>Até 6× banners</b> com loop automático a cada 7s.</li>
         </ul>
         <div class="price-row" aria-label="Preço e pagamento">
           <div class="price">R$ 500,00</div>
@@ -459,7 +460,7 @@ function iniciarFluxoAssinatura(planId){
 }
 function redirecionarPagamento(planId){
   const route = {
-    basico:   'https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=15d147b90d6347849f237cb97af164f6', // ✅ link do MP – Plano Básico
+    basico:   'https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=15d147b90d6347849f237cb97af164f6', // link MP – Básico
     essencial:'https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=32f1152b54344f5594032751de6e4ca0',
     avancado: 'https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=3740521f035d49ebb8d2897298f4344c'
   }[planId] || '/minha-conta.html';
@@ -468,4 +469,3 @@ function redirecionarPagamento(planId){
 </script>
 </body>
 </html>
-```1
