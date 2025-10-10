@@ -1,123 +1,203 @@
-<!DOCTYPE html><html lang="pt-BR">
+<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Serviços Adicionais – MostreAki</title>
-  <link rel="icon" href="favicon.ico" type="image/x-icon"/>
-  <style>
-    *{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}body{
-  background-image:url("fundo-mobile-mostreaki.png");
-  background-size:cover;background-repeat:no-repeat;background-attachment:fixed;
-  min-height:100vh;display:flex;flex-direction:column;
-}
-@media (min-width:768px){ body{ background-image:url("fundo-desktop-mostreaki.png"); } }
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Serviços Adicionais – MostreAki</title>
+<link rel="icon" href="favicon.ico" type="image/x-icon"/>
+<link rel="manifest" href="manifest.json"/>
+<meta name="theme-color" content="#ffffff"/>
 
-header{
-  background:#c2e7df;height:60px;display:flex;align-items:center;justify-content:space-between;
-  padding:0 20px;position:relative;box-shadow:0 2px 6px rgba(0,0,0,.1);
-}
-.logo-container{display:flex;align-items:center;cursor:pointer}
-.logo-container img{height:40px;margin-right:10px}
-.logo{font-size:1.5rem;font-weight:bold}
-.logo .mostre{color:#00C2BF}.logo .aki{color:#FA1E39}
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
 
-.menu-icon{font-size:1.5rem;cursor:pointer;user-select:none}
-.menu-list{
-  position:absolute;top:60px;right:20px;background:#16807C;border:2px solid #000;border-radius:6px;
-  display:none;flex-direction:column;padding:10px;z-index:10000;
-}
-.menu-list a{
-  background:#FA1E39;color:#fff;text-decoration:none;padding:10px;margin-bottom:8px;border-radius:6px;
-  text-align:center;font-weight:bold;
-}
-.menu-list a:hover{background:#b8313b}
+  /* Fundo igual ao index: imagem + fixo */
+  body{
+    background-image:url("fundo-mobile-mostreaki.png");
+    background-size:cover;background-repeat:no-repeat;background-attachment:fixed;
+    min-height:100vh;display:flex;flex-direction:column;
+  }
+  @media (min-width:768px){ body{ background-image:url("fundo-desktop-mostreaki.png"); } }
 
-.header-auth{display:flex;align-items:center;gap:10px}
-#btnAbrirLogin{
-  background:#15b0af;color:#fff;font-weight:bold;border:none;border-radius:8px;
-  padding:8px 12px;cursor:pointer;
-}
-#authText{font-weight:bold;color:#15b0af;cursor:pointer;display:none}
-.user-circle{
-  background:#15b0af;color:#fff;font-weight:bold;border-radius:50%;
-  width:32px;height:32px;display:none;align-items:center;justify-content:center;
-  background-size:cover;background-position:center;font-size:.9rem;overflow:hidden;
-}
+  /* Header, menu e logo iguais ao index */
+  header{
+    background:#c2e7df;height:60px;display:flex;align-items:center;justify-content:space-between;
+    padding:0 20px;box-shadow:0 2px 4px rgba(0,0,0,.1);position:relative;
+  }
+  .logo-container{display:flex;align-items:center;cursor:pointer}
+  .logo-container img{height:40px;margin-right:10px}
+  .logo{font-size:1.5rem;font-weight:bold}
+  .logo .mostre{color:#00C2BF}.logo .aki{color:#FA1E39}
 
-main {
-  padding: 60px 20px;
-  max-width: 1200px;
-  margin: 0 auto;
-}
+  .menu-icon{font-size:1.5rem;cursor:pointer}
+  .menu-list{
+    position:absolute;top:60px;right:20px;background:#16807C;border:2px solid #000;border-radius:6px;
+    display:none;flex-direction:column;padding:10px;z-index:1000;
+  }
+  .menu-list a{
+    text-decoration:none;color:#fff;padding:10px 15px;border-radius:6px;font-weight:bold;
+    background:#FA1E39;margin-bottom:8px;text-align:center;
+  }
+  .menu-list a:hover{background:#b8313b}
 
-.section-title{
-  background:#fff;padding:24px;border-radius:10px;box-shadow:0 0 10px #0002;
-  margin-bottom:32px;text-align:center;
-}
-.section-title h1{
-  color:#0e7270;font-size:1.8rem;margin-bottom:8px;
-}
-.section-title p{
-  color:#444;margin-bottom:0;line-height:1.6;
-}
+  /* Auth header */
+  .header-auth{display:flex;align-items:center;gap:10px}
+  #btnAbrirLogin{
+    background:#15b0af;color:#fff;font-weight:bold;border:none;border-radius:8px;
+    padding:8px 12px;cursor:pointer;
+  }
+  .user-circle{
+    background:#15b0af;color:#fff;font-weight:bold;border-radius:50%;
+    width:32px;height:32px;display:none;align-items:center;justify-content:center;
+    background-size:cover;background-position:center;font-size:.9rem;
+  }
 
-.cards{
-  display:grid;grid-template-columns:1fr;gap:18px;
-}
-@media (min-width:700px){ .cards{grid-template-columns:repeat(2,1fr)} }
-@media (min-width:1024px){ .cards{grid-template-columns:repeat(3,1fr)} }
+  /* Containers brancos FLUTUANTES (isolados) */
+  main { padding: 60px 20px; max-width: 1200px; margin: 0 auto; }
+  .section-title{
+    background:#fff;margin:0 auto 32px auto;padding:24px;border-radius:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,.1);text-align:center;max-width:1100px;
+  }
+  .section-title h1{ color:#0e7270;font-size:1.8rem;margin-bottom:8px; }
+  .section-title p{ color:#444;line-height:1.6;margin:0; }
 
-.card{
-  background:#fff;border:1px solid #e7e7e7;border-radius:12px;padding:16px;
-  box-shadow:0 2px 8px rgba(0,0,0,.06);display:flex;flex-direction:column;gap:10px;
-  transition:transform .15s, box-shadow .15s;
-}
-.card:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.10)}
-.icon{
-  width:56px;height:56px;border-radius:12px;background:#e8f7f6;display:grid;place-items:center;
-  font-size:28px;color:#0e7270;
-}
-.card h3{color:#0e7270;font-size:1.05rem}
-.card p{color:#444;font-size:.95rem;line-height:1.45}
-ul.features{margin-left:16px;color:#444;line-height:1.6;font-size:.93rem}
-ul.features li+li{margin-top:6px}
+  .cards{ display:grid;grid-template-columns:1fr;gap:18px; }
+  @media (min-width:700px){ .cards{grid-template-columns:repeat(2,1fr)} }
+  @media (min-width:1024px){ .cards{grid-template-columns:repeat(3,1fr)} }
 
-.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
-.btn{display:inline-block;padding:10px 14px;border-radius:8px;font-weight:bold;text-decoration:none;text-align:center;cursor:pointer;border:none}
-.btn-primary{background:#15b0af;color:#fff}
-.btn-primary:hover{filter:brightness(.95)}
-.btn-outline{background:#fff;color:#15b0af;border:2px solid #15b0af}
-.btn-outline:hover{background:#e8f7f6}
+  .card{
+    background:#fff;border:1px solid #e7e7e7;border-radius:12px;padding:16px;
+    box-shadow:0 2px 8px rgba(0,0,0,.06);display:flex;flex-direction:column;gap:10px;
+    transition:transform .15s, box-shadow .15s;
+  }
+  .card:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.10)}
+  .icon{
+    width:56px;height:56px;border-radius:12px;background:#e8f7f6;display:grid;place-items:center;
+    font-size:28px;color:#0e7270;
+  }
+  .card h3{color:#0e7270;font-size:1.05rem}
+  .card p{color:#444;font-size:.95rem;line-height:1.45}
+  ul.features{margin-left:16px;color:#444;line-height:1.6;font-size:.93rem}
+  ul.features li+li{margin-top:6px}
 
-footer{background:#c2e7df;padding:20px;text-align:center;color:#555;font-size:.9rem;margin-top:auto}
+  .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+  .btn{display:inline-block;padding:10px 14px;border-radius:8px;font-weight:bold;text-decoration:none;text-align:center;cursor:pointer;border:none}
+  .btn-primary{background:#15b0af;color:#fff}
+  .btn-primary:hover{filter:brightness(.95)}
+  .btn-outline{background:#fff;color:#15b0af;border:2px solid #15b0af}
+  .btn-outline:hover{background:#e8f7f6}
 
-  </style>
+  footer{background:#c2e7df;padding:20px;text-align:center;color:#555;font-size:.9rem;margin-top:auto}
+
+  /* ===== Modal de autenticação (login embutido) ===== */
+  .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:9999;padding:20px}
+  .modal-card{
+    background:#fff;width:100%;max-width:420px;border-radius:16px;
+    box-shadow:0 20px 60px rgba(0,0,0,.25);overflow:hidden;border:2px solid #c2e7df;
+  }
+  .modal-head{
+    background:linear-gradient(90deg,#c2e7df,#15b0af);
+    padding:16px 18px;color:#0b4d4c;display:flex;align-items:center;justify-content:space-between;
+  }
+  .modal-head h2{font-size:1.1rem;color:#063b39}
+  .modal-close{background:transparent;border:none;font-size:22px;line-height:1;cursor:pointer;color:#063b39}
+  .modal-body{padding:18px}
+  .modal-body p.muted{color:#555;margin-bottom:10px}
+  label{display:block;margin:10px 0 6px;color:#333}
+  input{width:100%;padding:10px;border:1px solid #ddd;border-radius:8px}
+  .primary{background:#15b0af;color:#fff;border:0;border-radius:8px;padding:12px;font-weight:bold;cursor:pointer;width:100%;margin-top:12px}
+  .muted{font-size:.9rem;color:#666;margin-top:10px}
+  .muted a{color:#15b0af;text-decoration:none;font-weight:bold}
+
+  /* Campo de senha com “olho” */
+  .pwd-wrap{position:relative}
+  .pwd-wrap input{padding-right:16%}
+  .pwd-toggle{
+    position:absolute;right:8px;top:20%;
+    width:36px;height:36px;display:flex;align-items:center;justify-content:center;
+    background:#fff;border:1px solid #ddd;border-radius:6px;cursor:pointer;
+    font-size:18px;line-height:1;color:#444;
+  }
+  .pwd-toggle:active{transform:scale(.98)}
+
+  /* POPUP de alerta brand */
+  .alert-bg{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:10000;padding:20px}
+  .alert-card{background:#fff;border-radius:16px;overflow:hidden;max-width:460px;width:100%;box-shadow:0 22px 70px rgba(0,0,0,.25);border:2px solid #c2e7df}
+  .alert-head{background:linear-gradient(90deg,#c2e7df,#15b0af);padding:14px 16px;display:flex;align-items:center;gap:10px}
+  .alert-dot{width:10px;height:10px;border-radius:50%;background:#FA1E39}
+  .alert-title{color:#063b39;font-weight:bold}
+  .alert-body{padding:16px;color:#2b2b2b}
+  .alert-actions{display:flex;gap:10px;flex-wrap:wrap;padding:0 16px 16px}
+  .btn-solid{background:#15b0af;color:#fff;border:0;border-radius:8px;padding:10px 14px;font-weight:bold;cursor:pointer}
+  .btn-ghost{background:#fff;border:2px solid #15b0af;color:#15b0af;border-radius:8px;padding:10px 14px;font-weight:bold;cursor:pointer}
+  #authModal a{ text-decoration:none }
+</style>
 </head>
-<body><header>
+<body>
+
+<!-- MODAL: LOGIN EMBUTIDO (copiado do index) -->
+<div id="authModal" class="modal-bg" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h2 id="authTitle">Entrar no MostreAki</h2>
+      <button class="modal-close" onclick="fecharModal()" aria-label="Fechar">×</button>
+    </div>
+    <div class="modal-body">
+      <label for="email">E-mail</label>
+      <input id="email" type="email" autocomplete="username" required
+             pattern="^[^\s@]+@[^\s@]+\.[^\s@]{2,}$" placeholder="voce@exemplo.com">
+
+      <label for="senha">Senha</label>
+      <div class="pwd-wrap">
+        <input id="senha" type="password" autocomplete="current-password" required>
+        <button id="toggleSenha" class="pwd-toggle" type="button" aria-label="Mostrar senha" aria-pressed="false">👁️</button>
+      </div>
+
+      <button class="primary" id="btnEntrar">Entrar</button>
+
+      <div id="recoverLine" class="muted" style="text-align:center;margin-top:6px">
+        Esqueceu a senha? <a href="/recuperar-senha.html">Recuperar senha</a>
+      </div>
+
+      <p class="muted">Não tem conta? <a href="/cadastro.html">Cadastre-se</a></p>
+    </div>
+  </div>
+</div>
+
+<header>
   <div class="logo-container" onclick="location.href='index.html'">
-    <img src="logomarca-mostreaki.svg" alt="Logo">
+    <img src="logomarca-mostreaki.svg" alt="Logo"/>
     <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
   </div>
+
   <div class="header-auth">
     <button id="btnAbrirLogin">Entrar</button>
-    <span id="authText">Sair</span>
+    <span id="authText" style="font-weight:bold;color:#15b0af;cursor:pointer;display:none;">Sair</span>
     <div id="userCircle" class="user-circle" title="Perfil"></div>
-    <div id="menuBtn" class="menu-icon" aria-controls="menu" aria-expanded="false">☰</div>
+    <div class="menu-icon" onclick="toggleMenu()">☰</div>
   </div>
-  <nav class="menu-list" id="menu">
-    <a href="/index.html">Página Inicial</a>
+
+  <div class="menu-list" id="menu">
     <a href="/sobre.html">Sobre</a>
     <a href="/minha-conta.html">Minha Conta</a>
     <a href="/planos.html">Planos</a>
     <a href="/parceiros.html">Parceiros</a>
+    <a href="/servicos-adicionais.html">Serviços Adicionais</a>
     <a href="/redes-sociais.html">Redes Sociais</a>
     <a href="/contatos.html">Contatos</a>
-  </nav>
-</header><main>
+  </div>
+</header>
+
+<main>
+  <!-- Título em container branco próprio -->
   <div class="section-title">
     <h1>Serviços Adicionais</h1>
     <p>Impulsione sua marca com criações visuais sob medida e suporte operacional. Escolha o serviço e fale direto com a gente.</p>
-  </div>  <div class="cards">
+  </div>
+
+  <!-- Cards cada um no seu container branco -->
+  <div class="cards">
+    <!-- LOGOTIPO SVG -->
     <div class="card">
       <div class="icon">🖍️</div>
       <h3>Criação de Logotipo (SVG)</h3>
@@ -128,39 +208,283 @@ footer{background:#c2e7df;padding:20px;text-align:center;color:#555;font-size:.9
         <li>Guia rápido de uso de cores e tipografia</li>
       </ul>
       <div class="actions">
-        <a class="btn btn-primary" target="_blank" rel="noopener" href="https://wa.me/5511999999999?text=Quero%20um%20logotipo%20(SVG)%20para%20minha%20marca">Pedir orçamento</a>
+        <a class="btn btn-primary" target="_blank" rel="noopener"
+           href="https://wa.me/5511999999999?text=Quero%20um%20logotipo%20(SVG)%20para%20minha%20marca">Pedir orçamento</a>
         <a class="btn btn-outline" href="/parceiros.html">Ver portfólio</a>
       </div>
-    </div><div class="card">
-  <div class="icon">🦊</div>
-  <h3>Criação de Mascote</h3>
-  <p>Um personagem com a cara da sua marca para posts, banners e materiais promocionais.</p>
-  <ul class="features">
-    <li>Exploração de estilos (fofo, moderno, minimalista)</li>
-    <li>Versões em poses essenciais (avatar, aceno, apontando)</li>
-    <li>Entrega em PNG e SVG quando aplicável</li>
-  </ul>
-  <div class="actions">
-    <a class="btn btn-primary" target="_blank" rel="noopener" href="https://wa.me/5511999999999?text=Quero%20um%20mascote%20para%20minha%20marca">Pedir orçamento</a>
-    <a class="btn btn-outline" href="/parceiros.html">Ver portfólio</a>
+    </div>
+
+    <!-- MASCOTE -->
+    <div class="card">
+      <div class="icon">🦊</div>
+      <h3>Criação de Mascote</h3>
+      <p>Um personagem com a cara da sua marca para posts, banners e materiais promocionais.</p>
+      <ul class="features">
+        <li>Exploração de estilos (fofo, moderno, minimalista)</li>
+        <li>Versões em poses essenciais (avatar, aceno, apontando)</li>
+        <li>Entrega em PNG e SVG quando aplicável</li>
+      </ul>
+      <div class="actions">
+        <a class="btn btn-primary" target="_blank" rel="noopener"
+           href="https://wa.me/5511999999999?text=Quero%20um%20mascote%20para%20minha%20marca">Pedir orçamento</a>
+        <a class="btn btn-outline" href="/parceiros.html">Ver portfólio</a>
+      </div>
+    </div>
+
+    <!-- ELEMENTOS VISUAIS -->
+    <div class="card">
+      <div class="icon">🎨</div>
+      <h3>Elementos Visuais</h3>
+      <p>Pacote de ícones, padrões, banners e artes para redes sociais seguindo sua identidade.</p>
+      <ul class="features">
+        <li>Kit de ícones e stickers personalizados</li>
+        <li>3 a 6 banners otimizados para web</li>
+        <li>Arquivos prontos para Instagram e site</li>
+      </ul>
+      <div class="actions">
+        <a class="btn btn-primary" target="_blank" rel="noopener"
+           href="https://wa.me/5511999999999?text=Quero%20elementos%20visuais%20para%20minha%20marca">Pedir orçamento</a>
+        <a class="btn btn-outline" href="/parceiros.html">Ver portfólio</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>&copy; 2025 MostreAki. Todos os direitos reservados.</footer>
+
+<!-- ALERT brand -->
+<div id="alert" class="alert-bg" role="dialog" aria-modal="true" aria-labelledby="alertTitle" aria-live="polite">
+  <div class="alert-card">
+    <div class="alert-head">
+      <div class="alert-dot"></div>
+      <div id="alertTitle" class="alert-title">Mensagem</div>
+    </div>
+    <div id="alertMsg" class="alert-body">...</div>
+    <div id="alertActions" class="alert-actions"></div>
   </div>
 </div>
 
-<div class="card">
-  <div class="icon">🎨</div>
-  <h3>Elementos Visuais</h3>
-  <p>Pacote de ícones, padrões, banners e artes para redes sociais seguindo sua identidade.</p>
-  <ul class="features">
-    <li>Kit de ícones e stickers personalizados</li>
-    <li>3 a 6 banners otimizados para web</li>
-    <li>Arquivos prontos para Instagram e site</li>
-  </ul>
-  <div class="actions">
-    <a class="btn btn-primary" target="_blank" rel="noopener" href="https://wa.me/5511999999999?text=Quero%20elementos%20visuais%20para%20minha%20marca">Pedir orçamento</a>
-    <a class="btn btn-outline" href="/parceiros.html">Ver portfólio</a>
-  </div>
-</div>
+<!-- Firebase + Script (copiado do index e estendido com Firestore/Storage) -->
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import {
+  getAuth, onAuthStateChanged, signOut,
+  signInWithEmailAndPassword, sendEmailVerification
+} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import {
+  getFirestore, doc, getDoc
+} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+import {
+  getStorage, ref, getDownloadURL
+} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
 
-  </div>
-</main><footer>&copy; 2025 MostreAki. Todos os direitos reservados.</footer><!-- Seus scripts Firebase, login e alert continuam aqui --><!-- ... (mantive todos no original, se quiser eu insiro de volta também aqui) --></body>
+const app = initializeApp({
+  apiKey:"AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
+  authDomain:"mostreaki-2025.firebaseapp.com",
+  projectId:"mostreaki-2025",
+  storageBucket:"mostreaki-2025.firebasestorage.app",
+  messagingSenderId:"748712068097",
+  appId:"1:748712068097:web:09cf043fbb45917ef6ec00"
+});
+const auth = getAuth(app);
+const db = getFirestore(app);
+const storage = getStorage(app);
+
+/* ===== helpers UI ===== */
+const $ = (id)=>document.getElementById(id);
+const modal = $("authModal");
+const btnAbrir = $("btnAbrirLogin");
+const authText = $("authText");
+const userCircle = $("userCircle");
+
+function abrirModal(){ modal.style.display="flex"; document.body.style.overflow="hidden"; }
+window.fecharModal = function(){ modal.style.display="none"; document.body.style.overflow=""; }
+btnAbrir.addEventListener("click", abrirModal);
+modal.addEventListener("click", e=>{ if(e.target===modal) fecharModal(); });
+window.addEventListener("keydown", e=>{ if(e.key==="Escape" && modal.style.display==="flex") fecharModal(); });
+
+/* ===== alerta brand ===== */
+const alertBG = document.getElementById('alert');
+const alertTitle = document.getElementById('alertTitle');
+const alertMsg = document.getElementById('alertMsg');
+const alertActions = document.getElementById('alertActions');
+function showAlert({title="Aviso", html="", actions=[{text:"Fechar", kind:"solid"}]}){
+  alertTitle.textContent = title; alertMsg.innerHTML = html; alertActions.innerHTML = "";
+  actions.forEach(a=>{
+    const b=document.createElement('button');
+    b.className = (a.kind==='ghost'?'btn-ghost':'btn-solid');
+    b.textContent = a.text;
+    b.onclick = ()=>{ if(a.onClick) a.onClick(); closeAlert(); };
+    alertActions.appendChild(b);
+  });
+  alertBG.style.display='flex';
+}
+function closeAlert(){ alertBG.style.display='none'; }
+
+/* ===== olho senha ===== */
+(function wirePasswordToggle(){
+  const input = $("senha"), btn = $("toggleSenha");
+  if(!input || !btn) return;
+  function flip(){
+    const showing = input.type === 'text';
+    input.type = showing ? 'password' : 'text';
+    btn.textContent = showing ? '👁️' : '🙈';
+    btn.setAttribute('aria-pressed', (!showing).toString());
+    btn.setAttribute('aria-label', showing ? 'Mostrar senha' : 'Ocultar senha');
+  }
+  btn.addEventListener('click', flip);
+})();
+
+/* ===== login ===== */
+const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const emailValido = v => emailRe.test(v);
+
+function getState(){
+  const now=Date.now();
+  const s = JSON.parse(sessionStorage.getItem('loginState')||'{}');
+  if(!s.lockUntil) s.lockUntil=0;
+  if(!s.failCount) s.failCount=0;
+  if(!s.blockMult) s.blockMult=1;
+  if(now > s.lockUntil){ s.lockUntil=0; }
+  return s;
+}
+function setState(s){ sessionStorage.setItem('loginState', JSON.stringify(s)); }
+function isLocked(){ const s=getState(); return s.lockUntil && Date.now()<s.lockUntil; }
+function lockMore(){
+  const s=getState(); const base=30000;
+  s.blockMult = Math.min(s.blockMult*2, 8);
+  s.lockUntil = Date.now() + base * s.blockMult;
+  setState(s);
+}
+function incFail(){
+  const s=getState(); s.failCount=(s.failCount||0)+1;
+  if(s.failCount>=5){ s.failCount=0; lockMore(); }
+  setState(s);
+}
+function resetFails(){ setState({failCount:0, blockMult:1, lockUntil:0}); }
+function showLockMsg(){
+  const s=getState(); const secs = Math.ceil((s.lockUntil - Date.now())/1000);
+  showAlert({title:"Muitas tentativas", html:`Aguarde <b>${secs}s</b> para tentar novamente.`});
+}
+
+async function loginEmailSenha(){
+  if(isLocked()) return showLockMsg();
+
+  const email = $("email").value.trim();
+  const senha = $("senha").value;
+
+  if(!email) return showAlert({title:"E-mail vazio", html:"Digite seu e-mail para continuar."});
+  if(!emailValido(email)) return showAlert({title:"E-mail inválido", html:"Revise o endereço digitado."});
+  if(!senha) return showAlert({title:"Senha vazia", html:"Digite sua senha para continuar."});
+
+  try{
+    const cred = await signInWithEmailAndPassword(auth, email, senha);
+
+    if(!cred.user.emailVerified){
+      await sendEmailVerification(cred.user);
+      showAlert({
+        title:"Confirme seu e-mail",
+        html:`Seu e-mail ainda não foi verificado.<br>Reenviamos o link para <b>${email}</b>. Verifique sua caixa de entrada (ou spam) e tente novamente após confirmar.`
+      });
+      return;
+    }
+
+    resetFails();
+    if(cred.user.photoURL) localStorage.setItem("fotoPerfil", cred.user.photoURL);
+    fecharModal();
+    location.href="/minha-conta.html";
+
+  }catch(e){
+    const codes = ["auth/invalid-credential","auth/wrong-password","auth/user-not-found"];
+    if(codes.includes(e.code)){
+      incFail();
+      if(isLocked()) return showLockMsg();
+      return showAlert({
+        title:"Não conseguimos entrar",
+        html:"E-mail e/ou senha incorretos. Você pode tentar novamente ou recuperar a senha.",
+        actions:[
+          {text:"Recuperar senha", kind:"ghost", onClick:()=>location.href="/recuperar-senha.html"},
+          {text:"Cadastrar", kind:"ghost", onClick:()=>location.href="/cadastro.html"},
+          {text:"Fechar", kind:"solid"}
+        ]
+      });
+    }
+    if(e.code==="auth/too-many-requests"){ lockMore(); return showLockMsg(); }
+    if(e.code==="auth/invalid-email"){ return showAlert({title:"E-mail inválido", html:"Revise o endereço digitado."}); }
+    showAlert({title:"Erro", html:`Erro inesperado (${e.code}). Tente novamente.`});
+  }
+}
+document.getElementById("btnEntrar").onclick = loginEmailSenha;
+document.addEventListener('keydown', e=>{ if(e.key==='Enter' && modal.style.display==='flex') loginEmailSenha(); });
+
+/* ===== avatar no header (userCircle) com fallback Firestore/Storage ===== */
+async function hydrateAvatar(user){
+  try{
+    // 1) prioridade: localStorage salvo no login
+    const local = localStorage.getItem("fotoPerfil");
+    if(local){ userCircle.style.backgroundImage=`url('${local}')`; userCircle.textContent=""; return; }
+
+    // 2) se o próprio user tiver photoURL
+    if(user.photoURL){ userCircle.style.backgroundImage=`url('${user.photoURL}')`; userCircle.textContent=""; return; }
+
+    // 3) tentar Firestore: users/{uid} com photoURL ou avatarPath
+    const d = await getDoc(doc(db, "users", user.uid));
+    if(d.exists()){
+      const data = d.data();
+      if(data.photoURL){
+        userCircle.style.backgroundImage=`url('${data.photoURL}')`;
+        userCircle.textContent="";
+        localStorage.setItem("fotoPerfil", data.photoURL);
+        return;
+      }
+      if(data.avatarPath){
+        const url = await getDownloadURL(ref(storage, data.avatarPath));
+        userCircle.style.backgroundImage=`url('${url}')`;
+        userCircle.textContent="";
+        localStorage.setItem("fotoPerfil", url);
+        return;
+      }
+    }
+
+    // 4) fallback: inicial do nome/email
+    const nome=(user.displayName||user.email||"?").trim();
+    userCircle.textContent=nome.charAt(0).toUpperCase();
+    userCircle.style.backgroundImage="";
+  }catch(e){
+    const nome=(user.displayName||user.email||"?").trim();
+    userCircle.textContent=nome.charAt(0).toUpperCase();
+    userCircle.style.backgroundImage="";
+  }
+}
+
+/* ===== estado de auth: avatar/entrar/sair ===== */
+onAuthStateChanged(auth, async (user)=>{
+  if(user){
+    await hydrateAvatar(user);
+    userCircle.style.display="flex";
+    authText.style.display="inline";
+    btnAbrir.style.display="none";
+  }else{
+    userCircle.style.display="none";
+    authText.style.display="none";
+    btnAbrir.style.display="inline-block";
+  }
+});
+
+/* ===== sair ===== */
+authText.addEventListener("click", async ()=>{
+  try{
+    await signOut(auth);
+    localStorage.removeItem("fotoPerfil");
+    location.reload();
+  }catch(e){ showAlert({title:"Sair", html:"Não foi possível sair. Tente de novo."}); }
+});
+
+/* ===== menu ===== */
+window.toggleMenu = function(){
+  const menu=document.getElementById("menu");
+  menu.style.display = menu.style.display==="flex" ? "none" : "flex";
+};
+</script>
+</body>
 </html>
