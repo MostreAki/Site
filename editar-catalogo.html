@@ -137,7 +137,20 @@
           <label><input id="chkAtivo" type="checkbox"> Catálogo ativo</label>
           <span id="statusSave" class="hint"></span>
         </div>
-        <p id="hintLimite" class="hint" style="margin-top:8px"></p>
+
+        <!-- NOVO: URLs dos ícones -->
+        <div class="row" style="margin-top:12px;grid-template-columns:1fr 1fr;">
+          <div>
+            <label for="iconWhatsUrl">Ícone WhatsApp (URL da imagem)</label>
+            <input type="url" id="iconWhatsUrl" placeholder="https://raw.githubusercontent.com/usuario/repo/branch/assets/icon-whats.png">
+          </div>
+          <div>
+            <label for="iconMLUrl">Ícone Mercado Livre (URL da imagem)</label>
+            <input type="url" id="iconMLUrl" placeholder="https://raw.githubusercontent.com/usuario/repo/branch/assets/icon-ml.png">
+          </div>
+        </div>
+
+        <p id="hintLimite" class="hint" style="margin-top:12px"></p>
         <p class="hint" style="margin-top:8px">
           As imagens são hospedadas por você (ex.: GitHub). Aqui o cliente edita <b>nome</b>, <b>preço</b>, <b>quantidade</b> e, se quiser, o <b>link do Mercado Livre</b> (o botão aparece automaticamente no catálogo público).
         </p>
@@ -284,8 +297,8 @@
               <input type="number" id="qtd_${id}" min="0" step="1" placeholder="0">
             </div>
           </div>
-          <div class="row">
-            <div style="grid-column:1 / -1">
+          <div class="row" style="grid-template-columns:1fr;">
+            <div>
               <label for="ml_${id}">Link Mercado Livre (opcional)</label>
               <input type="url" id="ml_${id}" placeholder="https://produto.mercadolivre.com.br/...">
             </div>
@@ -361,15 +374,22 @@
       const ref = doc(db,'catalogos',slug,'meta','config');
       const s = await getDoc(ref);
       if(s.exists()){
-        $('#chkAtivo').checked = !!s.data().catalogoAtivo;
+        const d = s.data();
+        document.getElementById('chkAtivo').checked = !!d.catalogoAtivo;
+        // NOVO: preencher campos de ícone
+        (document.getElementById('iconWhatsUrl').value = d.iconWhatsUrl || '');
+        (document.getElementById('iconMLUrl').value    = d.iconMLUrl    || '');
       }
       return s.exists()? s.data() : {};
     }
+
     async function salvarMeta(slug, ownerUid){
       const ref = doc(db,'catalogos',slug,'meta','config');
       await setDoc(ref, {
         ownerUid,
-        catalogoAtivo: $('#chkAtivo').checked,
+        catalogoAtivo: document.getElementById('chkAtivo').checked,
+        iconWhatsUrl : (document.getElementById('iconWhatsUrl').value || '').trim(),
+        iconMLUrl    : (document.getElementById('iconMLUrl').value    || '').trim(),
         atualizadoEm: serverTimestamp()
       }, { merge:true });
     }
