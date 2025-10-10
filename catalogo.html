@@ -15,9 +15,7 @@
       --ink:#0b1324; --muted:#6b7280;
       --bg:#061a22; --panel:#0a2537; --card:#ffffff;
       --ring:rgba(13,148,136,.25); --brand:#16b0af;
-      /* AJUSTE: cor oficial do WhatsApp */
       --ok:#25D366;
-      /* controles de logo/banner */
       --logo-size: 86%;
       --banner-fit: cover;
       --banner-pos: center;
@@ -42,85 +40,56 @@
       width:140px;height:140px;border-radius:999px;background:#fff;
       display:grid;place-items:center;position:relative;box-shadow:0 12px 40px rgba(0,0,0,.35), inset 0 0 0 6px var(--ring)
     }
-    .logoRing img{
-      width:var(--logo-size);height:var(--logo-size);
-      object-fit:contain; border-radius:999px
-    }
+    .logoRing img{width:var(--logo-size);height:var(--logo-size);object-fit:contain;border-radius:999px}
     .banner{
       width:100%;max-width:980px;min-height:160px;border-radius:18px;
       background:linear-gradient(180deg,#e0f7f4,#c7f1ec);
       box-shadow: 0 20px 60px rgba(0,0,0,.25);
       overflow:hidden
     }
-    .banner img, .banner video{
-      width:100%;height:100%;
-      object-fit:var(--banner-fit);
-      object-position:var(--banner-pos);
-      display:block
-    }
+    .banner img,.banner video{width:100%;height:100%;object-fit:var(--banner-fit);object-position:var(--banner-pos);display:block}
 
-    h1.title{
-      margin:0;margin-top:8px;font-size:clamp(1.35rem,2.2vw,1.9rem);
-      font-weight:900;letter-spacing:.3px;text-shadow:0 2px 14px rgba(0,0,0,.35)
-    }
+    h1.title{margin:0;margin-top:8px;font-size:clamp(1.35rem,2.2vw,1.9rem);font-weight:900;letter-spacing:.3px;text-shadow:0 2px 14px rgba(0,0,0,.35)}
 
-    .pager{
-      margin-top:18px;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap
-    }
-    .navbtn{
-      display:inline-flex;align-items:center;gap:8px;
-      padding:10px 14px;border-radius:12px;border:2px solid rgba(255,255,255,.18);
-      background:rgba(255,255,255,.06);color:#d1fae5;font-weight:800;cursor:pointer
-    }
+    .pager{margin-top:18px;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
+    .navbtn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;border:2px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#d1fae5;font-weight:800;cursor:pointer}
     .navbtn[disabled]{opacity:.4;cursor:not-allowed}
     .navbtn svg{width:18px;height:18px;fill:#d1fae5}
     .pageinfo{font-weight:700;color:#b6e9e2}
 
-    .grid{
-      margin-top:18px;display:grid;gap:16px;
-      grid-template-columns:repeat(2,minmax(0,1fr));
-    }
+    .grid{margin-top:18px;display:grid;gap:16px;grid-template-columns:repeat(2,minmax(0,1fr))}
     @media (min-width:860px){ .grid{grid-template-columns:repeat(4,minmax(0,1fr));} }
 
-    .card{
-      background:linear-gradient(180deg,#fdfefe,#eef7f6);
-      border:1px solid rgba(3,94,86,.12);
-      border-radius:16px;overflow:hidden;
-      box-shadow:0 12px 30px rgba(0,0,0,.18);
-      transition:transform .15s ease, box-shadow .15s ease;
-    }
+    .card{background:linear-gradient(180deg,#fdfefe,#eef7f6);border:1px solid rgba(3,94,86,.12);border-radius:16px;overflow:hidden;box-shadow:0 12px 30px rgba(0,0,0,.18);transition:transform .15s ease, box-shadow .15s ease}
     .card:hover{ transform:translateY(-2px); box-shadow:0 18px 44px rgba(0,0,0,.26); }
     .imgWrap{aspect-ratio:1/1;background:#e6f6f4;display:grid;place-items:center;overflow:hidden;cursor:zoom-in}
     .imgWrap img{width:100%;height:100%;object-fit:cover}
-    .info{display:flex;align-items:center;gap:12px;padding:10px 12px 12px 12px}
+    .info{display:flex;align-items:center;gap:10px;padding:10px 12px 12px}
     .left{flex:1;min-width:0}
     .nome{font-weight:700;color:#0c2d2b;margin-bottom:2px;font-size:.98rem}
     .preco{font-weight:800;color:#0c2d2b;font-size:1rem}
     .qtde{color:#476f6c;font-size:.86rem;margin-top:2px}
 
-    /* WhatsApp redondo (cor oficial) */
-    .zap{
-      border:0;background:var(--ok);color:#fff;
-      width:42px;height:42px;border-radius:999px;cursor:pointer;
-      display:grid;place-items:center;font-weight:900;
-      box-shadow:0 6px 18px rgba(37,211,102,.35);
+    /* Botões de ação no card */
+    .zap,.mlbtn{
+      border:0;cursor:pointer;display:grid;place-items:center;
+      width:clamp(36px,8vw,46px);height:clamp(36px,8vw,46px);border-radius:999px;
+      transition:transform .12s ease;
     }
-    .zap:active{transform:scale(.97)}
-    .zap svg{width:22px;height:22px;fill:#fff}
+    .zap{background:var(--ok);color:#fff;box-shadow:0 6px 18px rgba(37,211,102,.35)}
+    .mlbtn{background:#FFE600;color:#002E6C;box-shadow:0 6px 18px rgba(0,0,0,.18)}
+    .zap:active,.mlbtn:active{transform:scale(.97)}
 
-    /* Botão Mercado Livre */
-    .mlbtn{
-      border:0;background:#FFE600;color:#002E6C;
-      width:42px;height:42px;border-radius:999px;cursor:pointer;
-      display:grid;place-items:center; box-shadow:0 6px 18px rgba(0,0,0,.18);
-    }
-    .mlbtn:active{ transform:scale(.97) }
-    .mlbtn svg{ width:26px; height:26px }
-    .mlbtn .ml-blue{ fill:#002E6C }
+    /* Ícones padrão (SVG) */
+    .zap svg{width:clamp(18px,4.8vw,24px);height:clamp(18px,4.8vw,24px);fill:#fff}
+    .mlbtn svg{width:clamp(20px,5.5vw,26px);height:clamp(20px,5.5vw,26px)}
+    .mlbtn .ml-blue{fill:#002E6C}
 
-    /* ÍCONES externos (se usar URL) */
-    .zap img{ width:22px; height:22px; display:block }
-    .mlbtn img{ width:26px; height:26px; display:block }
+    /* Ícones externos (imagens do GitHub) */
+    .zap img,.mlbtn img{width:clamp(28px,8vw,40px);height:auto;display:block}
+
+    /* Quando houver ícone externo, tira fundo/“bolacha” */
+    .btn-plain{background:transparent !important;box-shadow:none !important;border-radius:0 !important;width:auto !important;height:auto !important;padding:0 !important}
 
     /* FAB do WhatsApp (flutuante) */
     .wa-float{
@@ -136,60 +105,24 @@
       .wa-float svg{ width:30px; height:30px }
     }
 
-    .muted{
-      margin:22px auto 0;max-width:780px;color:#b6e9e2;
-      text-align:center;font-size:.95rem
-    }
-    .warn{
-      background:#fee2e2;color:#7f1d1d;border:1px solid #fecaca;
-      padding:12px 14px;border-radius:12px;margin:18px auto;max-width:840px
-    }
-    footer{
-      color:#bbf7d0;font-size:.8rem;text-align:center;
-      padding:32px 16px;border-top:1px solid rgba(255,255,255,.07)
-    }
+    .muted{margin:22px auto 0;max-width:780px;color:#b6e9e2;text-align:center;font-size:.95rem}
+    .warn{background:#fee2e2;color:#7f1d1d;border:1px solid #fecaca;padding:12px 14px;border-radius:12px;margin:18px auto;max-width:840px}
+    footer{color:#bbf7d0;font-size:.8rem;text-align:center;padding:32px 16px;border-top:1px solid rgba(255,255,255,.07)}
 
     /* Lightbox */
-    .lb-bg{
-      position:fixed; inset:0; z-index:70;
-      display:none; align-items:center; justify-content:center;
-      background:rgba(0,0,0,.7); backdrop-filter:saturate(120%) blur(2px);
-      padding:16px;
-    }
-    .lb-card{
-      position:relative; max-width:96vw; max-height:90vh; background:#031d24; border:1px solid rgba(255,255,255,.12);
-      border-radius:16px; box-shadow:0 20px 80px rgba(0,0,0,.55); padding:10px;
-    }
-    .lb-img{
-      display:block; max-width:92vw; max-height:82vh; width:auto; height:auto; object-fit:contain; border-radius:10px;
-      background:#0a2a33;
-    }
-    .lb-close{
-      position:absolute; top:8px; right:8px; border:0; width:36px; height:36px; border-radius:10px;
-      background:rgba(255,255,255,.12); color:#e8ffff; cursor:pointer; font-size:22px; line-height:36px;
-    }
+    .lb-bg{position:fixed; inset:0; z-index:70; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,.7); backdrop-filter:saturate(120%) blur(2px); padding:16px}
+    .lb-card{position:relative; max-width:96vw; max-height:90vh; background:#031d24; border:1px solid rgba(255,255,255,.12); border-radius:16px; box-shadow:0 20px 80px rgba(0,0,0,.55); padding:10px}
+    .lb-img{display:block; max-width:92vw; max-height:82vh; width:auto; height:auto; object-fit:contain; border-radius:10px; background:#0a2a33}
+    .lb-close{position:absolute; top:8px; right:8px; border:0; width:36px; height:36px; border-radius:10px; background:rgba(255,255,255,.12); color:#e8ffff; cursor:pointer; font-size:22px; line-height:36px}
     .lb-close:active{ transform:scale(.95) }
-    .lb-arrow{
-      position:absolute; top:50%; transform:translateY(-50%); border:0; width:42px; height:42px; border-radius:999px;
-      background:rgba(255,255,255,.16); color:#e8ffff; cursor:pointer; font-size:22px; line-height:42px;
-    }
-    .lb-prev{ left:8px }
-    .lb-next{ right:8px }
+    .lb-arrow{position:absolute; top:50%; transform:translateY(-50%); border:0; width:42px; height:42px; border-radius:999px; background:rgba(255,255,255,.16); color:#e8ffff; cursor:pointer; font-size:22px; line-height:42px}
+    .lb-prev{ left:8px } .lb-next{ right:8px }
     .lb-arrow:active{ transform:translateY(-50%) scale(.96) }
-    .lb-count{
-      position:absolute; bottom:10px; right:12px; background:rgba(0,0,0,.45);
-      color:#e8ffff; font-size:.85rem; padding:6px 10px; border-radius:10px;
-    }
+    .lb-count{position:absolute; bottom:10px; right:12px; background:rgba(0,0,0,.45); color:#e8ffff; font-size:.85rem; padding:6px 10px; border-radius:10px}
 
-    /* miniaturas por card */
-    .thumbs{
-      display:flex; gap:6px; margin:8px 12px 12px;
-    }
-    .thumbs img{
-      width:36px; height:36px; object-fit:cover; border-radius:8px;
-      opacity:.88; border:1px solid rgba(3,94,86,.2); cursor:pointer;
-      transition:transform .12s ease, opacity .12s ease;
-    }
+    /* Miniaturas por card */
+    .thumbs{display:flex; gap:6px; margin:8px 12px 12px}
+    .thumbs img{width:36px; height:36px; object-fit:cover; border-radius:8px; opacity:.88; border:1px solid rgba(3,94,86,.2); cursor:pointer; transition:transform .12s ease, opacity .12s ease}
     .thumbs img:hover{ opacity:1; transform:translateY(-1px) }
   </style>
 
@@ -241,7 +174,7 @@
 
     let MAX_FOTOS_ITEM = 2;
 
-    /* NOVO: ícones externos configuráveis via Firestore */
+    // Ícones externos configuráveis via Firestore
     let ICON_WA = '';
     let ICON_ML = '';
 
@@ -261,7 +194,10 @@
           const thumbs  = d.fotos.slice(0, MAX_FOTOS_ITEM)
             .map((u,i)=>`<img src="${u}" alt="" data-idx="${i}">`).join('');
 
-          /* inner dos botões: usa imagem externa se configurada, senão SVG padrão */
+          // classes: se tiver ícone externo, remove o fundo
+          const waClass = `zap ${ICON_WA ? 'btn-plain' : ''}`;
+          const mlClass = `mlbtn ${ICON_ML ? 'btn-plain' : ''}`;
+
           const waInner = ICON_WA
             ? `<img src="${ICON_WA}" alt="WhatsApp">`
             : `<svg viewBox="0 0 32 32" role="img" aria-hidden="true"><path d="M19.1 17.1c-.3-.2-1.7-.8-2-.9-.3-.1-.5-.2-.7.2-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.2-1.1-.4-2-1.2-.7-.6-1.2-1.4-1.3-1.6-.1-.3 0-.4.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2.1-.4 0-.6-.1-.2-.7-1.7-.9-2.3-.2-.5-.5-.4-.7-.4h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.7 0 1.6 1.1 3.1 1.2 3.3.1.2 2.2 3.4 5.4 4.7.8.4 1.4.6 1.9.8.8.3 1.6.3 2.2.2.7-.1 2-.8 2.2-1.6.3-.8.3-1.5.2-1.6 0-.1-.2-.1-.4-.2zM16 3C9.9 3 5 7.9 5 14c0 2.4.8 4.6 2.1 6.3L6 29l8-1.9c1.5.4 3.1.7 4.7.7 6.1 0 11-4.9 11-11S22.1 3 16 3z"/></svg>`;
@@ -284,14 +220,8 @@
                 <div class="preco">${d.precoBRL}</div>
                 <div class="qtde">Estoque: ${d.qtd}</div>
               </div>
-              ${d.zap ? `
-              <button class="zap" aria-label="WhatsApp" onclick="window.open('${d.zap}','_blank')">
-                ${waInner}
-              </button>` : ``}
-              ${d.mlUrl ? `
-              <button class="mlbtn" aria-label="Mercado Livre" onclick="window.open('${d.mlUrl}','_blank')">
-                ${mlInner}
-              </button>` : ``}
+              ${d.zap ? `<button class="${waClass}" aria-label="WhatsApp" onclick="window.open('${d.zap}','_blank')">${waInner}</button>` : ``}
+              ${d.mlUrl ? `<button class="${mlClass}" aria-label="Mercado Livre" onclick="window.open('${d.mlUrl}','_blank')">${mlInner}</button>` : ``}
             </div>
             ${thumbs ? `<div class="thumbs" data-gal="${galAttr}">${thumbs}</div>` : ``}
           </article>`;
@@ -310,6 +240,7 @@
     window.goPrev = goPrev;
     window.goNext = goNext;
 
+    // Lightbox
     const lbBg   = document.getElementById('lbBg');
     const lbImg  = document.getElementById('lbImg');
     const lbBtn  = document.getElementById('lbClose');
@@ -399,7 +330,7 @@
       }
       const cfg = cfgSnap.data();
 
-      /* NOVO: pegar URLs dos ícones (se existirem) */
+      // URLs dos ícones (se existirem)
       ICON_WA = (cfg.iconWhatsUrl || '').trim();
       ICON_ML = (cfg.iconMLUrl  || '').trim();
 
@@ -413,16 +344,9 @@
         el.src = cfg.logoUrl; el.style.display = 'block';
         const ring = document.getElementById('logoRing');
         const n = Number(cfg.logoScale);
-        if (Number.isFinite(n) && n>20 && n<=100){
-          ring.style.setProperty('--logo-size', n + '%');
-        }
-        if (typeof cfg.logoBg === 'string' && cfg.logoBg.trim()){
-          ring.style.background = cfg.logoBg.trim();
-        }
-        if (cfg.logoShape === 'square'){
-          ring.style.borderRadius = '18px';
-          el.style.borderRadius = '12px';
-        }
+        if (Number.isFinite(n) && n>20 && n<=100){ ring.style.setProperty('--logo-size', n + '%'); }
+        if (typeof cfg.logoBg === 'string' && cfg.logoBg.trim()){ ring.style.background = cfg.logoBg.trim(); }
+        if (cfg.logoShape === 'square'){ ring.style.borderRadius = '18px'; el.style.borderRadius = '12px'; }
       }
 
       if (cfg.bannerUrl){
@@ -452,7 +376,7 @@
         avisos.innerHTML = '';
       }
 
-      // WhatsApp (FAB)
+      // FAB do WhatsApp
       const whats = (cfg.whats || '').toString().trim();
       const waFab = document.getElementById('waFloat');
       if (whats) {
@@ -464,7 +388,6 @@
       }
 
       const limitePublico = Number.isFinite(cfg.limitePublico) ? cfg.limitePublico : null;
-
       if (Number.isFinite(cfg.maxFotosPorItem)) {
         MAX_FOTOS_ITEM = Math.max(1, Math.min(3, cfg.maxFotosPorItem));
       }
@@ -511,8 +434,15 @@
           const msg = `Olá! Tenho interesse no *${nomeItem}* do catálogo ${nome}.`;
           const zap = waLink(d.whats || whats, msg);
 
-          // mantido + mlUrl
-          arr.push({ nome: nomeItem, precoBRL, qtd, fotos: gal.length?gal:[PLACEHOLDER], thumb, zap, mlUrl: d.mlUrl || null });
+          arr.push({
+            nome: nomeItem,
+            precoBRL,
+            qtd,
+            fotos: gal.length?gal:[PLACEHOLDER],
+            thumb,
+            zap,
+            mlUrl: d.mlUrl || null
+          });
         });
 
         itens = arr;
