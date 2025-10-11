@@ -119,16 +119,10 @@
     .muted{font-size:.9rem;color:#666;margin-top:10px}
     .muted a{color:#15b0af;text-decoration:none;font-weight:bold}
 
-    /* Campo de senha com “olho” – padrão */
+    /* Campo de senha: REMOVIDO olho; adicionado checkbox “Mostrar senha” */
     .pwd-wrap{position:relative}
-    .pwd-wrap input{padding-right:16%}
-    .pwd-toggle{
-      position:absolute;right:8px;top:20%;
-      width:36px;height:36px;display:flex;align-items:center;justify-content:center;
-      background:#fff;border:1px solid #ddd;border-radius:6px;cursor:pointer;
-      font-size:18px;line-height:1;color:#444;
-    }
-    .pwd-toggle:active{transform:scale(.98)}
+    .showpwd{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:.9rem;color:#444}
+    .showpwd input{width:auto}
 
     /* POPUP de alerta brand */
     .alert-bg{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:10000;padding:20px}
@@ -162,7 +156,11 @@
       <label for="senha">Senha</label>
       <div class="pwd-wrap">
         <input id="senha" type="password" autocomplete="current-password" required>
-        <button id="toggleSenha" class="pwd-toggle" type="button" aria-label="Mostrar senha" aria-pressed="false">👁️</button>
+        <!-- Checkbox que substitui o olho -->
+        <label class="showpwd" for="chkMostrarSenha">
+          <input id="chkMostrarSenha" type="checkbox" aria-controls="senha" aria-label="Mostrar senha">
+          Mostrar senha
+        </label>
       </div>
 
       <button class="primary" id="btnEntrar">Entrar</button>
@@ -220,17 +218,17 @@
       <div class="card-body">
         <h3>Catálogo de Vendas</h3>
         <p>Vitrini com design estilizado a preferência do cliente.</p>
-          <p> Espaço para Fotos focado em vendas de produtos.</p>
-          <p> Liberdade para edição de nome, quantidade, preço e links para vendas no mercado livre.</p>
-          <p> Banners em mp4 e botões personalizados para chamar no whatsapp.</p>
+        <p>Espaço para Fotos focado em vendas de produtos.</p>
+        <p>Liberdade para edição de nome, quantidade, preço e links para vendas no mercado livre.</p>
+        <p>Banners em mp4 e botões personalizados para chamar no whatsapp.</p>
         <div class="actions">
           <a class="btn btn-primary" href="www.mostreaki.com.br/catalogo-percival-brics.html" target="_blank" rel="noopener">Ver Site</a>
           <a class="btn btn-outline" href="/planos.html" target="_blank" rel="noopener">Contratar</a>
         </div>
       </div>
     </div>
-    
-      <!-- CARD 2 -->
+
+    <!-- CARD 2 -->
     <div class="card">
       <div class="thumb-wrap">
         <img src="template2.svg" alt="Template Minimalista – MostreAki" loading="lazy">
@@ -240,7 +238,7 @@
         <h3>Template para Professores e Influêncers</h3>
         <p>Layout moderno com tipografia limpa, foco no conteúdo para influêncers, link com as redes sociais, streaming e canais multimídia.</p>
         <p>Plataforma intuítiva e carregamento leve.</p>
-        <p>Ideal para mostrar o seu profissionalismo em suas aulas gravadas.
+        <p>Ideal para mostrar o seu profissionalismo em suas aulas gravadas.</p>
         <div class="actions">
           <a class="btn btn-primary" href="https://www.almanyx.com.br" target="_blank" rel="noopener">Ver Site</a>
           <a class="btn btn-outline" href="/planos.html" target="_blank" rel="noopener">Contratar</a>
@@ -267,21 +265,20 @@
     </div>
   </div>
 
-    <!-- CARD 4 -->
-    <div class="card">
-      <div class="thumb-wrap">
-        <img src="template5.png" alt="Portfólio Criativo – MostreAki" loading="lazy">
-        <span class="badge">Template</span>
-      </div>
-      <div class="card-body">
-        <h3>Portal Integrado</h3>
-         <p>Excelente escolha para aquela pessoa física ou jurídica que busca reconhecimento profissional.</p>
-         <p>O Portal serve para integrar trabalhos profissionais autonomos, Notícias, Hobbes, Álbum de fotos e vídeos feito em plataforma de streaming.</p>
-         <p>Também pode tornar um verdadeiro currículo pessoal com Link nas redes sociais.</p>
-        <div class="actions">
-          <a class="btn btn-primary" href="#" target="_blank" rel="noopener">Ver Site</a>
-          <a class="btn btn-outline" href="/planos.html" target="_blank" rel="noopener">Contratar</a>
-        </div>
+  <!-- CARD 4 -->
+  <div class="card" style="max-width:1200px;margin-top:18px">
+    <div class="thumb-wrap">
+      <img src="template5.png" alt="Portfólio Criativo – MostreAki" loading="lazy">
+      <span class="badge">Template</span>
+    </div>
+    <div class="card-body">
+      <h3>Portal Integrado</h3>
+      <p>Excelente escolha para aquela pessoa física ou jurídica que busca reconhecimento profissional.</p>
+      <p>O Portal serve para integrar trabalhos profissionais autonomos, Notícias, Hobbes, Álbum de fotos e vídeos feito em plataforma de streaming.</p>
+      <p>Também pode tornar um verdadeiro currículo pessoal com Link nas redes sociais.</p>
+      <div class="actions">
+        <a class="btn btn-primary" href="#" target="_blank" rel="noopener">Ver Site</a>
+        <a class="btn btn-outline" href="/planos.html" target="_blank" rel="noopener">Contratar</a>
       </div>
     </div>
   </div>
@@ -362,18 +359,12 @@ function showAlert({title="Aviso", html="", actions=[{text:"Fechar", kind:"solid
 }
 function closeAlert(){ alertBG.style.display='none'; }
 
-/* ===== olho senha ===== */
-(function wirePasswordToggle(){
-  const input = $("senha"), btn = $("toggleSenha");
-  if(!input || !btn) return;
-  function flip(){
-    const showing = input.type === 'text';
-    input.type = showing ? 'password' : 'text';
-    btn.textContent = showing ? '👁️' : '🙈';
-    btn.setAttribute('aria-pressed', (!showing).toString());
-    btn.setAttribute('aria-label', showing ? 'Mostrar senha' : 'Ocultar senha');
-  }
-  btn.addEventListener('click', flip);
+/* ===== Mostrar senha via checkbox (substitui o olho) ===== */
+(function wireShowPassword(){
+  const input = $("senha"), chk = $("chkMostrarSenha");
+  if(!input || !chk) return;
+  const apply = ()=>{ input.type = chk.checked ? 'text' : 'password'; };
+  chk.addEventListener('change', apply);
 })();
 
 /* ===== login ===== */
