@@ -46,12 +46,21 @@
       display:grid;place-items:center;position:relative;box-shadow:0 12px 40px rgba(0,0,0,.35), inset 0 0 0 6px var(--ring)
     }
     .logoRing img{width:var(--logo-size);height:var(--logo-size);object-fit:contain;border-radius:999px}
+
+    /* Banner container (carrossel) */
     .banner{
       width:100%;max-width:980px;min-height:160px;border-radius:18px;
       background:linear-gradient(180deg,#e0f7f4,#c7f1ec);
       box-shadow: 0 20px 60px rgba(0,0,0,.25);
-      overflow:hidden
+      overflow:hidden;
+      position:relative;
     }
+    .banner .slide{
+      position:absolute; inset:0;
+      opacity:0; transition:opacity .6s ease;
+      display:flex;
+    }
+    .banner .slide.active{ opacity:1 }
     .banner img,.banner video{width:100%;height:100%;object-fit:var(--banner-fit);object-position:var(--banner-pos);display:block}
 
     h1.title{margin:0;margin-top:8px;font-size:clamp(1.35rem,2.2vw,1.9rem);font-weight:900;letter-spacing:.3px;text-shadow:0 2px 14px rgba(0,0,0,.35)}
@@ -73,7 +82,7 @@
     /* ====== INFO (texto + ações) ====== */
     .info{
       display:grid;
-      grid-template-columns: 1fr;   /* tudo em uma coluna */
+      grid-template-columns: 1fr;
       row-gap:6px;
       align-items:start;
       padding:10px 12px 12px;
@@ -83,12 +92,12 @@
     .preco{font-weight:800;color:#0c2d2b;font-size:1rem}
     .qtde{color:#476f6c;font-size:.86rem;margin-top:2px}
 
-    /* Miniaturas por card (agora ficam dentro do bloco .left) */
+    /* Miniaturas por card (ficam sob estoque) */
     .thumbs{display:flex; gap:8px; margin:8px 0 6px}
     .thumbs img{width:40px; height:40px; object-fit:cover; border-radius:8px; opacity:.9; border:1px solid rgba(3,94,86,.22); cursor:pointer; transition:transform .12s ease, opacity .12s ease}
     .thumbs img:hover{ opacity:1; transform:translateY(-1px) }
 
-    /* Ações em coluna: Whatsapp (texto + ícone) e Comprar (texto + ícone) */
+    /* Ações: Whatsapp (texto + ícone) e Comprar (texto + ícone) */
     .actions{display:flex; flex-direction:column; gap:8px; margin-top:6px}
     .cta{
       display:inline-flex; align-items:center; justify-content:flex-start; gap:10px;
@@ -97,10 +106,8 @@
     }
     .cta img{width:22px; height:22px; display:block}
     .cta svg{width:22px; height:22px}
-
     .cta-wa{background:var(--ok); color:#fff}
     .cta-ml{background:#FFE600; color:#002E6C}
-
     .cta:active{transform:translateY(1px)}
 
     /* Botões redondos antigos (ocultos) */
@@ -187,6 +194,106 @@
     // Ícones externos via config (se definidos)
     let ICON_WA = '';
     let ICON_ML = '';
+
+    // ---------- Banner/carrossel ----------
+    let BANNER_SLIDES = [];
+    let BANNER_IDX = 0;
+    let BANNER_TIMER = null;
+
+    function pick(...xs){
+      const norm = v => (v ?? '').toString().trim();
+      for (const x of xs) if (norm(x)) return norm(x);
+      return '';
+    }
+
+    function collectBannerUrls(cfg){
+      const arr = [];
+      if (Array.isArray(cfg.bannerUrls)) arr.push(...cfg.bannerUrls);
+      // aliases aceitos
+      [cfg.bannerUrl, cfg.banner1Url, cfg.banner2Url, cfg.banner3Url, cfg.bannerUrl1, cfg.bannerUrl2, cfg.bannerUrl3]
+        .forEach(u => { if (u) arr.push(u); });
+      // limpa falsy/duplicados
+      return [...new Set(arr.filter(Boolean))].slice(0, 3);
+    }
+
+    function setupBanners(cfg){
+      const box = document.getElementById('bannerBox');
+      if (!box) return;
+      box.innerHTML = '';
+      const urls = collectBannerUrls(cfg);
+      if (!urls.length) return;
+
+      if (typeof cfg.bannerFit === 'string'){
+        box.style.setProperty('--banner-fit', (cfg.bannerFit === 'contain' ? 'contain' : 'cover'));
+      }
+      if (typeof cfg.bannerPosition === 'string'){
+        box.style.setProperty('--banner-pos', cfg.bannerPosition);
+      }
+
+      BANNER_SLIDES = urls.map((u, i) => {
+        const slide = document.createElement('div');
+        slide.className = 'slide' + (i===0 ? ' active' : '');
+        const low = u.toLowerCase();
+        if (low.endsWith('.mp4') || low.endsWith('.webm')){
+          const v = document.createElement('video');
+          v.src = u; v.muted = true; v.playsInline = true; v.preload = 'none';
+          // se tiver só 1 banner, deixa em loop; se for carrossel, controlamos play/pause
+          if (urls.length === 1) v.autoplay = v.loop = true;
+          slide.appendChild(v);
+        } else {
+          const img = new Image();
+          img.src = u; img.alt = 'Banner'; img.loading = 'lazy';
+          slide.appendChild(img);
+        }
+        box.appendChild(slide);
+        return slide;
+      });
+
+      // inicia reprodução do 1º vídeo, se existir
+      const firstVid = BANNER_SLIDES[0].querySelector('video');
+      if (firstVid) firstVid.play().catch(()=>{});
+
+      if (BANNER_SLIDES.length > 1){
+        const interval = Number(cfg.bannerIntervalMs) || 7000;
+        clearInterval(BANNER_TIMER);
+        BANNER_TIMER = setInterval(()=>{
+          const cur = BANNER_SLIDES[BANNER_IDX];
+          const nxtIdx = (BANNER_IDX + 1) % BANNER_SLIDES.length;
+          const nxt = BANNER_SLIDES[nxtIdx];
+
+          // pausa vídeo atual
+          const curVid = cur.querySelector('video');
+          if (curVid){ curVid.pause(); curVid.currentTime = 0; }
+
+          cur.classList.remove('active');
+          nxt.classList.add('active');
+
+          // toca vídeo do próximo
+          const nxtVid = nxt.querySelector('video');
+          if (nxtVid){ nxtVid.play().catch(()=>{}); }
+
+          BANNER_IDX = nxtIdx;
+        }, interval);
+
+        // pausa quando aba fica oculta
+        document.addEventListener('visibilitychange', ()=>{
+          if (document.hidden){ clearInterval(BANNER_TIMER); BANNER_TIMER = null; }
+          else if (!BANNER_TIMER){
+            const interval = Number(cfg.bannerIntervalMs) || 7000;
+            BANNER_TIMER = setInterval(()=>{ 
+              const cur = BANNER_SLIDES[BANNER_IDX];
+              const nxtIdx = (BANNER_IDX + 1) % BANNER_SLIDES.length;
+              const nxt = BANNER_SLIDES[nxtIdx];
+              const curVid = cur.querySelector('video'); if (curVid){ curVid.pause(); curVid.currentTime = 0; }
+              cur.classList.remove('active'); nxt.classList.add('active');
+              const nxtVid = nxt.querySelector('video'); if (nxtVid){ nxtVid.play().catch(()=>{}); }
+              BANNER_IDX = nxtIdx;
+            }, interval);
+          }
+        });
+      }
+    }
+    // --------------------------------------
 
     function renderPage(){
       clampPage();
@@ -322,25 +429,18 @@
       }
     });
 
-    // ---------- HEADER LOGO robusto (tenta várias chaves + aceita string/number) ----------
+    // ---------- HEADER LOGO robusto ----------
     function applyHeaderLogo(cfg) {
       const qs = new URL(location.href).searchParams;
       const val = v => (v ?? '').toString().trim();
       const pick = (...xs) => xs.map(val).find(Boolean);
 
-      // URL: tenta variações e cai no logoUrl
       const url = pick(
         qs.get('logo'),
-        cfg.headerLogoUrl,
-        cfg.headerlogoUrl,
-        cfg.header_logo_url,
-        cfg.headerLogoURL,
-        cfg.logoHeaderUrl,
-        cfg.logoUrl
+        cfg.headerLogoUrl, cfg.headerlogoUrl, cfg.header_logo_url, cfg.headerLogoURL, cfg.logoHeaderUrl, cfg.logoUrl
       );
       if (!url) return;
 
-      // shape e size
       const shape = (pick(qs.get('shape'), cfg.headerLogoShape, cfg.headerlogoShape, cfg.logoHeaderShape, cfg.logoShape) || 'circle').toLowerCase();
       let size = Number(pick(qs.get('size'), cfg.headerLogoSize, cfg.headerlogoSize, cfg.logoHeaderSize));
       if (!Number.isFinite(size)) size = 32;
@@ -371,7 +471,7 @@
 
       img.onerror = () => { img.remove(); };
     }
-    // -------------------------------------------------------------------------------------
+    // ---------------------------------------
 
     async function carregar(){
       const avisos = document.getElementById('avisos');
@@ -390,10 +490,10 @@
       }
       const cfg = cfgSnap.data();
 
-      // Aplica logo do cabeçalho (robusto)
+      // Aplica logo pequeno do cabeçalho
       applyHeaderLogo(cfg);
 
-      // URLs dos ícones (se existirem)
+      // Ícones externos (se definidos)
       ICON_WA = (cfg.iconWhatsUrl || '').trim();
       ICON_ML = (cfg.iconMLUrl  || '').trim();
 
@@ -402,6 +502,7 @@
       document.getElementById('empresaBar').textContent = nome;
       document.getElementById('tituloEmpresa').textContent = nome;
 
+      // Logo central (anel)
       if (cfg.logoUrl){
         const el = document.getElementById('logoImg');
         el.src = cfg.logoUrl; el.style.display = 'block';
@@ -412,25 +513,8 @@
         if (cfg.logoShape === 'square'){ ring.style.borderRadius = '18px'; el.style.borderRadius = '12px'; }
       }
 
-      if (cfg.bannerUrl){
-        const box = document.getElementById('bannerBox');
-        const low = cfg.bannerUrl.toLowerCase();
-        if (typeof cfg.bannerFit === 'string'){
-          box.style.setProperty('--banner-fit', (cfg.bannerFit === 'contain' ? 'contain' : 'cover'));
-        }
-        if (typeof cfg.bannerPosition === 'string'){
-          box.style.setProperty('--banner-pos', cfg.bannerPosition);
-        }
-        if (low.endsWith('.webm') || low.endsWith('.mp4')) {
-          const vid = document.createElement('video');
-          vid.src = cfg.bannerUrl; vid.muted = true; vid.autoplay = true; vid.loop = true; vid.playsInline = true;
-          box.appendChild(vid);
-        } else {
-          const img = new Image();
-          img.alt = 'Banner'; img.src = cfg.bannerUrl; img.loading = 'lazy';
-          box.appendChild(img);
-        }
-      }
+      // ==== NOVO: carrossel de até 3 banners (img/mp4/webm) ====
+      setupBanners(cfg);
 
       if (cfg.catalogoAtivo !== true){
         avisos.innerHTML = `<div class="warn">Este catálogo está desativado no momento.</div>`;
@@ -439,7 +523,7 @@
         avisos.innerHTML = '';
       }
 
-      // FAB do WhatsApp
+      // FAB do WhatsApp (geral do catálogo)
       const whats = (cfg.whats || '').toString().trim();
       const waFab = document.getElementById('waFloat');
       if (whats) {
@@ -450,6 +534,7 @@
         waFab.style.display = 'none';
       }
 
+      // Restrições públicas
       const limitePublico = Number.isFinite(cfg.limitePublico) ? cfg.limitePublico : null;
       if (Number.isFinite(cfg.maxFotosPorItem)) {
         MAX_FOTOS_ITEM = Math.max(1, Math.min(3, cfg.maxFotosPorItem));
@@ -545,6 +630,8 @@
         <img id="logoImg" alt="Logo" src="" onerror="this.style.display='none'">
       </div>
       <h1 class="title" id="tituloEmpresa">Catálogo</h1>
+
+      <!-- Banner/carrossel de até 3 itens -->
       <div class="banner" id="bannerBox"></div>
     </section>
 
