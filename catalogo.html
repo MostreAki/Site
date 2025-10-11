@@ -29,8 +29,13 @@
       background:linear-gradient(90deg,var(--teal-900),var(--teal-700));
       border-bottom:1px solid rgba(255,255,255,.08);
     }
-    .bar{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:16px;padding:14px 16px}
-    .brand{font-weight:800;letter-spacing:.4px;font-size:1.1rem}
+    .bar{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:12px;padding:14px 16px}
+    /* NOVO: logo pequena no cabeçalho */
+    .brandLogo{
+      width:28px;height:28px;border-radius:999px;object-fit:cover;
+      display:none;background:#fff;box-shadow:0 4px 14px rgba(0,0,0,.18);
+    }
+    .brand{font-weight:800;letter-spacing:.4px;font-size:1.1rem;white-space:nowrap}
     .spacer{flex:1}
 
     main{max-width:1100px;margin:0 auto;padding:28px 16px 90px}
@@ -343,6 +348,20 @@
       document.getElementById('empresaBar').textContent = nome;
       document.getElementById('tituloEmpresa').textContent = nome;
 
+      // NOVO: logo no cabeçalho (usa headerLogoUrl se existir; senão, logoUrl)
+      const brandLogo = document.getElementById('brandLogo');
+      const headerLogoUrl = (cfg.headerLogoUrl || cfg.logoUrl || '').trim();
+      if (headerLogoUrl){
+        brandLogo.src = headerLogoUrl;
+        brandLogo.alt = (cfg.nomeEmpresa || 'Logo');
+        brandLogo.style.display = 'block';
+        if (cfg.headerLogoShape === 'square') brandLogo.style.borderRadius = '8px';
+        if (Number.isFinite(cfg.headerLogoSize)){
+          const s = Math.max(20, Math.min(48, Number(cfg.headerLogoSize)));
+          brandLogo.style.width = brandLogo.style.height = s + 'px';
+        }
+      }
+
       if (cfg.logoUrl){
         const el = document.getElementById('logoImg');
         el.src = cfg.logoUrl; el.style.display = 'block';
@@ -473,6 +492,8 @@
 <body>
   <header>
     <div class="bar">
+      <!-- NOVO: logo pequena à esquerda do nome -->
+      <img id="brandLogo" class="brandLogo" alt="Logo">
       <div class="brand" id="empresaBar">MostreAki</div>
       <div class="spacer"></div>
     </div>
