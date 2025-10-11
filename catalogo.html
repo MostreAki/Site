@@ -30,7 +30,7 @@
       border-bottom:1px solid rgba(255,255,255,.08);
     }
     .bar{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:12px;padding:14px 16px}
-    /* NOVO: logo pequena no cabeçalho */
+    /* Logo pequena no cabeçalho */
     .brandLogo{
       width:28px;height:28px;border-radius:999px;object-fit:cover;
       display:none;background:#fff;box-shadow:0 4px 14px rgba(0,0,0,.18);
@@ -103,7 +103,7 @@
 
     .cta:active{transform:translateY(1px)}
 
-    /* ====== Botões redondos antigos: manter no arquivo, porém ocultos ====== */
+    /* Botões redondos antigos (ocultos) */
     .zap,.mlbtn{display:none !important}
 
     /* FAB do WhatsApp (flutuante) */
@@ -322,6 +322,57 @@
       }
     });
 
+    // ---------- HEADER LOGO robusto (tenta várias chaves + aceita string/number) ----------
+    function applyHeaderLogo(cfg) {
+      const qs = new URL(location.href).searchParams;
+      const val = v => (v ?? '').toString().trim();
+      const pick = (...xs) => xs.map(val).find(Boolean);
+
+      // URL: tenta variações e cai no logoUrl
+      const url = pick(
+        qs.get('logo'),
+        cfg.headerLogoUrl,
+        cfg.headerlogoUrl,
+        cfg.header_logo_url,
+        cfg.headerLogoURL,
+        cfg.logoHeaderUrl,
+        cfg.logoUrl
+      );
+      if (!url) return;
+
+      // shape e size
+      const shape = (pick(qs.get('shape'), cfg.headerLogoShape, cfg.headerlogoShape, cfg.logoHeaderShape, cfg.logoShape) || 'circle').toLowerCase();
+      let size = Number(pick(qs.get('size'), cfg.headerLogoSize, cfg.headerlogoSize, cfg.logoHeaderSize));
+      if (!Number.isFinite(size)) size = 32;
+      size = Math.max(20, Math.min(96, size));
+
+      let img = document.getElementById('brandLogo');
+      if (!img) {
+        const bar = document.querySelector('header .bar') || document.querySelector('header');
+        img = document.createElement('img');
+        img.id = 'brandLogo';
+        img.className = 'brandLogo';
+        if (bar) bar.insertBefore(img, bar.firstChild);
+      }
+
+      Object.assign(img.style, {
+        display: 'inline-block',
+        width:  size + 'px',
+        height: size + 'px',
+        borderRadius: (shape === 'square') ? '8px' : '9999px',
+        objectFit: 'contain',
+        background: '#fff'
+      });
+      img.alt = (cfg.nomeEmpresa || 'Logo');
+      img.decoding = 'async';
+      img.loading  = 'eager';
+      img.referrerPolicy = 'no-referrer';
+      img.src = url;
+
+      img.onerror = () => { img.remove(); };
+    }
+    // -------------------------------------------------------------------------------------
+
     async function carregar(){
       const avisos = document.getElementById('avisos');
 
@@ -339,6 +390,9 @@
       }
       const cfg = cfgSnap.data();
 
+      // Aplica logo do cabeçalho (robusto)
+      applyHeaderLogo(cfg);
+
       // URLs dos ícones (se existirem)
       ICON_WA = (cfg.iconWhatsUrl || '').trim();
       ICON_ML = (cfg.iconMLUrl  || '').trim();
@@ -347,20 +401,6 @@
       document.title = `Catálogo • ${nome}`;
       document.getElementById('empresaBar').textContent = nome;
       document.getElementById('tituloEmpresa').textContent = nome;
-
-      // NOVO: logo no cabeçalho (usa headerLogoUrl se existir; senão, logoUrl)
-      const brandLogo = document.getElementById('brandLogo');
-      const headerLogoUrl = (cfg.headerLogoUrl || cfg.logoUrl || '').trim();
-      if (headerLogoUrl){
-        brandLogo.src = headerLogoUrl;
-        brandLogo.alt = (cfg.nomeEmpresa || 'Logo');
-        brandLogo.style.display = 'block';
-        if (cfg.headerLogoShape === 'square') brandLogo.style.borderRadius = '8px';
-        if (Number.isFinite(cfg.headerLogoSize)){
-          const s = Math.max(20, Math.min(48, Number(cfg.headerLogoSize)));
-          brandLogo.style.width = brandLogo.style.height = s + 'px';
-        }
-      }
 
       if (cfg.logoUrl){
         const el = document.getElementById('logoImg');
@@ -492,7 +532,7 @@
 <body>
   <header>
     <div class="bar">
-      <!-- NOVO: logo pequena à esquerda do nome -->
+      <!-- Logo pequena à esquerda do nome -->
       <img id="brandLogo" class="brandLogo" alt="Logo">
       <div class="brand" id="empresaBar">MostreAki</div>
       <div class="spacer"></div>
