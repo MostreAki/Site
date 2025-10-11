@@ -67,7 +67,12 @@
   .field:focus-within{ border-color:var(--brand); box-shadow:0 0 0 3px rgba(21,176,175,.12); }
   .field input, .field select{ width:100%; border:0; outline:0; font-size:1rem; background:transparent; padding:10px 0 2px; color:#233; }
   .field label{ position:absolute; left:12px; top:10px; color:#667; font-size:.95rem; pointer-events:none; transition:all .18s ease; background:#fff; padding:0 6px; border-radius:6px; transform-origin:left top; }
-  .field.focus label, .field.has-value label{ top:-8px; font-size:.78rem; color:var(--brand); }
+
+  /* rótulo flutuante NÃO afeta a label.showpwd */
+  .field.focus label:not(.showpwd),
+  .field.has-value label:not(.showpwd){
+    top:-8px; font-size:.78rem; color:var(--brand);
+  }
 
   /* Campo de senha */
   .field.pwd input{ padding-right:0; }
@@ -75,6 +80,14 @@
   /* Checkbox “Mostrar senha” */
   .showpwd{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:.9rem;color:#444}
   .showpwd input{width:auto}
+
+  /* A label da caixinha deve ser estática, abaixo do input */
+  .field label.showpwd{
+    position:static; top:auto; left:auto;
+    background:transparent; padding:0; margin-top:8px;
+    display:flex; align-items:center; gap:8px;
+    font-size:.9rem; color:#444; pointer-events:auto;
+  }
 
   /* BOTÕES */
   button,.btn{width:100%; margin-top:12px; padding:12px; border-radius:12px; border:0; font-weight:700; cursor:pointer; transition:filter .15s ease, transform .1s ease}
