@@ -19,6 +19,8 @@
       --logo-size: 86%;
       --banner-fit: cover;
       --banner-pos: center;
+      --banner-min-h-mobile: 160px;
+      --banner-min-h-desktop: 220px;
     }
     *{box-sizing:border-box}
     html,body{margin:0;padding:0;background:linear-gradient(180deg,var(--teal-900),#0a2537 45%, #05202a);color:#ecfeff;font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Arial}
@@ -30,7 +32,6 @@
       border-bottom:1px solid rgba(255,255,255,.08);
     }
     .bar{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:12px;padding:14px 16px}
-    /* Logo pequena no cabeçalho */
     .brandLogo{
       width:28px;height:28px;border-radius:999px;object-fit:cover;
       display:none;background:#fff;box-shadow:0 4px 14px rgba(0,0,0,.18);
@@ -49,12 +50,13 @@
 
     /* Banner container (carrossel) */
     .banner{
-      width:100%;max-width:980px;min-height:160px;border-radius:18px;
+      width:100%;max-width:980px;min-height:var(--banner-min-h-mobile);border-radius:18px;
       background:linear-gradient(180deg,#e0f7f4,#c7f1ec);
       box-shadow: 0 20px 60px rgba(0,0,0,.25);
       overflow:hidden;
       position:relative;
     }
+    @media (min-width:860px){ .banner{ min-height:var(--banner-min-h-desktop); } }
     .banner .slide{
       position:absolute; inset:0;
       opacity:0; transition:opacity .6s ease;
@@ -79,59 +81,35 @@
     .imgWrap{aspect-ratio:1/1;background:#e6f6f4;display:grid;place-items:center;overflow:hidden;cursor:zoom-in}
     .imgWrap img{width:100%;height:100%;object-fit:cover}
 
-    /* ====== INFO (texto + ações) ====== */
-    .info{
-      display:grid;
-      grid-template-columns: 1fr;
-      row-gap:6px;
-      align-items:start;
-      padding:10px 12px 12px;
-    }
+    .info{display:grid;grid-template-columns: 1fr;row-gap:6px;align-items:start;padding:10px 12px 12px;}
     .left{min-width:0}
     .nome{font-weight:700;color:#0c2d2b;margin-bottom:2px;font-size:.98rem}
     .preco{font-weight:800;color:#0c2d2b;font-size:1rem}
     .qtde{color:#476f6c;font-size:.86rem;margin-top:2px}
 
-    /* Miniaturas por card (ficam sob estoque) */
     .thumbs{display:flex; gap:8px; margin:8px 0 6px}
     .thumbs img{width:40px; height:40px; object-fit:cover; border-radius:8px; opacity:.9; border:1px solid rgba(3,94,86,.22); cursor:pointer; transition:transform .12s ease, opacity .12s ease}
     .thumbs img:hover{ opacity:1; transform:translateY(-1px) }
 
-    /* Ações: Whatsapp (texto + ícone) e Comprar (texto + ícone) */
     .actions{display:flex; flex-direction:column; gap:8px; margin-top:6px}
-    .cta{
-      display:inline-flex; align-items:center; justify-content:flex-start; gap:10px;
-      width:fit-content; padding:10px 14px; border:0; border-radius:12px; font-weight:800; cursor:pointer;
-      box-shadow:0 10px 24px rgba(0,0,0,.12); text-shadow:0 1px 0 rgba(0,0,0,.06);
-    }
+    .cta{display:inline-flex; align-items:center; justify-content:flex-start; gap:10px; width:fit-content; padding:10px 14px; border:0; border-radius:12px; font-weight:800; cursor:pointer; box-shadow:0 10px 24px rgba(0,0,0,.12); text-shadow:0 1px 0 rgba(0,0,0,.06);}
     .cta img{width:22px; height:22px; display:block}
     .cta svg{width:22px; height:22px}
     .cta-wa{background:var(--ok); color:#fff}
     .cta-ml{background:#FFE600; color:#002E6C}
     .cta:active{transform:translateY(1px)}
 
-    /* Botões redondos antigos (ocultos) */
     .zap,.mlbtn{display:none !important}
 
-    /* FAB do WhatsApp (flutuante) */
-    .wa-float{
-      position:fixed; right:16px; bottom:16px; z-index:60;
-      width:56px; height:56px; border-radius:999px;
-      background:var(--ok); display:none; align-items:center; justify-content:center;
-      box-shadow:0 12px 32px rgba(37,211,102,.35);
-    }
+    .wa-float{position:fixed; right:16px; bottom:16px; z-index:60; width:56px; height:56px; border-radius:999px; background:var(--ok); display:none; align-items:center; justify-content:center; box-shadow:0 12px 32px rgba(37,211,102,.35);}
     .wa-float:active{ transform:scale(.97) }
     .wa-float svg{ width:28px; height:28px; fill:#fff }
-    @media (min-width:860px){
-      .wa-float{ right:24px; bottom:24px; width:64px; height:64px }
-      .wa-float svg{ width:30px; height:30px }
-    }
+    @media (min-width:860px){ .wa-float{ right:24px; bottom:24px; width:64px; height:64px } .wa-float svg{ width:30px; height:30px } }
 
     .muted{margin:22px auto 0;max-width:780px;color:#b6e9e2;text-align:center;font-size:.95rem}
     .warn{background:#fee2e2;color:#7f1d1d;border:1px solid #fecaca;padding:12px 14px;border-radius:12px;margin:18px auto;max-width:840px}
     footer{color:#bbf7d0;font-size:.8rem;text-align:center;padding:32px 16px;border-top:1px solid rgba(255,255,255,.07)}
 
-    /* Lightbox */
     .lb-bg{position:fixed; inset:0; z-index:70; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,.7); backdrop-filter:saturate(120%) blur(2px); padding:16px}
     .lb-card{position:relative; max-width:96vw; max-height:90vh; background:#031d24; border:1px solid rgba(255,255,255,.12); border-radius:16px; box-shadow:0 20px 80px rgba(0,0,0,.55); padding:10px}
     .lb-img{display:block; max-width:92vw; max-height:82vh; width:auto; height:auto; object-fit:contain; border-radius:10px; background:#0a2a33}
@@ -195,39 +173,88 @@
     let ICON_WA = '';
     let ICON_ML = '';
 
-    // ---------- Banner/carrossel ----------
+    /* ===================== CARROSSEL DE BANNERS (MOBILE vs DESKTOP) ===================== */
     let BANNER_SLIDES = [];
     let BANNER_IDX = 0;
     let BANNER_TIMER = null;
+    const mq = window.matchMedia('(max-width: 720px)');
+    let lastMode = mq.matches ? 'mobile' : 'desktop';
 
-    function pick(...xs){
-      const norm = v => (v ?? '').toString().trim();
-      for (const x of xs) if (norm(x)) return norm(x);
-      return '';
+    const norm = v => (v ?? '').toString().trim();
+
+    function arrayFromAliases(obj, keys){
+      const out = [];
+      for (const k of keys){
+        const v = obj[k];
+        if (Array.isArray(v)) out.push(...v);
+        else if (typeof v === 'string' && v) out.push(v);
+      }
+      return out;
     }
 
-    function collectBannerUrls(cfg){
-      const arr = [];
-      if (Array.isArray(cfg.bannerUrls)) arr.push(...cfg.bannerUrls);
-      // aliases aceitos
-      [cfg.bannerUrl, cfg.banner1Url, cfg.banner2Url, cfg.banner3Url, cfg.bannerUrl1, cfg.bannerUrl2, cfg.bannerUrl3]
-        .forEach(u => { if (u) arr.push(u); });
-      // limpa falsy/duplicados
-      return [...new Set(arr.filter(Boolean))].slice(0, 3);
+    function collectBannerUrlsByMode(cfg){
+      const isMob = mq.matches;
+
+      // 1) Tenta específicos por dispositivo
+      const mobileList = arrayFromAliases(cfg, [
+        'bannerMobileUrls','mobileBannerUrls',
+        'bannerMobileUrl','bannerMobile1Url','bannerMobile2Url','bannerMobile3Url',
+        'mobileBannerUrl','mobileBanner1Url','mobileBanner2Url','mobileBanner3Url'
+      ]);
+      const desktopList = arrayFromAliases(cfg, [
+        'bannerDesktopUrls','desktopBannerUrls',
+        'bannerDesktopUrl','bannerDesktop1Url','bannerDesktop2Url','bannerDesktop3Url'
+      ]);
+
+      let urls = isMob ? mobileList : desktopList;
+
+      // 2) Fallback para os genéricos já existentes
+      if (!urls.length){
+        urls = arrayFromAliases(cfg, [
+          'bannerUrls','banners',
+          'bannerUrl','banner1Url','banner2Url','banner3Url','bannerUrl1','bannerUrl2','bannerUrl3'
+        ]);
+      }
+      // Normaliza / remove duplicados
+      urls = [...new Set(urls.filter(Boolean))].slice(0,3);
+      return urls;
+    }
+
+    function effectiveFit(cfg){
+      const isMob = mq.matches;
+      const v = isMob ? (cfg.bannerFitMobile || cfg.bannerfitMobile)
+                      : (cfg.bannerFitDesktop || cfg.bannerfitDesktop);
+      return (v || cfg.bannerFit || 'cover') === 'contain' ? 'contain' : 'cover';
+    }
+    function effectivePosition(cfg){
+      const isMob = mq.matches;
+      return norm(isMob ? (cfg.bannerPositionMobile || cfg.bannerpositionMobile)
+                        : (cfg.bannerPositionDesktop || cfg.bannerpositionDesktop))
+             || norm(cfg.bannerPosition) || 'center';
+    }
+    function effectiveMinHeight(cfg){
+      const isMob = mq.matches;
+      const px = Number(isMob ? cfg.bannerHeightMobile : cfg.bannerHeightDesktop);
+      return Number.isFinite(px) ? Math.max(80, Math.min(800, px)) : null;
     }
 
     function setupBanners(cfg){
       const box = document.getElementById('bannerBox');
       if (!box) return;
       box.innerHTML = '';
-      const urls = collectBannerUrls(cfg);
+
+      const urls = collectBannerUrlsByMode(cfg);
       if (!urls.length) return;
 
-      if (typeof cfg.bannerFit === 'string'){
-        box.style.setProperty('--banner-fit', (cfg.bannerFit === 'contain' ? 'contain' : 'cover'));
-      }
-      if (typeof cfg.bannerPosition === 'string'){
-        box.style.setProperty('--banner-pos', cfg.bannerPosition);
+      // Ajustes visuais por modo
+      box.style.setProperty('--banner-fit', effectiveFit(cfg));
+      box.style.setProperty('--banner-pos', effectivePosition(cfg));
+      const minH = effectiveMinHeight(cfg);
+      if (minH) {
+        box.style.minHeight = minH + 'px';
+      } else {
+        // volta para o default por CSS
+        box.style.minHeight = '';
       }
 
       BANNER_SLIDES = urls.map((u, i) => {
@@ -237,7 +264,6 @@
         if (low.endsWith('.mp4') || low.endsWith('.webm')){
           const v = document.createElement('video');
           v.src = u; v.muted = true; v.playsInline = true; v.preload = 'none';
-          // se tiver só 1 banner, deixa em loop; se for carrossel, controlamos play/pause
           if (urls.length === 1) v.autoplay = v.loop = true;
           slide.appendChild(v);
         } else {
@@ -249,7 +275,7 @@
         return slide;
       });
 
-      // inicia reprodução do 1º vídeo, se existir
+      // inicia o 1º vídeo
       const firstVid = BANNER_SLIDES[0].querySelector('video');
       if (firstVid) firstVid.play().catch(()=>{});
 
@@ -261,21 +287,18 @@
           const nxtIdx = (BANNER_IDX + 1) % BANNER_SLIDES.length;
           const nxt = BANNER_SLIDES[nxtIdx];
 
-          // pausa vídeo atual
           const curVid = cur.querySelector('video');
           if (curVid){ curVid.pause(); curVid.currentTime = 0; }
 
           cur.classList.remove('active');
           nxt.classList.add('active');
 
-          // toca vídeo do próximo
           const nxtVid = nxt.querySelector('video');
           if (nxtVid){ nxtVid.play().catch(()=>{}); }
 
           BANNER_IDX = nxtIdx;
         }, interval);
 
-        // pausa quando aba fica oculta
         document.addEventListener('visibilitychange', ()=>{
           if (document.hidden){ clearInterval(BANNER_TIMER); BANNER_TIMER = null; }
           else if (!BANNER_TIMER){
@@ -293,7 +316,18 @@
         });
       }
     }
-    // --------------------------------------
+
+    // Reconstrói banners se mudar de modo (mobile/desktop)
+    function watchBannerMode(cfg){
+      mq.addEventListener('change', ()=>{
+        const mode = mq.matches ? 'mobile' : 'desktop';
+        if (mode !== lastMode){
+          lastMode = mode;
+          setupBanners(cfg);
+        }
+      });
+    }
+    /* =================================================================================== */
 
     function renderPage(){
       clampPage();
@@ -311,7 +345,6 @@
           const thumbs  = d.fotos.slice(0, MAX_FOTOS_ITEM)
             .map((u,i)=>`<img src="${u}" alt="" data-idx="${i}">`).join('');
 
-          // Ícones fallback (quando não houver imagens externas)
           const waSvg = `<svg viewBox="0 0 32 32" aria-hidden="true"><path fill="#fff" d="M19.1 17.1c-.3-.2-1.7-.8-2-.9-.3-.1-.5-.2-.7.2-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.2-1.1-.4-2-1.2-.7-.6-1.2-1.4-1.3-1.6-.1-.3 0-.4.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2.1-.4 0-.6-.1-.2-.7-1.7-.9-2.3-.2-.5-.5-.4-.7-.4h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.7 0 1.6 1.1 3.1 1.2 3.3.1.2 2.2 3.4 5.4 4.7.8.4 1.4.6 1.9.8.8.3 1.6.3 2.2.2.7-.1 2-.8 2.2-1.6.3-.8.3-1.5.2-1.6 0-.1-.2-.1-.4-.2zM16 3C9.9 3 5 7.9 5 14c0 2.4.8 4.6 2.1 6.3L6 29l8-1.9c1.5.4 3.1.7 4.7.7 6.1 0 11-4.9 11-11S22.1 3 16 3z"/></svg>`;
           const mlSvg = `<svg viewBox="0 0 64 64" aria-hidden="true"><rect x="2" y="8" width="60" height="48" rx="24" fill="#002E6C" opacity=".0"/><path fill="#002E6C" d="M18 28c2-2 5-4 8-4s6 2 8 4c2 2 5 4 8 4s6-2 8-4l2 3c-2 2-6 5-10 5s-8-3-10-5c-2-2-5-4-8-4s-6 2-8 4-8 5-12 5l2-4c3 0 8-3 10-4Z"/></svg>`;
 
@@ -336,7 +369,6 @@
                   ${d.mlUrl ? `<a class="cta cta-ml" href="${d.mlUrl}" target="_blank" rel="noopener">Comprar ${mlIcon}</a>` : ``}
                 </div>
               </div>
-              <!-- botões redondos antigos (ocultos por CSS) -->
               ${d.zap ? `<button class="zap" aria-label="WhatsApp" onclick="window.open('${d.zap}','_blank')"></button>` : ``}
               ${d.mlUrl ? `<button class="mlbtn" aria-label="Mercado Livre" onclick="window.open('${d.mlUrl}','_blank')"></button>` : ``}
             </div>
@@ -356,7 +388,7 @@
     window.goPrev = goPrev;
     window.goNext = goNext;
 
-    // Lightbox
+    /* ================= Lightbox ================= */
     const lbBg   = document.getElementById('lbBg');
     const lbImg  = document.getElementById('lbImg');
     const lbBtn  = document.getElementById('lbClose');
@@ -429,7 +461,7 @@
       }
     });
 
-    // ---------- HEADER LOGO robusto ----------
+    /* ================= Header logo (pequena) ================= */
     function applyHeaderLogo(cfg) {
       const qs = new URL(location.href).searchParams;
       const val = v => (v ?? '').toString().trim();
@@ -471,7 +503,6 @@
 
       img.onerror = () => { img.remove(); };
     }
-    // ---------------------------------------
 
     async function carregar(){
       const avisos = document.getElementById('avisos');
@@ -481,7 +512,6 @@
         return;
       }
 
-      // meta/config
       const cfgRef = doc(db, `catalogos/${slug}/meta/config`);
       const cfgSnap = await getDoc(cfgRef);
       if (!cfgSnap.exists()){
@@ -490,10 +520,8 @@
       }
       const cfg = cfgSnap.data();
 
-      // Aplica logo pequeno do cabeçalho
       applyHeaderLogo(cfg);
 
-      // Ícones externos (se definidos)
       ICON_WA = (cfg.iconWhatsUrl || '').trim();
       ICON_ML = (cfg.iconMLUrl  || '').trim();
 
@@ -502,7 +530,6 @@
       document.getElementById('empresaBar').textContent = nome;
       document.getElementById('tituloEmpresa').textContent = nome;
 
-      // Logo central (anel)
       if (cfg.logoUrl){
         const el = document.getElementById('logoImg');
         el.src = cfg.logoUrl; el.style.display = 'block';
@@ -513,8 +540,9 @@
         if (cfg.logoShape === 'square'){ ring.style.borderRadius = '18px'; el.style.borderRadius = '12px'; }
       }
 
-      // ==== NOVO: carrossel de até 3 banners (img/mp4/webm) ====
+      /* ==== Banners: agora separados por dispositivo ==== */
       setupBanners(cfg);
+      watchBannerMode(cfg);
 
       if (cfg.catalogoAtivo !== true){
         avisos.innerHTML = `<div class="warn">Este catálogo está desativado no momento.</div>`;
@@ -523,7 +551,6 @@
         avisos.innerHTML = '';
       }
 
-      // FAB do WhatsApp (geral do catálogo)
       const whats = (cfg.whats || '').toString().trim();
       const waFab = document.getElementById('waFloat');
       if (whats) {
@@ -534,7 +561,6 @@
         waFab.style.display = 'none';
       }
 
-      // Restrições públicas
       const limitePublico = Number.isFinite(cfg.limitePublico) ? cfg.limitePublico : null;
       if (Number.isFinite(cfg.maxFotosPorItem)) {
         MAX_FOTOS_ITEM = Math.max(1, Math.min(3, cfg.maxFotosPorItem));
@@ -617,7 +643,6 @@
 <body>
   <header>
     <div class="bar">
-      <!-- Logo pequena à esquerda do nome -->
       <img id="brandLogo" class="brandLogo" alt="Logo">
       <div class="brand" id="empresaBar">MostreAki</div>
       <div class="spacer"></div>
@@ -631,7 +656,7 @@
       </div>
       <h1 class="title" id="tituloEmpresa">Catálogo</h1>
 
-      <!-- Banner/carrossel de até 3 itens -->
+      <!-- Banner/carrossel -->
       <div class="banner" id="bannerBox"></div>
     </section>
 
@@ -668,7 +693,7 @@
     </p>
   </main>
 
-  <!-- FAB do WhatsApp -->
+  <!-- FAB WhatsApp -->
   <a id="waFloat" class="wa-float" href="#" target="_blank" rel="noopener" aria-label="WhatsApp">
     <svg viewBox="0 0 32 32" role="img" aria-hidden="true"><path d="M19.1 17.1c-.3-.2-1.7-.8-2-.9-.3-.1-.5-.2-.7.2-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.2-1.1-.4-2-1.2-.7-.6-1.2-1.4-1.3-1.6-.1-.3 0-.4.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2.1-.4 0-.6-.1-.2-.7-1.7-.9-2.3-.2-.5-.5-.4-.7-.4h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.7 0 1.6 1.1 3.1 1.2 3.3.1.2 2.2 3.4 5.4 4.7.8.4 1.4.6 1.9.8.8.3 1.6.3 2.2.2.7-.1 2-.8 2.2-1.6.3-.8.3-1.5.2-1.6 0-.1-.2-.1-.4-.2zM16 3C9.9 3 5 7.9 5 14c0 2.4.8 4.6 2.1 6.3L6 29l8-1.9c1.5.4 3.1.7 4.7.7 6.1 0 11-4.9 11-11S22.1 3 16 3z"/></svg>
   </a>
