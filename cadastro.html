@@ -20,7 +20,7 @@
   }
   @media (min-width:768px){ body{ background-image:url("fundo-desktop.png"); } }
 
-  /* ====== HEADER (copiado/compatível com Planos) ====== */
+  /* ====== HEADER ====== */
   header{
     background:var(--brandLight); height:60px; display:flex; align-items:center; justify-content:space-between;
     padding:0 20px; position:relative; box-shadow:0 2px 6px rgba(0,0,0,.1);
@@ -69,17 +69,12 @@
   .field label{ position:absolute; left:12px; top:10px; color:#667; font-size:.95rem; pointer-events:none; transition:all .18s ease; background:#fff; padding:0 6px; border-radius:6px; transform-origin:left top; }
   .field.focus label, .field.has-value label{ top:-8px; font-size:.78rem; color:var(--brand); }
 
-  /* ====== OLHO DE SENHA – corrigido e centralizado dentro do campo ====== */
-  .field.pwd{ padding-right:56px; }
-  .field.pwd input{ padding-right:56px; }
-  .pwd-toggle{
-    position:absolute; right:8px; top:50%; transform:translateY(-50%);
-    width:32px; height:32px; display:flex; align-items:center; justify-content:center;
-    background:#fff; border:1px solid #dcdcdc; border-radius:8px; cursor:pointer;
-    font-size:18px; line-height:1; color:#444; z-index:2;
-  }
-  .pwd-toggle:focus{outline:3px solid rgba(21,176,175,.25)}
-  .pwd-toggle:active{transform:translateY(-50%) scale(.98)}
+  /* Campo de senha */
+  .field.pwd input{ padding-right:0; }
+
+  /* Checkbox “Mostrar senha” */
+  .showpwd{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:.9rem;color:#444}
+  .showpwd input{width:auto}
 
   /* BOTÕES */
   button,.btn{width:100%; margin-top:12px; padding:12px; border-radius:12px; border:0; font-weight:700; cursor:pointer; transition:filter .15s ease, transform .1s ease}
@@ -187,8 +182,25 @@
 
     <div class="section-title">Acesso</div>
     <div class="form-grid cols-2">
-      <div class="field pwd"><label for="senha">Senha (mín. 6) *</label><input id="senha" type="password" required autocomplete="new-password"><button id="toggleSenha" class="pwd-toggle" type="button" aria-label="Mostrar senha" aria-pressed="false">👁️</button></div>
-      <div class="field pwd"><label for="senha2">Confirmar senha *</label><input id="senha2" type="password" required><button id="toggleSenha2" class="pwd-toggle" type="button" aria-label="Mostrar confirmação" aria-pressed="false">👁️</button></div>
+      <!-- Campo de senha COM checkbox “Mostrar senha” (sem botão olho) -->
+      <div class="field pwd">
+        <label for="senha">Senha (mín. 6) *</label>
+        <input id="senha" type="password" required autocomplete="new-password">
+        <label class="showpwd" for="chkMostrarSenha">
+          <input id="chkMostrarSenha" type="checkbox" aria-controls="senha" aria-label="Mostrar senha">
+          Mostrar senha
+        </label>
+      </div>
+
+      <!-- Confirmação de senha COM checkbox -->
+      <div class="field pwd">
+        <label for="senha2">Confirmar senha *</label>
+        <input id="senha2" type="password" required>
+        <label class="showpwd" for="chkMostrarSenha2">
+          <input id="chkMostrarSenha2" type="checkbox" aria-controls="senha2" aria-label="Mostrar confirmação">
+          Mostrar senha
+        </label>
+      </div>
     </div>
 
     <button class="primary" id="btnCadastrar">Criar conta</button>
@@ -230,7 +242,7 @@ const auth = getAuth(app);
 const db   = getFirestore(app);
 const stg  = getStorage(app, 'gs://mostreaki-2025.firebasestorage.app');
 
-/* ===== HEADER: menu e avatar (mesmo padrão do anexo) ===== */
+/* ===== HEADER: menu e avatar ===== */
 const cacheBust = u => u ? u + (u.includes('?')?'&':'?') + 'v=' + Date.now() : u;
 function setAvatar(url){
   if(!url) return; localStorage.setItem('fotoPerfil', url);
@@ -355,8 +367,18 @@ Array.from(document.querySelectorAll('input[name="tipoPessoa"]')).forEach(r=>{ r
 isentoIE.addEventListener('change', ()=> setTipo(document.querySelector('input[name="tipoPessoa"]:checked').value));
 setTipo('PF');
 
-function wirePasswordToggle(inputId, btnId){ const input = document.getElementById(inputId), btn = document.getElementById(btnId); if(!input||!btn) return; btn.addEventListener('click', ()=>{ const showing = input.type==='text'; input.type = showing?'password':'text'; btn.textContent = showing ? '👁️' : '🙈'; btn.setAttribute('aria-pressed', (!showing).toString()); btn.setAttribute('aria-label', showing ? 'Mostrar' : 'Ocultar'); }); }
-wirePasswordToggle('senha','toggleSenha'); wirePasswordToggle('senha2','toggleSenha2');
+/* ===== Checkbox “Mostrar senha” (substitui o botão olho) ===== */
+(function wireShowPasswords(){
+  const pairs = [
+    {input:'senha', chk:'chkMostrarSenha'},
+    {input:'senha2', chk:'chkMostrarSenha2'}
+  ];
+  pairs.forEach(({input,chk})=>{
+    const i = document.getElementById(input);
+    const c = document.getElementById(chk);
+    if(i && c){ c.addEventListener('change', ()=>{ i.type = c.checked ? 'text' : 'password'; }); }
+  });
+})();
 
 /* ===== Cadastro + reserva de username + origem do funil ===== */
 const params = new URLSearchParams(location.search); const origemCadastro = params.get('c') || 'site';
@@ -367,7 +389,7 @@ function showErr(title, html){ showAlert({title, html}); }
 function phoneDigits(v){ return (v||'').replace(/\D/g,'').length; }
 
 // SUBMIT
- document.getElementById('btnCadastrar').onclick = async () => {
+document.getElementById('btnCadastrar').onclick = async () => {
   const tipo = document.querySelector('input[name="tipoPessoa"]:checked').value;
   const usernameRaw = document.getElementById('username').value.trim();
   const username    = normalizeUsername(usernameRaw);
@@ -434,7 +456,7 @@ function phoneDigits(v){ return (v||'').replace(/\D/g,'').length; }
     };
     showAlert({title:'Não foi possível cadastrar', html: mapa[e.code] || `Erro inesperado (${e.code}). Tente novamente.`});
   } finally { uiBusy(false); }
- };
+};
 </script>
 </body>
 </html>
