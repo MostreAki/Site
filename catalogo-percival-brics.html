@@ -19,6 +19,8 @@
       --logo-size: 86%;
       --banner-fit: cover;
       --banner-pos: center;
+      --banner-min-h-mobile: 160px;
+      --banner-min-h-desktop: 220px;
     }
     *{box-sizing:border-box}
     html,body{margin:0;padding:0;background:linear-gradient(180deg,var(--teal-900),#0a2537 45%, #05202a);color:#ecfeff;font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Arial}
@@ -29,8 +31,12 @@
       background:linear-gradient(90deg,var(--teal-900),var(--teal-700));
       border-bottom:1px solid rgba(255,255,255,.08);
     }
-    .bar{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:16px;padding:14px 16px}
-    .brand{font-weight:800;letter-spacing:.4px;font-size:1.1rem}
+    .bar{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:12px;padding:14px 16px}
+    .brandLogo{
+      width:28px;height:28px;border-radius:999px;object-fit:cover;
+      display:none;background:#fff;box-shadow:0 4px 14px rgba(0,0,0,.18);
+    }
+    .brand{font-weight:800;letter-spacing:.4px;font-size:1.1rem;white-space:nowrap}
     .spacer{flex:1}
 
     main{max-width:1100px;margin:0 auto;padding:28px 16px 90px}
@@ -41,12 +47,22 @@
       display:grid;place-items:center;position:relative;box-shadow:0 12px 40px rgba(0,0,0,.35), inset 0 0 0 6px var(--ring)
     }
     .logoRing img{width:var(--logo-size);height:var(--logo-size);object-fit:contain;border-radius:999px}
+
+    /* Banner container (carrossel) */
     .banner{
-      width:100%;max-width:980px;min-height:160px;border-radius:18px;
+      width:100%;max-width:980px;min-height:var(--banner-min-h-mobile);border-radius:18px;
       background:linear-gradient(180deg,#e0f7f4,#c7f1ec);
       box-shadow: 0 20px 60px rgba(0,0,0,.25);
-      overflow:hidden
+      overflow:hidden;
+      position:relative;
     }
+    @media (min-width:860px){ .banner{ min-height:var(--banner-min-h-desktop); } }
+    .banner .slide{
+      position:absolute; inset:0;
+      opacity:0; transition:opacity .6s ease;
+      display:flex;
+    }
+    .banner .slide.active{ opacity:1 }
     .banner img,.banner video{width:100%;height:100%;object-fit:var(--banner-fit);object-position:var(--banner-pos);display:block}
 
     h1.title{margin:0;margin-top:8px;font-size:clamp(1.35rem,2.2vw,1.9rem);font-weight:900;letter-spacing:.3px;text-shadow:0 2px 14px rgba(0,0,0,.35)}
@@ -65,68 +81,35 @@
     .imgWrap{aspect-ratio:1/1;background:#e6f6f4;display:grid;place-items:center;overflow:hidden;cursor:zoom-in}
     .imgWrap img{width:100%;height:100%;object-fit:cover}
 
-    /* ====== INFO (texto + botões) ====== */
-    .info{
-      display:grid;
-      grid-template-columns: 1fr auto auto; /* texto + botões (desktop/tablet) */
-      column-gap:10px;
-      row-gap:6px;
-      align-items:center;
-      padding:10px 12px 12px;
-    }
+    .info{display:grid;grid-template-columns: 1fr;row-gap:6px;align-items:start;padding:10px 12px 12px;}
     .left{min-width:0}
     .nome{font-weight:700;color:#0c2d2b;margin-bottom:2px;font-size:.98rem}
     .preco{font-weight:800;color:#0c2d2b;font-size:1rem}
     .qtde{color:#476f6c;font-size:.86rem;margin-top:2px}
 
-    /* em telas pequenas, bota os botões numa linha abaixo do texto */
-    @media (max-width: 520px){
-      .info{ grid-template-columns: 1fr; align-items:flex-start }
-      .zap, .mlbtn{ justify-self:flex-start }
-    }
+    .thumbs{display:flex; gap:8px; margin:8px 0 6px}
+    .thumbs img{width:40px; height:40px; object-fit:cover; border-radius:8px; opacity:.9; border:1px solid rgba(3,94,86,.22); cursor:pointer; transition:transform .12s ease, opacity .12s ease}
+    .thumbs img:hover{ opacity:1; transform:translateY(-1px) }
 
-    /* Botões de ação no card */
-    .zap,.mlbtn{
-      border:0;cursor:pointer;display:grid;place-items:center;
-      width:clamp(36px,8vw,46px);height:clamp(36px,8vw,46px);border-radius:999px;
-      transition:transform .12s ease;
-      /* garante que nunca “apertem” o texto */
-      justify-self:end;
-    }
-    .zap{background:var(--ok);color:#fff;box-shadow:0 6px 18px rgba(37,211,102,.35)}
-    .mlbtn{background:#FFE600;color:#002E6C;box-shadow:0 6px 18px rgba(0,0,0,.18)}
-    .zap:active,.mlbtn:active{transform:scale(.97)}
+    .actions{display:flex; flex-direction:column; gap:8px; margin-top:6px}
+    .cta{display:inline-flex; align-items:center; justify-content:flex-start; gap:10px; width:fit-content; padding:10px 14px; border:0; border-radius:12px; font-weight:800; cursor:pointer; box-shadow:0 10px 24px rgba(0,0,0,.12); text-shadow:0 1px 0 rgba(0,0,0,.06);}
+    .cta img{width:22px; height:22px; display:block}
+    .cta svg{width:22px; height:22px}
+    .cta-wa{background:var(--ok); color:#fff}
+    .cta-ml{background:#FFE600; color:#002E6C}
+    .cta:active{transform:translateY(1px)}
 
-    /* Ícones padrão (SVG) */
-    .zap svg{width:clamp(18px,4.8vw,24px);height:clamp(18px,4.8vw,24px);fill:#fff}
-    .mlbtn svg{width:clamp(20px,5.5vw,26px);height:clamp(20px,5.5vw,26px)}
-    .mlbtn .ml-blue{fill:#002E6C}
+    .zap,.mlbtn{display:none !important}
 
-    /* Ícones externos (imagens do GitHub) */
-    .zap img,.mlbtn img{width:clamp(26px,7.5vw,36px);height:auto;display:block}
-
-    /* Quando houver ícone externo, tira fundo/“bolacha” */
-    .btn-plain{background:transparent !important;box-shadow:none !important;border-radius:0 !important;width:auto !important;height:auto !important;padding:0 !important;justify-self:end}
-
-    /* FAB do WhatsApp (flutuante) */
-    .wa-float{
-      position:fixed; right:16px; bottom:16px; z-index:60;
-      width:56px; height:56px; border-radius:999px;
-      background:var(--ok); display:none; align-items:center; justify-content:center;
-      box-shadow:0 12px 32px rgba(37,211,102,.35);
-    }
+    .wa-float{position:fixed; right:16px; bottom:16px; z-index:60; width:56px; height:56px; border-radius:999px; background:var(--ok); display:none; align-items:center; justify-content:center; box-shadow:0 12px 32px rgba(37,211,102,.35);}
     .wa-float:active{ transform:scale(.97) }
     .wa-float svg{ width:28px; height:28px; fill:#fff }
-    @media (min-width:860px){
-      .wa-float{ right:24px; bottom:24px; width:64px; height:64px }
-      .wa-float svg{ width:30px; height:30px }
-    }
+    @media (min-width:860px){ .wa-float{ right:24px; bottom:24px; width:64px; height:64px } .wa-float svg{ width:30px; height:30px } }
 
     .muted{margin:22px auto 0;max-width:780px;color:#b6e9e2;text-align:center;font-size:.95rem}
     .warn{background:#fee2e2;color:#7f1d1d;border:1px solid #fecaca;padding:12px 14px;border-radius:12px;margin:18px auto;max-width:840px}
     footer{color:#bbf7d0;font-size:.8rem;text-align:center;padding:32px 16px;border-top:1px solid rgba(255,255,255,.07)}
 
-    /* Lightbox */
     .lb-bg{position:fixed; inset:0; z-index:70; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,.7); backdrop-filter:saturate(120%) blur(2px); padding:16px}
     .lb-card{position:relative; max-width:96vw; max-height:90vh; background:#031d24; border:1px solid rgba(255,255,255,.12); border-radius:16px; box-shadow:0 20px 80px rgba(0,0,0,.55); padding:10px}
     .lb-img{display:block; max-width:92vw; max-height:82vh; width:auto; height:auto; object-fit:contain; border-radius:10px; background:#0a2a33}
@@ -135,12 +118,7 @@
     .lb-arrow{position:absolute; top:50%; transform:translateY(-50%); border:0; width:42px; height:42px; border-radius:999px; background:rgba(255,255,255,.16); color:#e8ffff; cursor:pointer; font-size:22px; line-height:42px}
     .lb-prev{ left:8px } .lb-next{ right:8px }
     .lb-arrow:active{ transform:translateY(-50%) scale(.96) }
-    .lb-count{position:absolute; bottom:10px; right:12px; background:rgba(0,0,0,.45); color:#e8ffff; font-size:.85rem; padding:6px 10px; border-radius:10px}
-
-    /* Miniaturas por card */
-    .thumbs{display:flex; gap:6px; margin:8px 12px 12px}
-    .thumbs img{width:36px; height:36px; object-fit:cover; border-radius:8px; opacity:.88; border:1px solid rgba(3,94,86,.2); cursor:pointer; transition:transform .12s ease, opacity .12s ease}
-    .thumbs img:hover{ opacity:1; transform:translateY(-1px) }
+    .lb-count{position:absolute; bottom:10px; right:12px; background:rgba(0,0,0,.45); color:#e8ffff; font-size:.85rem; padding:6px 10px; border-radius:10px }
   </style>
 
   <!-- Firebase (modular) -->
@@ -191,9 +169,165 @@
 
     let MAX_FOTOS_ITEM = 3;
 
-    // Ícones externos configuráveis via Firestore
+    // Ícones externos via config (se definidos)
     let ICON_WA = '';
     let ICON_ML = '';
+
+    /* ===================== CARROSSEL DE BANNERS (MOBILE vs DESKTOP) ===================== */
+    let BANNER_SLIDES = [];
+    let BANNER_IDX = 0;
+    let BANNER_TIMER = null;
+    const mq = window.matchMedia('(max-width: 720px)');
+    let lastMode = mq.matches ? 'mobile' : 'desktop';
+
+    const norm = v => (v ?? '').toString().trim();
+
+    function arrayFromAliases(obj, keys){
+      const out = [];
+      for (const k of keys){
+        const v = obj[k];
+        if (Array.isArray(v)) out.push(...v);
+        else if (typeof v === 'string' && v) out.push(v);
+      }
+      return out;
+    }
+
+    function collectBannerUrlsByMode(cfg){
+      const isMob = mq.matches;
+
+      // 1) Tenta específicos por dispositivo
+      const mobileList = arrayFromAliases(cfg, [
+        'bannerMobileUrls','mobileBannerUrls',
+        'bannerMobileUrl','bannerMobile1Url','bannerMobile2Url','bannerMobile3Url',
+        'mobileBannerUrl','mobileBanner1Url','mobileBanner2Url','mobileBanner3Url'
+      ]);
+      const desktopList = arrayFromAliases(cfg, [
+        'bannerDesktopUrls','desktopBannerUrls',
+        'bannerDesktopUrl','bannerDesktop1Url','bannerDesktop2Url','bannerDesktop3Url'
+      ]);
+
+      let urls = isMob ? mobileList : desktopList;
+
+      // 2) Fallback para os genéricos já existentes
+      if (!urls.length){
+        urls = arrayFromAliases(cfg, [
+          'bannerUrls','banners',
+          'bannerUrl','banner1Url','banner2Url','banner3Url','bannerUrl1','bannerUrl2','bannerUrl3'
+        ]);
+      }
+      // Normaliza / remove duplicados
+      urls = [...new Set(urls.filter(Boolean))].slice(0,3);
+      return urls;
+    }
+
+    function effectiveFit(cfg){
+      const isMob = mq.matches;
+      const v = isMob ? (cfg.bannerFitMobile || cfg.bannerfitMobile)
+                      : (cfg.bannerFitDesktop || cfg.bannerfitDesktop);
+      return (v || cfg.bannerFit || 'cover') === 'contain' ? 'contain' : 'cover';
+    }
+    function effectivePosition(cfg){
+      const isMob = mq.matches;
+      return norm(isMob ? (cfg.bannerPositionMobile || cfg.bannerpositionMobile)
+                        : (cfg.bannerPositionDesktop || cfg.bannerpositionDesktop))
+             || norm(cfg.bannerPosition) || 'center';
+    }
+    function effectiveMinHeight(cfg){
+      const isMob = mq.matches;
+      const px = Number(isMob ? cfg.bannerHeightMobile : cfg.bannerHeightDesktop);
+      return Number.isFinite(px) ? Math.max(80, Math.min(800, px)) : null;
+    }
+
+    function setupBanners(cfg){
+      const box = document.getElementById('bannerBox');
+      if (!box) return;
+      box.innerHTML = '';
+
+      const urls = collectBannerUrlsByMode(cfg);
+      if (!urls.length) return;
+
+      // Ajustes visuais por modo
+      box.style.setProperty('--banner-fit', effectiveFit(cfg));
+      box.style.setProperty('--banner-pos', effectivePosition(cfg));
+      const minH = effectiveMinHeight(cfg);
+      if (minH) {
+        box.style.minHeight = minH + 'px';
+      } else {
+        // volta para o default por CSS
+        box.style.minHeight = '';
+      }
+
+      BANNER_SLIDES = urls.map((u, i) => {
+        const slide = document.createElement('div');
+        slide.className = 'slide' + (i===0 ? ' active' : '');
+        const low = u.toLowerCase();
+        if (low.endsWith('.mp4') || low.endsWith('.webm')){
+          const v = document.createElement('video');
+          v.src = u; v.muted = true; v.playsInline = true; v.preload = 'none';
+          if (urls.length === 1) v.autoplay = v.loop = true;
+          slide.appendChild(v);
+        } else {
+          const img = new Image();
+          img.src = u; img.alt = 'Banner'; img.loading = 'lazy';
+          slide.appendChild(img);
+        }
+        box.appendChild(slide);
+        return slide;
+      });
+
+      // inicia o 1º vídeo
+      const firstVid = BANNER_SLIDES[0].querySelector('video');
+      if (firstVid) firstVid.play().catch(()=>{});
+
+      if (BANNER_SLIDES.length > 1){
+        const interval = Number(cfg.bannerIntervalMs) || 7000;
+        clearInterval(BANNER_TIMER);
+        BANNER_TIMER = setInterval(()=>{
+          const cur = BANNER_SLIDES[BANNER_IDX];
+          const nxtIdx = (BANNER_IDX + 1) % BANNER_SLIDES.length;
+          const nxt = BANNER_SLIDES[nxtIdx];
+
+          const curVid = cur.querySelector('video');
+          if (curVid){ curVid.pause(); curVid.currentTime = 0; }
+
+          cur.classList.remove('active');
+          nxt.classList.add('active');
+
+          const nxtVid = nxt.querySelector('video');
+          if (nxtVid){ nxtVid.play().catch(()=>{}); }
+
+          BANNER_IDX = nxtIdx;
+        }, interval);
+
+        document.addEventListener('visibilitychange', ()=>{
+          if (document.hidden){ clearInterval(BANNER_TIMER); BANNER_TIMER = null; }
+          else if (!BANNER_TIMER){
+            const interval = Number(cfg.bannerIntervalMs) || 7000;
+            BANNER_TIMER = setInterval(()=>{ 
+              const cur = BANNER_SLIDES[BANNER_IDX];
+              const nxtIdx = (BANNER_IDX + 1) % BANNER_SLIDES.length;
+              const nxt = BANNER_SLIDES[nxtIdx];
+              const curVid = cur.querySelector('video'); if (curVid){ curVid.pause(); curVid.currentTime = 0; }
+              cur.classList.remove('active'); nxt.classList.add('active');
+              const nxtVid = nxt.querySelector('video'); if (nxtVid){ nxtVid.play().catch(()=>{}); }
+              BANNER_IDX = nxtIdx;
+            }, interval);
+          }
+        });
+      }
+    }
+
+    // Reconstrói banners se mudar de modo (mobile/desktop)
+    function watchBannerMode(cfg){
+      mq.addEventListener('change', ()=>{
+        const mode = mq.matches ? 'mobile' : 'desktop';
+        if (mode !== lastMode){
+          lastMode = mode;
+          setupBanners(cfg);
+        }
+      });
+    }
+    /* =================================================================================== */
 
     function renderPage(){
       clampPage();
@@ -211,19 +345,11 @@
           const thumbs  = d.fotos.slice(0, MAX_FOTOS_ITEM)
             .map((u,i)=>`<img src="${u}" alt="" data-idx="${i}">`).join('');
 
-          const waClass = `zap ${ICON_WA ? 'btn-plain' : ''}`;
-          const mlClass = `mlbtn ${ICON_ML ? 'btn-plain' : ''}`;
+          const waSvg = `<svg viewBox="0 0 32 32" aria-hidden="true"><path fill="#fff" d="M19.1 17.1c-.3-.2-1.7-.8-2-.9-.3-.1-.5-.2-.7.2-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.2-1.1-.4-2-1.2-.7-.6-1.2-1.4-1.3-1.6-.1-.3 0-.4.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2.1-.4 0-.6-.1-.2-.7-1.7-.9-2.3-.2-.5-.5-.4-.7-.4h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.7 0 1.6 1.1 3.1 1.2 3.3.1.2 2.2 3.4 5.4 4.7.8.4 1.4.6 1.9.8.8.3 1.6.3 2.2.2.7-.1 2-.8 2.2-1.6.3-.8.3-1.5.2-1.6 0-.1-.2-.1-.4-.2zM16 3C9.9 3 5 7.9 5 14c0 2.4.8 4.6 2.1 6.3L6 29l8-1.9c1.5.4 3.1.7 4.7.7 6.1 0 11-4.9 11-11S22.1 3 16 3z"/></svg>`;
+          const mlSvg = `<svg viewBox="0 0 64 64" aria-hidden="true"><rect x="2" y="8" width="60" height="48" rx="24" fill="#002E6C" opacity=".0"/><path fill="#002E6C" d="M18 28c2-2 5-4 8-4s6 2 8 4c2 2 5 4 8 4s6-2 8-4l2 3c-2 2-6 5-10 5s-8-3-10-5c-2-2-5-4-8-4s-6 2-8 4-8 5-12 5l2-4c3 0 8-3 10-4Z"/></svg>`;
 
-          const waInner = ICON_WA
-            ? `<img src="${ICON_WA}" alt="WhatsApp">`
-            : `<svg viewBox="0 0 32 32" role="img" aria-hidden="true"><path d="M19.1 17.1c-.3-.2-1.7-.8-2-.9-.3-.1-.5-.2-.7.2-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.2-1.1-.4-2-1.2-.7-.6-1.2-1.4-1.3-1.6-.1-.3 0-.4.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2.1-.4 0-.6-.1-.2-.7-1.7-.9-2.3-.2-.5-.5-.4-.7-.4h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.7 0 1.6 1.1 3.1 1.2 3.3.1.2 2.2 3.4 5.4 4.7.8.4 1.4.6 1.9.8.8.3 1.6.3 2.2.2.7-.1 2-.8 2.2-1.6.3-.8.3-1.5.2-1.6 0-.1-.2-.1-.4-.2zM16 3C9.9 3 5 7.9 5 14c0 2.4.8 4.6 2.1 6.3L6 29l8-1.9c1.5.4 3.1.7 4.7.7 6.1 0 11-4.9 11-11S22.1 3 16 3z"/></svg>`;
-
-          const mlInner = ICON_ML
-            ? `<img src="${ICON_ML}" alt="Mercado Livre">`
-            : `<svg viewBox="0 0 64 64" aria-hidden="true">
-                 <rect x="2" y="8" width="60" height="48" rx="24" fill="#FFE600"/>
-                 <path class="ml-blue" d="M18 28c2-2 5-4 8-4s6 2 8 4c2 2 5 4 8 4s6-2 8-4l2 3c-2 2-6 5-10 5s-8-3-10-5c-2-2-5-4-8-4s-6 2-8 4-8 5-12 5l2-4c3 0 8-3 10-4Z"/>
-               </svg>`;
+          const waIcon = ICON_WA ? `<img src="${ICON_WA}" alt="WhatsApp">` : waSvg;
+          const mlIcon = ICON_ML ? `<img src="${ICON_ML}" alt="Mercado Livre">` : mlSvg;
 
           return `
           <article class="card">
@@ -235,11 +361,17 @@
                 <div class="nome">${d.nome}</div>
                 <div class="preco">${d.precoBRL}</div>
                 <div class="qtde">Estoque: ${d.qtd}</div>
+
+                ${thumbs ? `<div class="thumbs" data-gal="${galAttr}">${thumbs}</div>` : ``}
+
+                <div class="actions">
+                  ${d.zap ? `<a class="cta cta-wa" href="${d.zap}" target="_blank" rel="noopener">Whatsapp ${waIcon}</a>` : ``}
+                  ${d.mlUrl ? `<a class="cta cta-ml" href="${d.mlUrl}" target="_blank" rel="noopener">Comprar ${mlIcon}</a>` : ``}
+                </div>
               </div>
-              ${d.zap ? `<button class="${waClass}" aria-label="WhatsApp" onclick="window.open('${d.zap}','_blank')">${waInner}</button>` : ``}
-              ${d.mlUrl ? `<button class="${mlClass}" aria-label="Mercado Livre" onclick="window.open('${d.mlUrl}','_blank')">${mlInner}</button>` : ``}
+              ${d.zap ? `<button class="zap" aria-label="WhatsApp" onclick="window.open('${d.zap}','_blank')"></button>` : ``}
+              ${d.mlUrl ? `<button class="mlbtn" aria-label="Mercado Livre" onclick="window.open('${d.mlUrl}','_blank')"></button>` : ``}
             </div>
-            ${thumbs ? `<div class="thumbs" data-gal="${galAttr}">${thumbs}</div>` : ``}
           </article>`;
         }).join('');
       }
@@ -256,7 +388,7 @@
     window.goPrev = goPrev;
     window.goNext = goNext;
 
-    // Lightbox
+    /* ================= Lightbox ================= */
     const lbBg   = document.getElementById('lbBg');
     const lbImg  = document.getElementById('lbImg');
     const lbBtn  = document.getElementById('lbClose');
@@ -329,6 +461,49 @@
       }
     });
 
+    /* ================= Header logo (pequena) ================= */
+    function applyHeaderLogo(cfg) {
+      const qs = new URL(location.href).searchParams;
+      const val = v => (v ?? '').toString().trim();
+      const pick = (...xs) => xs.map(val).find(Boolean);
+
+      const url = pick(
+        qs.get('logo'),
+        cfg.headerLogoUrl, cfg.headerlogoUrl, cfg.header_logo_url, cfg.headerLogoURL, cfg.logoHeaderUrl, cfg.logoUrl
+      );
+      if (!url) return;
+
+      const shape = (pick(qs.get('shape'), cfg.headerLogoShape, cfg.headerlogoShape, cfg.logoHeaderShape, cfg.logoShape) || 'circle').toLowerCase();
+      let size = Number(pick(qs.get('size'), cfg.headerLogoSize, cfg.headerlogoSize, cfg.logoHeaderSize));
+      if (!Number.isFinite(size)) size = 32;
+      size = Math.max(20, Math.min(96, size));
+
+      let img = document.getElementById('brandLogo');
+      if (!img) {
+        const bar = document.querySelector('header .bar') || document.querySelector('header');
+        img = document.createElement('img');
+        img.id = 'brandLogo';
+        img.className = 'brandLogo';
+        if (bar) bar.insertBefore(img, bar.firstChild);
+      }
+
+      Object.assign(img.style, {
+        display: 'inline-block',
+        width:  size + 'px',
+        height: size + 'px',
+        borderRadius: (shape === 'square') ? '8px' : '9999px',
+        objectFit: 'contain',
+        background: '#fff'
+      });
+      img.alt = (cfg.nomeEmpresa || 'Logo');
+      img.decoding = 'async';
+      img.loading  = 'eager';
+      img.referrerPolicy = 'no-referrer';
+      img.src = url;
+
+      img.onerror = () => { img.remove(); };
+    }
+
     async function carregar(){
       const avisos = document.getElementById('avisos');
 
@@ -337,7 +512,6 @@
         return;
       }
 
-      // meta/config
       const cfgRef = doc(db, `catalogos/${slug}/meta/config`);
       const cfgSnap = await getDoc(cfgRef);
       if (!cfgSnap.exists()){
@@ -346,7 +520,8 @@
       }
       const cfg = cfgSnap.data();
 
-      // URLs dos ícones (se existirem)
+      applyHeaderLogo(cfg);
+
       ICON_WA = (cfg.iconWhatsUrl || '').trim();
       ICON_ML = (cfg.iconMLUrl  || '').trim();
 
@@ -365,25 +540,9 @@
         if (cfg.logoShape === 'square'){ ring.style.borderRadius = '18px'; el.style.borderRadius = '12px'; }
       }
 
-      if (cfg.bannerUrl){
-        const box = document.getElementById('bannerBox');
-        const low = cfg.bannerUrl.toLowerCase();
-        if (typeof cfg.bannerFit === 'string'){
-          box.style.setProperty('--banner-fit', (cfg.bannerFit === 'contain' ? 'contain' : 'cover'));
-        }
-        if (typeof cfg.bannerPosition === 'string'){
-          box.style.setProperty('--banner-pos', cfg.bannerPosition);
-        }
-        if (low.endsWith('.webm') || low.endsWith('.mp4')) {
-          const vid = document.createElement('video');
-          vid.src = cfg.bannerUrl; vid.muted = true; vid.autoplay = true; vid.loop = true; vid.playsInline = true;
-          box.appendChild(vid);
-        } else {
-          const img = new Image();
-          img.alt = 'Banner'; img.src = cfg.bannerUrl; img.loading = 'lazy';
-          box.appendChild(img);
-        }
-      }
+      /* ==== Banners: agora separados por dispositivo ==== */
+      setupBanners(cfg);
+      watchBannerMode(cfg);
 
       if (cfg.catalogoAtivo !== true){
         avisos.innerHTML = `<div class="warn">Este catálogo está desativado no momento.</div>`;
@@ -392,7 +551,6 @@
         avisos.innerHTML = '';
       }
 
-      // FAB do WhatsApp
       const whats = (cfg.whats || '').toString().trim();
       const waFab = document.getElementById('waFloat');
       if (whats) {
@@ -485,6 +643,7 @@
 <body>
   <header>
     <div class="bar">
+      <img id="brandLogo" class="brandLogo" alt="Logo">
       <div class="brand" id="empresaBar">MostreAki</div>
       <div class="spacer"></div>
     </div>
@@ -496,6 +655,8 @@
         <img id="logoImg" alt="Logo" src="" onerror="this.style.display='none'">
       </div>
       <h1 class="title" id="tituloEmpresa">Catálogo</h1>
+
+      <!-- Banner/carrossel -->
       <div class="banner" id="bannerBox"></div>
     </section>
 
@@ -528,11 +689,11 @@
     </div>
 
     <p class="muted">
-      Toque numa imagem para ver a galeria. Use as setas do teclado, clique nas setas do popup ou faça swipe no celular. Clique no ícone de WhatsApp em qualquer item para falar com o vendedor. Se o item tiver link no Mercado Livre, o botão amarelo também aparece.
+      Toque numa imagem para ver a galeria. Use as setas do teclado, clique nas setas do popup ou faça swipe no celular. Clique no botão <b>Whatsapp</b> para falar com o vendedor. Se o item tiver link no Mercado Livre, o botão <b>Comprar</b> também aparece.
     </p>
   </main>
 
-  <!-- FAB do WhatsApp -->
+  <!-- FAB WhatsApp -->
   <a id="waFloat" class="wa-float" href="#" target="_blank" rel="noopener" aria-label="WhatsApp">
     <svg viewBox="0 0 32 32" role="img" aria-hidden="true"><path d="M19.1 17.1c-.3-.2-1.7-.8-2-.9-.3-.1-.5-.2-.7.2-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.2-1.1-.4-2-1.2-.7-.6-1.2-1.4-1.3-1.6-.1-.3 0-.4.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2.1-.4 0-.6-.1-.2-.7-1.7-.9-2.3-.2-.5-.5-.4-.7-.4h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.7 0 1.6 1.1 3.1 1.2 3.3.1.2 2.2 3.4 5.4 4.7.8.4 1.4.6 1.9.8.8.3 1.6.3 2.2.2.7-.1 2-.8 2.2-1.6.3-.8.3-1.5.2-1.6 0-.1-.2-.1-.4-.2zM16 3C9.9 3 5 7.9 5 14c0 2.4.8 4.6 2.1 6.3L6 29l8-1.9c1.5.4 3.1.7 4.7.7 6.1 0 11-4.9 11-11S22.1 3 16 3z"/></svg>
   </a>
