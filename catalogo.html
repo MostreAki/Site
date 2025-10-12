@@ -236,7 +236,7 @@
       return urls;
     }
 
-    /* Links por modo + fallback */
+    /* Links por modo + fallback — preservando índices (sem filtrar) */
     function collectBannerLinksByMode(cfg){
       const isMob = mq.matches;
 
@@ -260,7 +260,13 @@
         ]);
       }
 
-      return links.filter(Boolean).slice(0,3);
+      // ✅ Mantém 3 posições, mesmo se a primeira estiver vazia
+      const out = ['', '', ''];
+      for (let i = 0; i < 3; i++){
+        const v = links[i];
+        out[i] = (typeof v === 'string') ? v.trim() : '';
+      }
+      return out;
     }
 
     function effectiveFit(cfg){
@@ -301,7 +307,7 @@
         slide.className = 'slide' + (i===0 ? ' active' : '');
 
         const low = u.toLowerCase();
-        const hasLink = typeof links[i] === 'string' && links[i].trim().length > 0;
+        const hasLink = (typeof links[i] === 'string' && links[i].trim().length > 0);
         const wrap = hasLink ? Object.assign(document.createElement('a'), { href: links[i], target: '_blank', rel: 'noopener', 'aria-label': 'Ver mais' }) : null;
 
         const node = (low.endsWith('.mp4') || low.endsWith('.webm'))
