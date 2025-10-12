@@ -241,7 +241,26 @@
     }
     const slug = getSlug();
     $('#slugLabel').textContent = slug || '—';
-    $('#publicLink').href = slug ? `/catalogo.html?c=${encodeURIComponent(slug)}` : '#';
+
+    // ===== NOVO: define link público específico por slug (com override opcional em meta)
+    function setPublicLink(slug, meta = {}){
+      const a = document.querySelector('#publicLink');
+      if(!a || !slug){ if(a) a.href = '#'; return; }
+
+      const custom = (meta.publicPagePath || meta.public_page_path || meta.customPublicPage || '').trim();
+      const preferred = custom || `/catalogo-${slug}.html`;
+      const fallback  = `/catalogo.html?c=${encodeURIComponent(slug)}`;
+
+      // Use direto o preferred se você mantém um arquivo por cliente:
+      a.href = preferred;
+
+      // Caso queira detectar ausência do arquivo e cair para o genérico, descomente:
+      /*
+      fetch(preferred, { method: 'HEAD' })
+        .then(r => { a.href = r.ok ? preferred : fallback; })
+        .catch(() => { a.href = fallback; });
+      */
+    }
 
     /* ===== Plano/limite ===== */
     function normalizePlano(p=''){
@@ -373,14 +392,17 @@
     async function carregarMeta(slug){
       const ref = doc(db,'catalogos',slug,'meta','config');
       const s = await getDoc(ref);
+      let data = {};
       if(s.exists()){
-        const d = s.data();
-        document.getElementById('chkAtivo').checked = !!d.catalogoAtivo;
+        data = s.data();
+        document.getElementById('chkAtivo').checked = !!data.catalogoAtivo;
         // NOVO: preencher campos de ícone
-        (document.getElementById('iconWhatsUrl').value = d.iconWhatsUrl || '');
-        (document.getElementById('iconMLUrl').value    = d.iconMLUrl    || '');
+        (document.getElementById('iconWhatsUrl').value = data.iconWhatsUrl || '');
+        (document.getElementById('iconMLUrl').value    = data.iconMLUrl    || '');
       }
-      return s.exists()? s.data() : {};
+      // NOVO: aplica o link público específico
+      setPublicLink(slug, data);
+      return data;
     }
 
     async function salvarMeta(slug, ownerUid){
