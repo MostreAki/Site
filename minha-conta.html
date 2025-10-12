@@ -125,11 +125,19 @@
     .pwd-wrap{position:relative}
     .showpwd{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:.9rem;color:#444}
     .showpwd input{width:auto}
+
+    /* ===== Aparência para campos somente leitura ===== */
+    input[readonly]{
+      background:#f7f7f7!important;
+      color:#6b6b6b!important;
+      cursor:not-allowed!important;
+    }
+    .lock-note{font-size:.82rem;color:#6b6b6b;margin-top:4px}
   </style>
 </head>
 <body>
 
-  <!-- ===== MODAL: LOGIN EMBUTIDO (novo, no mesmo padrão com "Mostrar senha") ===== -->
+  <!-- ===== MODAL: LOGIN EMBUTIDO ===== -->
   <div id="authModal" class="modal-bg" role="dialog" aria-modal="true" aria-labelledby="authTitle">
     <div class="modal-card">
       <div class="modal-head">
@@ -199,7 +207,9 @@
           <input id="nomeCompleto" type="text" placeholder="Seu nome e sobrenome">
 
           <label for="username">Nome de usuário</label>
-          <input id="username" type="text" placeholder="ex.: joao-silva">
+          <!-- Campo bloqueado para o cliente -->
+          <input id="username" type="text" placeholder="ex.: joao-silva" readonly aria-readonly="true" title="Bloqueado para edição. Entre em contato com o suporte para alterar.">
+          <div class="lock-note">🔒 Bloqueado para edição (apenas suporte pode alterar).</div>
           <div class="help">Use letras/números e hífen. Isso vira seu <b>slug</b> (ex.: <i>joao-silva</i>).</div>
 
           <label for="foto" style="margin-top:12px">Foto de Perfil</label>
@@ -238,7 +248,7 @@
     </div>
   </main>
 
-  <!-- ===== SCRIPTS originais intactos + login modal ===== -->
+  <!-- ===== SCRIPTS ===== -->
   <script type="module">
     import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
     import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, sendEmailVerification } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
@@ -261,7 +271,7 @@
     const $ = s => document.querySelector(s);
     const cacheBust = u => u ? u + (u.includes('?')?'&':'?') + 'v=' + Date.now() : u;
 
-    /* ====== Modal Login (novo) ====== */
+    /* ====== Modal Login ====== */
     const modal = document.getElementById('authModal');
     function abrirModal(){ if(modal){ modal.style.display='flex'; document.body.style.overflow='hidden'; } }
     window.fecharModal = function(){ if(modal){ modal.style.display='none'; document.body.style.overflow=''; } };
@@ -358,7 +368,11 @@
       alert(removed? 'Foto removida.' : 'Nenhuma foto encontrada para remover.');
     }
 
-    /* ===== PERFIL (preservado) ===== */
+    /* ======== BLOQUEIO DE USERNAME ======== */
+    // Mantém o valor original carregado do Firestore e ignora qualquer tentativa de mudança.
+    let ORIGINAL_USERNAME = '';
+
+    /* ===== PERFIL (preservado com bloqueio de username) ===== */
     function slugify(v){
       return v.toLowerCase()
         .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
@@ -367,15 +381,13 @@
     }
     async function salvar(uid){
       const nomeCompleto = $('#nomeCompleto').value.trim();
-      const usernameRaw  = $('#username').value.trim();
-      const username     = slugify(usernameRaw);
-      if(usernameRaw && !username){
-        alert('Nome de usuário inválido. Use letras, números e hífen.'); return;
-      }
+
+      // username fica SEMPRE o original; ignoramos o campo da tela
+      const username = ORIGINAL_USERNAME;
+
       const data={
         nomeCompleto,
-        username,
-        catalogoSlug: username || undefined,
+        // username e catalogoSlug NÃO são atualizados aqui para impedir alteração pelo cliente
         instagram: $('#instagram').value.trim(),
         facebook : $('#facebook').value.trim(),
         whatsapp : $('#whatsapp').value.trim(),
@@ -383,15 +395,22 @@
         updatedAt: serverTimestamp()
       };
       await setDoc(doc(db,'usuarios',uid), data, { merge:true });
-      alert('Dados salvos!');
+      alert('Dados salvos! (nome de usuário permanece bloqueado)');
       wireCatalogo(uid);
     }
     async function carregar(uid){
       const s = await getDoc(doc(db,'usuarios',uid));
       if(!s.exists()) return;
       const d=s.data();
+
+      // Guarda e renderiza o username original
+      ORIGINAL_USERNAME = (d.username || d.catalogoSlug || '').trim();
+      $('#username').value     = ORIGINAL_USERNAME;
+      $('#username').readOnly  = true;
+      $('#username').setAttribute('aria-readonly','true');
+      $('#username').title = 'Bloqueado para edição. Entre em contato com o suporte para alterar.';
+
       $('#nomeCompleto').value = d.nomeCompleto || '';
-      $('#username').value     = d.username || d.catalogoSlug || '';
       $('#instagram').value    = d.instagram || '';
       $('#facebook').value     = d.facebook  || '';
       $('#whatsapp').value     = d.whatsapp  || '';
@@ -470,7 +489,7 @@
       const ativo = ass && String(ass.status||'').toLowerCase()==='ativo';
       if(!ativo){ return; }
 
-      // slug
+      // slug (derivado do username original / catalogoSlug original)
       const uSnap = await getDoc(doc(db,'usuarios',uid));
       const u = uSnap.exists()? uSnap.data() : {};
       const slug = (u.catalogoSlug || u.username || '').trim();
@@ -489,7 +508,7 @@
       } catch {}
     }
 
-    /* ===== Auth (preservado, com entrada via modal) ===== */
+    /* ===== Auth (preservado) ===== */
     onAuthStateChanged(auth, async (user)=>{
       const a = document.getElementById('authText');
       if(user){
