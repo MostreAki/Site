@@ -57,14 +57,30 @@
       position:relative;
     }
     @media (min-width:860px){ .banner{ min-height:var(--banner-min-h-desktop); } }
+
+    /* ✅ Apenas o slide ativo recebe cliques */
     .banner .slide{
       position:absolute; inset:0;
       opacity:0; transition:opacity .6s ease;
       display:flex;
+      pointer-events:none;           /* ocultos não clicam */
+      z-index:1;
     }
-    .banner .slide.active{ opacity:1 }
-    .banner .slide a{display:block; width:100%; height:100%}
-    .banner img,.banner video{width:100%;height:100%;object-fit:var(--banner-fit);object-position:var(--banner-pos);display:block}
+    .banner .slide.active{
+      opacity:1;
+      pointer-events:auto;           /* só o ativo clica */
+      z-index:2;
+    }
+    /* Link ocupa toda a área do slide */
+    .banner .slide a{
+      position:absolute; inset:0;
+      display:block; width:100%; height:100%;
+    }
+    /* Vídeo não captura clique; passa para o <a> */
+    .banner img,.banner video{
+      width:100%;height:100%;object-fit:var(--banner-fit);object-position:var(--banner-pos);display:block;
+      pointer-events:none;
+    }
 
     h1.title{margin:0;margin-top:8px;font-size:clamp(1.35rem,2.2vw,1.9rem);font-weight:900;letter-spacing:.3px;text-shadow:0 2px 14px rgba(0,0,0,.35)}
 
@@ -216,12 +232,11 @@
           'bannerUrl','banner1Url','banner2Url','banner3Url','bannerUrl1','bannerUrl2','bannerUrl3'
         ]);
       }
-      // Normaliza / remove duplicados
       urls = [...new Set(urls.filter(Boolean))].slice(0,3);
       return urls;
     }
 
-    /* === NOVO: links para os banners (mobile/desktop + fallback genérico) === */
+    /* Links por modo + fallback */
     function collectBannerLinksByMode(cfg){
       const isMob = mq.matches;
 
@@ -279,11 +294,7 @@
       box.style.setProperty('--banner-fit', effectiveFit(cfg));
       box.style.setProperty('--banner-pos', effectivePosition(cfg));
       const minH = effectiveMinHeight(cfg);
-      if (minH) {
-        box.style.minHeight = minH + 'px';
-      } else {
-        box.style.minHeight = '';
-      }
+      if (minH) box.style.minHeight = minH + 'px'; else box.style.minHeight = '';
 
       BANNER_SLIDES = urls.map((u, i) => {
         const slide = document.createElement('div');
