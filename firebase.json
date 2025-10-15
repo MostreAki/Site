@@ -1,0 +1,27 @@
+cat > firebase.json <<'EOF'
+{
+  "hosting": [
+    {
+      "site": "mostreaki-2025",
+      "public": "public",
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
+    },
+    {
+      "site": "percivalbrics-site",
+      "redirects": [
+        {
+          "source": "/**",
+          "destination": "https://www.mostreaki.com.br/catalogo-percival-brics.html",
+          "type": 301
+        }
+        {
+  "site": "percivalbrics-site",
+  "public": "public-percival",
+  "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+  "rewrites": [
+    { "source": "**", "destination": "/index.html" }
+      ]
+    }
+  ]
+}
+EOF
