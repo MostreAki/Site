@@ -1,56 +1,131 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Termos de Serviço | MostreAki</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      line-height: 1.6;
-      max-width: 800px;
-      margin: 40px auto;
-      padding: 0 20px;
-      color: #333;
-    }
-    h1, h2 {
-      color: #146C94;
-    }
-  </style>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Termos de Serviço – MostreAki</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon"/>
+    <style>
+        /* Reutilizando CSS do cadastro para consistência */
+        :root{
+            --brand:#15b0af; --brandLight:#c2e7df; --accent:#FA1E39; --ink:#063b39;
+            --card:#ffffff; --muted:#445; --bg:#f4f7f7; --ok:#18a957; --err:#ef4444;
+        }
+        *{box-sizing:border-box;margin:0;padding:0}
+        body{
+            font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Arial,sans-serif;
+            color:#222; min-height:100vh; display:flex; flex-direction:column;
+            background-image:url("fundo-mobile-escuro.png");
+            background-size:cover; background-repeat:no-repeat; background-attachment:fixed;
+        }
+        @media (min-width:768px){ body{ background-image:url("fundo-desktop.png"); } }
+        header{
+            background:var(--brandLight); height:60px; display:flex; align-items:center; justify-content:space-between;
+            padding:0 20px; position:relative; box-shadow:0 2px 6px rgba(0,0,0,.1);
+        }
+        .logo-container{display:flex;align-items:center;cursor:pointer}
+        .logo-container img{height:40px;margin-right:10px}
+        .logo{font-size:1.5rem;font-weight:bold}
+        .logo .mostre{color:#00C2BF}.logo .aki{color:#FA1E39}
+        .header-auth{ display:flex; align-items:center; gap:10px; }
+        .user-circle{
+            background:#15b0af;color:#fff;font-weight:bold;border-radius:50%;
+            width:32px;height:32px;display:flex;align-items:center;justify-content:center;
+            overflow:hidden;font-size:.9rem;
+        }
+        .user-circle img{ width:100%; height:100%; object-fit:cover; display:block; }
+        .menu-icon{ width:32px; height:32px; display:flex; align-items:center; justify-content:center; line-height:1; font-size:1.5rem; cursor:pointer; user-select:none; }
+        .menu-list{
+            position:absolute;top:60px;right:20px;background:#16807C;border:2px solid #000;border-radius:6px;
+            display:none;flex-direction:column;padding:10px;z-index:10000;
+        }
+        .menu-list a{
+            background:#FA1E39;color:#fff;text-decoration:none;padding:10px;margin-bottom:8px;border-radius:6px;
+            text-align:center;font-weight:bold;
+        }
+        .menu-list a:hover{background:#b8313b}
+        main{ max-width:980px; margin:32px auto; padding:0 18px; width:100%; }
+        .card{
+            background:var(--card); border-radius:16px; width:100%;
+            box-shadow:0 10px 40px rgba(0,0,0,.08); padding:22px 20px; border:2px solid var(--brandLight);
+        }
+        .card h1{margin:0 0 4px; color:#0f6f6e; font-size:1.45rem}
+        .sub{color:#4a6665; font-size:.95rem; margin-bottom:16px}
+        .section-title{margin-top:16px; font-weight:700; color:#0f6f6e}
+        p{margin-bottom:16px;}
+        ul{list-style-type:disc; margin-left:20px; margin-bottom:16px;}
+        footer{background:var(--brandLight);padding:20px;text-align:center;color:#555;font-size:.9rem;margin-top:40px}
+    </style>
 </head>
 <body>
-  <h1>Termos de Serviço</h1>
-  <p>Última atualização: Julho de 2025</p>
+    <header>
+        <div class="logo-container" onclick="location.href='index.html'">
+            <img src="logomarca-mostreaki.svg" alt="Logo">
+            <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
+        </div>
+        <div class="header-auth">
+            <span id="authText" style="font-weight:bold;color:#15b0af;cursor:pointer;display:none">Entrar</span>
+            <div id="userCircle" class="user-circle" title="Perfil">F</div>
+            <div id="menuBtn" class="menu-icon" aria-controls="menu" aria-expanded="false">☰</div>
+        </div>
+        <nav class="menu-list" id="menu">
+            <a href="/index.html">Página Inicial</a>
+            <a href="/sobre.html">Sobre</a>
+            <a href="/minha-conta.html">Minha Conta</a>
+            <a href="/parceiros.html">Parceiros</a>
+            <a href="/servicos-adicionais.html">Serviços Adicionais</a>
+            <a href="/redes-sociais.html">Redes Sociais</a>
+            <a href="/contatos.html">Contatos</a>
+        </nav>
+    </header>
 
-  <p>Bem-vindo ao MostreAki! Ao acessar ou utilizar nossos serviços, você concorda com os seguintes termos. Leia atentamente:</p>
+    <main>
+        <div class="card">
+            <h1>Termos de Serviço do MostreAki</h1>
+            <div class="sub">Última atualização: 16 de outubro de 2025</div>
 
-  <h2>1. Aceitação dos Termos</h2>
-  <p>Ao utilizar o site MostreAki, você concorda com estes Termos de Serviço e com nossa Política de Privacidade.</p>
+            <p>Bem-vindo ao MostreAki! Estes Termos de Serviço ("Termos") regem o uso da plataforma MostreAki ("Plataforma"), operada pela [Nome da Empresa], com sede em [Endereço], inscrita no CNPJ sob o nº [CNPJ]. Ao acessar ou usar a Plataforma, você ("Usuário") concorda em cumprir estes Termos. Caso não concorde, não utilize a Plataforma.</p>
 
-  <h2>2. Uso dos Serviços</h2>
-  <p>Você se compromete a utilizar os serviços apenas para fins legais e de acordo com estes termos. Qualquer uso indevido poderá resultar em suspensão ou cancelamento de acesso.</p>
+            <div class="section-title">1. Aceitação dos Termos</div>
+            <p>Estes Termos constituem um contrato de adesão entre você e o MostreAki, conforme o Código de Defesa do Consumidor (Lei nº 8.078/1990 - CDC). Cláusulas abusivas, que isentem ou atenuem indevidamente a responsabilidade do fornecedor, serão consideradas nulas de pleno direito, nos termos do art. 51 do CDC.</p>
 
-  <h2>3. Conta de Usuário</h2>
-  <p>Você é responsável por manter a confidencialidade de suas credenciais de login. Qualquer atividade em sua conta será considerada de sua responsabilidade.</p>
+            <div class="section-title">2. Responsabilidades do Usuário</div>
+            <p>Ao utilizar a Plataforma, o Usuário é responsável por:</p>
+            <ul>
+                <li>Fornecer informações precisas e atualizadas durante o cadastro e uso.</li>
+                <li>Manter a confidencialidade de sua senha e conta.</li>
+                <li>Não violar leis aplicáveis, incluindo a Constituição Federal de 1988 (art. 5º, incisos IV e IX, relativos à liberdade de expressão, com responsabilidade por abusos).</li>
+            </ul>
+            <p>Especificamente, ao editar informações no catálogo da Plataforma (como descrições de produtos, imagens ou dados), o Usuário assume exclusiva responsabilidade pelo conteúdo inserido. O MostreAki não se responsabiliza por inexatidões, violações de direitos de terceiros ou danos decorrentes do conteúdo gerado pelo Usuário, atuando apenas como provedor de hospedagem, com responsabilidade subsidiária conforme o Marco Civil da Internet (Lei nº 12.965/2014) e art. 19, §1º, que exige ordem judicial para remoção de conteúdo.</p>
 
-  <h2>4. Conteúdo</h2>
-  <p>Você mantém os direitos sobre o conteúdo que publicar no MostreAki, mas nos concede permissão para exibi-lo na plataforma conforme necessário.</p>
+            <div class="section-title">3. Responsabilidades do MostreAki</div>
+            <p>O MostreAki compromete-se a:</p>
+            <ul>
+                <li>Manter a Plataforma disponível, sujeita a interrupções por manutenção ou força maior.</li>
+                <li>Proteger dados pessoais conforme a Lei Geral de Proteção de Dados (LGPD - Lei nº 13.709/2018).</li>
+                <li>Não monitorar proativamente o conteúdo do Usuário, mas remover conteúdos ilícitos mediante notificação ou ordem judicial, nos termos do art. 19 do Marco Civil da Internet.</li>
+            </ul>
+            <p>O MostreAki segue as diretrizes da legislação vigente no Brasil, incluindo o CDC (responsabilidade objetiva por defeitos nos serviços, art. 14) e a Constituição Federal (proteção à dignidade da pessoa humana, art. 1º, III).</p>
 
-  <h2>5. Restrições</h2>
-  <p>Não é permitido publicar conteúdo ofensivo, ilegal ou que infrinja direitos de terceiros.</p>
+            <div class="section-title">4. Isenção de Responsabilidade</div>
+            <p>O MostreAki não se responsabiliza por danos indiretos, incidentais ou consequenciais decorrentes do uso da Plataforma, salvo em casos de dolo ou culpa grave, conforme art. 14, §3º, do CDC. A responsabilidade por conteúdos editados pelo Usuário é exclusiva deste, sem transferência para o MostreAki.</p>
 
-  <h2>6. Responsabilidades</h2>
-  <p>O MostreAki não se responsabiliza por perdas ou danos causados pelo uso indevido do site ou falhas técnicas.</p>
+            <div class="section-title">5. Propriedade Intelectual</div>
+            <p>Todos os direitos sobre a Plataforma pertencem ao MostreAki. O Usuário concede licença não exclusiva para uso de conteúdos inseridos.</p>
 
-  <h2>7. LGPD e Proteção de Dados</h2>
-  <p>Estamos em conformidade com a Lei Geral de Proteção de Dados (LGPD). Seus dados são utilizados com segurança e transparência.</p>
+            <div class="section-title">6. Encerramento da Conta</div>
+            <p>O MostreAki pode suspender ou encerrar contas por violação destes Termos, com notificação prévia quando aplicável.</p>
 
-  <h2>8. Alterações nos Termos</h2>
-  <p>Podemos atualizar estes termos periodicamente. Recomendamos que você os revise regularmente.</p>
+            <div class="section-title">7. Lei Aplicável</div>
+            <p>Estes Termos são regidos pelas leis da República Federativa do Brasil. Disputas serão resolvidas no foro da comarca de [Cidade], com renúncia a qualquer outro.</p>
 
-  <h2>9. Contato</h2>
-  <p>Em caso de dúvidas, entre em contato pelo e-mail: <a href="mailto:contato.mostreaki@gmail.com">contato.mostreaki@gmail.com</a>.</p>
+            <div class="section-title">8. Alterações nos Termos</div>
+            <p>O MostreAki pode alterar estes Termos a qualquer momento, notificando os Usuários. O uso continuado implica aceitação.</p>
 
-  <p><strong>Equipe MostreAki 💙</strong></p>
+            <p>Para dúvidas, contate-nos em [email@mostreaki.com].</p>
+        </div>
+    </main>
+
+    <footer>&copy; 2025 MostreAki. Todos os direitos reservados.</footer>
 </body>
 </html>
