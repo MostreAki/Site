@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Política de Privacidade – MostreAki</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon"/>
+    <style>
+        /* Reutilizando CSS do cadastro para consistência */
+        :root{
+            --brand:#15b0af; --brandLight:#c2e7df; --accent:#FA1E39; --ink:#063b39;
+            --card:#ffffff; --muted:#445; --bg:#f4f7f7; --ok:#18a957; --err:#ef4444;
+        }
+        *{box-sizing:border-box;margin:0;padding:0}
+        body{
+            font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Arial,sans-serif;
+            color:#222; min-height:100vh; display:flex; flex-direction:column;
+            background-image:url("fundo-mobile-escuro.png");
+            background-size:cover; background-repeat:no-repeat; background-attachment:fixed;
+        }
+        @media (min-width:768px){ body{ background-image:url("fundo-desktop.png"); } }
+        header{
+            background:var(--brandLight); height:60px; display:flex; align-items:center; justify-content:space-between;
+            padding:0 20px; position:relative; box-shadow:0 2px 6px rgba(0,0,0,.1);
+        }
+        .logo-container{display:flex;align-items:center;cursor:pointer}
+        .logo-container img{height:40px;margin-right:10px}
+        .logo{font-size:1.5rem;font-weight:bold}
+        .logo .mostre{color:#00C2BF}.logo .aki{color:#FA1E39}
+        .header-auth{ display:flex; align-items:center; gap:10px; }
+        .user-circle{
+            background:#15b0af;color:#fff;font-weight:bold;border-radius:50%;
+            width:32px;height:32px;display:flex;align-items:center;justify-content:center;
+            overflow:hidden;font-size:.9rem;
+        }
+        .user-circle img{ width:100%; height:100%; object-fit:cover; display:block; }
+        .menu-icon{ width:32px; height:32px; display:flex; align-items:center; justify-content:center; line-height:1; font-size:1.5rem; cursor:pointer; user-select:none; }
+        .menu-list{
+            position:absolute;top:60px;right:20px;background:#16807C;border:2px solid #000;border-radius:6px;
+            display:none;flex-direction:column;padding:10px;z-index:10000;
+        }
+        .menu-list a{
+            background:#FA1E39;color:#fff;text-decoration:none;padding:10px;margin-bottom:8px;border-radius:6px;
+            text-align:center;font-weight:bold;
+        }
+        .menu-list a:hover{background:#b8313b}
+        main{ max-width:980px; margin:32px auto; padding:0 18px; width:100%; }
+        .card{
+            background:var(--card); border-radius:16px; width:100%;
+            box-shadow:0 10px 40px rgba(0,0,0,.08); padding:22px 20px; border:2px solid var(--brandLight);
+        }
+        .card h1{margin:0 0 4px; color:#0f6f6e; font-size:1.45rem}
+        .sub{color:#4a6665; font-size:.95rem; margin-bottom:16px}
+        .section-title{margin-top:16px; font-weight:700; color:#0f6f6e}
+        p{margin-bottom:16px;}
+        ul{list-style-type:disc; margin-left:20px; margin-bottom:16px;}
+        footer{background:var(--brandLight);padding:20px;text-align:center;color:#555;font-size:.9rem;margin-top:40px}
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-container" onclick="location.href='index.html'">
+            <img src="logomarca-mostreaki.svg" alt="Logo">
+            <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
+        </div>
+        <div class="header-auth">
+            <span id="authText" style="font-weight:bold;color:#15b0af;cursor:pointer;display:none">Entrar</span>
+            <div id="userCircle" class="user-circle" title="Perfil">F</div>
+            <div id="menuBtn" class="menu-icon" aria-controls="menu" aria-expanded="false">☰</div>
+        </div>
+        <nav class="menu-list" id="menu">
+            <a href="/index.html">Página Inicial</a>
+            <a href="/sobre.html">Sobre</a>
+            <a href="/minha-conta.html">Minha Conta</a>
+            <a href="/parceiros.html">Parceiros</a>
+            <a href="/servicos-adicionais.html">Serviços Adicionais</a>
+            <a href="/redes-sociais.html">Redes Sociais</a>
+            <a href="/contatos.html">Contatos</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="card">
+            <h1>Política de Privacidade do MostreAki</h1>
+            <div class="sub">Última atualização: 16 de outubro de 2025</div>
+
+            <p>O MostreAki valoriza a privacidade dos seus usuários e compromete-se a proteger dados pessoais conforme a Lei Geral de Proteção de Dados Pessoais (LGPD - Lei nº 13.709/2018). Esta Política explica como coletamos, usamos, armazenamos e compartilhamos seus dados.</p>
+
+            <div class="section-title">1. Controlador de Dados</div>
+            <p>A [Nome da Empresa], CNPJ [CNPJ], é o controlador de dados. Contate o Encarregado de Proteção de Dados (DPO) em [dpo@mostreaki.com].</p>
+
+            <div class="section-title">2. Dados Coletados</div>
+            <p>Coletamos:</p>
+            <ul>
+                <li>Dados de cadastro: nome, e-mail, CPF/CNPJ, endereço, telefone.</li>
+                <li>Dados de uso: IP, navegador, interações na Plataforma.</li>
+                <li>Dados sensíveis: apenas com consentimento explícito, se aplicável.</li>
+            </ul>
+            <p>A base legal é o consentimento (art. 7º, I, LGPD) ou execução de contrato (art. 7º, V).</p>
+
+            <div class="section-title">3. Finalidades do Tratamento</div>
+            <p>Usamos dados para:</p>
+            <ul>
+                <li>Gerenciar contas e fornecer serviços.</li>
+                <li>Enviar comunicações (com opção de opt-out).</li>
+                <li>Melhorar a Plataforma via análises anônimas.</li>
+            </ul>
+
+            <div class="section-title">4. Compartilhamento de Dados</div>
+            <p>Compartilhamos dados com:</p>
+            <ul>
+                <li>Provedores de serviços (ex.: hospedagem, pagamento), sob contratos de confidencialidade.</li>
+                <li>Autoridades, se exigido por lei.</li>
+            </ul>
+            <p>Não vendemos dados pessoais.</p>
+
+            <div class="section-title">5. Armazenamento e Segurança</div>
+            <p>Dados são armazenados em servidores seguros no Brasil ou com cláusulas contratuais adequadas. Usamos medidas técnicas (criptografia, firewalls) para proteger contra acessos não autorizados, destruição ou perda (art. 46, LGPD).</p>
+
+            <div class="section-title">6. Direitos do Titular</div>
+            <p>Você tem direito a (art. 18, LGPD):</p>
+            <ul>
+                <li>Acesso, correção, anonimização, portabilidade ou exclusão de dados.</li>
+                <li>Revogação de consentimento.</li>
+                <li>Informações sobre compartilhamento.</li>
+            </ul>
+            <p>Envie solicitações para [dpo@mostreaki.com]. Responderemos em até 15 dias.</p>
+
+            <div class="section-title">7. Cookies e Tecnologias Semelhantes</div>
+            <p>Usamos cookies para melhorar a experiência. Você pode gerenciá-los no navegador.</p>
+
+            <div class="section-title">8. Transferência Internacional</div>
+            <p>Se aplicável, garantimos proteção equivalente à LGPD (art. 33).</p>
+
+            <div class="section-title">9. Alterações na Política</div>
+            <p>Notificaremos alterações significativas. O uso continuado implica aceitação.</p>
+
+            <p>Para dúvidas, contate-nos em [email@mostreaki.com].</p>
+        </div>
+    </main>
+
+    <footer>&copy; 2025 MostreAki. Todos os direitos reservados.</footer>
+</body>
+</html>
