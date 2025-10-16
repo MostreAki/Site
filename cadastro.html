@@ -108,6 +108,10 @@
   .btn-solid{background:var(--brand); color:#fff}
   .btn-ghost{background:#fff; border:2px solid var(--brand); color:var(--brand)}
 
+  /* Estilo para o checkbox de termos no popup */
+  .terms-checkbox{display:flex;align-items:center;gap:8px;margin:16px 0;font-size:.9rem;color:#444}
+  .terms-checkbox input{width:auto}
+
   .msg{font-size:.9rem; margin-top:8px}
   .ok{color:var(--ok)} .err{color:var(--err)}
 
@@ -224,7 +228,7 @@
 
 <footer>&copy; 2025 MostreAki. Todos os direitos reservados.</footer>
 
-<!-- POPUP -->
+<!-- POPUP EXISTENTE -->
 <div id="alert" class="alert-bg" role="dialog" aria-modal="true" aria-labelledby="alertTitle">
   <div class="alert-card">
     <div class="alert-head">
@@ -233,6 +237,27 @@
     </div>
     <div id="alertMsg" class="alert-body">...</div>
     <div id="alertActions" class="alert-actions"></div>
+  </div>
+</div>
+
+<!-- NOVO POPUP DE TERMOS -->
+<div id="termsAlert" class="alert-bg" role="dialog" aria-modal="true" aria-labelledby="termsTitle">
+  <div class="alert-card">
+    <div class="alert-head">
+      <div class="alert-dot"></div>
+      <div id="termsTitle" class="alert-title">Aceite os Termos</div>
+    </div>
+    <div id="termsMsg" class="alert-body">
+      Para prosseguir com o cadastro, leia e aceite nossos <a href="/termos-servicos.html" target="_blank">Termos de Serviço</a> e <a href="/termos-privacidade.html" target="_blank">Política de Privacidade</a>.
+      <div class="terms-checkbox">
+        <input type="checkbox" id="chkTerms" aria-label="Aceitar Termos de Serviço e Política de Privacidade">
+        <label for="chkTerms">Li e aceito os Termos de Serviço e a Política de Privacidade</label>
+      </div>
+    </div>
+    <div id="termsActions" class="alert-actions">
+      <button class="btn btn-solid" id="btnAcceptTerms" disabled>Aceito</button>
+      <button class="btn btn-ghost" id="btnCancelTerms">Cancelar</button>
+    </div>
   </div>
 </div>
 
@@ -308,7 +333,7 @@ const alertBG = document.getElementById('alert');
 const alertTitle = document.getElementById('alertTitle');
 const alertMsg = document.getElementById('alertMsg');
 const alertActions = document.getElementById('alertActions');
-function showAlert({title="Aviso", html="", actions=[{text:"Fechar", kind:"solid"}]} ){
+function showAlert({title="Aviso", html="", actions=[{text:"Fechar", kind:"solid"}]}){
   alertTitle.textContent = title;
   alertMsg.innerHTML = html;
   alertActions.innerHTML = "";
@@ -318,6 +343,30 @@ function showAlert({title="Aviso", html="", actions=[{text:"Fechar", kind:"solid
 function closeAlert(){ alertBG.style.display='none'; }
 alertBG.addEventListener('click', e=>{ if(e.target===alertBG) closeAlert(); });
 window.addEventListener('keydown', e=>{ if(e.key==='Escape' && alertBG.style.display==='flex') closeAlert(); });
+
+/* ===== NOVO POPUP DE TERMOS ===== */
+const termsAlertBG = document.getElementById('termsAlert');
+const termsTitle = document.getElementById('termsTitle');
+const termsMsg = document.getElementById('termsMsg');
+const termsActions = document.getElementById('termsActions');
+function showTermsAlert({title="Aceite os Termos", html="", onAccept=()=>{}}){
+  termsTitle.textContent = title;
+  termsMsg.innerHTML = html || `Para prosseguir com o cadastro, leia e aceite nossos <a href="/termos-servicos.html" target="_blank">Termos de Serviço</a> e <a href="/termos-privacidade.html" target="_blank">Política de Privacidade</a>.
+    <div class="terms-checkbox">
+      <input type="checkbox" id="chkTerms" aria-label="Aceitar Termos de Serviço e Política de Privacidade">
+      <label for="chkTerms">Li e aceito os Termos de Serviço e a Política de Privacidade</label>
+    </div>`;
+  termsActions.innerHTML = "";
+  const acceptBtn = document.createElement('button'); acceptBtn.className = 'btn btn-solid'; acceptBtn.id = 'btnAcceptTerms'; acceptBtn.textContent = 'Aceito'; acceptBtn.disabled = true; acceptBtn.onclick = ()=>{ onAccept(); closeTermsAlert(); };
+  const cancelBtn = document.createElement('button'); cancelBtn.className = 'btn btn-ghost'; cancelBtn.textContent = 'Cancelar'; cancelBtn.onclick = closeTermsAlert;
+  termsActions.append(acceptBtn, cancelBtn);
+  termsAlertBG.style.display = 'flex';
+  const chk = document.getElementById('chkTerms');
+  chk.addEventListener('change', ()=>{ acceptBtn.disabled = !chk.checked; });
+}
+function closeTermsAlert(){ termsAlertBG.style.display='none'; }
+termsAlertBG.addEventListener('click', e=>{ if(e.target===termsAlertBG) closeTermsAlert(); });
+window.addEventListener('keydown', e=>{ if(e.key==='Escape' && termsAlertBG.style.display==='flex') closeTermsAlert(); });
 
 /* ===== Helpers e máscaras ===== */
 const $ = (id)=>document.getElementById(id);
@@ -401,76 +450,79 @@ function uiBusy(b){ const btn = document.getElementById('btnCadastrar'); btn.dis
 function showErr(title, html){ showAlert({title, html}); }
 function phoneDigits(v){ return (v||'').replace(/\D/g,'').length; }
 
-// SUBMIT
-document.getElementById('btnCadastrar').onclick = async () => {
-  const tipo = document.querySelector('input[name="tipoPessoa"]:checked').value;
-  const usernameRaw = document.getElementById('username').value.trim();
-  const username    = normalizeUsername(usernameRaw);
-  const nome = document.getElementById('nome').value.trim();
-  const cpf  = document.getElementById('cpf').value.trim();
-  const razao= document.getElementById('razao').value.trim();
-  const cnpj = document.getElementById('cnpj').value.trim();
-  const ie   = document.getElementById('ie').value.trim();
-  const ieIsento = document.getElementById('isentoIE').checked;
-  const foneV = document.getElementById('fone').value.trim();
-  const email = document.getElementById('email').value.trim(), email2 = document.getElementById('email2').value.trim();
-  const s1 = document.getElementById('senha').value, s2 = document.getElementById('senha2').value;
-  const cep = document.getElementById('cep').value.trim();
-  const uf = document.getElementById('uf').value.trim();
-  const cidade = document.getElementById('cidade').value.trim();
-  const bairro = document.getElementById('bairro').value.trim();
-  const logradouro = document.getElementById('logradouro').value.trim();
-  const numero = document.getElementById('numero').value.trim();
-  const complemento = document.getElementById('complemento').value.trim();
+/* ===== Função de Cadastro com Verificação de Termos ===== */
+document.getElementById('btnCadastrar').onclick = () => {
+  showTermsAlert({
+    onAccept: async () => {
+      const tipo = document.querySelector('input[name="tipoPessoa"]:checked').value;
+      const usernameRaw = document.getElementById('username').value.trim();
+      const username    = normalizeUsername(usernameRaw);
+      const nome = document.getElementById('nome').value.trim();
+      const cpf  = document.getElementById('cpf').value.trim();
+      const razao= document.getElementById('razao').value.trim();
+      const cnpj = document.getElementById('cnpj').value.trim();
+      const ie   = document.getElementById('ie').value.trim();
+      const ieIsento = document.getElementById('isentoIE').checked;
+      const foneV = document.getElementById('fone').value.trim();
+      const email = document.getElementById('email').value.trim(), email2 = document.getElementById('email2').value.trim();
+      const s1 = document.getElementById('senha').value, s2 = document.getElementById('senha2').value;
+      const cep = document.getElementById('cep').value.trim();
+      const uf = document.getElementById('uf').value.trim();
+      const cidade = document.getElementById('cidade').value.trim();
+      const bairro = document.getElementById('bairro').value.trim();
+      const logradouro = document.getElementById('logradouro').value.trim();
+      const numero = document.getElementById('numero').value.trim();
+      const complemento = document.getElementById('complemento').value.trim();
 
-  if(!isUsernameValid(username)) return showErr('Nome de usuário inválido','Use 3–40 caracteres minúsculos: letras, números, ponto, hífen ou underline.');
-  if(tipo==='PF'){ if(!nome) return showErr('Nome obrigatório','Informe seu <b>nome completo</b>.'); if(!validaCPF(cpf)) return showErr('CPF inválido','Revise o CPF informado.'); }
-  else{ if(!razao) return showErr('Razão Social obrigatória','Informe a <b>razão social</b>.'); if(!validaCNPJ(cnpj)) return showErr('CNPJ inválido','Revise o CNPJ informado.'); if(!ieIsento && !ie) return showErr('IE obrigatória','Informe a IE ou marque <b>Isento</b>.'); }
-  if(!(phoneDigits(foneV)===10 || phoneDigits(foneV)===11)) return showErr('Celular inválido','Informe um número com DDD (10 ou 11 dígitos).');
-  const emailRe=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/; if(!emailRe.test(email)||!emailRe.test(email2)) return showErr('E-mail inválido','Revise os e-mails digitados.');
-  if(email!==email2) return showErr('E-mails não conferem','Digite o mesmo e-mail nos dois campos.');
-  if((cep.replace(/\D/g,'').length)!==8) return showErr('CEP inválido','Informe 8 dígitos de CEP.');
-  if(!uf||!cidade||!bairro||!logradouro||!numero) return showErr('Endereço incompleto','Preencha UF, cidade, bairro, logradouro e número.');
-  if(s1.length<6) return showErr('Senha fraca','Use pelo menos 6 caracteres.');
-  if(s1!==s2) return showErr('Senhas não conferem','Digite a mesma senha nos dois campos.');
+      if(!isUsernameValid(username)) return showErr('Nome de usuário inválido','Use 3–40 caracteres minúsculos: letras, números, ponto, hífen ou underline.');
+      if(tipo==='PF'){ if(!nome) return showErr('Nome obrigatório','Informe seu <b>nome completo</b>.'); if(!validaCPF(cpf)) return showErr('CPF inválido','Revise o CPF informado.'); }
+      else{ if(!razao) return showErr('Razão Social obrigatória','Informe a <b>razão social</b>.'); if(!validaCNPJ(cnpj)) return showErr('CNPJ inválido','Revise o CNPJ informado.'); if(!ieIsento && !ie) return showErr('IE obrigatória','Informe a IE ou marque <b>Isento</b>.'); }
+      if(!(phoneDigits(foneV)===10 || phoneDigits(foneV)===11)) return showErr('Celular inválido','Informe um número com DDD (10 ou 11 dígitos).');
+      const emailRe=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/; if(!emailRe.test(email)||!emailRe.test(email2)) return showErr('E-mail inválido','Revise os e-mails digitados.');
+      if(email!==email2) return showErr('E-mails não conferem','Digite o mesmo e-mail nos dois campos.');
+      if((cep.replace(/\D/g,'').length)!==8) return showErr('CEP inválido','Informe 8 dígitos de CEP.');
+      if(!uf||!cidade||!bairro||!logradouro||!numero) return showErr('Endereço incompleto','Preencha UF, cidade, bairro, logradouro e número.');
+      if(s1.length<6) return showErr('Senha fraca','Use pelo menos 6 caracteres.');
+      if(s1!==s2) return showErr('Senhas não conferem','Digite a mesma senha nos dois campos.');
 
-  uiBusy(true);
-  try{
-    const ok = await reservarUsername(username);
-    if(!ok){ uiBusy(false); return showErr('Nome de usuário indisponível',`Tente outra variação (ex.: <b>${username}-br</b>).`); }
+      uiBusy(true);
+      try{
+        const ok = await reservarUsername(username);
+        if(!ok){ uiBusy(false); return showErr('Nome de usuário indisponível',`Tente outra variação (ex.: <b>${username}-br</b>).`); }
 
-    const cred = await createUserWithEmailAndPassword(auth, email, s1);
-    const uid = cred.user.uid;
-    await updateProfile(cred.user,{ displayName: tipo==='PF' ? nome : razao });
+        const cred = await createUserWithEmailAndPassword(auth, email, s1);
+        const uid = cred.user.uid;
+        await updateProfile(cred.user,{ displayName: tipo==='PF' ? nome : razao });
 
-    const payload = {
-      uid, tipoPessoa: tipo, origemCadastro,
-      username,
-      nomeCompleto: tipo==='PF' ? nome : '', cpf: tipo==='PF' ? cpf.replace(/\D/g,'') : '',
-      razaoSocial: tipo==='PJ' ? razao : '', cnpj: tipo==='PJ' ? cnpj.replace(/\D/g,'') : '',
-      ie: (tipo==='PJ' ? (ieIsento ? 'ISENTO' : ie) : ''), isentoIE: tipo==='PJ' ? !!ieIsento : null,
-      fone: foneV, email,
-      endereco: { cep: cep.replace(/\D/g,''), uf, cidade, bairro, logradouro, numero, complemento },
-      createdAt: serverTimestamp()
-    };
-    await setDoc(doc(db,'usuarios',uid), payload, { merge:true });
-    await setDoc(doc(db,'usernames', username), { uid, createdAt: serverTimestamp() }, { merge:true });
+        const payload = {
+          uid, tipoPessoa: tipo, origemCadastro,
+          username,
+          nomeCompleto: tipo==='PF' ? nome : '', cpf: tipo==='PF' ? cpf.replace(/\D/g,'') : '',
+          razaoSocial: tipo==='PJ' ? razao : '', cnpj: tipo==='PJ' ? cnpj.replace(/\D/g,'') : '',
+          ie: (tipo==='PJ' ? (ieIsento ? 'ISENTO' : ie) : ''), isentoIE: tipo==='PJ' ? !!ieIsento : null,
+          fone: foneV, email,
+          endereco: { cep: cep.replace(/\D/g,''), uf, cidade, bairro, logradouro, numero, complemento },
+          createdAt: serverTimestamp()
+        };
+        await setDoc(doc(db,'usuarios',uid), payload, { merge:true });
+        await setDoc(doc(db,'usernames', username), { uid, createdAt: serverTimestamp() }, { merge:true });
 
-    await sendEmailVerification(cred.user);
-    showAlert({ title:'Confirme seu e-mail', html:`Enviamos um link para <b>${email}</b>.<br>Depois de confirmar, você poderá <b>Fazer Login</b>.`, actions:[{text:'OK, vou verificar', kind:'solid', onClick:()=>{ location.href='/login.html'; }}] });
-    await signOut(auth);
-  }catch(e){
-    await liberarUsername(username);
-    const mapa={
-      'auth/email-already-in-use':"Este e-mail já possui cadastro.<br><a href='/login.html' style='color:var(--brand);font-weight:700;'>Ir para o login</a>",
-      'auth/invalid-email':'E-mail inválido. Revise o endereço.',
-      'auth/weak-password':'Senha fraca (mínimo 6 caracteres).',
-      'auth/network-request-failed':'Falha de rede. Verifique sua conexão.'
-    };
-    showAlert({title:'Não foi possível cadastrar', html: mapa[e.code] || `Erro inesperado (${e.code}). Tente novamente.`});
-  } finally { uiBusy(false); }
+        await sendEmailVerification(cred.user);
+        showAlert({ title:'Confirme seu e-mail', html:`Enviamos um link para <b>${email}</b>.<br>Depois de confirmar, você poderá <b>Fazer Login</b>.`, actions:[{text:'OK, vou verificar', kind:'solid', onClick:()=>{ location.href='/login.html'; }}] });
+        await signOut(auth);
+      }catch(e){
+        await liberarUsername(username);
+        const mapa={
+          'auth/email-already-in-use':"Este e-mail já possui cadastro.<br><a href='/login.html' style='color:var(--brand);font-weight:700;'>Ir para o login</a>",
+          'auth/invalid-email':'E-mail inválido. Revise o endereço.',
+          'auth/weak-password':'Senha fraca (mínimo 6 caracteres).',
+          'auth/network-request-failed':'Falha de rede. Verifique sua conexão.'
+        };
+        showAlert({title:'Não foi possível cadastrar', html: mapa[e.code] || `Erro inesperado (${e.code}). Tente novamente.`});
+      } finally { uiBusy(false); }
+    }
+  });
 };
 </script>
 </body>
 </html>
-
