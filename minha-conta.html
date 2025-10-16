@@ -471,7 +471,7 @@
       if(!status && !plano) return;
       const patch = {};
       if(['pendente','ativo','cancelado'].includes(status)) patch.status = status;
-      if(['basico','essencial','avancado'].includes(plano)) patch.plano = plano;
+      if(['basico','essencial','avancado','light','trial].includes(plano)) patch.plano = plano;
       if(Object.keys(patch).length) await setAssinatura(uid, patch);
       history.replaceState({}, '', location.pathname);
     }
@@ -540,3 +540,4 @@
   </script>
 </body>
 </html>
+
