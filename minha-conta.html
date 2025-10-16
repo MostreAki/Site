@@ -10,7 +10,6 @@
     *{box-sizing:border-box}
     body{
       margin:0;
-      /* Fundo padrão MostreAki: imagem + fixo */
       background-image:url("fundo-mobile-mostreaki.png");
       background-size:cover;background-repeat:no-repeat;background-attachment:fixed;
       font:16px/1.4 system-ui,Segoe UI,Roboto,Arial;
@@ -20,10 +19,9 @@
       body{ background-image:url("fundo-desktop-mostreaki.png"); }
     }
 
-    /* ===== Header alinhado ao padrão ===== */
     header{
       position:sticky;top:0;z-index:1000;
-      background:#c2e7df; /* mesmo tom das outras páginas */
+      background:#c2e7df;
       display:flex;align-items:center;gap:12px;
       padding:10px 16px;border-bottom:1px solid #bfe3da
     }
@@ -31,7 +29,6 @@
       display:flex;align-items:center;gap:10px;font-weight:800;color:#0b3e3c;
       cursor:pointer;
     }
-    /* Marca color MostreAki */
     .logo .mostreaki{color:#FA1E39}
 
     .user-wrap{margin-left:auto;display:flex;align-items:center;gap:10px}
@@ -40,7 +37,6 @@
       border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.15)
     }
 
-    /* ===== Ícone hambúrguer com cor de brand ===== */
     .menu-icon{width:36px;height:26px;position:relative;display:flex;align-items:center;justify-content:center;cursor:pointer}
     .menu-icon span{
       position:absolute;width:24px;height:3px;background:var(--brand);border-radius:3px;
@@ -58,17 +54,15 @@
     }
     nav#menu a{
       padding:10px 12px;border-radius:8px;text-decoration:none;
-      color:#0b3e3c;background:#FA1E39; /* como nas outras páginas */
+      color:#0b3e3c;background:#FA1E39;
       color:#fff;font-weight:700;text-align:center;
     }
     nav#menu a:hover{background:#b8313b}
 
     a.btn.ghost{border:2px solid var(--brand);color:var(--brand);background:#fff;border-radius:10px;padding:10px 14px;font-weight:700;text-decoration:none}
 
-    /* ===== Layout principal: containers flutuantes ===== */
     main.container{max-width:980px;margin:22px auto;padding:0 16px}
 
-    /* Título em cartão branco isolado (padrão unificado) */
     .section-title{
       background:#fff;border:1px solid #e7f3f1;border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.06);
       padding:16px 18px;margin:0 0 18px 0;text-align:center;
@@ -102,7 +96,6 @@
 
     @media(max-width:860px){.grid{grid-template-columns:1fr}}
 
-    /* ===== Modal de autenticação (mesmo padrão, com checkbox "Mostrar senha") ===== */
     .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:9999;padding:20px}
     .modal-card{
       background:#fff;width:100%;max-width:420px;border-radius:16px;
@@ -126,7 +119,6 @@
     .showpwd{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:.9rem;color:#444}
     .showpwd input{width:auto}
 
-    /* ===== Aparência para campos somente leitura ===== */
     input[readonly]{
       background:#f7f7f7!important;
       color:#6b6b6b!important;
@@ -137,7 +129,6 @@
 </head>
 <body>
 
-  <!-- ===== MODAL: LOGIN EMBUTIDO ===== -->
   <div id="authModal" class="modal-bg" role="dialog" aria-modal="true" aria-labelledby="authTitle">
     <div class="modal-card">
       <div class="modal-head">
@@ -146,13 +137,11 @@
       </div>
       <div class="modal-body">
         <label for="email">E-mail</label>
-        <input id="email" type="email" autocomplete="username" required
-               pattern="^[^\s@]+@[^\s@]+\.[^\s@]{2,}$" placeholder="voce@exemplo.com">
+        <input id="email" type="email" autocomplete="username" required pattern="^[^\s@]+@[^\s@]+\.[^\s@]{2,}$" placeholder="voce@exemplo.com">
 
         <label for="senha">Senha</label>
         <div class="pwd-wrap">
           <input id="senha" type="password" autocomplete="current-password" required>
-          <!-- Checkbox que substitui o "olho" -->
           <label class="showpwd" for="chkMostrarSenha">
             <input id="chkMostrarSenha" type="checkbox" aria-controls="senha" aria-label="Mostrar senha">
             Mostrar senha
@@ -195,26 +184,22 @@
   <div id="alertaLogin" class="alerta-login">⚠️ Você precisa estar logado para acessar a página Minha Conta. Redirecionando…</div>
 
   <main class="container">
-    <!-- TÍTULO EM CONTAINER BRANCO ISOLADO -->
     <div class="section-title"><h2>Minha Conta</h2></div>
 
     <div class="grid">
-      <!-- PERFIL / REDES -->
       <section class="card">
         <div class="head">Perfil e Redes</div>
         <div class="body">
           <label for="nomeCompleto">Nome completo</label>
           <input id="nomeCompleto" type="text" placeholder="Seu nome e sobrenome">
-
           <label for="username">Nome de usuário</label>
-          <!-- Campo bloqueado para o cliente -->
-          <input id="username" type="text" placeholder="ex.: joao-silva" readonly aria-readonly="true" title="Bloqueado para edição. Entre em contato com o suporte para alterar.">
-          <div class="lock-note">🔒 Bloqueado para edição (apenas o suporte poderá fazer a alteração).</div>
+          <input id="username" type="text" placeholder="ex.: joao-silva" readonly>
+          <div class="lock-note">🔒 Bloqueado para edição (apenas o suporte poderá fazer a alteração.)</div>
 
           <label for="foto" style="margin-top:12px">Foto de Perfil</label>
           <input id="foto" type="file" accept="image/*">
           <img id="fotoPreview" alt="Preview">
-
+          
           <label style="margin-top:12px">Instagram</label><input id="instagram" type="text" placeholder="@seuusuario">
           <label>Facebook</label><input id="facebook" type="text" placeholder="link da página">
           <label>WhatsApp</label><input id="whatsapp" type="text" placeholder="55DDD999999999">
@@ -223,14 +208,12 @@
           <div class="row-btns">
             <button id="btnSalvar" class="btn save">Salvar alterações</button>
             <button id="btnExcluirFoto" class="btn remove">Remover foto</button>
-            <!-- EDITAR CATÁLOGO: só aparece se assinatura ATIVA + catálogo ativo -->
-            <a id="btnEditarCatalogo" class="btn link" style="display:none" href="#">✏️ Editar catálogo</a>
+            <a id="btnEditarCatalogo" class="btn link" href="#">✏️ Editar catálogo</a>
           </div>
           <div id="catalogoInfo" class="help" style="display:none;margin-top:6px"></div>
         </div>
       </section>
 
-      <!-- ASSINATURA -->
       <section class="card">
         <div class="head">Assinatura</div>
         <div class="body">
@@ -247,80 +230,5 @@
     </div>
   </main>
 
-  <!-- ===== SCRIPTS ===== -->
-  <script type="module">
-    import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-    import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, sendEmailVerification } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-    import { getFirestore, doc, getDoc, setDoc, onSnapshot, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-    import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
-
-    const cfg = {
-      apiKey: 'AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE',
-      authDomain: 'mostreaki-2025.firebaseapp.com',
-      projectId: 'mostreaki-2025',
-      storageBucket: 'mostreaki-2025.firebasestorage.app',
-      messagingSenderId: '748712068097',
-      appId: '1:748712068097:web:09cf043fbb45917ef6ec00'
-    };
-    const app = getApps().length ? getApp() : initializeApp(cfg);
-    const auth = getAuth(app);
-    const db   = getFirestore(app);
-    const storage = getStorage(app, 'gs://mostreaki-2025.firebasestorage.app');
-
-    const $ = s => document.querySelector(s);
-    const cacheBust = u => u ? u + (u.includes('?')?'&':'?') + 'v=' + Date.now() : u;
-
-    /* ====== Modal Login ====== */
-    const modal = document.getElementById('authModal');
-    function abrirModal(){ if(modal){ modal.style.display='flex'; document.body.style.overflow='hidden'; } }
-    window.fecharModal = function(){ if(modal){ modal.style.display='none'; document.body.style.overflow=''; } };
-    modal?.addEventListener('click', e=>{ if(e.target===modal) fecharModal(); });
-    window.addEventListener('keydown', e=>{ if(e.key==='Escape' && modal?.style.display==='flex') fecharModal(); });
-
-    // Mostrar senha (checkbox)
-    (function wireShowPassword(){
-      const input = document.getElementById('senha'), chk = document.getElementById('chkMostrarSenha');
-      if(!input || !chk) return;
-      const apply = ()=>{ input.type = chk.checked ? 'text' : 'password'; };
-      chk.addEventListener('change', apply);
-    })();
-
-    // Login e validação básica
-    const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-    const emailValido = v => emailRe.test(v);
-    async function loginEmailSenha(){
-      const email = document.getElementById("email").value.trim();
-      const senha = document.getElementById("senha").value;
-
-      if(!email) return alert("Digite seu e-mail.");
-      if(!emailVal
-       if(!email) return alert("Digite seu e-mail.");
-      if(!emailValido(email)) return alert("E-mail inválido.");
-      if(!senha) return alert("Digite sua senha.");
-
-      try {
-        const userCred = await signInWithEmailAndPassword(auth, email, senha);
-        if(userCred.user.emailVerified){
-          // Usuário logado com sucesso, exibir a interface de "minha conta"
-          // Aqui você pode redirecionar para outra página ou exibir os dados
-        } else {
-          alert("Verifique seu e-mail antes de continuar.");
-        }
-      } catch (error) {
-        console.error("Erro ao fazer login:", error);
-        alert("Erro ao tentar fazer login.");
-      }
-    }
-
-    // Função para verificar o status de login
-    onAuthStateChanged(auth, user => {
-      if (user) {
-        // Exibe informações do usuário ou realiza outras ações
-      } else {
-        // Se o usuário não estiver logado, exibe o modal de login
-        abrirModal();
-      }
-    });
-  </script>
 </body>
-</html>  
+</html>
