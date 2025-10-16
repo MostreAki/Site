@@ -216,13 +216,6 @@
       </div>
     </div>
 
-    <div class="field">
-      <label>
-        <input type="checkbox" id="aceiteTermosCheckbox" required>
-        Eu aceito os <a href="javascript:void(0);" onclick="mostrarModalTermos()">termos de contrato</a> e a <a href="javascript:void(0);" onclick="mostrarModalTermos()">política de privacidade</a>.
-      </label>
-    </div>
-
     <button class="primary" id="btnCadastrar">Criar conta</button>
     <p class="muted">Já tem conta? <a href="/login.html">Entrar</a></p>
     <div id="status" class="msg" aria-live="polite"></div>
@@ -231,55 +224,59 @@
 
 <footer>&copy; 2025 MostreAki. Todos os direitos reservados.</footer>
 
-<!-- Modal de Aceite -->
-<div id="modalTermos" class="modal-bg" role="dialog" aria-labelledby="modalTermosTitle">
-  <div class="modal-card">
-    <div class="modal-head">
-      <h2 id="modalTermosTitle">Termos e Condições</h2>
-      <button class="modal-close" onclick="fecharModal()">×</button>
+<!-- Modal de Aceite -->  
+<div id="modalTermos" class="modal-bg" role="dialog" aria-labelledby="modalTermosTitle">  
+  <div class="modal-card">  
+    <div class="modal-head">  
+      <h2 id="modalTermosTitle">Termos e Condições</h2>  
+      <button class="modal-close" onclick="fecharModal()">×</button>  
+    </div>  
+    <div class="modal-body">  
+      <p>Leia e aceite os termos e condições para continuar:</p>  
+      <textarea readonly rows="10" cols="50">  
+        [Aqui entra o texto dos Termos de Contrato]  
+      </textarea>  
+      <div class="section-title" style="margin-top:16px;">Política de Privacidade</div>  
+      <textarea readonly rows="10" cols="50">  
+        [Aqui entra o texto da Política de Privacidade]  
+      </textarea>  
+    </div>  
+    <div class="modal-footer">  
+      <button class="btn btn-ghost" onclick="fecharModal()">Fechar</button>  
+      <button class="btn btn-solid" id="aceitarTermos">Aceitar</button>  
+    </div>  
+  </div>  
+</div>
+
+<!-- POPUP -->
+<div id="alert" class="alert-bg" role="dialog" aria-modal="true" aria-labelledby="alertTitle">
+  <div class="alert-card">
+    <div class="alert-head">
+      <div class="alert-dot"></div>
+      <div id="alertTitle" class="alert-title">Mensagem</div>
     </div>
-    <div class="modal-body">
-      <p>Leia e aceite os termos e condições para continuar:</p>
-      <textarea readonly rows="10" cols="50">
-        [Aqui entra o texto dos Termos de Contrato]
-      </textarea>
-      <div class="section-title" style="margin-top:16px;">Política de Privacidade</div>
-      <textarea readonly rows="10" cols="50">
-        [Aqui entra o texto da Política de Privacidade]
-      </textarea>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="fecharModal()">Fechar</button>
-      <button class="btn btn-solid" id="aceitarTermos">Aceitar</button>
-    </div>
+    <div id="alertMsg" class="alert-body">...</div>
+    <div id="alertActions" class="alert-actions"></div>
   </div>
 </div>
 
 <script>
-  function mostrarModalTermos() {
-    document.getElementById('modalTermos').style.display = 'flex';
-  }
+  function mostrarModalTermos() {  
+    document.getElementById('modalTermos').style.display = 'flex';  
+  }  
 
-  function fecharModal() {
-    document.getElementById('modalTermos').style.display = 'none';
-  }
+  function fecharModal() {  
+    document.getElementById('modalTermos').style.display = 'none';  
+  }  
 
-  document.getElementById('aceitarTermos').addEventListener('click', function() {
-    document.getElementById('aceiteTermosCheckbox').checked = true;
-    fecharModal();
-  });
+  document.getElementById('aceitarTermos').addEventListener('click', function() {  
+    document.getElementById('aceiteTermosCheckbox').checked = true;  
+    fecharModal();  
+  });  
 
-  document.getElementById('btnCadastrar').onclick = async () => {
-    const aceiteTermos = document.getElementById('aceiteTermosCheckbox').checked;
-    if (!aceiteTermos) {
+  // Função de submit do formulário de cadastro com validação de aceite de termos  
+  document.getElementById('btnCadastrar').onclick = async () => {  
+    const aceiteTermos = document.getElementById('aceiteTermosCheckbox').checked;  
+    if (!aceiteTermos) {  
       alert('Você precisa aceitar os termos e a política de privacidade para continuar.');
-      return;
-    }
 
-    // Aqui segue o restante da lógica para cadastro
-    // ...
-  };
-</script>
-
-</body>
-</html>
