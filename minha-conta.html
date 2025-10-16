@@ -293,250 +293,34 @@
       const senha = document.getElementById("senha").value;
 
       if(!email) return alert("Digite seu e-mail.");
+      if(!emailVal
+       if(!email) return alert("Digite seu e-mail.");
       if(!emailValido(email)) return alert("E-mail inválido.");
       if(!senha) return alert("Digite sua senha.");
 
-      try{
-        const cred = await signInWithEmailAndPassword(auth, email, senha);
-        if(!cred.user.emailVerified){
-          try{ await sendEmailVerification(cred.user); }catch{}
-          alert("E-mail não verificado. Reenviamos o link.");
-          return;
-        }
-        fecharModal();
-        // mantém fluxo normal do onAuthStateChanged
-      }catch(e){
-        const codes = ["auth/invalid-credential","auth/wrong-password","auth/user-not-found"];
-        if(codes.includes(e.code)) return alert("E-mail e/ou senha incorretos.");
-        if(e.code==="auth/too-many-requests") return alert("Muitas tentativas. Tente mais tarde.");
-        if(e.code==="auth/invalid-email") return alert("E-mail inválido.");
-        alert("Erro ao entrar. Tente novamente.");
-      }
-    }
-    document.getElementById("btnEntrar").onclick = loginEmailSenha;
-
-    /* MENU (preservado) */
-    (function wireMenu(){
-      const btn=document.getElementById('menuBtn'), menu=document.getElementById('menu');
-      if(!btn || !menu) return;
-      const open=()=>{ menu.style.display='flex'; document.addEventListener('click', onDoc, true); document.addEventListener('keydown', onKey) };
-      const close=()=>{ menu.style.display='none'; document.removeEventListener('click', onDoc, true); document.removeEventListener('keydown', onKey) };
-      const toggle=()=> (menu.style.display==='flex'?close():open());
-      function onDoc(e){ if(!menu.contains(e.target) && e.target!==btn) close(); }
-      function onKey(e){ if(e.key==='Escape') close(); }
-      btn.addEventListener('click', toggle);
-    })();
-
-    /* ===== AVATAR (preservado) ===== */
-    function setAvatar(url){
-      if(!url) return;
-      localStorage.setItem('fotoPerfil', url);
-      const el = document.getElementById('userCircle'); if(!el) return;
-      el.textContent = ''; el.style.display='flex';
-      const img = new Image();
-      img.src = cacheBust(url); img.alt='Foto'; img.style.width='100%'; img.style.height='100%'; img.style.objectFit='cover';
-      el.append(img);
-      const prev = $('#fotoPreview'); if(prev) prev.src = url;
-    }
-    (()=>{ const c = localStorage.getItem('fotoPerfil'); if(c) setAvatar(c); })();
-
-    async function prefetchFoto(uid){
-      const tryExt = e => getDownloadURL(ref(storage, `usuarios/${uid}/perfil/avatar.${e}`)).catch(()=>null);
-      const direct = await tryExt('jpg') || await tryExt('png') || await tryExt('webp') || await tryExt('gif');
-      if(direct){ setAvatar(direct); try{ await setDoc(doc(db,'usuarios',uid), { fotoPerfil:direct }, { merge:true }); }catch{} }
-    }
-    function extFromType(t){ return (t?.split('/')[1]||'jpg').replace('jpeg','jpg'); }
-    async function previewImagem(ev, uid){
-      const file = ev.target.files?.[0]; if(!file) return;
-      $('#fotoPreview').src = URL.createObjectURL(file);
-      const ext = extFromType(file.type);
-      const storageRef = ref(storage, `usuarios/${uid}/perfil/avatar.${ext}`);
-      await uploadBytes(storageRef, file, { contentType:file.type });
-      const url = await getDownloadURL(storageRef);
-      await setDoc(doc(db,'usuarios',uid), { fotoPerfil:url }, { merge:true });
-      for(const e of ['jpg','png','webp','gif']) if(e!==ext) try{ await deleteObject(ref(storage, `usuarios/${uid}/perfil/avatar.${e}`)); }catch{}
-      setAvatar(url);
-      alert('Foto atualizada com sucesso!');
-    }
-    async function removerFoto(uid){
-      let removed=false;
-      for(const e of ['jpg','png','webp','gif']){ try{ await deleteObject(ref(storage, `usuarios/${uid}/perfil/avatar.${e}`)); removed=true; }catch{} }
-      await setDoc(doc(db,'usuarios',uid),{ fotoPerfil:'' },{ merge:true });
-      localStorage.removeItem('fotoPerfil');
-      $('#fotoPreview').src=''; $('#userCircle').style.display='none';
-      alert(removed? 'Foto removida.' : 'Nenhuma foto encontrada para remover.');
-    }
-
-    /* ======== BLOQUEIO DE USERNAME ======== */
-    // Mantém o valor original carregado do Firestore e ignora qualquer tentativa de mudança.
-    let ORIGINAL_USERNAME = '';
-
-    /* ===== PERFIL (preservado com bloqueio de username) ===== */
-    function slugify(v){
-      return v.toLowerCase()
-        .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
-        .replace(/[^a-z0-9-_.]/g,'-')
-        .replace(/-{2,}/g,'-').replace(/^[-_.]+|[-_.]+$/g,'');
-    }
-    async function salvar(uid){
-      const nomeCompleto = $('#nomeCompleto').value.trim();
-
-      // username fica SEMPRE o original; ignoramos o campo da tela
-      const username = ORIGINAL_USERNAME;
-
-      const data={
-        nomeCompleto,
-        // username e catalogoSlug NÃO são atualizados aqui para impedir alteração pelo cliente
-        instagram: $('#instagram').value.trim(),
-        facebook : $('#facebook').value.trim(),
-        whatsapp : $('#whatsapp').value.trim(),
-        youtube  : $('#youtube').value.trim(),
-        updatedAt: serverTimestamp()
-      };
-      await setDoc(doc(db,'usuarios',uid), data, { merge:true });
-      alert('Dados salvos! (nome de usuário permanece bloqueado)');
-      wireCatalogo(uid);
-    }
-    async function carregar(uid){
-      const s = await getDoc(doc(db,'usuarios',uid));
-      if(!s.exists()) return;
-      const d=s.data();
-
-      // Guarda e renderiza o username original
-      ORIGINAL_USERNAME = (d.username || d.catalogoSlug || '').trim();
-      $('#username').value     = ORIGINAL_USERNAME;
-      $('#username').readOnly  = true;
-      $('#username').setAttribute('aria-readonly','true');
-      $('#username').title = 'Bloqueado para edição. Entre em contato com o suporte para alterar.';
-
-      $('#nomeCompleto').value = d.nomeCompleto || '';
-      $('#instagram').value    = d.instagram || '';
-      $('#facebook').value     = d.facebook  || '';
-      $('#whatsapp').value     = d.whatsapp  || '';
-      $('#youtube').value      = d.youtube   || '';
-    }
-
-    /* ===== Assinaturas (preservado) ===== */
-    const PLANOS = { basico:'Plano Básico', essencial:'Plano Intermediário', avancado:'Plano Avançado' };
-    const STATUS_LABEL = {
-      'sem-plano':'Sem plano','pendente':'Pendente','ativo':'Ativo',
-      'cancelamento_solicitado':'Cancelamento solicitado','cancelado':'Cancelado'
-    };
-    function renderAssinatura(data){
-      const status = data?.status || 'sem-plano';
-      const plano  = data?.plano  || null;
-      const chip = document.getElementById('statusChip'); chip.className='chip '+status; chip.textContent = STATUS_LABEL[status]||'—';
-      document.getElementById('planoLabel').textContent = 'Plano atual: ' + (plano? PLANOS[plano] : '—');
-      const meta=[]; if(data?.createdAt?.toDate) meta.push('Início: ' + data.createdAt.toDate().toLocaleDateString());
-      if(data?.updatedAt?.toDate) meta.push('Atualizado: ' + data.updatedAt.toDate().toLocaleString());
-      document.getElementById('assinaturaMeta').textContent = meta.join(' · ');
-      const btnAssinar=document.getElementById('btnAssinar'),
-            btnAlterar=document.getElementById('btnAlterar'),
-            btnCancelar=document.getElementById('btnCancelar');
-      if(status==='sem-plano' || !plano){
-        btnAssinar.style.display='inline-block'; btnAlterar.style.display='none'; btnCancelar.style.display='none';
-      }else if(status==='ativo' || status==='pendente'){
-        btnAssinar.style.display='none'; btnAlterar.style.display='inline-block'; btnCancelar.style.display='inline-block';
-      }else{
-        btnAssinar.style.display='inline-block'; btnAlterar.style.display='none'; btnCancelar.style.display='none';
-      }
-    }
-    async function ensureAssinaturaDoc(uid){
-      const r = await getDoc(doc(db,'assinaturas',uid));
-      if(!r.exists()){
-        await setDoc(doc(db,'assinaturas',uid), {
-          status:'sem-plano', plano:null, provider:'mercado_pago',
-          createdAt: serverTimestamp(), updatedAt: serverTimestamp()
-        }, { merge:true });
-      }
-    }
-    async function setAssinatura(uid, patch){
-      await setDoc(doc(db,'assinaturas',uid), { updatedAt:serverTimestamp(), ...patch }, { merge:true });
-    }
-    function wireAssinatura(uid){
-      onSnapshot(doc(db,'assinaturas',uid), snap=>{
-        renderAssinatura(snap.exists()? snap.data() : { status:'sem-plano' });
-      });
-      document.getElementById('btnAssinar').onclick = ()=> location.href='/planos.html';
-      document.getElementById('btnAlterar').onclick = ()=> location.href='/planos.html';
-      document.getElementById('btnCancelar').onclick = async ()=>{
-        if(!confirm('Confirmar cancelamento do plano?')) return;
-        await setAssinatura(uid,{ status:'cancelamento_solicitado' });
-        alert('Cancelamento solicitado. Entraremos em contato.');
-      };
-    }
-    async function aplicarParametrosURL(uid){
-      const p = new URLSearchParams(location.search);
-      const status = p.get('status'); const plano = p.get('plano');
-      if(!status && !plano) return;
-      const patch = {};
-      if(['pendente','ativo','cancelado'].includes(status)) patch.status = status;
-      if(['basico','essencial','avancado'].includes(plano)) patch.plano = plano;
-      if(Object.keys(patch).length) await setAssinatura(uid, patch);
-      history.replaceState({}, '', location.pathname);
-    }
-
-    /* ===== Catálogo (preservado) ===== */
-    async function wireCatalogo(uid){
-      const btn  = document.getElementById('btnEditarCatalogo');
-      const info = document.getElementById('catalogoInfo');
-      btn.style.display='none'; info.style.display='none'; info.textContent='';
-
-      // assinatura ativa?
-      const assSnap = await getDoc(doc(db,'assinaturas',uid));
-      const ass = assSnap.exists() ? assSnap.data() : null;
-      const ativo = ass && String(ass.status||'').toLowerCase()==='ativo';
-      if(!ativo){ return; }
-
-      // slug (derivado do username original / catalogoSlug original)
-      const uSnap = await getDoc(doc(db,'usuarios',uid));
-      const u = uSnap.exists()? uSnap.data() : {};
-      const slug = (u.catalogoSlug || u.username || '').trim();
-      if(!slug){ return; }
-
-      // config do catálogo
-      const cfgRef = doc(db,'catalogos',slug,'meta','config');
       try {
-        const cfg = await getDoc(cfgRef);
-        if(cfg.exists() && cfg.data().ownerUid===uid && cfg.data().catalogoAtivo===true){
-          btn.href = `/editar-catalogo.html?c=${encodeURIComponent(slug)}`;
-          btn.style.display='inline-flex';
-          info.textContent = `Catálogo habilitado. Slug: ${slug}`;
-          info.style.display='block';
+        const userCred = await signInWithEmailAndPassword(auth, email, senha);
+        if(userCred.user.emailVerified){
+          // Usuário logado com sucesso, exibir a interface de "minha conta"
+          // Aqui você pode redirecionar para outra página ou exibir os dados
+        } else {
+          alert("Verifique seu e-mail antes de continuar.");
         }
-      } catch {}
+      } catch (error) {
+        console.error("Erro ao fazer login:", error);
+        alert("Erro ao tentar fazer login.");
+      }
     }
 
-    /* ===== Auth (preservado) ===== */
-    onAuthStateChanged(auth, async (user)=>{
-      const a = document.getElementById('authText');
-      if(user){
-        a.textContent='Sair';
-        a.onclick=async(e)=>{ e.preventDefault(); await signOut(auth); localStorage.removeItem('fotoPerfil'); location='/index.html'; };
-
-        document.getElementById('foto').onchange = ev => previewImagem(ev, user.uid);
-        document.getElementById('btnSalvar').onclick = () => salvar(user.uid);
-        document.getElementById('btnExcluirFoto').onclick = () => removerFoto(user.uid);
-
-        await ensureAssinaturaDoc(user.uid);
-        wireAssinatura(user.uid);
-        await aplicarParametrosURL(user.uid);
-
-        await carregar(user.uid);
-        await prefetchFoto(user.uid);
-        await wireCatalogo(user.uid);
-      }else{
-        // Mantém o comportamento original (alerta + esconder conteúdo + redirecionar)
-        document.getElementById('alertaLogin').style.display='block';
-        document.querySelector('main.container').style.display='none';
-        localStorage.removeItem('fotoPerfil');
-        setTimeout(()=> location='/index.html', 4000);
-
-        // E agora o botão "Entrar" abre o modal de login (mesmo padrão)
-        a.textContent='Entrar';
-        a.onclick=(e)=>{ e.preventDefault(); abrirModal(); };
+    // Função para verificar o status de login
+    onAuthStateChanged(auth, user => {
+      if (user) {
+        // Exibe informações do usuário ou realiza outras ações
+      } else {
+        // Se o usuário não estiver logado, exibe o modal de login
+        abrirModal();
       }
     });
   </script>
 </body>
-</html>
+</html>  
