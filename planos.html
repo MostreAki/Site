@@ -34,35 +34,38 @@
     .logo{font-size:1.5rem;font-weight:bold}
     .logo .mostre{color:#00C2BF}.logo .aki{color:#FA1E39}
 
-    .header-auth{ display:flex; align-items:center; gap:10px; }
+    .header-auth{display:flex;align-items:center;gap:10px}
     .user-circle{
       background:#15b0af;color:#fff;font-weight:bold;border-radius:50%;
       width:32px;height:32px;display:flex;align-items:center;justify-content:center;
       overflow:hidden;font-size:.9rem;
     }
-    .user-circle img{ width:100%; height:100%; object-fit:cover; display:block; }
-    .menu-icon{ width:32px;height:32px;display:flex;align-items:center;justify-content:center;line-height:1;font-size:1.5rem;cursor:pointer }
+    .user-circle img{width:100%;height:100%;object-fit:cover;display:block}
+    .menu-icon{
+      width:32px;height:32px;display:flex;align-items:center;justify-content:center;
+      line-height:1;font-size:1.5rem;cursor:pointer
+    }
     .menu-list{
-      position:absolute;top:60px;right:20px;background:#16807C;border:2px solid #000;border-radius:6px;
-      display:none;flex-direction:column;padding:10px;z-index:10000;
+      position:absolute;top:60px;right:20px;background:#16807C;border:2px solid #000;
+      border-radius:6px;display:none;flex-direction:column;padding:10px;z-index:10000;
     }
     .menu-list a{
-      background:#FA1E39;color:#fff;text-decoration:none;padding:10px;margin-bottom:8px;border-radius:6px;
-      text-align:center;font-weight:bold;
+      background:#FA1E39;color:#fff;text-decoration:none;padding:10px;margin-bottom:8px;
+      border-radius:6px;text-align:center;font-weight:bold;
     }
     .menu-list a:hover{background:#b8313b}
 
     main{max-width:1200px;margin:40px auto;padding:0 18px}
 
     /* ===== Pricing ===== */
-    .pricing-head{ text-align:center;margin-bottom:22px; }
+    .pricing-head{text-align:center;margin-bottom:22px}
     .pricing-head h1{
-      color:var(--titleAccent); font-size:1.9rem;margin-bottom:6px;
+      color:var(--titleAccent);font-size:1.9rem;margin-bottom:6px;
       text-shadow:0 1px 0 rgba(0,0,0,.2), 0 2px 4px rgba(0,0,0,.25);
     }
-    .pricing-head p{ color:var(--titleAccent); font-size:1.05rem; text-shadow:0 1px 0 rgba(0,0,0,.18); }
+    .pricing-head p{color:var(--titleAccent);font-size:1.05rem;text-shadow:0 1px 0 rgba(0,0,0,.18)}
 
-    .grid{ display:grid; gap:18px; grid-template-columns:1fr; }
+    .grid{display:grid;gap:18px;grid-template-columns:1fr}
     @media (min-width:720px){ .grid{grid-template-columns:repeat(2,1fr)} }
     @media (min-width:1040px){ .grid{grid-template-columns:repeat(3,1fr)} }
 
@@ -84,16 +87,20 @@
     .card-body{padding:18px 16px 10px;flex:1}
     .feat{list-style:none;color:#273;font-size:1rem}
     .feat li{
-      position:relative; padding-left:26px; margin:10px 0; line-height:1.55;
-      white-space:normal; word-break:normal; overflow-wrap:anywhere; text-wrap:pretty;
+      position:relative;padding-left:26px;margin:10px 0;line-height:1.55;
+      white-space:normal;word-break:normal;overflow-wrap:anywhere;text-wrap:pretty;
     }
-    .feat li::before{ content:"✔"; position:absolute; left:0; top:.15em; color:var(--brand); font-weight:bold }
+    .feat li::before{content:"✔";position:absolute;left:0;top:.15em;color:var(--brand);font-weight:bold}
 
-    .note{ margin:12px 0 4px; padding:12px 14px; background:#f3fbfa; border-left:4px solid var(--brand);
-      border-radius:10px; color:#234; font-size:.95rem }
+    .note{
+      margin:12px 0 4px;padding:12px 14px;background:#f3fbfa;border-left:4px solid var(--brand);
+      border-radius:10px;color:#234;font-size:.95rem
+    }
 
-    .price-row{ margin-top:12px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap }
-    .price{ font-size:1.6rem;color:#0e7270;font-weight:900;letter-spacing:.3px }
+    .price-row{
+      margin-top:12px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap
+    }
+    .price{font-size:1.6rem;color:#0e7270;font-weight:900;letter-spacing:.3px}
     .mp-slot{display:flex;align-items:center;gap:8px}
     .mp-slot img{height:30px;width:auto;display:block;filter:saturate(.95) contrast(1.05)}
 
@@ -109,24 +116,38 @@
     footer{background:#c2e7df;padding:20px;text-align:center;color:#555;font-size:.9rem;margin-top:40px}
 
     /* ===== Modal Termos ===== */
-    .tm-bg{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:9999;padding:16px}
-    .tm-card{background:#fff;border:2px solid var(--brandLight);border-radius:14px;max-width:720px;width:100%;box-shadow:0 22px 70px rgba(0,0,0,.25);overflow:hidden}
-    .tm-head{display:flex;align-items:center;gap:10px;background:linear-gradient(90deg,var(--brandLight),var(--brand));padding:12px 14px}
+    .tm-bg{
+      position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;
+      z-index:9999;padding:16px
+    }
+    .tm-card{
+      background:#fff;border:2px solid var(--brandLight);border-radius:14px;max-width:720px;width:100%;
+      box-shadow:0 22px 70px rgba(0,0,0,.25);overflow:hidden
+    }
+    .tm-head{
+      display:flex;align-items:center;gap:10px;background:linear-gradient(90deg,var(--brandLight),var(--brand));
+      padding:12px 14px
+    }
     .tm-dot{width:10px;height:10px;border-radius:50%;background:var(--accent)}
     .tm-title{color:var(--ink);font-weight:bold}
     .tm-x{margin-left:auto;background:transparent;border:0;font-size:18px;cursor:pointer;color:#355}
     .tm-body{
       max-height:50vh;overflow:auto;padding:16px 16px 8px;color:#223;line-height:1.55;
-      -webkit-overflow-scrolling:touch; overscroll-behavior:contain; touch-action:pan-y;
+      -webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y;
     }
     .tm-check{display:flex;align-items:center;gap:10px;padding:8px 16px;color:#234}
     .tm-actions{display:flex;gap:10px;justify-content:flex-end;padding:0 16px 16px}
 
-    .toast{position:fixed;top:16px;right:16px;background:#FA1E39;color:#fff;padding:12px 14px;border-radius:10px;
-      box-shadow:0 6px 18px rgba(0,0,0,.2);display:none;z-index:99999;font-weight:bold}
+    .toast{
+      position:fixed;top:16px;right:16px;background:#FA1E39;color:#fff;padding:12px 14px;border-radius:10px;
+      box-shadow:0 6px 18px rgba(0,0,0,.2);display:none;z-index:99999;font-weight:bold
+    }
 
-    /* ====== Modal de Login ====== */
-    .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:10000;padding:20px}
+    /* ===== Modal de Login ===== */
+    .modal-bg{
+      position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;
+      z-index:10000;padding:20px
+    }
     .modal-card{
       background:#fff;width:100%;max-width:420px;border-radius:16px;
       box-shadow:0 20px 60px rgba(0,0,0,.25);overflow:hidden;border:2px solid var(--brandLight);
@@ -141,11 +162,12 @@
     .modal-body p.muted{color:#555;margin-bottom:10px}
     label{display:block;margin:10px 0 6px;color:#333}
     input{width:100%;padding:10px;border:1px solid #ddd;border-radius:8px}
-    .primary{background:var(--brand);color:#fff;border:0;border-radius:8px;padding:12px;font-weight:bold;cursor:pointer;width:100%;margin-top:12px}
+    .primary{
+      background:var(--brand);color:#fff;border:0;border-radius:8px;padding:12px;
+      font-weight:bold;cursor:pointer;width:100%;margin-top:12px
+    }
     .muted{font-size:.9rem;color:#666;margin-top:10px}
     .muted a{color:var(--brand);text-decoration:none;font-weight:bold}
-
-    /* Checkbox “Mostrar senha” */
     .pwd-wrap{position:relative}
     .showpwd{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:.9rem;color:#444}
     .showpwd input{width:auto}
@@ -164,7 +186,6 @@
       <label for="email">E-mail</label>
       <input id="email" type="email" autocomplete="username" required
              pattern="^[^\s@]+@[^\s@]+\.[^\s@]{2,}$" placeholder="voce@exemplo.com">
-
       <label for="senha">Senha</label>
       <div class="pwd-wrap">
         <input id="senha" type="password" autocomplete="current-password" required>
@@ -173,13 +194,10 @@
           Mostrar senha
         </label>
       </div>
-
       <button class="primary" id="btnEntrar">Entrar</button>
-
       <div class="muted" style="text-align:center;margin-top:6px">
         Esqueceu a senha? <a href="/recuperar-senha.html">Recuperar senha</a>
       </div>
-
       <p class="muted">Não tem conta? <a href="/cadastro.html">Cadastre-se</a></p>
     </div>
   </div>
@@ -190,13 +208,11 @@
     <img src="logomarca-mostreaki.svg" alt="Logo">
     <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
   </div>
-
   <div class="header-auth">
     <span id="authText" style="font-weight:bold;color:#15b0af;cursor:pointer;display:none">Entrar</span>
     <div id="userCircle" class="user-circle" title="Perfil">F</div>
     <div id="menuBtn" class="menu-icon" aria-controls="menu" aria-expanded="false">☰</div>
   </div>
-
   <nav class="menu-list" id="menu">
     <a href="/index.html">Página Inicial</a>
     <a href="/sobre.html">Sobre</a>
@@ -271,9 +287,9 @@
           <li>O MostreAki dará assistência para configurar o domínio (Registro.br) e o e-mail profissional (Zoho Mail).</li>
         </ul>
         <div class="note">
-          <b>Nota:</b> A contratação do <b>Registro.br</b> e do <b>Zoho Mail</b> é de responsabilidade do cliente. O MostreAki auxilia apenas na configuração. 
-        </div> 
-        <div class="note"> 
+          <b>Nota:</b> A contratação do <b>Registro.br</b> e do <b>Zoho Mail</b> é de responsabilidade do cliente. O MostreAki auxilia apenas na configuração.
+        </div>
+        <div class="note">
           <b>Nota:</b> As <b>artes para Instagram</b> são enviadas ao cliente, que realiza a postagem.
         </div>
         <div class="price-row" aria-label="Preço e pagamento">
@@ -333,7 +349,7 @@
           <li><b>Limite de 100 fotos/mês</b> para catálogo com preço e WhatsApp.</li>
           <li>Galeria por item: <b>até 3 fotos</b>.</li>
           <li><b>Até 5 atualizações/semana</b> no site e <b>5 artes/semana</b> para Instagram (feed ou Stories), com <b>4 rodadas</b> de ajustes.</li>
-          <li><b>Até 6× banners</b> with loop automático a cada 7s.</li>
+          <li><b>Até 6× banners</b> com loop automático a cada 7s.</li>
         </ul>
         <div class="price-row" aria-label="Preço e pagamento">
           <div class="price">R$ 500,00</div>
@@ -382,65 +398,105 @@
 <script type="module">
 import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
 import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, sendEmailVerification } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-import { getFirestore, doc, getDoc, setDoc, serverTimestamp, getDocs, query, where } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+import { getFirestore, doc, getDoc, setDoc, serverTimestamp, collection, getDocs, query, where } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 import { getStorage, ref, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
 
 const cfg = {
-  apiKey:'AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE',
-  authDomain:'mostreaki-2025.firebaseapp.com',
-  projectId:'mostreaki-2025',
-  storageBucket:'mostreaki-2025.firebasestorage.app',
-  messagingSenderId:'748712068097',
-  appId:'1:748712068097:web:09cf043fbb45917ef6ec00'
+  apiKey: 'AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE',
+  authDomain: 'mostreaki-2025.firebaseapp.com',
+  projectId: 'mostreaki-2025',
+  storageBucket: 'mostreaki-2025.firebasestorage.app',
+  messagingSenderId: '748712068097',
+  appId: '1:748712068097:web:09cf043fbb45917ef6ec00'
 };
 const app = getApps().length ? getApp() : initializeApp(cfg);
 const auth = getAuth(app);
-const db   = getFirestore(app);
-const stg  = getStorage(app, 'gs://mostreaki-2025.firebasestorage.app');
+const db = getFirestore(app);
+const stg = getStorage(app, 'gs://mostreaki-2025.firebasestorage.app');
 
 const TERMS_VERSION = "1.0";
 document.getElementById('tmVer').textContent = TERMS_VERSION;
 
-const $  = s => document.querySelector(s);
+const $ = s => document.querySelector(s);
 const $$ = s => document.querySelectorAll(s);
-const toast = (m='Faça login para continuar.')=>{ const t=$('#toast'); t.textContent=m; t.style.display='block'; setTimeout(()=>t.style.display='none',2400); };
+const toast = (m = 'Faça login para continuar.') => {
+  const t = $('#toast');
+  t.textContent = m;
+  t.style.display = 'block';
+  setTimeout(() => t.style.display = 'none', 2400);
+};
 
-const cacheBust = u => u ? u + (u.includes('?')?'&':'?') + 'v=' + Date.now() : u;
-function setAvatar(url){
-  if(!url) return;
+const cacheBust = u => u ? u + (u.includes('?') ? '&' : '?') + 'v=' + Date.now() : u;
+function setAvatar(url) {
+  if (!url) return;
   localStorage.setItem('fotoPerfil', url);
-  const el = $('#userCircle'); if(!el) return;
-  el.textContent=''; el.style.display='flex';
-  const img = new Image(); img.src = cacheBust(url); img.alt='Foto'; img.style.width='100%'; img.style.height='100%'; img.style.objectFit='cover';
+  const el = $('#userCircle');
+  if (!el) return;
+  el.textContent = '';
+  el.style.display = 'flex';
+  const img = new Image();
+  img.src = cacheBust(url);
+  img.alt = 'Foto';
+  img.style.width = '100%';
+  img.style.height = '100%';
+  img.style.objectFit = 'cover';
   el.append(img);
 }
-(()=>{ const c = localStorage.getItem('fotoPerfil'); if(c) setAvatar(c); })();
-async function prefetchFoto(uid){
-  try{
-    const s = await getDoc(doc(db,'usuarios',uid));
+(() => {
+  const c = localStorage.getItem('fotoPerfil');
+  if (c) setAvatar(c);
+})();
+async function prefetchFoto(uid) {
+  try {
+    const s = await getDoc(doc(db, 'usuarios', uid));
     const saved = s.exists() && s.data().fotoPerfil;
-    if(saved){ setAvatar(saved); return; }
-  }catch{}
-  try{
-    const tryExt = async e => getDownloadURL(ref(stg, `usuarios/${uid}/perfil/avatar.${e}`)).catch(()=>null);
+    if (saved) {
+      setAvatar(saved);
+      return;
+    }
+  } catch {}
+  try {
+    const tryExt = async e => getDownloadURL(ref(stg, `usuarios/${uid}/perfil/avatar.${e}`)).catch(() => null);
     const direct = await tryExt('jpg') || await tryExt('png') || await tryExt('webp') || await tryExt('gif');
-    if(direct){ try{ await setDoc(doc(db,'usuarios',uid), { fotoPerfil:direct }, { merge:true }); }catch{} setAvatar(direct); return; }
-  }catch{}
-  if(auth.currentUser?.photoURL) setAvatar(auth.currentUser.photoURL);
+    if (direct) {
+      try {
+        await setDoc(doc(db, 'usuarios', uid), { fotoPerfil: direct }, { merge: true });
+      } catch {}
+      setAvatar(direct);
+      return;
+    }
+  } catch {}
+  if (auth.currentUser?.photoURL) setAvatar(auth.currentUser.photoURL);
 }
 
 /* ====== Modal de Login ====== */
 const modal = document.getElementById('authModal');
-function abrirModal(){ if(modal){ modal.style.display='flex'; document.body.style.overflow='hidden'; } }
-window.fecharModal = function(){ if(modal){ modal.style.display='none'; document.body.style.overflow=''; } };
-modal?.addEventListener('click', e=>{ if(e.target===modal) fecharModal(); });
-window.addEventListener('keydown', e=>{ if(e.key==='Escape' && modal?.style.display==='flex') fecharModal(); });
+function abrirModal() {
+  if (modal) {
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
+}
+window.fecharModal = function() {
+  if (modal) {
+    modal.style.display = 'none';
+    document.body.style.overflow = '';
+  }
+};
+modal?.addEventListener('click', e => {
+  if (e.target === modal) fecharModal();
+});
+window.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && modal?.style.display === 'flex') fecharModal();
+});
 
 /* Mostrar senha via checkbox */
-(function wireShowPassword(){
+(function wireShowPassword() {
   const input = document.getElementById('senha'), chk = document.getElementById('chkMostrarSenha');
-  if(!input || !chk) return;
-  const apply = ()=>{ input.type = chk.checked ? 'text' : 'password'; };
+  if (!input || !chk) return;
+  const apply = () => {
+    input.type = chk.checked ? 'text' : 'password';
+  };
   chk.addEventListener('change', apply);
 })();
 
@@ -448,105 +504,128 @@ window.addEventListener('keydown', e=>{ if(e.key==='Escape' && modal?.style.disp
 const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const emailValido = v => emailRe.test(v);
 
-async function loginEmailSenha(){
+async function loginEmailSenha() {
   const email = document.getElementById("email").value.trim();
   const senha = document.getElementById("senha").value;
 
-  if(!email) return toast("Digite seu e-mail.");
-  if(!emailValido(email)) return toast("E-mail inválido.");
-  if(!senha) return toast("Digite sua senha.");
+  if (!email) return toast("Digite seu e-mail.");
+  if (!emailValido(email)) return toast("E-mail inválido.");
+  if (!senha) return toast("Digite sua senha.");
 
-  try{
+  try {
     const cred = await signInWithEmailAndPassword(auth, email, senha);
 
-    if(!cred.user.emailVerified){
-      try{ await sendEmailVerification(cred.user); }catch{}
+    if (!cred.user.emailVerified) {
+      try {
+        await sendEmailVerification(cred.user);
+      } catch {}
       toast("E-mail não verificado. Reenviamos o link.");
       return;
     }
 
     fecharModal();
     prefetchFoto(cred.user.uid);
-
-  }catch(e){
-    const codes = ["auth/invalid-credential","auth/wrong-password","auth/user-not-found"];
-    if(codes.includes(e.code)){ return toast("E-mail e/ou senha incorretos."); }
-    if(e.code==="auth/too-many-requests"){ return toast("Muitas tentativas. Tente mais tarde."); }
-    if(e.code==="auth/invalid-email"){ return toast("E-mail inválido."); }
+  } catch (e) {
+    const codes = ["auth/invalid-credential", "auth/wrong-password", "auth/user-not-found"];
+    if (codes.includes(e.code)) {
+      return toast("E-mail e/ou senha incorretos.");
+    }
+    if (e.code === "auth/too-many-requests") {
+      return toast("Muitas tentativas. Tente mais tarde.");
+    }
+    if (e.code === "auth/invalid-email") {
+      return toast("E-mail inválido.");
+    }
     toast("Erro ao entrar. Tente novamente.");
   }
 }
 document.getElementById("btnEntrar").onclick = loginEmailSenha;
 
 /* Menu */
-(function wireMenu(){
+(function wireMenu() {
   const btn = document.getElementById('menuBtn');
   const menu = document.getElementById('menu');
-  if(!btn||!menu) return;
-  const open=()=>{menu.style.display='flex';btn.setAttribute('aria-expanded','true');document.addEventListener('click',onDoc,true);document.addEventListener('keydown',onKey)};
-  const close=()=>{menu.style.display='none';btn.setAttribute('aria-expanded','false');document.removeEventListener('click',onDoc,true);document.removeEventListener('keydown',onKey)};
-  const toggle=()=> menu.style.display==='flex'?close():open();
-  function onDoc(e){ if(!menu.contains(e.target) && e.target!==btn) close(); }
-  function onKey(e){ if(e.key==='Escape') close(); }
-  btn.addEventListener('click',e=>{e.stopPropagation();toggle();});
+  if (!btn || !menu) return;
+  const open = () => {
+    menu.style.display = 'flex';
+    btn.setAttribute('aria-expanded', 'true');
+    document.addEventListener('click', onDoc, true);
+    document.addEventListener('keydown', onKey);
+  };
+  const close = () => {
+    menu.style.display = 'none';
+    btn.setAttribute('aria-expanded', 'false');
+    document.removeEventListener('click', onDoc, true);
+    document.removeEventListener('keydown', onKey);
+  };
+  const toggle = () => menu.style.display === 'flex' ? close() : open();
+  function onDoc(e) {
+    if (!menu.contains(e.target) && e.target !== btn) close();
+  }
+  function onKey(e) {
+    if (e.key === 'Escape') close();
+  }
+  btn.addEventListener('click', e => {
+    e.stopPropagation();
+    toggle();
+  });
 })();
 
 /* Auth header */
-(function wireAuthUI(){
+(function wireAuthUI() {
   const at = document.getElementById('authText');
-  onAuthStateChanged(auth, user=>{
-    if(user){
-      if(at){ at.textContent='Sair'; at.style.display='inline'; at.onclick = async ()=>{ await signOut(auth); localStorage.removeItem('fotoPerfil'); location='/index.html'; }; }
+  onAuthStateChanged(auth, user => {
+    if (user) {
+      if (at) {
+        at.textContent = 'Sair';
+        at.style.display = 'inline';
+        at.onclick = async () => {
+          await signOut(auth);
+          localStorage.removeItem('fotoPerfil');
+          location = '/index.html';
+        };
+      }
       prefetchFoto(user.uid);
-    }else{
-      if(at){ at.textContent='Entrar'; at.style.display='inline'; at.onclick = ()=> abrirModal(); }
+    } else {
+      if (at) {
+        at.textContent = 'Entrar';
+        at.style.display = 'inline';
+        at.onclick = () => abrirModal();
+      }
     }
   });
 })();
 
 /* Cards: rádio + botão */
-$$('.card').forEach(card=>{
+$$('.card').forEach(card => {
   const radio = card.querySelector('input[type=radio][name=plano]');
-  const btn   = card.querySelector('.assinar');
-  const id    = card.dataset.plan;
+  const btn = card.querySelector('.assinar');
+  const id = card.dataset.plan;
 
-  btn.addEventListener('click', async ()=>{
-    if(radio) radio.checked = true;
-    const user = auth.currentUser;
-    if (!user) {
-      toast();
-      abrirModal();
-      return;
+  if (btn && radio) {
+    btn.addEventListener('click', async () => {
+      radio.checked = true;
+      await iniciarFluxoAssinatura(id);
+    });
+  }
+  card.querySelector('.card-head')?.addEventListener('click', (e) => {
+    if (e.target.tagName !== 'INPUT' && radio) {
+      radio.checked = true;
     }
-    // Verifica limite de 20 usuários ativos
-    const plansSnapshot = await getDocs(query(collection(db, 'assinaturas'), where('status', '==', 'ativo')));
-    if (plansSnapshot.size >= 20) {
-      toast('Estamos com alta demanda! Inscreva-se na lista de espera.');
-      setTimeout(() => location.href = '/index.html', 2000);
-      return;
-    }
-    // Verifica se o usuário já tem plano ativo
-    const planDoc = await getDoc(doc(db, 'assinaturas', user.email));
-    if (planDoc.exists() && planDoc.data().status === 'ativo') {
-      toast('Você já tem um plano ativo! Entraremos em contato em breve.');
-      setTimeout(() => location.href = '/index.html', 2000);
-      return;
-    }
-    abrirTermos(id);
-  });
-  card.querySelector('.card-head')?.addEventListener('click', (e)=>{
-    if(e.target.tagName !== 'INPUT') { if(radio) radio.checked = true; }
   });
 });
 
 /* Termos */
 let planContext = null;
-function enableTermsIfReady(){
-  const body  = document.getElementById('tmBody');
-  const ace   = document.getElementById('tmAceite');
-  const go    = document.getElementById('tmProsseguir');
+function enableTermsIfReady() {
+  const body = document.getElementById('tmBody');
+  const ace = document.getElementById('tmAceite');
+  const go = document.getElementById('tmProsseguir');
   const fits = body.scrollHeight <= body.clientHeight + 1;
-  if(fits){ ace.disabled = false; go.disabled = !ace.checked; }
+  if (fits) {
+    ace.disabled = false;
+    go.disabled = !ace.checked;
+  }
 }
 window.abrirTermos = (planId) => {
   planContext = planId;
@@ -555,51 +634,101 @@ window.abrirTermos = (planId) => {
   const ace = document.getElementById('tmAceite');
   const go = document.getElementById('tmProsseguir');
 
-  ace.checked = false; ace.disabled = true; go.disabled = true;
+  ace.checked = false;
+  ace.disabled = true;
+  go.disabled = true;
 
-  m.style.display = 'flex'; m.setAttribute('aria-hidden','false');
+  m.style.display = 'flex';
+  m.setAttribute('aria-hidden', 'false');
 
   enableTermsIfReady();
 
   let scrolledBottom = false;
   const onScroll = () => {
     const atBottom = Math.ceil(b.scrollTop + b.clientHeight) >= b.scrollHeight;
-    if(atBottom && !scrolledBottom){
+    if (atBottom && !scrolledBottom) {
       scrolledBottom = true;
       ace.disabled = false;
+      go.disabled = !ace.checked;
     }
   };
-  b.addEventListener('scroll', onScroll, { passive:true });
+  b.addEventListener('scroll', onScroll, { passive: true });
 
-  ace.onchange = () => { go.disabled = !ace.checked; };
+  ace.onchange = () => {
+    go.disabled = !ace.checked;
+  };
 
   go.onclick = async () => {
     const user = auth.currentUser;
-    if(!user){ toast(); abrirModal(); return; }
-    try{
-      await setDoc(doc(db,'consentimentos',`${user.uid}_` + '1.0'), {
-        uid:user.uid, version:'1.0', plan:planContext,
-        acceptedAt: serverTimestamp(), userAgent:navigator.userAgent
-      }, { merge:true });
-    }catch(e){ console.error('Falha ao salvar aceite:', e); }
-    fecharTermos();
-    redirecionarPagamento(planContext);
+    if (!user) {
+      toast();
+      abrirModal();
+      return;
+    }
+    try {
+      await setDoc(doc(db, 'consentimentos', `${user.uid}_${TERMS_VERSION}`), {
+        uid: user.uid,
+        version: TERMS_VERSION,
+        plan: planContext,
+        acceptedAt: serverTimestamp(),
+        userAgent: navigator.userAgent
+      }, { merge: true });
+      fecharTermos();
+      redirecionarPagamento(planContext);
+    } catch (e) {
+      console.error('Falha ao salvar aceite:', e);
+      toast('Erro ao salvar aceite. Tente novamente.');
+    }
   };
 };
 window.fecharTermos = () => {
   const m = document.getElementById('termosModal');
   m.style.display = 'none';
-  m.setAttribute('aria-hidden','true');
+  m.setAttribute('aria-hidden', 'true');
 };
 
 /* Fluxo Assinar */
-function redirecionarPagamento(planId){
-  const route = {
+async function iniciarFluxoAssinatura(planId) {
+  const user = auth.currentUser;
+  if (!user) {
+    toast();
+    abrirModal();
+    return;
+  }
+
+  try {
+    // Verifica limite de 20 usuários ativos
+    const plansSnapshot = await getDocs(query(collection(db, 'assinaturas'), where('status', '==', 'ativo')));
+    if (plansSnapshot.size >= 20) {
+      toast('Estamos com alta demanda! Inscreva-se na lista de espera.');
+      setTimeout(() => location.href = '/index.html', 2000);
+      return;
+    }
+
+    // Verifica se o usuário já tem plano ativo
+    const planDoc = await getDoc(doc(db, 'assinaturas', user.email));
+    if (planDoc.exists() && planDoc.data().status === 'ativo') {
+      toast('Você já tem um plano ativo! Entraremos em contato em breve.');
+      setTimeout(() => location.href = '/index.html', 2000);
+      return;
+    }
+
+    // Abre modal de termos
+    abrirTermos(planId);
+  } catch (e) {
+    console.error('Erro no fluxo de assinatura:', e);
+    toast('Erro ao verificar assinatura. Tente novamente.');
+  }
+}
+
+function redirecionarPagamento(planId) {
+  const routes = {
     light: 'https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=3740521f035d49ebb8d2897298f4344c',
     basico: 'https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=15d147b90d6347849f237cb97af164f6',
     essencial: 'https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=32f1152b54344f5594032751de6e4ca0',
     avancado: 'https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=9545b20e2d01418bac34e421626de39a'
-  }[planId] || '/minha-conta.html';
+  };
+  const route = routes[planId] || '/minha-conta.html';
   location.href = route;
 }
 </script>
