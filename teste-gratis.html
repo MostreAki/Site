@@ -125,7 +125,6 @@
     import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
     import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
     import { getStorage, ref, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
-    import { getFunctions, httpsCallable } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-functions.js';
 
     const cfg = {
       apiKey: 'AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE',
@@ -139,7 +138,6 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
     const stg = getStorage(app, 'gs://mostreaki-2025.firebasestorage.app');
-    const functions = getFunctions(app);
 
     const $ = s => document.querySelector(s);
     const toast = (m) => {
@@ -259,14 +257,14 @@
         const userDoc = await getDoc(doc(db, 'usuarios', user.uid));
         const nome = userDoc.exists() ? userDoc.data().nomeCompleto || user.email.split('@')[0] : user.email.split('@')[0];
         
-        const notify = httpsCallable(functions, 'notifyTrialInterest');
-        await notify({ nome, email: user.email });
-        console.log('E-mail enviado para mostreaki@mostreaki.com.br');
+        const subject = encodeURIComponent('Novo Interesse em Trial - MostreAki');
+        const body = encodeURIComponent(`Olá, Felipe!\n\nO usuário ${nome} (${user.email}) demonstrou interesse em um Trial no MostreAki. Entre em contato para personalizar o site.\n\nAtenciosamente,\nMostreAki`);
+        window.location.href = `mailto:contato.mostreaki@gmail.com.br?subject=${subject}&body=${body}`;
         
         toast('Interesse registrado! Entraremos em contato em breve.');
         setTimeout(() => location.href = '/obrigado.html', 500);
       } catch (e) {
-        console.log('Erro ao notificar interesse:', e.code, e.message);
+        console.log('Erro ao notificar interesse:', e.message);
         toast('Erro ao registrar interesse: ' + e.message);
       }
     }
