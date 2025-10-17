@@ -41,17 +41,14 @@
       overflow:hidden;font-size:.9rem;
     }
     .user-circle img{width:100%;height:100%;object-fit:cover;display:block}
-    .menu-icon{
-      width:32px;height:32px;display:flex;align-items:center;justify-content:center;
-      line-height:1;font-size:1.5rem;cursor:pointer
-    }
+    .menu-icon{width:32px;height:32px;display:flex;align-items:center;justify-content:center;line-height:1;font-size:1.5rem;cursor:pointer}
     .menu-list{
-      position:absolute;top:60px;right:20px;background:#16807C;border:2px solid #000;
-      border-radius:6px;display:none;flex-direction:column;padding:10px;z-index:10000;
+      position:absolute;top:60px;right:20px;background:#16807C;border:2px solid #000;border-radius:6px;
+      display:none;flex-direction:column;padding:10px;z-index:10000;
     }
     .menu-list a{
-      background:#FA1E39;color:#fff;text-decoration:none;padding:10px;margin-bottom:8px;
-      border-radius:6px;text-align:center;font-weight:bold;
+      background:#FA1E39;color:#fff;text-decoration:none;padding:10px;margin-bottom:8px;border-radius:6px;
+      text-align:center;font-weight:bold;
     }
     .menu-list a:hover{background:#b8313b}
 
@@ -61,18 +58,18 @@
     .pricing-head{text-align:center;margin-bottom:22px}
     .pricing-head h1{
       color:var(--titleAccent);font-size:1.9rem;margin-bottom:6px;
-      text-shadow:0 1px 0 rgba(0,0,0,.2), 0 2px 4px rgba(0,0,0,.25);
+      text-shadow:0 1px 0 rgba(0,0,0,.2),0 2px 4px rgba(0,0,0,.25);
     }
     .pricing-head p{color:var(--titleAccent);font-size:1.05rem;text-shadow:0 1px 0 rgba(0,0,0,.18)}
 
     .grid{display:grid;gap:18px;grid-template-columns:1fr}
     @media (min-width:720px){ .grid{grid-template-columns:repeat(2,1fr)} }
-    @media (min-width:1040px){ .grid{grid-template-columns:repeat(3,1fr)} }
+    @media (min-width:1040px){ .grid{grid-template-columns:repeat(4,1fr)} }
 
     .card{
       background:var(--card);border:1px solid #e6f3f1;border-radius:14px;
       box-shadow:0 6px 20px rgba(0,0,0,.06);overflow:hidden;display:flex;flex-direction:column;
-      transition:transform .15s, box-shadow .15s;
+      transition:transform .15s,box-shadow .15s;
     }
     .card:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(0,0,0,.10)}
     .card-head{
@@ -293,7 +290,7 @@
           <b>Nota:</b> As <b>artes para Instagram</b> são enviadas ao cliente, que realiza a postagem.
         </div>
         <div class="price-row" aria-label="Preço e pagamento">
-          <div class="price">R$ 150,00</div>
+          <div class="price">R$ 250,00</div>
           <div class="mp-slot">
             <img src="mercado-pago-logo.svg" alt="Mercado Pago">
             <div style="font-size:.85rem;color:#556">Pagamento Seguro ✅️</div>
@@ -318,11 +315,11 @@
           <li><b>Todos os recursos do Plano Básico.</b></li>
           <li>Limite de <b>60 fotos/mês</b> para catálogo de produtos com preço e botão de WhatsApp.</li>
           <li>Galeria por item: <b>até 2 fotos</b>.</li>
-          <li>Até <b>3 atualizações/semana</b> no site e <b>3 artes/semana</b> para Instagram (feed ou Stories), com <b>3 rodadas</b> de ajustes.</li>
+          <li>Até <b>3 atualizações/semana</b> no site e <b>3 artes/semana</b> para Instagram (feed ou Stories), with <b>3 rodadas</b> de ajustes.</li>
           <li>3× banners com loop automático a cada 7s.</li>
         </ul>
         <div class="price-row" aria-label="Preço e pagamento">
-          <div class="price">R$ 300,00</div>
+          <div class="price">R$ 390,00</div>
           <div class="mp-slot">
             <img src="mercado-pago-logo.svg" alt="Mercado Pago">
             <div style="font-size:.85rem;color:#556">Pagamento Seguro ✅️</div>
@@ -337,7 +334,6 @@
     <article class="card" data-plan="avancado">
       <div class="card-head">
         <div class="card-title">Plano Avançado</div>
-        <span style="background: var(--accent); color: #fff; padding: 4px 8px; border-radius: 8px; font-size: 0.9rem;">Recomendado</span>
         <label class="selector" for="sel-avancado">
           <input id="sel-avancado" type="radio" name="plano" value="avancado"/>
           <span>Escolher plano</span>
