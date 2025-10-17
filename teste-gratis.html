@@ -108,14 +108,12 @@
     </nav>
   </header>
 
-  <h1>Teste o MostreAki Grátis por 7 Dias!</h1>
-
   <div id="alertaLogin" class="alerta-login">⚠️ Você precisa estar logado para começar o Trial. Redirecionando…</div>
 
   <main>
-    <p class="lead">Crie seu site em minutos e experimente o MostreAki sem compromisso!</p>
+    <p class="lead">Entraremos em contato para entender suas necessidades e criar um site personalizado que você vai amar!</p>
     <div class="note">
-      <b>Nota:</b> Seu site será criado em até 24h e estará ativo por 7 dias. Após isso, escolha um plano pago ou o site será desativado.
+      <b>Nota:</b> Seu Trial será ativado após nossa conversa inicial. Você terá 7 dias para experimentar, com suporte personalizado.
     </div>
     <button id="startTrialBtn" class="primary">Começar Teste Grátis</button>
   </main>
@@ -305,11 +303,11 @@
         }, { merge: true });
         console.log('Trial criado com slug:', catalogoSlug);
 
-        toast(`Trial criado! Seu site ${catalogoSlug}.mostreaki.com.br será ativado em até 24h.`);
+        toast(`Trial iniciado! Entraremos em contato para personalizar seu site.`);
         setTimeout(() => location.href = '/obrigado.html', 2500);
       } catch (e) {
         console.log('Erro ao criar Trial:', e.code, e.message);
-        toast('Erro ao criar Trial: ' + e.message);
+        toast('Erro ao iniciar Trial: ' + e.message);
       }
     }
 
