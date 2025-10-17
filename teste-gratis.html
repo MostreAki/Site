@@ -111,9 +111,9 @@
   <div id="alertaLogin" class="alerta-login">⚠️ Você precisa estar logado para começar o Trial. Redirecionando…</div>
 
   <main>
-    <p class="lead">Entraremos em contato para entender suas necessidades e criar um site personalizado especialmente para voce!</p>
+    <p class="lead">Entraremos em contato para entender suas necessidades e criar um site personalizado que você vai amar!</p>
     <div class="note">
-      <b>Nota:</b> Seu Trial será ativado após nossa conversa inicial. Você terá 7 dias para experimentar, com suporte personalizado.
+      <b>Nota:</b> Após confirmar seu interesse, nossa equipe entrará em contato para criar seu site sob medida, com 7 dias de teste grátis.
     </div>
     <button id="startTrialBtn" class="primary">Começar Teste Grátis</button>
   </main>
@@ -123,7 +123,7 @@
   <script type="module">
     import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
     import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-    import { getFirestore, doc, setDoc, getDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+    import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
     import { getStorage, ref, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
 
     const cfg = {
@@ -177,7 +177,6 @@
         const tryExt = e => getDownloadURL(ref(stg, `usuarios/${uid}/perfil/avatar.${e}`)).catch(() => null);
         const direct = await tryExt('jpg') || await tryExt('png') || await tryExt('webp') || await tryExt('gif');
         if (direct) {
-          await setDoc(doc(db, 'usuarios', uid), { fotoPerfil: direct }, { merge: true });
           setAvatar(direct, nome);
         } else {
           setAvatar('', nome);
@@ -252,69 +251,31 @@
     })();
 
     /* Trial */
-    function slugify(v) {
-      return v.toLowerCase()
-        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-        .replace(/[^a-z0-9-]/g, '-')
-        .replace(/-{2,}/g, '-').replace(/^[-]+|[-]+$/g, '');
-    }
-    async function generateUniqueSlug(nome, email, base = '') {
-      let slug = base || slugify(nome || email.split('@')[0]);
-      let attempt = 0;
-      while (true) {
-        const suffix = attempt ? `-${attempt}` : '';
-        const candidate = slug + suffix;
-        const docSnap = await getDoc(doc(db, 'usuarios', candidate));
-        if (!docSnap.exists()) return candidate;
-        attempt++;
-      }
-    }
-    async function startTrial(user) {
+    async function notifyTrialInterest(user) {
       try {
-        console.log('Iniciando Trial para:', user.email);
+        console.log('Notificando interesse no Trial para:', user.email);
         const userDoc = await getDoc(doc(db, 'usuarios', user.uid));
         const nome = userDoc.exists() ? userDoc.data().nomeCompleto || user.email.split('@')[0] : user.email.split('@')[0];
-        const email = user.email;
-        const catalogoSlug = await generateUniqueSlug(nome, email);
         
-        await setDoc(doc(db, 'trials', email), {
-          plano: 'trial',
-          nome,
-          email,
-          catalogoSlug,
-          createdAt: serverTimestamp(),
-          expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-          status: 'ativo',
-          provider: 'mostreaki',
-          updatedAt: serverTimestamp()
-        });
-        await setDoc(doc(db, 'assinaturas', email), {
-          plano: 'trial',
-          status: 'ativo',
-          provider: 'mostreaki',
-          createdAt: serverTimestamp(),
-          expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-          updatedAt: serverTimestamp()
-        }, { merge: true });
-        await setDoc(doc(db, 'usuarios', user.uid), {
-          nomeCompleto: nome,
-          catalogoSlug,
-          updatedAt: serverTimestamp()
-        }, { merge: true });
-        console.log('Trial criado com slug:', catalogoSlug);
-
-        toast(`Trial iniciado! Entraremos em contato para personalizar seu site.`);
-        setTimeout(() => location.href = '/obrigado.html', 2500);
+        // Enviar e-mail via mailto (fallback)
+        const subject = encodeURIComponent('Novo Interesse em Trial - MostreAki');
+        const body = encodeURIComponent(`Olá, Felipe!\n\nO usuário ${nome} (${user.email}) demonstrou interesse em começar um Trial no MostreAki. Entre em contato para personalizar o site.\n\nAtenciosamente,\nMostreAki`);
+        window.location.href = `mailto:felipe@mostreaki.com.br?subject=${subject}&body=${body}`;
+        
+        // Redirecionar para obrigado.html
+        setTimeout(() => {
+          location.href = '/obrigado.html';
+        }, 500);
       } catch (e) {
-        console.log('Erro ao criar Trial:', e.code, e.message);
-        toast('Erro ao iniciar Trial: ' + e.message);
+        console.log('Erro ao notificar interesse:', e.message);
+        toast('Erro ao registrar interesse: ' + e.message);
       }
     }
 
     $('#startTrialBtn').addEventListener('click', async () => {
       const user = auth.currentUser;
       if (user) {
-        await startTrial(user);
+        await notifyTrialInterest(user);
       } else {
         toast('Você precisa estar logado para começar o Trial.');
         setTimeout(() => location.href = '/login.html', 2000);
