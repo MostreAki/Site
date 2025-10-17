@@ -181,6 +181,30 @@
       setTimeout(() => t.remove(), 2400);
     };
 
+    /* Avatar */
+    function setAvatar(url) {
+      if (!url) return;
+      localStorage.setItem('fotoPerfil', url);
+      const el = $('#userCircle'); if (!el) return;
+      el.textContent = ''; el.style.display = 'flex';
+      const img = new Image();
+      img.src = url; img.alt = 'Foto de Perfil'; img.style.width = '100%'; img.style.height = '100%'; img.style.objectFit = 'cover';
+      el.append(img);
+    }
+    async function prefetchFoto(uid) {
+      try {
+        const tryExt = e => getDownloadURL(ref(stg, `usuarios/${uid}/perfil/avatar.${e}`)).catch(() => null);
+        const direct = await tryExt('jpg') || await tryExt('png') || await tryExt('webp') || await tryExt('gif');
+        if (direct) {
+          setAvatar(direct);
+          await setDoc(doc(db, 'usuarios', uid), { fotoPerfil: direct }, { merge: true });
+        }
+      } catch (e) {
+        console.log('Erro ao carregar foto:', e.message);
+      }
+    }
+    (() => { const c = localStorage.getItem('fotoPerfil'); if (c) setAvatar(c); })();
+
     /* Auth header */
     (function wireAuthUI() {
       const at = $('#authText');
@@ -195,12 +219,15 @@
               location = '/index.html';
             };
           }
+          prefetchFoto(user.uid);
         } else {
           if (at) {
             at.textContent = 'Entrar';
             at.style.display = 'inline';
             at.onclick = () => location.href = '/planos.html';
           }
+          $('#userCircle').textContent = 'F';
+          $('#userCircle').style.display = 'flex';
         }
       });
     })();
@@ -242,6 +269,7 @@
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
+      console.log('Formulário enviado');
       const nome = $('#nome').value.trim();
       const email = $('#email').value.trim();
       const subdominio = $('#subdominio').value.trim();
@@ -253,23 +281,33 @@
       $('#subdominioError').style.display = subdominioRe.test(subdominio) ? 'none' : 'block';
       if (!nome || !emailRe.test(email) || !subdominioRe.test(subdominio)) {
         valid = false;
+        console.log('Validação falhou:', { nome, email, subdominio });
       }
 
       // Verificar subdomínio único
-      const subdominioDoc = await getDoc(doc(db, 'usuarios', subdominio));
-      if (subdominioDoc.exists()) {
-        $('#subdominioError').textContent = 'Subdomínio já em uso. Escolha outro.';
-        $('#subdominioError').style.display = 'block';
-        valid = false;
+      try {
+        const subdominioDoc = await getDoc(doc(db, 'usuarios', subdominio));
+        if (subdominioDoc.exists()) {
+          $('#subdominioError').textContent = 'Subdomínio já em uso. Escolha outro.';
+          $('#subdominioError').style.display = 'block';
+          valid = false;
+          console.log('Subdomínio já existe:', subdominio);
+        }
+      } catch (e) {
+        console.log('Erro ao verificar subdomínio:', e.message);
+        toast('Erro ao verificar subdomínio: ' + e.message);
+        return;
       }
 
       if (!valid) return;
 
       try {
+        console.log('Tentando criar usuário:', email);
         // Criar usuário no Firebase Auth
         const tempPassword = 'Temp' + Math.random().toString(36).slice(2, 8);
         const userCredential = await createUserWithEmailAndPassword(auth, email, tempPassword);
         const user = userCredential.user;
+        console.log('Usuário criado:', user.uid);
         await sendEmailVerification(user);
 
         // Salvar dados no Firestore
@@ -297,14 +335,21 @@
           catalogoSlug: subdominio,
           updatedAt: serverTimestamp()
         }, { merge: true });
+        console.log('Dados salvos no Firestore');
 
         toast('Trial criado! Seu site ' + subdominio + '.mostreaki.com.br será ativado em até 24h. Verifique seu e-mail para configurar sua senha.');
         setTimeout(() => location.href = '/obrigado.html', 2500);
       } catch (e) {
+        console.log('Erro no submit:', e.code, e.message);
         toast('Erro ao criar Trial: ' + e.message);
         if (e.code === 'auth/email-already-in-use') {
           $('#emailError').textContent = 'E-mail já registrado. Faça login ou use outro e-mail.';
           $('#emailError').style.display = 'block';
+        } else if (e.code === 'auth/invalid-email') {
+          $('#emailError').textContent = 'E-mail inválido.';
+          $('#emailError').style.display = 'block';
+        } else if (e.code === 'auth/operation-not-allowed') {
+          toast('Autenticação por e-mail/senha desabilitada. Contate o suporte.');
         }
       }
     });
