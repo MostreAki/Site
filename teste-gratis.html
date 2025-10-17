@@ -56,13 +56,14 @@
     }
     .menu-list a:hover{background:#b8313b}
 
-    main{
-      max-width:600px;margin:40px auto;padding:20px;background:#fff;border-radius:14px;
-      box-shadow:0 6px 20px rgba(0,0,0,.1);
-    }
     h1{
-      color:var(--titleAccent);font-size:1.9rem;text-align:center;margin-bottom:20px;
+      color:var(--titleAccent);font-size:1.9rem;text-align:center;margin:40px 20px;
       text-shadow:0 1px 0 rgba(0,0,0,.2), 0 2px 4px rgba(0,0,0,.25);
+    }
+
+    main{
+      max-width:600px;margin:0 auto 40px;padding:20px;background:#fff;border-radius:14px;
+      box-shadow:0 6px 20px rgba(0,0,0,.1);
     }
     p.lead{
       color:#234;font-size:1.05rem;text-align:center;margin-bottom:20px;
@@ -87,7 +88,7 @@
       color:#FA1E39;font-size:.9rem;margin-top:4px;display:none;
     }
     footer{
-      background:#c2e7df;padding:20px;text-align:center;color:#555;font-size:.9rem;margin-top:40px;
+      background:#c2e7df;padding:20px;text-align:center;color:#555;font-size:.9rem;
     }
   </style>
 </head>
@@ -113,8 +114,9 @@
     </nav>
   </header>
 
+  <h1>Teste o MostreAki Grátis por 7 Dias!</h1>
+
   <main>
-    <h1>Teste o MostreAki Grátis por 7 Dias!</h1>
     <p class="lead">Crie seu site em minutos e experimente o MostreAki sem compromisso!</p>
     <form id="trialForm">
       <label for="nome">Nome</label>
@@ -143,8 +145,8 @@
 
   <script type="module">
     import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-    import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-    import { getFirestore, doc, setDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+    import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged, sendEmailVerification } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+    import { getFirestore, doc, setDoc, getDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
     import { getStorage, ref, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
 
     const cfg = {
@@ -253,9 +255,24 @@
         valid = false;
       }
 
+      // Verificar subdomínio único
+      const subdominioDoc = await getDoc(doc(db, 'usuarios', subdominio));
+      if (subdominioDoc.exists()) {
+        $('#subdominioError').textContent = 'Subdomínio já em uso. Escolha outro.';
+        $('#subdominioError').style.display = 'block';
+        valid = false;
+      }
+
       if (!valid) return;
 
       try {
+        // Criar usuário no Firebase Auth
+        const tempPassword = 'Temp' + Math.random().toString(36).slice(2, 8);
+        const userCredential = await createUserWithEmailAndPassword(auth, email, tempPassword);
+        const user = userCredential.user;
+        await sendEmailVerification(user);
+
+        // Salvar dados no Firestore
         await setDoc(doc(db, 'trials', email), {
           plano: 'trial',
           nome,
@@ -267,10 +284,28 @@
           provider: 'mostreaki',
           updatedAt: serverTimestamp()
         });
-        toast('Trial criado! Seu site ' + subdominio + '.mostreaki.com.br será ativado em até 24h.');
+        await setDoc(doc(db, 'assinaturas', email), {
+          plano: 'trial',
+          status: 'ativo',
+          provider: 'mostreaki',
+          createdAt: serverTimestamp(),
+          expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+          updatedAt: serverTimestamp()
+        }, { merge: true });
+        await setDoc(doc(db, 'usuarios', email), {
+          nomeCompleto: nome,
+          catalogoSlug: subdominio,
+          updatedAt: serverTimestamp()
+        }, { merge: true });
+
+        toast('Trial criado! Seu site ' + subdominio + '.mostreaki.com.br será ativado em até 24h. Verifique seu e-mail para configurar sua senha.');
         setTimeout(() => location.href = '/obrigado.html', 2500);
       } catch (e) {
         toast('Erro ao criar Trial: ' + e.message);
+        if (e.code === 'auth/email-already-in-use') {
+          $('#emailError').textContent = 'E-mail já registrado. Faça login ou use outro e-mail.';
+          $('#emailError').style.display = 'block';
+        }
       }
     });
   </script>
