@@ -71,8 +71,10 @@
     button.primary{
       background:var(--brand);color:#fff;border:0;border-radius:10px;padding:12px;
       font-weight:bold;cursor:pointer;width:100%;font-size:1.05rem;margin-top:20px;
+      transition:filter .15s ease, opacity .15s ease;
     }
     button.primary:hover{filter:brightness(.95)}
+    button.primary[disabled]{opacity:.7;cursor:not-allowed}
     .note{
       margin:12px 0;padding:12px 14px;background:#f3fbfa;border-left:4px solid var(--brand);
       border-radius:10px;color:#234;font-size:.95rem;
@@ -123,7 +125,7 @@
   <script type="module">
     import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
     import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-    import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+    import { getFirestore, doc, getDoc, addDoc, collection, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
     import { getStorage, ref, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
 
     const cfg = {
@@ -250,22 +252,61 @@
       });
     })();
 
-    /* Trial */
+    /* === Trial: grava no Firestore (coleção "mail") e redireciona ===
+       Requer a extensão Firebase "Trigger Email" instalada e configurada. */
     async function notifyTrialInterest(user) {
+      const btn = $('#startTrialBtn');
       try {
-        console.log('Notificando interesse no Trial para:', user.email);
+        btn.disabled = true;
+        const originalText = btn.textContent;
+        btn.textContent = 'Enviando...';
+
+        // Puxa nome do Firestore (fallback pro local-part do email)
         const userDoc = await getDoc(doc(db, 'usuarios', user.uid));
-        const nome = userDoc.exists() ? userDoc.data().nomeCompleto || user.email.split('@')[0] : user.email.split('@')[0];
-        
-        const subject = encodeURIComponent('Novo Interesse em Trial - MostreAki');
-        const body = encodeURIComponent(`Olá, Felipe!\n\nO usuário ${nome} (${user.email}) demonstrou interesse em um Trial no MostreAki. Entre em contato para personalizar o site.\n\nAtenciosamente,\nMostreAki`);
-        window.location.href = `mailto:contato.mostreaki@gmail.com.br?subject=${subject}&body=${body}`;
-        
-        toast('Interesse registrado! Entraremos em contato em breve.');
-        setTimeout(() => location.href = '/obrigado.html', 500);
+        const nome = userDoc.exists()
+          ? (userDoc.data().nomeCompleto || (user.email ? user.email.split('@')[0] : 'Usuário'))
+          : (user.email ? user.email.split('@')[0] : 'Usuário');
+
+        // Cria o documento na coleção "mail" monitorada pela extensão Trigger Email
+        await addDoc(collection(db, 'mail'), {
+          to: ['contato.mostreaki@gmail.com.br'],  // <- troque se necessário
+          message: {
+            subject: 'Novo interesse no plano trial - MostreAki',
+            text:
+`Um usuário demonstrou interesse no Trial.
+
+UID: ${user.uid}
+Nome: ${nome}
+Email: ${user.email || '(sem email)'}
+Foto: ${user.photoURL || '(sem foto)'}
+Quando: ${new Date().toISOString()}
+
+Acesse o Firestore para mais detalhes.`
+            // Você pode adicionar "html" se quiser email formatado:
+            // html: `<p><b>UID:</b> ${user.uid}</p> ...`
+          },
+          createdAt: serverTimestamp(),
+          usuario: {
+            uid: user.uid,
+            nome,
+            email: user.email || null,
+            photoURL: user.photoURL || null
+          },
+          origem: 'teste-gratis.html'
+        });
+
+        // Feedback e redirecionamento
+        toast('Interesse registrado! Já vamos entrar em contato.');
+        setTimeout(() => location.href = '/obrigado.html', 400);
       } catch (e) {
-        console.log('Erro ao notificar interesse:', e.message);
-        toast('Erro ao registrar interesse: ' + e.message);
+        console.error('Erro ao registrar interesse:', e);
+        toast('Não foi possível registrar seu interesse agora. Tente novamente.');
+        // Reabilita botão pra nova tentativa
+        const btn = $('#startTrialBtn');
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = 'Começar Teste Grátis';
+        }
       }
     }
 
