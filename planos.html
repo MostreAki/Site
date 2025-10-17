@@ -125,7 +125,7 @@
     .toast{position:fixed;top:16px;right:16px;background:#FA1E39;color:#fff;padding:12px 14px;border-radius:10px;
       box-shadow:0 6px 18px rgba(0,0,0,.2);display:none;z-index:99999;font-weight:bold}
 
-    /* ====== Modal de Login (novo) ====== */
+    /* ====== Modal de Login ====== */
     .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:10000;padding:20px}
     .modal-card{
       background:#fff;width:100%;max-width:420px;border-radius:16px;
@@ -145,7 +145,7 @@
     .muted{font-size:.9rem;color:#666;margin-top:10px}
     .muted a{color:var(--brand);text-decoration:none;font-weight:bold}
 
-    /* Checkbox “Mostrar senha” (substitui o olho) */
+    /* Checkbox “Mostrar senha” */
     .pwd-wrap{position:relative}
     .showpwd{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:.9rem;color:#444}
     .showpwd input{width:auto}
@@ -153,7 +153,7 @@
 </head>
 <body>
 
-<!-- ===== Modal de Login (adicionado) ===== -->
+<!-- ===== Modal de Login ===== -->
 <div id="authModal" class="modal-bg" role="dialog" aria-modal="true" aria-labelledby="authTitle">
   <div class="modal-card">
     <div class="modal-head">
@@ -211,42 +211,14 @@
 <main>
   <div class="pricing-head">
     <h1>Planos do MostreAki</h1>
-    <p>Quando estiver logado, marque o plano e clique em <b>AssineAki</b>.</p>
+    <p>Escolha um plano, marque a opção e clique em <b>AssineAki</b> para começar.</p>
     <div class="note" style="max-width:860px;margin:12px auto 0">
-      <b>Galeria por item</b> = n° de fotos dentro do <i>mesmo</i> produto (abre no popup do catálogo).
-      Regras: Trial → 1 foto · Light → 1 foto · Básico → 1 foto · Intermediário → 2 fotos · Avançado → 3 fotos.
+      <b>Galeria por item</b> = nº de fotos dentro do <i>mesmo</i> produto (abre no popup do catálogo).
+      Regras: Light → 1 foto · Básico → 1 foto · Intermediário → 2 fotos · Avançado → 3 fotos.
     </div>
   </div>
 
   <section class="grid" aria-label="Planos MostreAki">
-    <!-- Trial -->
-    <article class="card" data-plan="trial">
-      <div class="card-head">
-        <div class="card-title">Plano Trial</div>
-        <label class="selector" for="sel-trial">
-          <input id="sel-trial" type="radio" name="plano" value="trial"/>
-          <span>Escolher plano</span>
-        </label>
-      </div>
-      <div class="card-body">
-        <ul class="feat">
-          <li><b>Teste grátis por 7 dias</b> em subdomínio (nome.mostreaki.com.br).</li>
-          <li>Limite de <b>5 fotos</b> pro catálogo.</li>
-          <li>Galeria por item: <b>1 foto</b>.</li>
-          <li><b>1 atualização</b> no site e <b>1 arte</b> pro Instagram (feed ou Stories).</li>
-          <li>Suporte via WhatsApp com o MostreAki.</li>
-        </ul>
-        <div class="note">
-          <b>Nota:</b> Após 7 dias, escolha um plano pago ou o site será desativado.
-        </div>
-        <div class="price-row" aria-label="Preço">
-          <div class="price">Grátis por 7 dias</div>
-        </div>
-        <button class="assinar" type="button">Experimente Grátis</button>
-        <div class="sub">Conheça o MostreAki sem compromisso!</div>
-      </div>
-    </article>
-
     <!-- Light -->
     <article class="card" data-plan="light">
       <div class="card-head">
@@ -330,7 +302,7 @@
           <li><b>Todos os recursos do Plano Básico.</b></li>
           <li>Limite de <b>60 fotos/mês</b> para catálogo de produtos com preço e botão de WhatsApp.</li>
           <li>Galeria por item: <b>até 2 fotos</b>.</li>
-          <li>Até <b>3 atualizações/semana</b> no site e <b>3 artes/semana</b> para Instagram (feed ou Stories), with <b>3 rodadas</b> de ajustes.</li>
+          <li>Até <b>3 atualizações/semana</b> no site e <b>3 artes/semana</b> para Instagram (feed ou Stories), com <b>3 rodadas</b> de ajustes.</li>
           <li>3× banners com loop automático a cada 7s.</li>
         </ul>
         <div class="price-row" aria-label="Preço e pagamento">
@@ -361,7 +333,7 @@
           <li><b>Limite de 100 fotos/mês</b> para catálogo com preço e WhatsApp.</li>
           <li>Galeria por item: <b>até 3 fotos</b>.</li>
           <li><b>Até 5 atualizações/semana</b> no site e <b>5 artes/semana</b> para Instagram (feed ou Stories), com <b>4 rodadas</b> de ajustes.</li>
-          <li><b>Até 6× banners</b> com loop automático a cada 7s.</li>
+          <li><b>Até 6× banners</b> with loop automático a cada 7s.</li>
         </ul>
         <div class="price-row" aria-label="Preço e pagamento">
           <div class="price">R$ 500,00</div>
@@ -388,8 +360,8 @@
       <button class="tm-x" onclick="fecharTermos()" aria-label="Fechar">✖</button>
     </div>
     <div id="tmBody" class="tm-body">
-      <p><b>Teste (D0–D7):</b> site no subdomínio da MostreAki. <b>D8:</b> captura do 1º ciclo e registro do domínio em nome do cliente.</p>
-      <p><b>Arrependimento (CDC art. 49):</b> até 7 dias, reembolso integral. Após o 7º dia, não há pró-rata do mês corrente.</p>
+      <p><b>Assinatura:</b> Site no subdomínio da MostreAki. Pagamento mensal via Mercado Pago.</p>
+      <p><b>Arrependimento (CDC art. 49):</b> Até 7 dias, reembolso integral. Após o 7º dia, não há pró-rata do mês corrente.</p>
       <p>Domínio em nome do cliente; portabilidade e snapshot de DNS na saída; LGPD; limite de responsabilidade (1 ciclo); foro do consumidor.</p>
       <p>Leia a versão completa em <a href="/termos.html" target="_blank" rel="noopener">/termos.html</a>.</p>
       <p style="margin:0;color:#666"><i>Role até o fim para habilitar o aceite.</i></p>
@@ -410,7 +382,7 @@
 <script type="module">
 import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
 import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, sendEmailVerification } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+import { getFirestore, doc, getDoc, setDoc, serverTimestamp, getDocs, query, where } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 import { getStorage, ref, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
 
 const cfg = {
@@ -538,9 +510,29 @@ $$('.card').forEach(card=>{
   const btn   = card.querySelector('.assinar');
   const id    = card.dataset.plan;
 
-  btn.addEventListener('click', ()=>{
+  btn.addEventListener('click', async ()=>{
     if(radio) radio.checked = true;
-    iniciarFluxoAssinatura(id);
+    const user = auth.currentUser;
+    if (!user) {
+      toast();
+      abrirModal();
+      return;
+    }
+    // Verifica limite de 20 usuários ativos
+    const plansSnapshot = await getDocs(query(collection(db, 'assinaturas'), where('status', '==', 'ativo')));
+    if (plansSnapshot.size >= 20) {
+      toast('Estamos com alta demanda! Inscreva-se na lista de espera.');
+      setTimeout(() => location.href = '/index.html', 2000);
+      return;
+    }
+    // Verifica se o usuário já tem plano ativo
+    const planDoc = await getDoc(doc(db, 'assinaturas', user.email));
+    if (planDoc.exists() && planDoc.data().status === 'ativo') {
+      toast('Você já tem um plano ativo! Entraremos em contato em breve.');
+      setTimeout(() => location.href = '/index.html', 2000);
+      return;
+    }
+    abrirTermos(id);
   });
   card.querySelector('.card-head')?.addEventListener('click', (e)=>{
     if(e.target.tagName !== 'INPUT') { if(radio) radio.checked = true; }
@@ -601,22 +593,8 @@ window.fecharTermos = () => {
 };
 
 /* Fluxo Assinar */
-function iniciarFluxoAssinatura(planId){
-  if (planId === 'trial') {
-    location.href = '/teste-gratis.html';
-    return;
-  }
-  const user = auth.currentUser;
-  if (!user) {
-    toast();
-    abrirModal();
-    return;
-  }
-  abrirTermos(planId);
-}
 function redirecionarPagamento(planId){
   const route = {
-    trial: '/teste-gratis.html',
     light: 'https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=3740521f035d49ebb8d2897298f4344c',
     basico: 'https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=15d147b90d6347849f237cb97af164f6',
     essencial: 'https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=32f1152b54344f5594032751de6e4ca0',
