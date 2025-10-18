@@ -1,301 +1,543 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+<!doctype html>
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Portal Profissional - Nome Completo</title>
-  <meta name="description" content="Portal de Nome Completo, com seu perfil profissional, hobbies, álbuns, redes sociais e muito mais.">
-  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>La Maggiê — Artesanato</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+
   <style>
-    /* Resetando margens e padding */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f5f5f5;
-      color: #333;
-    }
-
-    /* Cores */
     :root {
-      --azul-escuro: #003366;
-      --azul-normal: #1E90FF;
-      --preto: #000;
-      --branco: #fff;
+      --bg-desktop: url('bg-desktop.jpg');
+      --bg-mobile: url('bg-mobile.jpg');
+      --cream: #F8F1EB;
+      --rose: #D98C93;
+      --rose-600: #C66E77;
+      --rose-700: #B05963;
+      --ink: #5C3E42;
+      --muted: #87636A;
+      --shadow: 0 14px 36px rgba(92, 62, 66, .18);
+      --radius: 16px;
     }
-
-    /* Header e Menu */
-    header {
-      background-color: var(--azul-escuro);
-      color: var(--branco);
-      padding: 15px;
-      text-align: center;
+    * { box-sizing: border-box }
+    html, body { height: 100% }
+    body {
+      margin: 0;
+      font-family: "Nunito", system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+      color: var(--ink);
+      background-image: var(--bg-desktop);
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
     }
-
-    header h1 {
-      font-size: 2.5em;
+    @media (max-width: 640px) {
+      body { background-image: var(--bg-mobile); background-attachment: scroll; }
     }
-
-    header nav {
-      display: flex;
-      justify-content: center;
-      padding: 10px 0;
+    .overlay { position: fixed; inset: 0;
+      background:
+        radial-gradient(60% 40% at 10% 0%, rgba(248, 241, 235, .55) 0%, rgba(248, 241, 235, .05) 60%),
+        linear-gradient(180deg, rgba(248, 241, 235, .28), rgba(248, 241, 235, .65));
+      pointer-events: none;
     }
-
-    header nav a {
-      color: var(--branco);
-      text-decoration: none;
-      margin: 0 15px;
-      font-size: 1.2em;
+    .wrap { max-width: 920px; margin: 0 auto; padding: 28px 20px 90px; }
+    .hero { text-align: center; margin: 14px auto 28px; }
+    .logo { width: 140px; height: 140px; margin: 0 auto 12px; border-radius: 50%; overflow: hidden;
+      background: rgba(255, 255, 255, .65); backdrop-filter: blur(3px);
+      border: 2px solid rgba(92, 62, 66, .15);
+      box-shadow: inset 0 6px 18px rgba(217, 140, 147, .15), 0 4px 10px rgba(92, 62, 66, .18);
     }
-
-    header nav a:hover {
-      color: var(--azul-normal);
-    }
-
-    /* Menu Hamburguer (para mobile) */
-    .menu-hamburguer {
-      display: none;
-      flex-direction: column;
-      justify-content: space-around;
-      height: 30px;
-      width: 35px;
-      background-color: var(--azul-escuro);
-      border: none;
-      cursor: pointer;
-    }
-
-    .menu-hamburguer div {
-      width: 30px;
-      height: 4px;
-      background-color: var(--branco);
-    }
-
-    /* Content Sections */
-    .container {
-      width: 90%;
-      max-width: 1200px;
-      margin: 30px auto;
-    }
-
-    .section {
-      background-color: var(--branco);
-      padding: 20px;
-      margin-bottom: 30px;
-      border-radius: 8px;
-      box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .section h2 {
-      color: var(--azul-escuro);
-      font-size: 2em;
-      margin-bottom: 10px;
-    }
-
-    .content {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-    }
-
-    .content .column {
-      width: 48%;
-    }
-
-    .content img {
-      max-width: 100%;
-      border-radius: 8px;
-    }
-
-    /* Botões Personalizados */
-    .btn-custom {
-      padding: 10px 20px;
-      background: linear-gradient(45deg, var(--azul-escuro), var(--azul-normal));
-      color: var(--branco);
-      border: 2px solid var(--azul-escuro);
-      border-radius: 12px;
-      font-weight: 700;
-      text-align: center;
-      cursor: pointer;
-      margin: 15px 0;
-      display: inline-block;
-      text-decoration: none;
-    }
-
-    .btn-custom:hover {
-      background: linear-gradient(45deg, var(--azul-normal), var(--azul-escuro));
-      border-color: var(--azul-normal);
-    }
-
-    .btn-custom:active {
-      background-color: var(--preto);
-    }
-
-    /* Redes Sociais */
-    .social-links a {
-      display: inline-block;
-      margin: 10px;
-    }
-
-    .social-links img {
-      width: 40px;
-      height: 40px;
-    }
-
-    /* Responsividade */
-    @media (max-width: 768px) {
-      header nav {
-        display: none;
-        flex-direction: column;
-        align-items: center;
-      }
-
-      header nav.active {
-        display: flex;
-      }
-
-      .menu-hamburguer {
-        display: flex;
-      }
-    }
+    .logo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .quick-icons { display: flex; justify-content: center; gap: 16px; margin: 6px 0 6px; }
+    .qi { width: 36px; height: 36px; display: grid; place-items: center; border-radius: 50%;
+      background: rgba(255, 255, 255, .85); border: 1px solid rgba(92, 62, 66, .15);
+      box-shadow: 0 4px 10px rgba(92, 62, 66, .12); color: var(--rose-700);
+      text-decoration: none; transition: transform .12s ease, box-shadow .12s ease; }
+    .qi:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(92, 62, 66, .18); }
+    .qi svg { width: 20px; height: 20px; display: block; }
+    h1 { font-family: "Fraunces", ui-serif, Georgia, serif; font-weight: 700;
+      font-size: clamp(28px, 6vw, 48px); margin: 6px 0 4px; letter-spacing: .2px;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, .5); }
+    .tagline { margin: 0 0 8px; font-weight: 700; letter-spacing: .24px; color: var(--rose-700);
+      text-shadow: 0 1px 0 rgba(255, 255, 255, .6); }
+    .bio { margin: 8px auto 0; max-width: 60ch; font-size: 16px; line-height: 1.6;
+      color: var(--ink); text-shadow: 0 1px 0 rgba(255, 255, 255, .65); }
+    .catalog-card { width: 100%; max-width: 720px; margin: 22px auto 0; background: #fff; border-radius: var(--radius);
+      border: 1px solid rgba(92, 62, 66, .12); box-shadow: var(--shadow); padding: 16px; }
+    .catalog-title { font-family: "Fraunces", ui-serif, Georgia, serif; font-size: 20px; margin: 0 0 10px; letter-spacing: .2px; color: var(--ink); }
+    .catalog-cover { position: relative; border-radius: 14px; overflow: hidden; border: 1px solid rgba(92, 62, 66, .12); aspect-ratio: 16/9; background: #eee; }
+    .catalog-cover img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .25s ease; }
+    .catalog-link { display: block; text-decoration: none; }
+    .catalog-link:hover img { transform: scale(1.02); }
+    .catalog-badge { position: absolute; right: 10px; bottom: 10px; background: rgba(255, 255, 255, .92); color: var(--rose-700);
+      border: 1px solid rgba(92, 62, 66, .16); border-radius: 999px; padding: 6px 10px; font-weight: 700; font-size: 13px;
+      box-shadow: 0 6px 16px rgba(92, 62, 66, .18); }
+    .shorts-card { width: 100%; max-width: 720px; margin: 22px auto 0; background: #fff; border-radius: var(--radius);
+      border: 1px solid rgba(92, 62, 66, .12); box-shadow: var(--shadow); padding: 18px 18px 16px; }
+    .shorts-header { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+    .shorts-title { font-family: "Fraunces", ui-serif, Georgia, serif; font-size: 20px; margin: 0; letter-spacing: .2px; color: var(--ink); }
+    .shorts-more { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 12px; text-decoration: none; font-weight: 700; color: var(--rose-700);
+      background: linear-gradient(180deg, rgba(217, 140, 147, .18), rgba(217, 140, 147, .08)); border: 1px solid rgba(176, 89, 99, .22); }
+    .shorts-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    @media (max-width: 640px) { .shorts-grid { grid-template-columns: repeat(3, 1fr); } }
+    .short { position: relative; aspect-ratio: 9/16; border-radius: 14px; overflow: hidden; background: #eee; border: 1px solid rgba(92, 62, 66, .12); }
+    .short img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .25s ease; }
+    .short:hover img { transform: scale(1.03); }
+    .play { position: absolute; inset: auto 8px 8px auto; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center;
+      background: rgba(255, 255, 255, .9); border: 1px solid rgba(92, 62, 66, .15); color: var(--rose-700); box-shadow: 0 4px 10px rgba(92, 62, 66, .15); }
+    .card { width: 100%; max-width: 560px; margin: 22px auto 0; background: rgba(255, 255, 255, .92);
+      backdrop-filter: blur(6px); border-radius: var(--radius); border: 1px solid rgba(92, 62, 66, .16);
+      box-shadow: var(--shadow); padding: 20px; }
+    .links { display: flex; flex-direction: column; gap: 12px; }
+    .btn { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 14px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, .7), rgba(255, 255, 255, .25)) padding-box,
+                 linear-gradient(180deg, rgba(217, 140, 147, .35), rgba(217, 140, 147, .18)) border-box;
+      border: 1.5px solid transparent; color: var(--ink); text-decoration: none; font-weight: 700;
+      box-shadow: 0 8px 20px rgba(92, 62, 66, .10); transition: transform .12s ease, box-shadow .12s ease; }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 12px 26px rgba(92, 62, 66, .18); }
+    .icon, .go { width: 22px; height: 22px; display: grid; place-items: center; color: var(--rose-700); }
+    .go { color: var(--rose-600); }
+    .text { flex: 1 }
+    .reviews-card { width: 100%; max-width: 720px; margin: 22px auto 0; background: #fff; border-radius: var(--radius);
+      border: 1px solid rgba(92, 62, 66, .12); box-shadow: var(--shadow); padding: 18px; }
+    .reviews-title { font-family: "Fraunces", ui-serif, Georgia, serif; font-size: 20px; margin: 0 0 12px; letter-spacing: .2px; color: var(--ink); }
+    .reviews { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    @media (max-width: 720px) { .reviews { grid-template-columns: 1fr; } }
+    .review { border: 1px solid rgba(92, 62, 66, .12); border-radius: 14px; padding: 12px; background: #fff; }
+    .rev-head { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+    .avatar { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center;
+      background: rgba(217, 140, 147, .12); color: var(--rose-700); font-weight: 800; border: 1px solid rgba(92, 62, 66, .12); }
+    .name { font-weight: 800; }
+    .stars { color: #E6A400; font-size: 14px; letter-spacing: 1px; }
+    .rev-text { color: var(--muted); margin: 6px 0 0; font-size: 14.5px; line-height: 1.45; }
+    footer { text-align: center; color: #000; font-size: 13px; margin-top: 28px; text-shadow: none; }
+    .diag { position: fixed; left: 12px; right: 12px; bottom: 12px; background: #fff3cd; color: #664d03; border: 1px solid #ffecb5; border-radius: 12px; padding: 12px; box-shadow: 0 8px 24px rgba(0, 0, 0, .15); z-index: 9999; font: 14px/1.4 system-ui; display: none }
+    .diag.show { display: block }
+    .editor { position: fixed; right: 16px; bottom: 16px; width: min(420px, calc(100% - 32px)); max-height: 80vh; overflow: auto;
+      background: #fff; border: 1px solid rgba(0, 0, 0, .12); border-radius: 16px; box-shadow: 0 16px 50px rgba(0, 0, 0, .2); padding: 14px; z-index: 9998; }
+    .editor h3 { margin: 0 0 8px; font-family: "Fraunces", ui-serif, Georgia, serif; }
+    .editor label { display: block; font-size: 12px; color: #555; margin: 8px 0 4px; }
+    .editor input, .editor textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 10px; font: 14px system-ui; }
+    .editor .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .editor .actions { display: flex; gap: 8px; margin-top: 10px; }
+    .editor button { padding: 10px 12px; border-radius: 10px; border: 1px solid #ccc; background: #f9f9f9; cursor: pointer; }
+    .editor .primary { background: #e6c3c7; border-color: #d9a9af; font-weight: 800; }
+    .login { position: fixed; right: 16px; bottom: 16px; width: min(360px, calc(100% - 32px)); background: #fff; border: 1px solid #eee; border-radius: 16px; box-shadow: 0 16px 40px rgba(0, 0, 0, .2); padding: 14px; z-index: 9998; }
+    .login h3 { margin: 0 0 8px; font-family: "Fraunces", ui-serif, Georgia, serif; }
+    .login .row { display: grid; grid-template-columns: 1fr; gap: 8px; }
+    .login input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 10px; font: 14px system-ui; }
+    .login button { margin-top: 8px; padding: 10px 12px; border-radius: 10px; border: 1px solid #ccc; background: #f9f9f9; cursor: pointer; }
+    .badge { position: fixed; top: 10px; right: 10px; background: #dfe7ff; border: 1px solid #b6c7ff; color: #1f3a8a; padding: 6px 10px; border-radius: 999px; font: 12px system-ui; display: none; z-index: 9999 }
+    .badge.show { display: inline-block }
   </style>
 </head>
 <body>
+  <div class="overlay" aria-hidden="true"></div>
 
-  <!-- Header com Menu -->
-  <header>
-    <h1>Nome Completo</h1>
-    <nav id="menu">
-      <a href="#perfil">Perfil</a>
-      <a href="#hobbies">Hobbies</a>
-      <a href="#profissao">Profissão</a>
-      <a href="#programa-radio">Programa de Rádio</a>
-      <a href="#materia-jornalistica">Matéria Jornalística</a>
-      <a href="#album">Álbum</a>
-      <a href="#redes-sociais">Redes Sociais</a>
-      <a href="#contatos">Contatos</a>
-    </nav>
-    <div class="menu-hamburguer" onclick="toggleMenu()">
-      <div></div>
-      <div></div>
-      <div></div>
-    </div>
-  </header>
-
-  <!-- Content Sections -->
-  <div class="container">
-    <!-- Seção Perfil -->
-    <section id="perfil" class="section">
-      <h2>Perfil</h2>
-      <div class="content">
-        <div class="column">
-          <img src="foto-perfil.jpg" alt="Foto do Profissional">
-        </div>
-        <div class="column">
-          <p>Olá! Eu sou [Nome], um profissional multifacetado com experiência nas áreas de radialismo, jornalismo, pedagogia e muito mais. Abaixo, você pode conhecer melhor meus trabalhos e hobbies, além de acompanhar minha presença nas redes sociais.</p>
-        </div>
+  <main class="wrap">
+    <section class="hero" aria-label="Apresentação">
+      <div class="logo">
+        <img id="logo-img" src="" alt="Logotipo">
       </div>
+      <nav class="quick-icons" aria-label="Atalhos rápidos">
+        <a class="qi" id="qi-instagram" href="#" target="_blank" rel="noopener" aria-label="Instagram">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="3.8" /><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none"/></svg>
+        </a>
+        <a class="qi" id="qi-whatsapp" href="#" target="_blank" rel="noopener" aria-label="WhatsApp">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.5 12a8.5 8.5 0 1 1-3.3-6.7" /><path d="M5.2 18.8 4 22l3.4-1.2" /><path d="M8.8 8.8c-.3.9.6 2.1 2 3.4s2.6 1.9 3.5 1.6c.4-.1.9-.7 1.2-1.1.1-.2.4-.2.6 0l.7 1.2c.2.3.1.7-.1 1-1.3 1.6-3.2 2.1-5.2 1.5-2-.6-4.1-2.4-5.3-4.4-1.2-2-1.5-3.8-.9-5.2.2-.4.6-.6 1-.5l1.3.4c.3.1.4.4.3.7-.3.5-.7 1-.9 1.4Z" fill="currentColor" stroke="none"/></svg>
+        </a>
+        <a class="qi" id="qi-youtube" href="#" target="_blank" rel="noopener" aria-label="YouTube">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6" width="18" height="12" rx="3.5"/><path d="M11 9v6l5-3-5-3z" fill="currentColor" stroke="none"/></svg>
+        </a>
+      </nav>
+      <h1 id="site-title">La Maggiê</h1>
+      <p class="tagline" id="site-tagline">Artesanato</p>
+      <p class="bio" id="site-bio">Bem-vindos ao Portal.</p>
     </section>
-
-    <!-- Seção Hobbies -->
-    <section id="hobbies" class="section">
-      <h2>Hobbies</h2>
-      <p>Eu também sou apaixonado por produtos geeks, coleciono itens e adoro tirar fotos desses produtos. Aqui você pode ver um pouco mais sobre meus hobbies e interesses.</p>
-      <div class="content">
-        <div class="column">
-          <img src="hobby1.jpg" alt="Hobby 1">
+    <section class="catalog-card" aria-label="Catálogo">
+      <h2 class="catalog-title">Catálogo</h2>
+      <a class="catalog-link" id="catalog-link" href="catalogo-lamaggie.html" aria-label="Abrir catálogo">
+        <div class="catalog-cover">
+          <img id="catalog-cover" src="" alt="Imagem de capa do catálogo">
+          <span class="catalog-badge">Abrir catálogo ➜</span>
         </div>
-        <div class="column">
-          <img src="hobby2.jpg" alt="Hobby 2">
-        </div>
-      </div>
-    </section>
-
-    <!-- Seção Profissão -->
-    <section id="profissao" class="section">
-      <h2>Profissão</h2>
-      <p>Com formação em jornalismo e pedagogo em formação, atuo também como radialista, com programas transmitidos no YouTube e Spotify. Aqui você pode conferir alguns dos meus projetos profissionais.</p>
-    </section>
-
-    <!-- Seção Programa de Rádio -->
-    <section id="programa-radio" class="section">
-      <h2>Programa de Rádio</h2>
-      <p>Aqui você encontra meus programas de rádio, transmitidos ao vivo em diversas plataformas. Confira e ouça os episódios mais recentes.</p>
-      <a href="link-do-programa" target="_blank" class="btn-custom">Ouça o Programa</a>
-    </section>
-
-    <!-- Seção Matéria Jornalística -->
-    <section id="materia-jornalistica" class="section">
-      <h2>Matéria Jornalística</h2>
-      <p>Veja as matérias e reportagens que eu escrevi e publiquei ao longo dos anos. Aqui estão alguns dos meus trabalhos jornalísticos mais importantes.</p>
-      <a href="link-da-materia" target="_blank" class="btn-custom">Leia a Matéria</a>
-    </section>
-
-    <!-- Seção Álbuns -->
-    <section id="album" class="section">
-      <h2>Álbum de Fotos e Vídeos</h2>
-      <div class="content">
-        <div class="column">
-          <img src="album1.jpg" alt="Foto Profissional 1">
-        </div>
-        <div class="column">
-          <video width="100%" controls>
-            <source src="video1.mp4" type="video/mp4">
-            Seu navegador não suporta o elemento de vídeo.
-          </video>
-        </div>
-      </div>
-    </section>
-
-    <!-- Seção Redes Sociais -->
-    <section id="redes-sociais" class="section">
-      <h2>Redes Sociais</h2>
-      <p>Conecte-se comigo nas minhas redes sociais:</p>
-      <div class="social-links">
-        <a href="https://www.instagram.com" target="_blank">
-          <img src="instagram-icon.svg" alt="Instagram">
-        </a>
-        <a href="https://www.linkedin.com" target="_blank">
-          <img src="linkedin-icon.svg" alt="LinkedIn">
-        </a>
-        <a href="https://www.facebook.com" target="_blank">
-          <img src="facebook-icon.svg" alt="Facebook">
-        </a>
-        <a href="https://www.youtube.com" target="_blank">
-          <img src="youtube-icon.svg" alt="YouTube">
-        </a>
-        <a href="https://open.spotify.com" target="_blank">
-          <img src="spotify-icon.svg" alt="Spotify">
-        </a>
-      </div>
-    </section>
-
-    <!-- Seção Contatos -->
-    <section id="contatos" class="section">
-      <h2>Contatos</h2>
-      <p>Para entrar em contato, envie uma mensagem pelo WhatsApp ou acesse minhas redes sociais para mais informações sobre meus trabalhos.</p>
-      <a href="https://wa.me/1234567890" target="_blank">
-        <button class="btn-custom">WhatsApp</button>
       </a>
     </section>
+    <section class="shorts-card" aria-label="Vídeos de Artesanato">
+      <div class="shorts-header">
+        <h2 class="shorts-title">Vídeos de Artesanato</h2>
+        <a class="shorts-more" id="shorts-more" href="videos.html" aria-label="Ver todos os shorts">Ver todos</a>
+      </div>
+      <div class="shorts-grid" id="shorts-grid">
+        <!-- Shorts serão preenchidos dinamicamente -->
+      </div>
+    </section>
+    <section class="card" aria-label="Redes oficiais">
+      <nav class="links">
+        <a class="btn" id="btn-instagram" href="#" target="_blank" rel="noopener"><span class="icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5Z" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.6"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor"/></svg>
+        </span><span class="text">Instagram</span><span class="go" aria-hidden="true">➜</span></a>
+        <a class="btn" id="btn-whatsapp" href="#" target="_blank" rel="noopener"><span class="icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M20.5 13.5a8.5 8.5 0 1 1-3.2-6.6l.2.1" stroke="currentColor" stroke-width="1.6"/><path d="M5.5 18.5l-1 3.5 3.6-1A8.5 8.5 0 0 0 21 10.1" stroke="currentColor" stroke-width="1.6"/><path d="M9.8 8.9c-.2.8.5 2 2 3.3s2.5 1.7 3.3 1.5c.3-.1.8-.6 1.1-1l.2-.2c.2-.2.5-.1.6.1l.6 1.1c.2.3.1.7-.1 1-1.1 1.4-2.8 1.9-4.7 1.3-1.9-.6-3.9-2.3-5-4.1-1.2-1.8-1.4-3.6-.8-4.9.2-.4.6-.6 1-.5l1.2.4c.3.1.4.4.3.7l-.2.3c-.3.5-.7.9-.8 1z" fill="currentColor"/></svg>
+        </span><span class="text">WhatsApp</span><span class="go" aria-hidden="true">➜</span></a>
+        <a class="btn" id="btn-youtube" href="#" target="_blank" rel="noopener"><span class="icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="2.5" y="5.5" width="19" height="13" rx="3.5" stroke="currentColor" stroke-width="1.6"/><path d="M11 9v6l5-3-5-3z" fill="currentColor"/></svg>
+        </span><span class="text">YouTube</span><span class="go" aria-hidden="true">➜</span></a>
+      </nav>
+    </section>
+    <section class="reviews-card" aria-label="Avaliações de clientes">
+      <h2 class="reviews-title">Avaliações dos clientes</h2>
+      <div class="reviews" id="reviews">
+        <!-- Avaliações serão preenchidas dinamicamente -->
+      </div>
+    </section>
+    <footer>©2025 Todos os direitos reservados | Feito com carinho pelo <a href="https://mostreaki.com" target="_blank" rel="noopener">MostreAki</a></footer>
+  </main>
+
+  <div id="diag" class="diag"></div>
+  <div id="badge" class="badge">Modo editor</div>
+  <div id="login" class="login" style="display: none">
+    <h3>Entrar para editar</h3>
+    <div class="row">
+      <input id="email" type="email" placeholder="Email" autocomplete="username" />
+      <input id="password" type="password" placeholder="Senha" autocomplete="current-password" />
+      <button id="btnLogin">Entrar</button>
+    </div>
+  </div>
+  <div id="editor" class="editor" style="display: none">
+    <h3>Editar página</h3>
+    <label>Título</label><input id="f_title" />
+    <label>Tagline</label><input id="f_tagline" />
+    <label>Bio</label><textarea id="f_bio" rows="3"></textarea>
+    <label>Logo URL (SVG/PNG)</label><input id="f_logo" placeholder="Ex.: https://raw.githubusercontent.com/.../logo.png" />
+    <label>Catalog Cover URL</label><input id="f_cover" placeholder="Ex.: https://raw.githubusercontent.com/.../capa.jpg" />
+    <div class="row">
+      <div>
+        <label>Instagram</label><input id="f_instagram" placeholder="URL completa" />
+      </div>
+      <div>
+        <label>WhatsApp</label><input id="f_whatsapp" placeholder="URL completa" />
+      </div>
+    </div>
+    <label>YouTube</label><input id="f_youtube" placeholder="URL completa" />
+    <label>Shorts IDs (separados por vírgula)</label><input id="f_shortsIds" placeholder="Ex.: VIDEO_ID_1,VIDEO_ID_2" />
+    <label>Avaliações (JSON)</label><textarea id="f_reviews" rows="4" placeholder='Ex.: [{"name":"Cliente A","stars":5,"text":"Ótimo!"}]'></textarea>
+    <div class="actions">
+      <button id="btnSave" class="primary">Salvar</button>
+      <button id="btnLogout">Sair</button>
+    </div>
+    <small style="color: #666">Edita <code>sites/{slug}/pages/home</code>. Campos não preenchidos não apagam nada.</small>
   </div>
 
-  <!-- Footer -->
-  <footer>
-    <p>&copy; 2025 Nome Completo - Todos os direitos reservados.</p>
-  </footer>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signInAnonymously, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
 
-  <!-- JavaScript para o Menu Hamburguer -->
-  <script>
-    function toggleMenu() {
-      const menu = document.getElementById('menu');
-      menu.classList.toggle('active');
+    const firebaseConfig = {
+      apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
+      authDomain: "mostreaki-2025.firebaseapp.com",
+      projectId: "mostreaki-2025",
+      storageBucket: "mostreaki-2025.firebasestorage.app",
+      messagingSenderId: "748712068097",
+      appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    const $ = s => document.querySelector(s);
+    const setIf = (el, attr, val) => { if (el && val) el.setAttribute(attr, val); };
+    const textIf = (el, val) => { if (el && val !== undefined && val !== null) el.textContent = val; };
+    const show = (el, yes) => { if (el) el.style.display = yes ? "" : "none"; };
+    const showDiag = (msg, timeout = 5000) => {
+      const d = $("#diag");
+      if (d) {
+        d.textContent = msg;
+        d.classList.add("show");
+        if (timeout) setTimeout(() => d.classList.remove("show"), timeout);
+      }
+    };
+
+    function getSlug() {
+      const m = location.pathname.match(/([^/]+)\.html$/); // Ex.: lamaggie.html → slug = lamaggie
+      if (m) return m[1];
+      const u = new URL(location.href);
+      return u.searchParams.get('slug') || u.searchParams.get('c') || '';
     }
-  </script>
+    const slug = getSlug();
 
+    const PLACEHOLDER = 'data:image/svg+xml;utf8,' + encodeURIComponent(
+      `<svg xmlns="http://www.w3.org/2000/svg" width="140" height="140">
+        <rect width="100%" height="100%" fill="#F8F1EB"/>
+        <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" fill="#87636A" font-size="16">Sem imagem</text>
+      </svg>`
+    );
+
+    async function readDocs(slug) {
+      console.log(`Tentando ler documentos para slug: ${slug}`);
+      const siteRef = doc(db, "sites", slug, "meta", "config");
+      const homeRef = doc(db, "sites", slug, "pages", "home");
+      const siteSnap = await getDoc(siteRef);
+      const homeSnap = await getDoc(homeRef);
+      console.log(`Site exists: ${siteSnap.exists()} (ID: ${siteRef.path})`);
+      console.log(`Home exists: ${homeSnap.exists()} (ID: ${homeRef.path})`);
+      return { site: siteSnap, home: homeSnap };
+    }
+
+    async function safeRead(slug) {
+      const url = new URL(location.href);
+      const USUARIO = url.searchParams.get("usuario");
+      const EDIT_MODE = !!USUARIO;
+      try {
+        const result = await readDocs(slug);
+        if (result.site.exists() || result.home.exists()) {
+          return result;
+        }
+        console.warn(`Nenhum documento encontrado para slug: ${slug}`);
+        throw new Error("Documentos não encontrados");
+      } catch (e) {
+        console.error("Erro na leitura:", e);
+        if (e?.code === "permission-denied" && !EDIT_MODE) {
+          console.warn("Leitura pública negada, modo editor não ativo. Verifique as regras do Firestore.");
+          showDiag("Erro: Leitura negada. Ajuste as regras do Firestore para leitura pública.");
+          return { site: null, home: null };
+        } else if (e?.code === "permission-denied" && EDIT_MODE) {
+          console.warn("Permissão negada, tentando login anônimo...");
+          try {
+            await signInAnonymously(auth);
+            await new Promise(res => onAuthStateChanged(auth, () => res(), { once: true }));
+            return await readDocs(slug);
+          } catch (e2) {
+            console.error("Falha no login anônimo:", e2);
+            showDiag("Erro: Falha na autenticação anônima. Verifique as configurações.");
+            throw e2;
+          }
+        }
+        throw e;
+      }
+    }
+
+    function apply(siteData, pageData) {
+      const site = siteData?.exists() ? siteData.data() : {};
+      const page = pageData?.exists() ? pageData.data() : {};
+      console.log("Dados do site:", site);
+      console.log("Dados da página:", page);
+
+      const meta = page.meta || site.meta || {};
+      if (meta.title) {
+        document.title = `${meta.title} — MostreAki`;
+        textIf($("#site-title"), meta.title);
+      }
+      if (meta.tagline) textIf($("#site-tagline"), meta.tagline);
+      if (meta.bio) textIf($("#site-bio"), meta.bio);
+
+      const logoUrl = page.logoUrl || site.logoUrl || PLACEHOLDER;
+      const img = $("#logo-img");
+      if (img && logoUrl) {
+        img.src = logoUrl;
+        img.onerror = () => {
+          console.error("Erro ao carregar imagem do logo:", logoUrl);
+          showDiag("Erro: Não foi possível carregar o logo. Verifique a URL.");
+          img.src = PLACEHOLDER;
+        };
+      }
+
+      const bg = page.bg || site.bg || {};
+      if (bg.desktop) document.documentElement.style.setProperty("--bg-desktop", `url('${bg.desktop}')`);
+      if (bg.mobile) document.documentElement.style.setProperty("--bg-mobile", `url('${bg.mobile}')`);
+
+      const coverUrl = page.catalogCover || site.catalogCover || PLACEHOLDER;
+      if (coverUrl && $("#catalog-cover")) {
+        $("#catalog-cover").src = coverUrl;
+        $("#catalog-cover").onerror = () => {
+          console.error("Erro ao carregar capa:", coverUrl);
+          showDiag("Erro: Não foi possível carregar a capa do catálogo.");
+          $("#catalog-cover").src = PLACEHOLDER;
+        };
+      }
+
+      const s = page.social || site.social || {};
+      if (s.instagram) { setIf($("#qi-instagram"), "href", s.instagram); setIf($("#btn-instagram"), "href", s.instagram); }
+      if (s.whatsapp) { setIf($("#qi-whatsapp"), "href", s.whatsapp); setIf($("#btn-whatsapp"), "href", s.whatsapp); }
+      if (s.youtube) { setIf($("#qi-youtube"), "href", s.youtube); setIf($("#btn-youtube"), "href", s.youtube); }
+
+      const routes = page.routes || site.routes || [];
+      let catalogHref = `catalogo-${slug}.html`;
+      const cat = routes.find(r => r.path === "/catalogo");
+      if (cat) catalogHref = (cat.type === "external" && cat.url) ? cat.url : (cat.path || catalogHref);
+      setIf($("#catalog-link"), "href", catalogHref);
+
+      const vids = routes.find(r => r.path === "/videos");
+      if (vids) setIf($("#shorts-more"), "href", vids.url || vids.path || "videos.html");
+
+      if (Array.isArray(page.shortsIds) && page.shortsIds.length) {
+        const grid = $("#shorts-grid");
+        if (grid) {
+          grid.innerHTML = page.shortsIds.slice(0, 3).map(id => `
+            <a class="short" href="https://www.youtube.com/shorts/${id}" target="_blank" rel="noopener" aria-label="Assistir short ${id}">
+              <img src="https://img.youtube.com/vi/${id}/hqdefault.jpg" alt="Short ${id}">
+              <span class="play" aria-hidden="true">▶</span>
+            </a>
+          `).join("");
+        }
+      }
+
+      if (Array.isArray(page.reviews) && page.reviews.length) {
+        const box = $("#reviews");
+        if (box) {
+          box.innerHTML = page.reviews.slice(0, 3).map(r => {
+            const stars = Math.max(0, Math.min(5, r.stars || 5));
+            const initials = (r.initials || (r.name || "").split(" ").map(p => p[0]).slice(0, 2).join("") || "CL").toUpperCase();
+            return `
+              <div class="review">
+                <div class="rev-head">
+                  <div class="avatar">${initials}</div>
+                  <div>
+                    <div class="name">${r.name || "Cliente"}</div>
+                    <div class="stars">${"★★★★★".slice(0, stars)}${stars < 5 ? "☆☆☆☆☆".slice(0, 5 - stars) : ""}</div>
+                  </div>
+                </div>
+                <p class="rev-text">${r.text || ""}</p>
+              </div>
+            `;
+          }).join("");
+        }
+      }
+    }
+
+    async function isAuthorized(uid, slug) {
+      const site = await getDoc(doc(db, "sites", slug));
+      if (!site.exists()) {
+        console.warn("Site não encontrado:", slug);
+        return false;
+      }
+      const { permissions } = site.data();
+      const owner = permissions?.ownerUid;
+      const editors = permissions?.editors || [];
+      console.log("Verificando autorização - UID:", uid, "Owner:", owner, "Editors:", editors);
+      return (uid && (uid === owner || editors.includes(uid)));
+    }
+
+    async function loadEditor(slug, user) {
+      console.log("Carregando editor para slug:", slug, "User:", user.uid);
+      const ok = await isAuthorized(user.uid, slug);
+      if (!ok) {
+        showDiag("Você entrou, mas não tem permissão para editar este site.");
+        return;
+      }
+
+      show($("#editor"), true);
+      const page = await getDoc(doc(db, "sites", slug, "pages", "home"));
+      const site = await getDoc(doc(db, "sites", slug, "meta", "config"));
+      const pageData = page.exists() ? page.data() : {};
+      const siteData = site.exists() ? site.data() : {};
+      console.log("Dados para editor - Page:", pageData, "Site:", siteData);
+
+      const meta = pageData.meta || siteData.meta || {};
+      $("#f_title").value = meta.title || "";
+      $("#f_tagline").value = meta.tagline || "";
+      $("#f_bio").value = meta.bio || "";
+      $("#f_logo").value = pageData.logoUrl || siteData.logoUrl || "";
+      $("#f_cover").value = pageData.catalogCover || siteData.catalogCover || "";
+      $("#f_instagram").value = (pageData.social || siteData.social || {}).instagram || "";
+      $("#f_whatsapp").value = (pageData.social || siteData.social || {}).whatsapp || "";
+      $("#f_youtube").value = (pageData.social || siteData.social || {}).youtube || "";
+      $("#f_shortsIds").value = Array.isArray(pageData.shortsIds) ? pageData.shortsIds.join(",") : "";
+      $("#f_reviews").value = Array.isArray(pageData.reviews) ? JSON.stringify(pageData.reviews, null, 2) : "";
+
+      $("#btnSave").onclick = async () => {
+        const payload = {};
+        const t = $("#f_title").value.trim();
+        const g = $("#f_tagline").value.trim();
+        const b = $("#f_bio").value.trim();
+        const l = $("#f_logo").value.trim();
+        const cv = $("#f_cover").value.trim();
+        const ig = $("#f_instagram").value.trim();
+        const wa = $("#f_whatsapp").value.trim();
+        const yt = $("#f_youtube").value.trim();
+        const si = $("#f_shortsIds").value.trim();
+        const rv = $("#f_reviews").value.trim();
+
+        if (t || g || b) payload.meta = { ...(pageData.meta || {}), ...(t ? { title: t } : {}), ...(g ? { tagline: g } : {}), ...(b ? { bio: b } : {}) };
+        if (l) payload.logoUrl = l;
+        if (cv) payload.catalogCover = cv;
+        if (ig || wa || yt) payload.social = { ...(pageData.social || {}), ...(ig ? { instagram: ig } : {}), ...(wa ? { whatsapp: wa } : {}), ...(yt ? { youtube: yt } : {}) };
+        if (si) payload.shortsIds = si.split(",").map(id => id.trim()).filter(id => id);
+        if (rv) {
+          try {
+            payload.reviews = JSON.parse(rv);
+          } catch (e) {
+            console.error("Erro ao parsear reviews:", e);
+            showDiag("Erro: Formato inválido para avaliações (use JSON válido).");
+            return;
+          }
+        }
+
+        try {
+          await setDoc(doc(db, "sites", slug, "pages", "home"), payload, { merge: true });
+          showDiag("Salvo com sucesso! Recarregue para ver as mudanças.");
+          apply(await getDoc(doc(db, "sites", slug, "meta", "config")), await getDoc(doc(db, "sites", slug, "pages", "home")));
+        } catch (e) {
+          console.error("Erro ao salvar:", e);
+          showDiag("Erro ao salvar. Veja o console para detalhes.");
+        }
+      };
+
+      $("#btnLogout").onclick = () => signOut(auth);
+    }
+
+    function initAuthFlow() {
+      const url = new URL(location.href);
+      const USUARIO = url.searchParams.get("usuario");
+      const EDIT_MODE = !!USUARIO;
+      if (!EDIT_MODE) return;
+      $("#badge")?.classList.add("show");
+      show($("#login"), true);
+
+      onAuthStateChanged(auth, async (user) => {
+        console.log("Estado de autenticação:", user ? `Logado (UID: ${user.uid})` : "Deslogado");
+        if (user) {
+          show($("#login"), false);
+          await loadEditor(slug, user);
+        } else {
+          show($("#editor"), false);
+          $("#btnLogin").onclick = async () => {
+            const email = $("#email").value.trim();
+            const pass = $("#password").value.trim();
+            try {
+              await signInWithEmailAndPassword(auth, email, pass);
+              console.log("Login bem-sucedido");
+            } catch (e) {
+              console.error("Erro no login:", e);
+              showDiag("Falha no login. Verifique email/senha ou permissões.");
+            }
+          };
+        }
+      });
+    }
+
+    (async function boot() {
+      try {
+        const { site, home } = await safeRead(slug);
+        if (!home?.exists() && !site?.exists()) {
+          console.warn(`Nenhum documento encontrado em sites/${slug}/meta/config ou sites/${slug}/pages/home`);
+          showDiag(`Documento não encontrado em sites/${slug}. Verifique o slug, a estrutura ou o projeto no Firebase.`);
+          return;
+        }
+        apply(site, home);
+        const url = new URL(location.href);
+        if (url.searchParams.get("usuario")) initAuthFlow();
+      } catch (e) {
+        console.error("Erro geral:", e);
+        showDiag(e?.code === "permission-denied"
+          ? "Erro: Leitura negada. Ajuste as regras do Firestore para leitura pública ou habilite autenticação anônima."
+          : `Erro ao ler Firestore: ${e?.message || e}`);
+      }
+    })();
+  </script>
 </body>
 </html>
