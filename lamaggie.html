@@ -10,6 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
 
   <style>
+    /* [Mantive o CSS original intacto, pois tá ok] */
     :root{
       --bg-desktop: url('bg-desktop.jpg');
       --bg-mobile:  url('bg-mobile.jpg');
@@ -278,39 +279,46 @@
     };
 
     const url = new URL(location.href);
-    const SLUG = "lamaggie";
+    const SLUG = "lamaggie"; // Confirma se esse é o nome exato do documento em sites/
     const USUARIO = url.searchParams.get("usuario");
     const VIEW_SLUG = USUARIO || SLUG;
     const EDIT_MODE = !!USUARIO;
 
     async function readDocs(slug) {
-      console.log(`Lendo documentos para slug: ${slug}`);
-      const siteSnap = await getDoc(doc(db, "sites", slug));
-      const homeSnap = await getDoc(doc(db, "sites", slug, "pages", "home"));
-      console.log("Site exists:", siteSnap.exists(), "Home exists:", homeSnap.exists());
+      console.log(`Tentando ler documentos para slug: ${slug}`);
+      const siteRef = doc(db, "sites", slug);
+      const homeRef = doc(db, "sites", slug, "pages", "home");
+      const siteSnap = await getDoc(siteRef);
+      const homeSnap = await getDoc(homeRef);
+      console.log(`Site exists: ${siteSnap.exists()} (ID: ${siteRef.path})`);
+      console.log(`Home exists: ${homeSnap.exists()} (ID: ${homeRef.path})`);
       return { site: siteSnap, home: homeSnap };
     }
 
     async function safeRead(slug) {
       try {
-        // Tenta leitura sem autenticação primeiro
         const result = await readDocs(slug);
-        if (result.site.exists() || result.home.exists()) return result;
+        console.log("Resultado da leitura:", result);
+        if (result.site.exists() || result.home.exists()) {
+          return result;
+        }
+        console.warn(`Nenhum documento encontrado para slug: ${slug}`);
         throw new Error("Documentos não encontrados");
       } catch (e) {
+        console.error("Erro na leitura:", e);
         if (e?.code === "permission-denied" && !EDIT_MODE) {
-          console.warn("Leitura pública negada, mas modo editor não está ativo. Verifique as regras do Firestore.");
-          showDiag("Erro: Leitura negada. As regras do Firestore podem exigir autenticação pública.");
-          return { site: null, home: null }; // Retorna nulo pra evitar crash
+          console.warn("Leitura pública negada, modo editor não ativo. Verifique as regras do Firestore.");
+          showDiag("Erro: Leitura negada. Ajuste as regras do Firestore para leitura pública.");
+          return { site: null, home: null };
         } else if (e?.code === "permission-denied" && EDIT_MODE) {
-          console.warn("Permissão negada, tentando login anônimo para modo editor...");
+          console.warn("Permissão negada, tentando login anônimo...");
           try {
             await signInAnonymously(auth);
             await new Promise(res => onAuthStateChanged(auth, () => res(), { once: true }));
             return await readDocs(slug);
           } catch (e2) {
-            console.error("Erro no login anônimo:", e2);
-            showDiag("Erro: Falha na autenticação anônima. Verifique as configurações do Firebase.");
+            console.error("Falha no login anônimo:", e2);
+            showDiag("Erro: Falha na autenticação anônima. Verifique as configurações.");
             throw e2;
           }
         }
@@ -343,13 +351,13 @@
         img.src = logoUrl;
         img.onerror = () => {
           console.error("Erro ao carregar imagem do logo:", logoUrl);
-          showDiag("Erro: Não foi possível carregar o logo. Verifique a URL no Firestore.");
-          img.src = "logo-lamaggie.png"; // Fallback
+          showDiag("Erro: Não foi possível carregar o logo. Verifique a URL.");
+          img.src = "logo-lamaggie.png";
         };
-        img.onload = () => console.log("Logo carregado com sucesso:", logoUrl);
+        img.onload = () => console.log("Logo carregado:", logoUrl);
       } else if (!logoUrl) {
         console.warn("Nenhuma logoUrl encontrada, usando fallback.");
-        showDiag("Aviso: Nenhuma URL de logo encontrada no Firestore.");
+        showDiag("Aviso: Nenhuma URL de logo no Firestore.");
       }
 
       const bg = page.bg || site.bg;
@@ -367,9 +375,9 @@
       if (coverUrl && $("#catalog-cover")) {
         $("#catalog-cover").src = coverUrl;
         $("#catalog-cover").onerror = () => {
-          console.error("Erro ao carregar capa do catálogo:", coverUrl);
+          console.error("Erro ao carregar capa:", coverUrl);
           showDiag("Erro: Não foi possível carregar a capa do catálogo.");
-          $("#catalog-cover").src = "catalogo-capa.jpg"; // Fallback
+          $("#catalog-cover").src = "catalogo-capa.jpg";
         };
       }
 
@@ -544,7 +552,8 @@
       try {
         const { site, home } = await safeRead(VIEW_SLUG);
         if (!home?.exists() && !site?.exists()) {
-          showDiag(`Documento não encontrado em sites/${VIEW_SLUG}. Verifique o slug ou projeto.`);
+          console.warn(`Nenhum documento encontrado em sites/${VIEW_SLUG} ou sites/${VIEW_SLUG}/pages/home`);
+          showDiag(`Documento não encontrado em sites/${VIEW_SLUG}. Verifique o slug, a estrutura (sites/{slug}/pages/home) ou o projeto no Firebase.`);
           return;
         }
         apply(site, home);
