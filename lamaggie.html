@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
 
   <style>
-    /* [Mantive o CSS original intacto, pois tá ok] */
+    /* [Mantive o CSS original intacto] */
     :root{
       --bg-desktop: url('bg-desktop.jpg');
       --bg-mobile:  url('bg-mobile.jpg');
@@ -140,7 +140,7 @@
   <main class="wrap">
     <section class="hero" aria-label="Apresentação">
       <div class="logo">
-        <img id="logo-img" src="logo-lamaggie.png" alt="Logotipo">
+        <img id="logo-img" src="" alt="Logotipo"> <!-- Removi o src fixo pra usar o dinâmico -->
       </div>
       <nav class="quick-icons" aria-label="Atalhos rápidos">
         <a class="qi" id="qi-instagram" href="#" target="_blank" rel="noopener" aria-label="Instagram">
@@ -161,7 +161,7 @@
       <h2 class="catalog-title">Catálogo</h2>
       <a class="catalog-link" id="catalog-link" href="catalogo-lamaggie.html" aria-label="Abrir catálogo">
         <div class="catalog-cover">
-          <img id="catalog-cover" src="catalogo-capa.jpg" alt="Imagem de capa do catálogo">
+          <img id="catalog-cover" src="" alt="Imagem de capa do catálogo"> <!-- Removi o src fixo -->
           <span class="catalog-badge">Abrir catálogo ➜</span>
         </div>
       </a>
@@ -279,7 +279,7 @@
     };
 
     const url = new URL(location.href);
-    const SLUG = "lamaggie"; // Confirma se esse é o nome exato do documento em sites/
+    const SLUG = "lamaggie";
     const USUARIO = url.searchParams.get("usuario");
     const VIEW_SLUG = USUARIO || SLUG;
     const EDIT_MODE = !!USUARIO;
@@ -340,44 +340,45 @@
       if (meta.tagline) textIf($("#site-tagline"), meta.tagline);
       if (meta.bio) textIf($("#site-bio"), meta.bio);
 
-      const assetsBase = page.assetsBase || site.assetsBase || "";
+      const assetsBase = page.assetsBase || site.assetsBase || ""; // Usa o assetsBase do Firestore
       console.log("Assets base:", assetsBase);
 
       const logo = page.logoUrl || page.hero?.logoUrl || site.theme?.logoUrl || "logo-lamaggie.png";
-      console.log("Logo URL selecionada:", logo);
-      const logoUrl = assetsBase && !logo.startsWith("http") ? assetsBase + logo : logo;
+      console.log("Logo URL base:", logo);
+      const logoUrl = assetsBase && !logo.startsWith("http") ? `${assetsBase}${logo}` : logo; // Concatena assetsBase
       const img = $("#logo-img");
       if (img && logoUrl) {
         img.src = logoUrl;
         img.onerror = () => {
           console.error("Erro ao carregar imagem do logo:", logoUrl);
-          showDiag("Erro: Não foi possível carregar o logo. Verifique a URL.");
-          img.src = "logo-lamaggie.png";
+          showDiag("Erro: Não foi possível carregar o logo. Verifique a URL ou a pasta assets.");
+          img.src = "/logo-lamaggie.png"; // Fallback na raiz do deploy
         };
         img.onload = () => console.log("Logo carregado:", logoUrl);
       } else if (!logoUrl) {
         console.warn("Nenhuma logoUrl encontrada, usando fallback.");
         showDiag("Aviso: Nenhuma URL de logo no Firestore.");
+        img.src = "/logo-lamaggie.png"; // Fallback na raiz
       }
 
       const bg = page.bg || site.bg;
       if (bg?.desktop) {
-        const bgDesktop = assetsBase && !bg.desktop.startsWith("http") ? assetsBase + bg.desktop : bg.desktop;
+        const bgDesktop = assetsBase && !bg.desktop.startsWith("http") ? `${assetsBase}${bg.desktop}` : bg.desktop;
         document.documentElement.style.setProperty("--bg-desktop", `url('${bgDesktop}')`);
       }
       if (bg?.mobile) {
-        const bgMobile = assetsBase && !bg.mobile.startsWith("http") ? assetsBase + bg.mobile : bg.mobile;
+        const bgMobile = assetsBase && !bg.mobile.startsWith("http") ? `${assetsBase}${bg.mobile}` : bg.mobile;
         document.documentElement.style.setProperty("--bg-mobile", `url('${bgMobile}')`);
       }
 
       const cover = page.catalogCover || site.catalogCover || page.hero?.cover || "catalogo-capa.jpg";
-      const coverUrl = assetsBase && !cover.startsWith("http") ? assetsBase + cover : cover;
+      const coverUrl = assetsBase && !cover.startsWith("http") ? `${assetsBase}${cover}` : cover;
       if (coverUrl && $("#catalog-cover")) {
         $("#catalog-cover").src = coverUrl;
         $("#catalog-cover").onerror = () => {
           console.error("Erro ao carregar capa:", coverUrl);
           showDiag("Erro: Não foi possível carregar a capa do catálogo.");
-          $("#catalog-cover").src = "catalogo-capa.jpg";
+          $("#catalog-cover").src = "/catalogo-capa.jpg"; // Fallback na raiz
         };
       }
 
@@ -553,7 +554,7 @@
         const { site, home } = await safeRead(VIEW_SLUG);
         if (!home?.exists() && !site?.exists()) {
           console.warn(`Nenhum documento encontrado em sites/${VIEW_SLUG} ou sites/${VIEW_SLUG}/pages/home`);
-          showDiag(`Documento não encontrado em sites/${VIEW_SLUG}. Verifique o slug, a estrutura (sites/{slug}/pages/home) ou o projeto no Firebase.`);
+          showDiag(`Documento não encontrado em sites/${VIEW_SLUG}. Verifique o slug, a estrutura ou o projeto no Firebase.`);
           return;
         }
         apply(site, home);
