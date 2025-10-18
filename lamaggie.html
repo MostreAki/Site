@@ -207,7 +207,7 @@
         </div>
       </div>
     </section>
-    <footer>©2025 Todos os direitos reservados</footer>
+    <footer>©2025 Todos os direitos reservados | Feito com carinho pelo <a href="https://mostreaki.com" target="_blank" rel="noopener">MostreAki</a></footer>
   </main>
 
   <div id="diag" class="diag"></div>
@@ -225,17 +225,20 @@
     <label>Título</label><input id="f_title" />
     <label>Tagline</label><input id="f_tagline" />
     <label>Bio</label><textarea id="f_bio" rows="3"></textarea>
-    <label>Logo URL (SVG/PNG)</label><input id="f_logo" />
+    <label>Logo URL (SVG/PNG)</label><input id="f_logo" placeholder="Ex.: logo.png ou URL completa" />
+    <label>Assets Base (opcional)</label><input id="f_assetsBase" placeholder="Ex.: https://teu-site.vercel.app/assets/sites/lamaggie/" />
     <div class="row">
       <div>
-        <label>Instagram</label><input id="f_instagram" />
+        <label>Instagram</label><input id="f_instagram" placeholder="URL completa" />
       </div>
       <div>
-        <label>WhatsApp</label><input id="f_whatsapp" />
+        <label>WhatsApp</label><input id="f_whatsapp" placeholder="URL completa" />
       </div>
     </div>
-    <label>YouTube</label><input id="f_youtube" />
-    <label>Catalog Cover (arquivo em assetsBase)</label><input id="f_cover" />
+    <label>YouTube</label><input id="f_youtube" placeholder="URL completa" />
+    <label>Catalog Cover (arquivo em assetsBase)</label><input id="f_cover" placeholder="Ex.: capa.jpg" />
+    <label>Shorts IDs (separados por vírgula)</label><input id="f_shortsIds" placeholder="Ex.: VIDEO_ID_1,VIDEO_ID_2" />
+    <label>Avaliações (JSON)</label><textarea id="f_reviews" rows="4" placeholder='Ex.: [{"name":"Cliente A","stars":5,"text":"Ótimo!"}]'></textarea>
     <div class="actions">
       <button id="btnSave" class="primary">Salvar</button>
       <button id="btnLogout">Sair</button>
@@ -265,7 +268,14 @@
     const setIf = (el, attr, val) => { if (el && val) el.setAttribute(attr, val); };
     const textIf = (el, val) => { if (el && val !== undefined && val !== null) el.textContent = val; };
     const show = (el, yes) => { if (el) el.style.display = yes ? "" : "none"; };
-    const showDiag = (msg) => { const d = $("#diag"); if (d) { d.textContent = msg; d.classList.add("show"); } };
+    const showDiag = (msg, timeout = 5000) => {
+      const d = $("#diag");
+      if (d) {
+        d.textContent = msg;
+        d.classList.add("show");
+        if (timeout) setTimeout(() => d.classList.remove("show"), timeout);
+      }
+    };
 
     const url = new URL(location.href);
     const SLUG = "lamaggie";
@@ -274,8 +284,10 @@
     const EDIT_MODE = !!USUARIO;
 
     async function readDocs(slug) {
+      console.log(`Lendo documentos para slug: ${slug}`);
       const siteSnap = await getDoc(doc(db, "sites", slug));
       const homeSnap = await getDoc(doc(db, "sites", slug, "pages", "home"));
+      console.log("Site exists:", siteSnap.exists(), "Home exists:", homeSnap.exists());
       return { site: siteSnap, home: homeSnap };
     }
 
@@ -284,11 +296,13 @@
         return await readDocs(slug);
       } catch (e) {
         if (e?.code !== "permission-denied") throw e;
+        console.warn("Permissão negada, tentando login anônimo...");
         try {
           await signInAnonymously(auth);
           await new Promise(res => onAuthStateChanged(auth, () => res(), { once: true }));
           return await readDocs(slug);
         } catch (e2) {
+          console.error("Erro no safeRead:", e2);
           throw e2;
         }
       }
@@ -297,22 +311,57 @@
     function apply(siteData, pageData) {
       const site = siteData?.exists() ? siteData.data() : {};
       const page = pageData?.exists() ? pageData.data() : {};
+      console.log("Dados do site:", site);
+      console.log("Dados da página:", page);
 
       const meta = page.meta || site.meta || {};
-      if (meta.title) { document.title = meta.title; textIf($("#site-title"), meta.title); }
+      if (meta.title) {
+        document.title = meta.title;
+        textIf($("#site-title"), meta.title);
+      }
       if (meta.tagline) textIf($("#site-tagline"), meta.tagline);
       if (meta.bio) textIf($("#site-bio"), meta.bio);
 
-      const logo = page.logoUrl || page.hero?.logoUrl || site.theme?.logoUrl;
-      if (logo) { const img = $("#logo-img"); if (img) img.src = logo; }
-
       const assetsBase = page.assetsBase || site.assetsBase || "";
-      const bg = page.bg || site.bg;
-      if (bg?.desktop) document.documentElement.style.setProperty("--bg-desktop", `url('${assetsBase ? assetsBase + bg.desktop : bg.desktop}')`);
-      if (bg?.mobile) document.documentElement.style.setProperty("--bg-mobile", `url('${assetsBase ? assetsBase + bg.mobile : bg.mobile}')`);
+      console.log("Assets base:", assetsBase);
 
-      const cover = page.catalogCover || site.catalogCover || page.hero?.cover;
-      if (cover && $("#catalog-cover")) $("#catalog-cover").src = assetsBase ? assetsBase + cover : cover;
+      const logo = page.logoUrl || page.hero?.logoUrl || site.theme?.logoUrl || "logo-lamaggie.png";
+      console.log("Logo URL selecionada:", logo);
+      const logoUrl = assetsBase && !logo.startsWith("http") ? assetsBase + logo : logo;
+      const img = $("#logo-img");
+      if (img && logoUrl) {
+        img.src = logoUrl;
+        img.onerror = () => {
+          console.error("Erro ao carregar imagem do logo:", logoUrl);
+          showDiag("Erro: Não foi possível carregar o logo. Verifique a URL no Firestore.");
+          img.src = "logo-lamaggie.png"; // Fallback
+        };
+        img.onload = () => console.log("Logo carregado com sucesso:", logoUrl);
+      } else if (!logoUrl) {
+        console.warn("Nenhuma logoUrl encontrada, usando fallback.");
+        showDiag("Aviso: Nenhuma URL de logo encontrada no Firestore.");
+      }
+
+      const bg = page.bg || site.bg;
+      if (bg?.desktop) {
+        const bgDesktop = assetsBase && !bg.desktop.startsWith("http") ? assetsBase + bg.desktop : bg.desktop;
+        document.documentElement.style.setProperty("--bg-desktop", `url('${bgDesktop}')`);
+      }
+      if (bg?.mobile) {
+        const bgMobile = assetsBase && !bg.mobile.startsWith("http") ? assetsBase + bg.mobile : bg.mobile;
+        document.documentElement.style.setProperty("--bg-mobile", `url('${bgMobile}')`);
+      }
+
+      const cover = page.catalogCover || site.catalogCover || page.hero?.cover || "catalogo-capa.jpg";
+      const coverUrl = assetsBase && !cover.startsWith("http") ? assetsBase + cover : cover;
+      if (coverUrl && $("#catalog-cover")) {
+        $("#catalog-cover").src = coverUrl;
+        $("#catalog-cover").onerror = () => {
+          console.error("Erro ao carregar capa do catálogo:", coverUrl);
+          showDiag("Erro: Não foi possível carregar a capa do catálogo.");
+          $("#catalog-cover").src = "catalogo-capa.jpg"; // Fallback
+        };
+      }
 
       const s = page.social || site.social || {};
       if (s.instagram) { setIf($("#qi-instagram"), "href", s.instagram); setIf($("#btn-instagram"), "href", s.instagram); }
@@ -364,14 +413,19 @@
 
     async function isAuthorized(uid, slug) {
       const site = await getDoc(doc(db, "sites", slug));
-      if (!site.exists()) return false;
+      if (!site.exists()) {
+        console.warn("Site não encontrado:", slug);
+        return false;
+      }
       const { permissions } = site.data();
       const owner = permissions?.ownerUid;
       const editors = permissions?.editors || [];
+      console.log("Verificando autorização - UID:", uid, "Owner:", owner, "Editors:", editors);
       return (uid && (uid === owner || editors.includes(uid)));
     }
 
     async function loadEditor(slug, user) {
+      console.log("Carregando editor para slug:", slug, "User:", user.uid);
       const ok = await isAuthorized(user.uid, slug);
       if (!ok) {
         showDiag("Você entrou, mas não tem permissão para editar este site.");
@@ -383,16 +437,20 @@
       const site = await getDoc(doc(db, "sites", slug));
       const pageData = page.exists() ? page.data() : {};
       const siteData = site.exists() ? site.data() : {};
+      console.log("Dados para editor - Page:", pageData, "Site:", siteData);
 
       const meta = pageData.meta || siteData.meta || {};
       $("#f_title").value = meta.title || "";
       $("#f_tagline").value = meta.tagline || "";
       $("#f_bio").value = meta.bio || "";
       $("#f_logo").value = pageData.logoUrl || pageData.hero?.logoUrl || siteData.theme?.logoUrl || "";
+      $("#f_assetsBase").value = pageData.assetsBase || siteData.assetsBase || "";
       $("#f_instagram").value = (pageData.social || siteData.social || {}).instagram || "";
       $("#f_whatsapp").value = (pageData.social || siteData.social || {}).whatsapp || "";
       $("#f_youtube").value = (pageData.social || siteData.social || {}).youtube || "";
       $("#f_cover").value = pageData.catalogCover || siteData.catalogCover || "";
+      $("#f_shortsIds").value = Array.isArray(pageData.shortsIds) ? pageData.shortsIds.join(",") : "";
+      $("#f_reviews").value = Array.isArray(pageData.reviews) ? JSON.stringify(pageData.reviews, null, 2) : "";
 
       $("#btnSave").onclick = async () => {
         const payload = {};
@@ -400,10 +458,13 @@
         const g = $("#f_tagline").value.trim();
         const b = $("#f_bio").value.trim();
         const l = $("#f_logo").value.trim();
+        const ab = $("#f_assetsBase").value.trim();
         const ig = $("#f_instagram").value.trim();
         const wa = $("#f_whatsapp").value.trim();
         const yt = $("#f_youtube").value.trim();
         const cv = $("#f_cover").value.trim();
+        const si = $("#f_shortsIds").value.trim();
+        const rv = $("#f_reviews").value.trim();
 
         if (t || g || b) {
           payload.meta = { ...(pageData.meta || {}), ...(t ? { title: t } : {}) };
@@ -411,19 +472,31 @@
           if (b) payload.meta.bio = b;
         }
         if (l) payload.logoUrl = l;
+        if (ab) payload.assetsBase = ab;
         if (cv) payload.catalogCover = cv;
         if (ig || wa || yt) {
           payload.social = { ...(pageData.social || {}), ...(ig ? { instagram: ig } : {}) };
           if (wa) payload.social.whatsapp = wa;
           if (yt) payload.social.youtube = yt;
         }
+        if (si) payload.shortsIds = si.split(",").map(id => id.trim()).filter(id => id);
+        if (rv) {
+          try {
+            payload.reviews = JSON.parse(rv);
+          } catch (e) {
+            console.error("Erro ao parsear reviews:", e);
+            showDiag("Erro: Formato inválido para avaliações (use JSON válido).");
+            return;
+          }
+        }
 
         try {
           await setDoc(doc(db, "sites", slug, "pages", "home"), payload, { merge: true });
-          showDiag("Salvo! Recarregue para ver.");
+          showDiag("Salvo com sucesso! Recarregue para ver as mudanças.");
+          apply(await getDoc(doc(db, "sites", slug)), page); // Reaplica dados após salvar
         } catch (e) {
-          console.error(e);
-          showDiag("Erro ao salvar. Veja o console.");
+          console.error("Erro ao salvar:", e);
+          showDiag("Erro ao salvar. Veja o console para detalhes.");
         }
       };
 
@@ -436,6 +509,7 @@
       show($("#login"), true);
 
       onAuthStateChanged(auth, async (user) => {
+        console.log("Estado de autenticação:", user ? `Logado (UID: ${user.uid})` : "Deslogado");
         if (user) {
           show($("#login"), false);
           await loadEditor(USUARIO, user);
@@ -446,9 +520,10 @@
             const pass = $("#password").value.trim();
             try {
               await signInWithEmailAndPassword(auth, email, pass);
+              console.log("Login bem-sucedido");
             } catch (e) {
-              console.error(e);
-              showDiag("Falha no login. Cheque email/senha e permissões.");
+              console.error("Erro no login:", e);
+              showDiag("Falha no login. Verifique email/senha ou permissões.");
             }
           };
         }
@@ -459,16 +534,16 @@
       try {
         const { site, home } = await safeRead(VIEW_SLUG);
         if (!home?.exists() && !site?.exists()) {
-          showDiag(`Documento não encontrado em sites/${VIEW_SLUG} (verifique o projeto/caminho).`);
+          showDiag(`Documento não encontrado em sites/${VIEW_SLUG}. Verifique o slug ou projeto.`);
           return;
         }
         apply(site, home);
         if (EDIT_MODE) initAuthFlow();
       } catch (e) {
-        console.error(e);
+        console.error("Erro geral:", e);
         showDiag(e?.code === "permission-denied"
-          ? "Leitura negada pelas rules (tente habilitar Auth Anônima)."
-          : `Falha ao ler Firestore: ${e?.message || e}`);
+          ? "Leitura negada. Tente habilitar autenticação anônima no Firebase."
+          : `Erro ao ler Firestore: ${e?.message || e}`);
       }
     })();
   </script>
