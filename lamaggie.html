@@ -13,7 +13,6 @@
     :root{
       --bg-desktop: url('bg-desktop.jpg');
       --bg-mobile:  url('bg-mobile.jpg');
-
       --cream:#F8F1EB;
       --rose:#D98C93;
       --rose-600:#C66E77;
@@ -37,7 +36,6 @@
     @media (max-width: 640px){
       body{ background-image: var(--bg-mobile); background-attachment: scroll; }
     }
-
     .overlay{ position: fixed; inset:0;
       background:
         radial-gradient(60% 40% at 10% 0%, rgba(248,241,235,.55) 0%, rgba(248,241,235,.05) 60%),
@@ -45,7 +43,6 @@
       pointer-events:none;
     }
     .wrap{ max-width: 920px; margin: 0 auto; padding: 28px 20px 90px; }
-
     .hero{ text-align:center; margin: 14px auto 28px; }
     .logo{ width:140px; height:140px; margin:0 auto 12px; border-radius:50%; overflow:hidden;
       background: rgba(255,255,255,.65); backdrop-filter: blur(3px);
@@ -53,7 +50,6 @@
       box-shadow: inset 0 6px 18px rgba(217,140,147,.15), 0 4px 10px rgba(92,62,66,.18);
     }
     .logo img{ width:100%; height:100%; object-fit:cover; display:block; }
-
     .quick-icons{ display:flex; justify-content:center; gap:16px; margin: 6px 0 6px; }
     .qi{ width:36px; height:36px; display:grid; place-items:center; border-radius:50%;
         background: rgba(255,255,255,.85); border:1px solid rgba(92,62,66,.15);
@@ -61,7 +57,6 @@
         text-decoration:none; transition: transform .12s ease, box-shadow .12s ease; }
     .qi:hover{ transform: translateY(-2px); box-shadow: 0 8px 18px rgba(92,62,66,.18); }
     .qi svg{ width:20px; height:20px; display:block; }
-
     h1{ font-family:"Fraunces", ui-serif, Georgia, serif; font-weight:700;
         font-size: clamp(28px, 6vw, 48px); margin: 6px 0 4px; letter-spacing:.2px;
         text-shadow: 0 1px 0 rgba(255,255,255,.5); }
@@ -69,7 +64,6 @@
         text-shadow: 0 1px 0 rgba(255,255,255,.6); }
     .bio{ margin: 8px auto 0; max-width: 60ch; font-size: 16px; line-height: 1.6;
         color: var(--ink); text-shadow: 0 1px 0 rgba(255,255,255,.65); }
-
     .catalog-card{ width:100%; max-width: 720px; margin:22px auto 0; background:#fff; border-radius: var(--radius);
       border:1px solid rgba(92,62,66,.12); box-shadow: var(--shadow); padding: 16px; }
     .catalog-title{ font-family:"Fraunces", ui-serif, Georgia, serif; font-size: 20px; margin:0 0 10px; letter-spacing:.2px; color: var(--ink); }
@@ -80,7 +74,6 @@
     .catalog-badge{ position:absolute; right:10px; bottom:10px; background: rgba(255,255,255,.92); color: var(--rose-700);
       border:1px solid rgba(92,62,66,.16); border-radius: 999px; padding: 6px 10px; font-weight:700; font-size: 13px;
       box-shadow: 0 6px 16px rgba(92,62,66,.18); }
-
     .shorts-card{ width:100%; max-width: 720px; margin:22px auto 0; background:#fff; border-radius: var(--radius);
       border:1px solid rgba(92,62,66,.12); box-shadow: var(--shadow); padding:18px 18px 16px; }
     .shorts-header{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom: 12px; }
@@ -94,7 +87,6 @@
     .short:hover img{ transform: scale(1.03); }
     .play{ position:absolute; inset:auto 8px 8px auto; width:34px; height:34px; border-radius:50%; display:grid; place-items:center;
       background: rgba(255,255,255,.9); border:1px solid rgba(92,62,66,.15); color: var(--rose-700); box-shadow: 0 4px 10px rgba(92,62,66,.15); }
-
     .card{ width:100%; max-width: 560px; margin:22px auto 0; background: rgba(255,255,255,.92);
       backdrop-filter: blur(6px); border-radius: var(--radius); border: 1px solid rgba(92,62,66,.16);
       box-shadow: var(--shadow); padding: 20px; }
@@ -108,10 +100,9 @@
     .icon,.go{ width:22px; height:22px; display:grid; place-items:center; color:var(--rose-700); }
     .go{ color:var(--rose-600); }
     .text{ flex:1 }
-
     .reviews-card{ width:100%; max-width:720px; margin:22px auto 0; background:#fff; border-radius: var(--radius);
       border:1px solid rgba(92,62,66,.12); box-shadow: var(--shadow); padding:18px; }
-    .reviews-title{ font-family:"Fraunces", ui-serif, Georgia, serif; font-size:20px; margin:0 0 12px; letter-spacing:.2px; color:var(--ink); }
+    .reviews-title{ font-family:"Fraunces", ui-serif, Georgia, serif; font-size:20px; margin:0 0 12px; letter-spacing:.2px; color: var(--ink); }
     .reviews{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
     @media (max-width:720px){ .reviews{ grid-template-columns:1fr; } }
     .review{ border:1px solid rgba(92,62,66,.12); border-radius:14px; padding:12px; background:#fff; }
@@ -121,13 +112,9 @@
     .name{ font-weight:800; }
     .stars{ color:#E6A400; font-size:14px; letter-spacing:1px; }
     .rev-text{ color:var(--muted); margin:6px 0 0; font-size:14.5px; line-height:1.45; }
-
     footer{ text-align:center; color:#000; font-size:13px; margin-top:28px; text-shadow:none; }
-
-    /* Diag & Editor */
     .diag{position:fixed;left:12px;right:12px;bottom:12px;background:#fff3cd;color:#664d03;border:1px solid #ffecb5;border-radius:12px;padding:12px;box-shadow:0 8px 24px rgba(0,0,0,.15);z-index:9999;font:14px/1.4 system-ui;display:none}
     .diag.show{display:block}
-
     .editor{ position:fixed; right:16px; bottom:16px; width:min(420px,calc(100% - 32px)); max-height:80vh; overflow:auto;
       background:#fff; border:1px solid rgba(0,0,0,.12); border-radius:16px; box-shadow:0 16px 50px rgba(0,0,0,.2); padding:14px; z-index:9998; }
     .editor h3{ margin:0 0 8px; font-family:"Fraunces",ui-serif,Georgia,serif; }
@@ -150,13 +137,10 @@
   <div class="overlay" aria-hidden="true"></div>
 
   <main class="wrap">
-    <!-- HERO -->
     <section class="hero" aria-label="Apresentação">
       <div class="logo">
         <img id="logo-img" src="logo-lamaggie.png" alt="Logotipo">
       </div>
-
-      <!-- Ícones rápidos -->
       <nav class="quick-icons" aria-label="Atalhos rápidos">
         <a class="qi" id="qi-instagram" href="#" target="_blank" rel="noopener" aria-label="Instagram">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="3.8" /><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none"/></svg>
@@ -168,13 +152,10 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6" width="18" height="12" rx="3.5"/><path d="M11 9v6l5-3-5-3z" fill="currentColor" stroke="none"/></svg>
         </a>
       </nav>
-
       <h1 id="site-title">La Maggiê</h1>
       <p class="tagline" id="site-tagline">Artesanato</p>
       <p class="bio" id="site-bio">Bem-vindos ao Portal.</p>
     </section>
-
-    <!-- Card Catálogo -->
     <section class="catalog-card" aria-label="Catálogo">
       <h2 class="catalog-title">Catálogo</h2>
       <a class="catalog-link" id="catalog-link" href="catalogo-lamaggie.html" aria-label="Abrir catálogo">
@@ -184,15 +165,12 @@
         </div>
       </a>
     </section>
-
-    <!-- Card Shorts -->
     <section class="shorts-card" aria-label="Vídeos de Artesanato">
       <div class="shorts-header">
         <h2 class="shorts-title">Vídeos de Artesanato</h2>
         <a class="shorts-more" id="shorts-more" href="videos.html" aria-label="Ver todos os shorts">Ver todos</a>
       </div>
       <div class="shorts-grid" id="shorts-grid">
-        <!-- Fallback -->
         <a class="short" href="videos.html" aria-label="Abrir página de shorts">
           <img src="https://img.youtube.com/vi/VIDEO_ID_1/hqdefault.jpg" alt="Short 1">
           <span class="play" aria-hidden="true">▶</span>
@@ -207,25 +185,19 @@
         </a>
       </div>
     </section>
-
-    <!-- Redes -->
     <section class="card" aria-label="Redes oficiais">
       <nav class="links">
         <a class="btn" id="btn-instagram" href="#" target="_blank" rel="noopener"><span class="icon" aria-hidden="true">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5Z" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.6"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor"/></svg>
         </span><span class="text">Instagram</span><span class="go" aria-hidden="true">➜</span></a>
-
         <a class="btn" id="btn-whatsapp" href="#" target="_blank" rel="noopener"><span class="icon" aria-hidden="true">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M20.5 13.5a8.5 8.5 0 1 1-3.2-6.6l.2.1" stroke="currentColor" stroke-width="1.6"/><path d="M5.5 18.5l-1 3.5 3.6-1A8.5 8.5 0 0 0 21 10.1" stroke="currentColor" stroke-width="1.6"/><path d="M9.8 8.9c-.2.8.5 2 2 3.3s2.5 1.7 3.3 1.5c.3-.1.8-.6 1.1-1l.2-.2c.2-.2.5-.1.6.1l.6 1.1c.2.3.1.7-.1 1-1.1 1.4-2.8 1.9-4.7 1.3-1.9-.6-3.9-2.3-5-4.1-1.2-1.8-1.4-3.6-.8-4.9.2-.4.6-.6 1-.5l1.2.4c.3.1.4.4.3.7l-.2.3c-.3.5-.7.9-.8 1z" fill="currentColor"/></svg>
         </span><span class="text">WhatsApp</span><span class="go" aria-hidden="true">➜</span></a>
-
         <a class="btn" id="btn-youtube" href="#" target="_blank" rel="noopener"><span class="icon" aria-hidden="true">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="2.5" y="5.5" width="19" height="13" rx="3.5" stroke="currentColor" stroke-width="1.6"/><path d="M11 9v6l5-3-5-3z" fill="currentColor"/></svg>
         </span><span class="text">YouTube</span><span class="go" aria-hidden="true">➜</span></a>
       </nav>
     </section>
-
-    <!-- Avaliações -->
     <section class="reviews-card" aria-label="Avaliações de clientes">
       <h2 class="reviews-title">Avaliações dos clientes</h2>
       <div class="reviews" id="reviews">
@@ -235,14 +207,11 @@
         </div>
       </div>
     </section>
-
     <footer>©2025 Todos os direitos reservados</footer>
   </main>
 
   <div id="diag" class="diag"></div>
   <div id="badge" class="badge">Modo editor</div>
-
-  <!-- Painel de login (só no modo editor sem auth) -->
   <div id="login" class="login" style="display:none">
     <h3>Entrar para editar</h3>
     <div class="row">
@@ -251,16 +220,12 @@
       <button id="btnLogin">Entrar</button>
     </div>
   </div>
-
-  <!-- Painel de edição (só para usuários autorizados) -->
   <div id="editor" class="editor" style="display:none">
     <h3>Editar página</h3>
     <label>Título</label><input id="f_title" />
     <label>Tagline</label><input id="f_tagline" />
     <label>Bio</label><textarea id="f_bio" rows="3"></textarea>
-
     <label>Logo URL (SVG/PNG)</label><input id="f_logo" />
-
     <div class="row">
       <div>
         <label>Instagram</label><input id="f_instagram" />
@@ -270,9 +235,7 @@
       </div>
     </div>
     <label>YouTube</label><input id="f_youtube" />
-
     <label>Catalog Cover (arquivo em assetsBase)</label><input id="f_cover" />
-
     <div class="actions">
       <button id="btnSave" class="primary">Salvar</button>
       <button id="btnLogout">Sair</button>
@@ -280,13 +243,11 @@
     <small style="color:#666">Edita <code>sites/{slug}/pages/home</code>. Campos não preenchidos não apagam nada.</small>
   </div>
 
-  <!-- Firebase + Firestore + Auth -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { getFirestore, doc, getDoc, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged, signInAnonymously, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    // Config MOSTREAKI-2025
     const firebaseConfig = {
       apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
       authDomain: "mostreaki-2025.firebaseapp.com",
@@ -296,226 +257,220 @@
       appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
     };
 
-    const app  = initializeApp(firebaseConfig);
-    const db   = getFirestore(app);
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
     const auth = getAuth(app);
 
     const $ = s => document.querySelector(s);
-    const setIf  = (el, attr, val) => { if(el && val) el.setAttribute(attr, val); };
-    const textIf = (el, val) => { if(el && val !== undefined && val !== null) el.textContent = val; };
-    const show   = (el, yes) => { if(el) el.style.display = yes ? "" : "none"; };
-    const showDiag = (msg) => { const d=$("#diag"); if(!d) return; d.textContent=msg; d.classList.add("show"); };
+    const setIf = (el, attr, val) => { if (el && val) el.setAttribute(attr, val); };
+    const textIf = (el, val) => { if (el && val !== undefined && val !== null) el.textContent = val; };
+    const show = (el, yes) => { if (el) el.style.display = yes ? "" : "none"; };
+    const showDiag = (msg) => { const d = $("#diag"); if (d) { d.textContent = msg; d.classList.add("show"); } };
 
-    const url    = new URL(location.href);
-    const SLUG   = "lamaggie";                   // site padrão para visualização
-    const USUARIO = url.searchParams.get("usuario");  // se presente → modo editor para esse slug
+    const url = new URL(location.href);
+    const SLUG = "lamaggie";
+    const USUARIO = url.searchParams.get("usuario");
+    const VIEW_SLUG = USUARIO || SLUG;
     const EDIT_MODE = !!USUARIO;
 
-    if(EDIT_MODE) { $("#badge")?.classList.add("show"); }
-
-    async function getData(path){
-      try{ const snap = await getDoc(doc(db, ...path)); return snap.exists() ? snap.data() : null; }
-      catch(e){ console.warn("Firestore read error:", path.join("/"), e); showDiag("Falha ao ler "+path.join("/")); return null; }
+    async function readDocs(slug) {
+      const siteSnap = await getDoc(doc(db, "sites", slug));
+      const homeSnap = await getDoc(doc(db, "sites", slug, "pages", "home"));
+      return { site: siteSnap, home: homeSnap };
     }
 
-    function applyLogo(url){
-      if(!url) return;
-      const img = $("#logo-img");
-      if(img) img.src = url;
-    }
-    function applyBackground(bg, assetsBase){
-      const desk = bg?.desktop, mob = bg?.mobile;
-      if(desk) document.documentElement.style.setProperty("--bg-desktop", `url('${assetsBase? assetsBase+desk : desk}')`);
-      if(mob)  document.documentElement.style.setProperty("--bg-mobile",  `url('${assetsBase? assetsBase+mob  : mob }')`);
-    }
-    function applySocial(s){
-      if(!s) return;
-      setIf($("#qi-instagram"), "href", s.instagram); setIf($("#btn-instagram"), "href", s.instagram);
-      setIf($("#qi-whatsapp"), "href", s.whatsapp);   setIf($("#btn-whatsapp"), "href", s.whatsapp);
-      setIf($("#qi-youtube"),  "href", s.youtube);    setIf($("#btn-youtube"),  "href", s.youtube);
-    }
-    function applyRoutes(routes){
-      let catalogHref = "catalogo-lamaggie.html";
-      if(Array.isArray(routes)){
-        const cat = routes.find(r => r.path === "/catalogo");
-        if(cat) catalogHref = (cat.type === "external" && cat.url) ? cat.url : (cat.path || catalogHref);
-        const vids = routes.find(r => r.path === "/videos");
-        if(vids) setIf($("#shorts-more"), "href", vids.url || vids.path || "videos.html");
+    async function safeRead(slug) {
+      try {
+        return await readDocs(slug);
+      } catch (e) {
+        if (e?.code !== "permission-denied") throw e;
+        try {
+          await signInAnonymously(auth);
+          await new Promise(res => onAuthStateChanged(auth, () => res(), { once: true }));
+          return await readDocs(slug);
+        } catch (e2) {
+          throw e2;
+        }
       }
+    }
+
+    function apply(siteData, pageData) {
+      const site = siteData?.exists() ? siteData.data() : {};
+      const page = pageData?.exists() ? pageData.data() : {};
+
+      const meta = page.meta || site.meta || {};
+      if (meta.title) { document.title = meta.title; textIf($("#site-title"), meta.title); }
+      if (meta.tagline) textIf($("#site-tagline"), meta.tagline);
+      if (meta.bio) textIf($("#site-bio"), meta.bio);
+
+      const logo = page.logoUrl || page.hero?.logoUrl || site.theme?.logoUrl;
+      if (logo) { const img = $("#logo-img"); if (img) img.src = logo; }
+
+      const assetsBase = page.assetsBase || site.assetsBase || "";
+      const bg = page.bg || site.bg;
+      if (bg?.desktop) document.documentElement.style.setProperty("--bg-desktop", `url('${assetsBase ? assetsBase + bg.desktop : bg.desktop}')`);
+      if (bg?.mobile) document.documentElement.style.setProperty("--bg-mobile", `url('${assetsBase ? assetsBase + bg.mobile : bg.mobile}')`);
+
+      const cover = page.catalogCover || site.catalogCover || page.hero?.cover;
+      if (cover && $("#catalog-cover")) $("#catalog-cover").src = assetsBase ? assetsBase + cover : cover;
+
+      const s = page.social || site.social || {};
+      if (s.instagram) { setIf($("#qi-instagram"), "href", s.instagram); setIf($("#btn-instagram"), "href", s.instagram); }
+      if (s.whatsapp) { setIf($("#qi-whatsapp"), "href", s.whatsapp); setIf($("#btn-whatsapp"), "href", s.whatsapp); }
+      if (s.youtube) { setIf($("#qi-youtube"), "href", s.youtube); setIf($("#btn-youtube"), "href", s.youtube); }
+
+      const routes = page.routes || site.routes || [];
+      let catalogHref = "catalogo-lamaggie.html";
+      const cat = routes.find(r => r.path === "/catalogo");
+      if (cat) catalogHref = (cat.type === "external" && cat.url) ? cat.url : (cat.path || catalogHref);
+      const vids = routes.find(r => r.path === "/videos");
+      if (vids) setIf($("#shorts-more"), "href", vids.url || vids.path || "videos.html");
       setIf($("#catalog-link"), "href", catalogHref);
-    }
-    function applyShorts(ids){
-      if(!Array.isArray(ids) || !ids.length) return;
-      const grid = $("#shorts-grid");
-      if(!grid) return;
-      grid.innerHTML = ids.slice(0,3).map(id => `
-        <a class="short" href="https://www.youtube.com/shorts/${id}" target="_blank" rel="noopener">
-          <img src="https://img.youtube.com/vi/${id}/hqdefault.jpg" alt="Short ${id}">
-          <span class="play" aria-hidden="true">▶</span>
-        </a>
-      `).join("");
-    }
-    function applyReviews(reviews){
-      if(!Array.isArray(reviews) || !reviews.length) return;
-      const box = $("#reviews");
-      if(!box) return;
-      box.innerHTML = reviews.slice(0,3).map(r => {
-        const stars = Math.max(0, Math.min(5, r.stars || 5));
-        const initials = (r.initials || (r.name||"").split(" ").map(p=>p[0]).slice(0,2).join("") || "CL").toUpperCase();
-        return `
-          <div class="review">
-            <div class="rev-head">
-              <div class="avatar">${initials}</div>
-              <div>
-                <div class="name">${r.name || "Cliente"}</div>
-                <div class="stars">${"★★★★★".slice(0,stars)}${stars<5?"☆☆☆☆☆".slice(0,5-stars):""}</div>
+
+      if (Array.isArray(page.shortsIds) && page.shortsIds.length) {
+        const grid = $("#shorts-grid");
+        if (grid) {
+          grid.innerHTML = page.shortsIds.slice(0, 3).map(id => `
+            <a class="short" href="https://www.youtube.com/shorts/${id}" target="_blank" rel="noopener">
+              <img src="https://img.youtube.com/vi/${id}/hqdefault.jpg" alt="Short ${id}">
+              <span class="play" aria-hidden="true">▶</span>
+            </a>
+          `).join("");
+        }
+      }
+
+      if (Array.isArray(page.reviews) && page.reviews.length) {
+        const box = $("#reviews");
+        if (box) {
+          box.innerHTML = page.reviews.slice(0, 3).map(r => {
+            const stars = Math.max(0, Math.min(5, r.stars || 5));
+            const initials = (r.initials || (r.name || "").split(" ").map(p => p[0]).slice(0, 2).join("") || "CL").toUpperCase();
+            return `
+              <div class="review">
+                <div class="rev-head">
+                  <div class="avatar">${initials}</div>
+                  <div>
+                    <div class="name">${r.name || "Cliente"}</div>
+                    <div class="stars">${"★★★★★".slice(0, stars)}${stars < 5 ? "☆☆☆☆☆".slice(0, 5 - stars) : ""}</div>
+                  </div>
+                </div>
+                <p class="rev-text">${r.text || ""}</p>
               </div>
-            </div>
-            <p class="rev-text">${r.text || ""}</p>
-          </div>
-        `;
-      }).join("");
+            `;
+          }).join("");
+        }
+      }
     }
 
-    // Carrega visualização pública (sem ?usuario)
-    async function loadPublic(){
-      const page = await getData(["sites", SLUG, "pages", "home"]);
-      const site = await getData(["sites", SLUG]);
-
-      const meta = page?.meta || site?.meta;
-      if(meta){ textIf($("#site-title"), meta.title || "La Maggiê"); document.title = meta.title || document.title;
-                textIf($("#site-tagline"), meta.tagline || "Artesanato");
-                textIf($("#site-bio"), meta.bio || "Bem-vindos ao Portal."); }
-
-      applyLogo(page?.logoUrl || page?.hero?.logoUrl || site?.theme?.logoUrl);
-
-      const assetsBase = page?.assetsBase || site?.assetsBase || "";
-      applyBackground(page?.bg || site?.bg, assetsBase);
-
-      const cover = page?.catalogCover || site?.catalogCover;
-      if(cover && $("#catalog-cover")) $("#catalog-cover").src = assetsBase ? assetsBase + cover : cover;
-      else if(page?.hero?.cover && $("#catalog-cover")) $("#catalog-cover").src = page.hero.cover;
-
-      applySocial(page?.social || site?.social);
-      applyRoutes(page?.routes || site?.routes);
-      applyShorts(page?.shortsIds);
-      applyReviews(page?.reviews);
-    }
-
-    // ———————— MODO EDITOR ————————
-    async function isAuthorized(uid, slug){
-      const site = await getData(["sites", slug]);
-      if(!site) return false;
-      const owner = site?.permissions?.ownerUid;
-      const editors = site?.permissions?.editors || [];
+    async function isAuthorized(uid, slug) {
+      const site = await getDoc(doc(db, "sites", slug));
+      if (!site.exists()) return false;
+      const { permissions } = site.data();
+      const owner = permissions?.ownerUid;
+      const editors = permissions?.editors || [];
       return (uid && (uid === owner || editors.includes(uid)));
     }
 
-    async function loadEditor(slug, user){
-      // verifica autorização
+    async function loadEditor(slug, user) {
       const ok = await isAuthorized(user.uid, slug);
-      if(!ok){ showDiag("Você entrou, mas não tem permissão para editar este site."); return; }
+      if (!ok) {
+        showDiag("Você entrou, mas não tem permissão para editar este site.");
+        return;
+      }
 
-      // mostra painel editor
       show($("#editor"), true);
+      const page = await getDoc(doc(db, "sites", slug, "pages", "home"));
+      const site = await getDoc(doc(db, "sites", slug));
+      const pageData = page.exists() ? page.data() : {};
+      const siteData = site.exists() ? site.data() : {};
 
-      // carrega dados atuais
-      const page = await getData(["sites", slug, "pages", "home"]);
-      const site = await getData(["sites", slug]);
+      const meta = pageData.meta || siteData.meta || {};
+      $("#f_title").value = meta.title || "";
+      $("#f_tagline").value = meta.tagline || "";
+      $("#f_bio").value = meta.bio || "";
+      $("#f_logo").value = pageData.logoUrl || pageData.hero?.logoUrl || siteData.theme?.logoUrl || "";
+      $("#f_instagram").value = (pageData.social || siteData.social || {}).instagram || "";
+      $("#f_whatsapp").value = (pageData.social || siteData.social || {}).whatsapp || "";
+      $("#f_youtube").value = (pageData.social || siteData.social || {}).youtube || "";
+      $("#f_cover").value = pageData.catalogCover || siteData.catalogCover || "";
 
-      const meta = page?.meta || site?.meta || {};
-      $("#f_title").value    = meta.title   || "";
-      $("#f_tagline").value  = meta.tagline || "";
-      $("#f_bio").value      = meta.bio     || "";
-      $("#f_logo").value     = page?.logoUrl || page?.hero?.logoUrl || site?.theme?.logoUrl || "";
-      $("#f_instagram").value= (page?.social || site?.social || {}).instagram || "";
-      $("#f_whatsapp").value = (page?.social || site?.social || {}).whatsapp  || "";
-      $("#f_youtube").value  = (page?.social || site?.social || {}).youtube   || "";
-      $("#f_cover").value    = page?.catalogCover || site?.catalogCover || "";
-
-      // salvar
       $("#btnSave").onclick = async () => {
         const payload = {};
         const t = $("#f_title").value.trim();
         const g = $("#f_tagline").value.trim();
         const b = $("#f_bio").value.trim();
         const l = $("#f_logo").value.trim();
-        const ig= $("#f_instagram").value.trim();
-        const wa= $("#f_whatsapp").value.trim();
-        const yt= $("#f_youtube").value.trim();
-        const cv= $("#f_cover").value.trim();
+        const ig = $("#f_instagram").value.trim();
+        const wa = $("#f_whatsapp").value.trim();
+        const yt = $("#f_youtube").value.trim();
+        const cv = $("#f_cover").value.trim();
 
-        if(t || g || b){
-          payload["meta"] = {
-            ...(page?.meta||{}),
-            ...(t?{title:t}:{})
-          };
-          if(g) payload.meta.tagline = g;
-          if(b) payload.meta.bio = b;
+        if (t || g || b) {
+          payload.meta = { ...(pageData.meta || {}), ...(t ? { title: t } : {}) };
+          if (g) payload.meta.tagline = g;
+          if (b) payload.meta.bio = b;
         }
-        if(l) payload["logoUrl"] = l;
-        if(cv) payload["catalogCover"] = cv;
-        if(ig || wa || yt){
-          payload["social"] = {
-            ...((page?.social)||{}),
-            ...(ig?{instagram:ig}:{})
-          };
-          if(wa) payload.social.whatsapp = wa;
-          if(yt) payload.social.youtube  = yt;
+        if (l) payload.logoUrl = l;
+        if (cv) payload.catalogCover = cv;
+        if (ig || wa || yt) {
+          payload.social = { ...(pageData.social || {}), ...(ig ? { instagram: ig } : {}) };
+          if (wa) payload.social.whatsapp = wa;
+          if (yt) payload.social.youtube = yt;
         }
 
-        try{
-          await setDoc(doc(db,"sites",slug,"pages","home"), payload, {merge:true});
+        try {
+          await setDoc(doc(db, "sites", slug, "pages", "home"), payload, { merge: true });
           showDiag("Salvo! Recarregue para ver.");
-        }catch(e){
-          console.error(e); showDiag("Erro ao salvar. Veja o console.");
+        } catch (e) {
+          console.error(e);
+          showDiag("Erro ao salvar. Veja o console.");
         }
       };
 
       $("#btnLogout").onclick = () => signOut(auth);
     }
 
-    function initAuthFlow(){
-      const loginBox = $("#login");
-      const editorBox = $("#editor");
-
-      if(!EDIT_MODE){ return; } // nada a fazer
-
-      show(loginBox, true); // mostra caixa de login por padrão
+    function initAuthFlow() {
+      if (!EDIT_MODE) return;
+      $("#badge")?.classList.add("show");
+      show($("#login"), true);
 
       onAuthStateChanged(auth, async (user) => {
-        if(user){
-          show(loginBox, false);
+        if (user) {
+          show($("#login"), false);
           await loadEditor(USUARIO, user);
-        }else{
-          show(editorBox, false);
-          // botão login
+        } else {
+          show($("#editor"), false);
           $("#btnLogin").onclick = async () => {
             const email = $("#email").value.trim();
-            const pass  = $("#password").value.trim();
-            try{
+            const pass = $("#password").value.trim();
+            try {
               await signInWithEmailAndPassword(auth, email, pass);
-            }catch(e){
-              console.error(e); showDiag("Falha no login. Cheque email/senha e permissões.");
+            } catch (e) {
+              console.error(e);
+              showDiag("Falha no login. Cheque email/senha e permissões.");
             }
           };
         }
       });
     }
 
-    (async function boot(){
-      if(EDIT_MODE){
-        // editor visualiza e edita o site "USUARIO"
-        await loadPublic(); // carrega UI com dados atuais (sem travar)
-        initAuthFlow();     // ativa login + painel editor
-      }else{
-        // público visualiza o site padrão SLUG
-        await loadPublic();
+    (async function boot() {
+      try {
+        const { site, home } = await safeRead(VIEW_SLUG);
+        if (!home?.exists() && !site?.exists()) {
+          showDiag(`Documento não encontrado em sites/${VIEW_SLUG} (verifique o projeto/caminho).`);
+          return;
+        }
+        apply(site, home);
+        if (EDIT_MODE) initAuthFlow();
+      } catch (e) {
+        console.error(e);
+        showDiag(e?.code === "permission-denied"
+          ? "Leitura negada pelas rules (tente habilitar Auth Anônima)."
+          : `Falha ao ler Firestore: ${e?.message || e}`);
       }
-    })().catch(err => {
-      console.error("Erro geral:", err);
-      showDiag("Erro ao inicializar. Veja o console (F12).");
-    });
+    })();
   </script>
 </body>
 </html>
