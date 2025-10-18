@@ -293,18 +293,28 @@
 
     async function safeRead(slug) {
       try {
-        return await readDocs(slug);
+        // Tenta leitura sem autenticação primeiro
+        const result = await readDocs(slug);
+        if (result.site.exists() || result.home.exists()) return result;
+        throw new Error("Documentos não encontrados");
       } catch (e) {
-        if (e?.code !== "permission-denied") throw e;
-        console.warn("Permissão negada, tentando login anônimo...");
-        try {
-          await signInAnonymously(auth);
-          await new Promise(res => onAuthStateChanged(auth, () => res(), { once: true }));
-          return await readDocs(slug);
-        } catch (e2) {
-          console.error("Erro no safeRead:", e2);
-          throw e2;
+        if (e?.code === "permission-denied" && !EDIT_MODE) {
+          console.warn("Leitura pública negada, mas modo editor não está ativo. Verifique as regras do Firestore.");
+          showDiag("Erro: Leitura negada. As regras do Firestore podem exigir autenticação pública.");
+          return { site: null, home: null }; // Retorna nulo pra evitar crash
+        } else if (e?.code === "permission-denied" && EDIT_MODE) {
+          console.warn("Permissão negada, tentando login anônimo para modo editor...");
+          try {
+            await signInAnonymously(auth);
+            await new Promise(res => onAuthStateChanged(auth, () => res(), { once: true }));
+            return await readDocs(slug);
+          } catch (e2) {
+            console.error("Erro no login anônimo:", e2);
+            showDiag("Erro: Falha na autenticação anônima. Verifique as configurações do Firebase.");
+            throw e2;
+          }
         }
+        throw e;
       }
     }
 
@@ -542,7 +552,7 @@
       } catch (e) {
         console.error("Erro geral:", e);
         showDiag(e?.code === "permission-denied"
-          ? "Leitura negada. Tente habilitar autenticação anônima no Firebase."
+          ? "Erro: Leitura negada. Ajuste as regras do Firestore para leitura pública ou habilite autenticação anônima."
           : `Erro ao ler Firestore: ${e?.message || e}`);
       }
     })();
