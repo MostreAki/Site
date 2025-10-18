@@ -104,7 +104,7 @@
       padding: 18px 18px 16px;
     }
     .shorts-header{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom: 12px; }
-    .shorts-title{ font-family:"Fraunces", ui-serif, Georgia, serif; font-size: 20px; margin:0; letter-spacing:.2px; color:var(--ink); }
+    .shorts-title{ font-family:"Fraunces", ui-serif, Georgia, serif; font-size: 20px; margin:0; letter-spacing:.2px; color: var(--ink); }
     .shorts-more{ display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:12px; text-decoration:none; font-weight:700; color:var(--rose-700);
       background: linear-gradient(180deg, rgba(217,140,147,.18), rgba(217,140,147,.08)); border:1px solid rgba(176,89,99,.22); }
     .shorts-grid{ display:grid; grid-template-columns: repeat(3, 1fr); gap:10px; }
@@ -289,12 +289,14 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    // 🔑 Cole as chaves do MESMO projeto do teu Firestore
+    // 🔑 Config do projeto MOSTREAKI-2025 (as chaves que você me passou)
     const firebaseConfig = {
-      /* apiKey: "...",
-         authDomain: "...",
-         projectId: "...",
-         appId: "..." */
+      apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
+      authDomain: "mostreaki-2025.firebaseapp.com",
+      projectId: "mostreaki-2025",
+      storageBucket: "mostreaki-2025.firebasestorage.app",
+      messagingSenderId: "748712068097",
+      appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
     };
 
     /* ========= Helpers ========= */
@@ -438,7 +440,6 @@
       applyShorts(page?.shortsIds);
       applyReviews(page?.reviews);
 
-      // Mensagem final de ambiente
       console.log("USUARIO:", USUARIO, { page, site });
     })().catch(err => {
       console.error("Erro geral:", err);
