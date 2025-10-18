@@ -10,10 +10,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
 
   <style>
-    /* [Mantive o CSS original intacto] */
     :root{
       --bg-desktop: url('bg-desktop.jpg');
-      --bg-mobile:  url('bg-mobile.jpg');
+      --bg-mobile: url('bg-mobile.jpg');
       --cream:#F8F1EB;
       --rose:#D98C93;
       --rose-600:#C66E77;
@@ -140,7 +139,7 @@
   <main class="wrap">
     <section class="hero" aria-label="Apresentação">
       <div class="logo">
-        <img id="logo-img" src="" alt="Logotipo"> <!-- Removi o src fixo pra usar o dinâmico -->
+        <img id="logo-img" src="" alt="Logotipo">
       </div>
       <nav class="quick-icons" aria-label="Atalhos rápidos">
         <a class="qi" id="qi-instagram" href="#" target="_blank" rel="noopener" aria-label="Instagram">
@@ -161,7 +160,7 @@
       <h2 class="catalog-title">Catálogo</h2>
       <a class="catalog-link" id="catalog-link" href="catalogo-lamaggie.html" aria-label="Abrir catálogo">
         <div class="catalog-cover">
-          <img id="catalog-cover" src="" alt="Imagem de capa do catálogo"> <!-- Removi o src fixo -->
+          <img id="catalog-cover" src="" alt="Imagem de capa do catálogo">
           <span class="catalog-badge">Abrir catálogo ➜</span>
         </div>
       </a>
@@ -226,8 +225,8 @@
     <label>Título</label><input id="f_title" />
     <label>Tagline</label><input id="f_tagline" />
     <label>Bio</label><textarea id="f_bio" rows="3"></textarea>
-    <label>Logo URL (SVG/PNG)</label><input id="f_logo" placeholder="Ex.: logo.png ou URL completa" />
-    <label>Assets Base (opcional)</label><input id="f_assetsBase" placeholder="Ex.: https://teu-site.vercel.app/assets/sites/lamaggie/" />
+    <label>Logo URL (SVG/PNG)</label><input id="f_logo" placeholder="Ex.: https://raw.githubusercontent.com/.../logo.png" />
+    <label>Catalog Cover URL</label><input id="f_cover" placeholder="Ex.: https://raw.githubusercontent.com/.../capa.jpg" />
     <div class="row">
       <div>
         <label>Instagram</label><input id="f_instagram" placeholder="URL completa" />
@@ -237,7 +236,6 @@
       </div>
     </div>
     <label>YouTube</label><input id="f_youtube" placeholder="URL completa" />
-    <label>Catalog Cover (arquivo em assetsBase)</label><input id="f_cover" placeholder="Ex.: capa.jpg" />
     <label>Shorts IDs (separados por vírgula)</label><input id="f_shortsIds" placeholder="Ex.: VIDEO_ID_1,VIDEO_ID_2" />
     <label>Avaliações (JSON)</label><textarea id="f_reviews" rows="4" placeholder='Ex.: [{"name":"Cliente A","stars":5,"text":"Ótimo!"}]'></textarea>
     <div class="actions">
@@ -248,9 +246,9 @@
   </div>
 
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signInAnonymously, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signInAnonymously, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
@@ -278,15 +276,24 @@
       }
     };
 
-    const url = new URL(location.href);
-    const SLUG = "lamaggie";
-    const USUARIO = url.searchParams.get("usuario");
-    const VIEW_SLUG = USUARIO || SLUG;
-    const EDIT_MODE = !!USUARIO;
+    function getSlug() {
+      const m = location.pathname.match(/([^/]+)\.html$/); // Ex.: lamaggie.html → slug = lamaggie
+      if (m) return m[1];
+      const u = new URL(location.href);
+      return u.searchParams.get('slug') || u.searchParams.get('c') || '';
+    }
+    const slug = getSlug();
+
+    const PLACEHOLDER = 'data:image/svg+xml;utf8,' + encodeURIComponent(
+      `<svg xmlns="http://www.w3.org/2000/svg" width="140" height="140">
+        <rect width="100%" height="100%" fill="#F8F1EB"/>
+        <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" fill="#87636A" font-size="16">Sem imagem</text>
+      </svg>`
+    );
 
     async function readDocs(slug) {
       console.log(`Tentando ler documentos para slug: ${slug}`);
-      const siteRef = doc(db, "sites", slug);
+      const siteRef = doc(db, "sites", slug, "meta", "config");
       const homeRef = doc(db, "sites", slug, "pages", "home");
       const siteSnap = await getDoc(siteRef);
       const homeSnap = await getDoc(homeRef);
@@ -298,7 +305,6 @@
     async function safeRead(slug) {
       try {
         const result = await readDocs(slug);
-        console.log("Resultado da leitura:", result);
         if (result.site.exists() || result.home.exists()) {
           return result;
         }
@@ -334,51 +340,34 @@
 
       const meta = page.meta || site.meta || {};
       if (meta.title) {
-        document.title = meta.title;
+        document.title = `${meta.title} — MostreAki`;
         textIf($("#site-title"), meta.title);
       }
       if (meta.tagline) textIf($("#site-tagline"), meta.tagline);
       if (meta.bio) textIf($("#site-bio"), meta.bio);
 
-      const assetsBase = page.assetsBase || site.assetsBase || ""; // Usa o assetsBase do Firestore
-      console.log("Assets base:", assetsBase);
-
-      const logo = page.logoUrl || page.hero?.logoUrl || site.theme?.logoUrl || "logo-lamaggie.png";
-      console.log("Logo URL base:", logo);
-      const logoUrl = assetsBase && !logo.startsWith("http") ? `${assetsBase}${logo}` : logo; // Concatena assetsBase
+      const logoUrl = page.logoUrl || site.logoUrl || PLACEHOLDER;
       const img = $("#logo-img");
       if (img && logoUrl) {
         img.src = logoUrl;
         img.onerror = () => {
           console.error("Erro ao carregar imagem do logo:", logoUrl);
-          showDiag("Erro: Não foi possível carregar o logo. Verifique a URL ou a pasta assets.");
-          img.src = "/logo-lamaggie.png"; // Fallback na raiz do deploy
+          showDiag("Erro: Não foi possível carregar o logo. Verifique a URL.");
+          img.src = PLACEHOLDER;
         };
-        img.onload = () => console.log("Logo carregado:", logoUrl);
-      } else if (!logoUrl) {
-        console.warn("Nenhuma logoUrl encontrada, usando fallback.");
-        showDiag("Aviso: Nenhuma URL de logo no Firestore.");
-        img.src = "/logo-lamaggie.png"; // Fallback na raiz
       }
 
-      const bg = page.bg || site.bg;
-      if (bg?.desktop) {
-        const bgDesktop = assetsBase && !bg.desktop.startsWith("http") ? `${assetsBase}${bg.desktop}` : bg.desktop;
-        document.documentElement.style.setProperty("--bg-desktop", `url('${bgDesktop}')`);
-      }
-      if (bg?.mobile) {
-        const bgMobile = assetsBase && !bg.mobile.startsWith("http") ? `${assetsBase}${bg.mobile}` : bg.mobile;
-        document.documentElement.style.setProperty("--bg-mobile", `url('${bgMobile}')`);
-      }
+      const bg = page.bg || site.bg || {};
+      if (bg.desktop) document.documentElement.style.setProperty("--bg-desktop", `url('${bg.desktop}')`);
+      if (bg.mobile) document.documentElement.style.setProperty("--bg-mobile", `url('${bg.mobile}')`);
 
-      const cover = page.catalogCover || site.catalogCover || page.hero?.cover || "catalogo-capa.jpg";
-      const coverUrl = assetsBase && !cover.startsWith("http") ? `${assetsBase}${cover}` : cover;
+      const coverUrl = page.catalogCover || site.catalogCover || PLACEHOLDER;
       if (coverUrl && $("#catalog-cover")) {
         $("#catalog-cover").src = coverUrl;
         $("#catalog-cover").onerror = () => {
           console.error("Erro ao carregar capa:", coverUrl);
           showDiag("Erro: Não foi possível carregar a capa do catálogo.");
-          $("#catalog-cover").src = "/catalogo-capa.jpg"; // Fallback na raiz
+          $("#catalog-cover").src = PLACEHOLDER;
         };
       }
 
@@ -388,18 +377,19 @@
       if (s.youtube) { setIf($("#qi-youtube"), "href", s.youtube); setIf($("#btn-youtube"), "href", s.youtube); }
 
       const routes = page.routes || site.routes || [];
-      let catalogHref = "catalogo-lamaggie.html";
+      let catalogHref = `catalogo-${slug}.html`;
       const cat = routes.find(r => r.path === "/catalogo");
       if (cat) catalogHref = (cat.type === "external" && cat.url) ? cat.url : (cat.path || catalogHref);
+      setIf($("#catalog-link"), "href", catalogHref);
+
       const vids = routes.find(r => r.path === "/videos");
       if (vids) setIf($("#shorts-more"), "href", vids.url || vids.path || "videos.html");
-      setIf($("#catalog-link"), "href", catalogHref);
 
       if (Array.isArray(page.shortsIds) && page.shortsIds.length) {
         const grid = $("#shorts-grid");
         if (grid) {
           grid.innerHTML = page.shortsIds.slice(0, 3).map(id => `
-            <a class="short" href="https://www.youtube.com/shorts/${id}" target="_blank" rel="noopener">
+            <a class="short" href="https://www.youtube.com/shorts/${id}" target="_blank" rel="noopener" aria-label="Assistir short ${id}">
               <img src="https://img.youtube.com/vi/${id}/hqdefault.jpg" alt="Short ${id}">
               <span class="play" aria-hidden="true">▶</span>
             </a>
@@ -453,7 +443,7 @@
 
       show($("#editor"), true);
       const page = await getDoc(doc(db, "sites", slug, "pages", "home"));
-      const site = await getDoc(doc(db, "sites", slug));
+      const site = await getDoc(doc(db, "sites", slug, "meta", "config"));
       const pageData = page.exists() ? page.data() : {};
       const siteData = site.exists() ? site.data() : {};
       console.log("Dados para editor - Page:", pageData, "Site:", siteData);
@@ -462,12 +452,11 @@
       $("#f_title").value = meta.title || "";
       $("#f_tagline").value = meta.tagline || "";
       $("#f_bio").value = meta.bio || "";
-      $("#f_logo").value = pageData.logoUrl || pageData.hero?.logoUrl || siteData.theme?.logoUrl || "";
-      $("#f_assetsBase").value = pageData.assetsBase || siteData.assetsBase || "";
+      $("#f_logo").value = pageData.logoUrl || siteData.logoUrl || "";
+      $("#f_cover").value = pageData.catalogCover || siteData.catalogCover || "";
       $("#f_instagram").value = (pageData.social || siteData.social || {}).instagram || "";
       $("#f_whatsapp").value = (pageData.social || siteData.social || {}).whatsapp || "";
       $("#f_youtube").value = (pageData.social || siteData.social || {}).youtube || "";
-      $("#f_cover").value = pageData.catalogCover || siteData.catalogCover || "";
       $("#f_shortsIds").value = Array.isArray(pageData.shortsIds) ? pageData.shortsIds.join(",") : "";
       $("#f_reviews").value = Array.isArray(pageData.reviews) ? JSON.stringify(pageData.reviews, null, 2) : "";
 
@@ -477,27 +466,17 @@
         const g = $("#f_tagline").value.trim();
         const b = $("#f_bio").value.trim();
         const l = $("#f_logo").value.trim();
-        const ab = $("#f_assetsBase").value.trim();
+        const cv = $("#f_cover").value.trim();
         const ig = $("#f_instagram").value.trim();
         const wa = $("#f_whatsapp").value.trim();
         const yt = $("#f_youtube").value.trim();
-        const cv = $("#f_cover").value.trim();
         const si = $("#f_shortsIds").value.trim();
         const rv = $("#f_reviews").value.trim();
 
-        if (t || g || b) {
-          payload.meta = { ...(pageData.meta || {}), ...(t ? { title: t } : {}) };
-          if (g) payload.meta.tagline = g;
-          if (b) payload.meta.bio = b;
-        }
+        if (t || g || b) payload.meta = { ...(pageData.meta || {}), ...(t ? { title: t } : {}), ...(g ? { tagline: g } : {}), ...(b ? { bio: b } : {}) };
         if (l) payload.logoUrl = l;
-        if (ab) payload.assetsBase = ab;
         if (cv) payload.catalogCover = cv;
-        if (ig || wa || yt) {
-          payload.social = { ...(pageData.social || {}), ...(ig ? { instagram: ig } : {}) };
-          if (wa) payload.social.whatsapp = wa;
-          if (yt) payload.social.youtube = yt;
-        }
+        if (ig || wa || yt) payload.social = { ...(pageData.social || {}), ...(ig ? { instagram: ig } : {}), ...(wa ? { whatsapp: wa } : {}), ...(yt ? { youtube: yt } : {}) };
         if (si) payload.shortsIds = si.split(",").map(id => id.trim()).filter(id => id);
         if (rv) {
           try {
@@ -512,7 +491,7 @@
         try {
           await setDoc(doc(db, "sites", slug, "pages", "home"), payload, { merge: true });
           showDiag("Salvo com sucesso! Recarregue para ver as mudanças.");
-          apply(await getDoc(doc(db, "sites", slug)), page); // Reaplica dados após salvar
+          apply(await getDoc(doc(db, "sites", slug, "meta", "config")), await getDoc(doc(db, "sites", slug, "pages", "home")));
         } catch (e) {
           console.error("Erro ao salvar:", e);
           showDiag("Erro ao salvar. Veja o console para detalhes.");
@@ -531,7 +510,7 @@
         console.log("Estado de autenticação:", user ? `Logado (UID: ${user.uid})` : "Deslogado");
         if (user) {
           show($("#login"), false);
-          await loadEditor(USUARIO, user);
+          await loadEditor(slug, user);
         } else {
           show($("#editor"), false);
           $("#btnLogin").onclick = async () => {
@@ -551,10 +530,10 @@
 
     (async function boot() {
       try {
-        const { site, home } = await safeRead(VIEW_SLUG);
+        const { site, home } = await safeRead(slug);
         if (!home?.exists() && !site?.exists()) {
-          console.warn(`Nenhum documento encontrado em sites/${VIEW_SLUG} ou sites/${VIEW_SLUG}/pages/home`);
-          showDiag(`Documento não encontrado em sites/${VIEW_SLUG}. Verifique o slug, a estrutura ou o projeto no Firebase.`);
+          console.warn(`Nenhum documento encontrado em sites/${slug}/meta/config ou sites/${slug}/pages/home`);
+          showDiag(`Documento não encontrado em sites/${slug}. Verifique o slug, a estrutura ou o projeto no Firebase.`);
           return;
         }
         apply(site, home);
