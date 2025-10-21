@@ -1,108 +1,108 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>MostreAki</title>
-<link rel="icon" href="favicon.ico" type="image/x-icon"/>
-<link rel="manifest" href="manifest.json"/>
-<meta name="theme-color" content="#ffffff"/>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MostreAki</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon"/>
+  <link rel="manifest" href="manifest.json"/>
+  <meta name="theme-color" content="#ffffff"/>
 
-<style>
-  *{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
-  body{
-    background-image:url("fundo-mobile-mostreaki.png");
-    background-size:cover;background-repeat:no-repeat;background-attachment:fixed;
-    min-height:100vh;display:flex;flex-direction:column;
-  }
-  @media (min-width:768px){ body{ background-image:url("fundo-desktop-mostreaki.png"); } }
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
+    body{
+      background-image:url("fundo-mobile-mostreaki.png");
+      background-size:cover;background-repeat:no-repeat;background-attachment:fixed;
+      min-height:100vh;display:flex;flex-direction:column;
+    }
+    @media (min-width:768px){ body{ background-image:url("fundo-desktop-mostreaki.png"); } }
 
-  header{
-    background:#c2e7df;height:60px;display:flex;align-items:center;justify-content:space-between;
-    padding:0 20px;box-shadow:0 2px 4px rgba(0,0,0,.1);position:relative;
-  }
-  .logo-container{display:flex;align-items:center}
-  .logo-container img{height:40px;margin-right:10px}
-  .logo{font-size:1.5rem;font-weight:bold}
-  .logo .mostre{color:#00C2BF}.logo .aki{color:#FA1E39}
+    header{
+      background:#c2e7df;height:60px;display:flex;align-items:center;justify-content:space-between;
+      padding:0 20px;box-shadow:0 2px 4px rgba(0,0,0,.1);position:relative;
+    }
+    .logo-container{display:flex;align-items:center}
+    .logo-container img{height:40px;margin-right:10px}
+    .logo{font-size:1.5rem;font-weight:bold}
+    .logo .mostre{color:#00C2BF}.logo .aki{color:#FA1E39}
 
-  .menu-icon{font-size:1.5rem;cursor:pointer}
-  .menu-list{
-    position:absolute;top:60px;right:20px;background:#16807C;border:2px solid #000;border-radius:6px;
-    display:none;flex-direction:column;padding:10px;z-index:1000;
-  }
-  .menu-list a{
-    text-decoration:none;color:#fff;padding:10px 15px;border-radius:6px;font-weight:bold;
-    background:#FA1E39;margin-bottom:8px;text-align:center;
-  }
-  .menu-list a:hover{background:#b8313b}
+    .menu-icon{font-size:1.5rem;cursor:pointer}
+    .menu-list{
+      position:absolute;top:60px;right:20px;background:#16807C;border:2px solid #000;border-radius:6px;
+      display:none;flex-direction:column;padding:10px;z-index:1000;
+    }
+    .menu-list a{
+      text-decoration:none;color:#fff;padding:10px 15px;border-radius:6px;font-weight:bold;
+      background:#FA1E39;margin-bottom:8px;text-align:center;
+    }
+    .menu-list a:hover{background:#b8313b}
 
-  .banner video{width:100%;height:auto}
+    .banner video{width:100%;height:auto}
 
-  .section{
-    background:#fff;margin:40px auto;padding:20px;width:80%;border-radius:10px;
-    box-shadow:0 2px 8px rgba(0,0,0,.1);text-align:center;
-  }
-  .section h2{color:#008b8b;margin-bottom:10px}
+    .section{
+      background:#fff;margin:40px auto;padding:20px;width:80%;border-radius:10px;
+      box-shadow:0 2px 8px rgba(0,0,0,.1);text-align:center;
+    }
+    .section h2{color:#008b8b;margin-bottom:10px}
 
-  .btn{
-    display:inline-block;margin-top:15px;padding:10px 20px;background:#d73e45;color:#fff;
-    border:none;border-radius:5px;text-decoration:none;font-weight:bold;
-  }
+    .btn{
+      display:inline-block;margin-top:15px;padding:10px 20px;background:#d73e45;color:#fff;
+      border:none;border-radius:5px;text-decoration:none;font-weight:bold;
+    }
 
-  .header-auth{display:flex;align-items:center;gap:10px}
-  #btnAbrirLogin{
-    background:#15b0af;color:#fff;font-weight:bold;border:none;border-radius:8px;
-    padding:8px 12px;cursor:pointer;
-  }
-  .user-circle{
-    background:#15b0af;color:#fff;font-weight:bold;border-radius:50%;
-    width:32px;height:32px;display:none;align-items:center;justify-content:center;
-    background-size:cover;background-position:center;font-size:.9rem;
-  }
+    .header-auth{display:flex;align-items:center;gap:10px}
+    #btnAbrirLogin{
+      background:#15b0af;color:#fff;font-weight:bold;border:none;border-radius:8px;
+      padding:8px 12px;cursor:pointer;
+    }
+    .user-circle{
+      background:#15b0af;color:#fff;font-weight:bold;border-radius:50%;
+      width:32px;height:32px;display:none;align-items:center;justify-content:center;
+      background-size:cover;background-position:center;font-size:.9rem;
+    }
 
-  footer{background:#c2e7df;padding:20px;text-align:center;color:#555;font-size:.9rem;margin-top:auto}
+    footer{background:#c2e7df;padding:20px;text-align:center;color:#555;font-size:.9rem;margin-top:auto}
 
-  /* ===== Modal de autenticação (com LOGIN embutido) ===== */
-  .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:9999;padding:20px}
-  .modal-card{
-    background:#fff;width:100%;max-width:420px;border-radius:16px;
-    box-shadow:0 20px 60px rgba(0,0,0,.25);overflow:hidden;border:2px solid #c2e7df;
-  }
-  .modal-head{
-    background:linear-gradient(90deg,#c2e7df,#15b0af);
-    padding:16px 18px;color:#0b4d4c;display:flex;align-items:center;justify-content:space-between;
-  }
-  .modal-head h2{font-size:1.1rem;color:#063b39}
-  .modal-close{background:transparent;border:none;font-size:22px;line-height:1;cursor:pointer;color:#063b39}
-  .modal-body{padding:18px}
-  .modal-body p.muted{color:#555;margin-bottom:10px}
+    /* Modal de autenticação (com LOGIN embutido) */
+    .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:9999;padding:20px}
+    .modal-card{
+      background:#fff;width:100%;max-width:420px;border-radius:16px;
+      box-shadow:0 20px 60px rgba(0,0,0,.25);overflow:hidden;border:2px solid #c2e7df;
+    }
+    .modal-head{
+      background:linear-gradient(90deg,#c2e7df,#15b0af);
+      padding:16px 18px;color:#0b4d4c;display:flex;align-items:center;justify-content:space-between;
+    }
+    .modal-head h2{font-size:1.1rem;color:#063b39}
+    .modal-close{background:transparent;border:none;font-size:22px;line-height:1;cursor:pointer;color:#063b39}
+    .modal-body{padding:18px}
+    .modal-body p.muted{color:#555;margin-bottom:10px}
 
-  label{display:block;margin:10px 0 6px;color:#333}
-  input{width:100%;padding:10px;border:1px solid #ddd;border-radius:8px}
-  .primary{background:#15b0af;color:#fff;border:0;border-radius:8px;padding:12px;font-weight:bold;cursor:pointer;width:100%;margin-top:12px}
-  .muted{font-size:.9rem;color:#666;margin-top:10px}
-  .muted a{color:#15b0af;text-decoration:none;font-weight:bold}
+    label{display:block;margin:10px 0 6px;color:#333}
+    input{width:100%;padding:10px;border:1px solid #ddd;border-radius:8px}
+    .primary{background:#15b0af;color:#fff;border:0;border-radius:8px;padding:12px;font-weight:bold;cursor:pointer;width:100%;margin-top:12px}
+    .muted{font-size:.9rem;color:#666;margin-top:10px}
+    .muted a{color:#15b0af;text-decoration:none;font-weight:bold}
 
-  /* Campo de senha com checkbox “Mostrar senha” (substitui o olho) */
-  .pwd-wrap{position:relative}
-  .showpwd{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:.9rem;color:#444}
-  .showpwd input{width:auto}
+    /* Campo de senha com checkbox “Mostrar senha” */
+    .pwd-wrap{position:relative}
+    .showpwd{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:.9rem;color:#444}
+    .showpwd input{width:auto}
 
-  /* POPUP de alerta brand */
-  .alert-bg{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:10000;padding:20px}
-  .alert-card{background:#fff;border-radius:16px;overflow:hidden;max-width:460px;width:100%;box-shadow:0 22px 70px rgba(0,0,0,.25);border:2px solid #c2e7df}
-  .alert-head{background:linear-gradient(90deg,#c2e7df,#15b0af);padding:14px 16px;display:flex;align-items:center;gap:10px}
-  .alert-dot{width:10px;height:10px;border-radius:50%;background:#FA1E39}
-  .alert-title{color:#063b39;font-weight:bold}
-  .alert-body{padding:16px;color:#2b2b2b}
-  .alert-actions{display:flex;gap:10px;flex-wrap:wrap;padding:0 16px 16px}
-  .btn-solid{background:#15b0af;color:#fff;border:0;border-radius:8px;padding:10px 14px;font-weight:bold;cursor:pointer}
-  .btn-ghost{background:#fff;border:2px solid #15b0af;color:#15b0af;border-radius:8px;padding:10px 14px;font-weight:bold}
+    /* POPUP de alerta brand */
+    .alert-bg{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:10000;padding:20px}
+    .alert-card{background:#fff;border-radius:16px;overflow:hidden;max-width:460px;width:100%;box-shadow:0 22px 70px rgba(0,0,0,.25);border:2px solid #c2e7df}
+    .alert-head{background:linear-gradient(90deg,#c2e7df,#15b0af);padding:14px 16px;display:flex;align-items:center;gap:10px}
+    .alert-dot{width:10px;height:10px;border-radius:50%;background:#FA1E39}
+    .alert-title{color:#063b39;font-weight:bold}
+    .alert-body{padding:16px;color:#2b2b2b}
+    .alert-actions{display:flex;gap:10px;flex-wrap:wrap;padding:0 16px 16px}
+    .btn-solid{background:#15b0af;color:#fff;border:0;border-radius:8px;padding:10px 14px;font-weight:bold;cursor:pointer}
+    .btn-ghost{background:#fff;border:2px solid #15b0af;color:#15b0af;border-radius:8px;padding:10px 14px;font-weight:bold}
 
-  /* links-botão sem sublinhado dentro da modal */
-  #authModal a{ text-decoration:none }
-</style>
+    /* links-botão sem sublinhado dentro da modal */
+    #authModal a{ text-decoration:none }
+  </style>
 </head>
 <body>
 
@@ -121,7 +121,6 @@
       <label for="senha">Senha</label>
       <div class="pwd-wrap">
         <input id="senha" type="password" autocomplete="current-password" required>
-        <!-- 👇 checkbox que substitui o olho -->
         <label class="showpwd" for="chkMostrarSenha">
           <input id="chkMostrarSenha" type="checkbox" aria-controls="senha" aria-label="Mostrar senha">
           Mostrar senha
@@ -130,9 +129,10 @@
 
       <button class="primary" id="btnEntrar">Entrar</button>
 
-      <!-- 🔧 Sempre visível -->
+      <!-- Botão estilizado para recuperar senha -->
       <div id="recoverLine" class="muted" style="text-align:center;margin-top:6px">
-        Esqueceu a senha? <a href="/recuperar-senha.html">Recuperar senha</a>
+        Esqueceu a senha? 
+        <button class="btn-ghost" onclick="location.href='/recuperar-senha.html'">Recuperar senha</button>
       </div>
 
       <p class="muted">Não tem conta? <a href="/cadastro.html">Cadastre-se</a></p>
@@ -209,170 +209,249 @@
 <!-- Firebase + Script -->
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-import {
-  getAuth, onAuthStateChanged, signOut,
-  signInWithEmailAndPassword, sendEmailVerification
+import { 
+  getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, sendEmailVerification, updateProfile 
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import { getFirestore, collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
 
 const app = initializeApp({
-  apiKey:"AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
-  authDomain:"mostreaki-2025.firebaseapp.com",
-  projectId:"mostreaki-2025",
-  storageBucket:"mostreaki-2025.firebasestorage.app",
-  messagingSenderId:"748712068097",
-  appId:"1:748712068097:web:09cf043fbb45917ef6ec00"
+  apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
+  authDomain: "mostreaki-2025.firebaseapp.com",
+  projectId: "mostreaki-2025",
+  storageBucket: "mostreaki-2025.firebasestorage.app",
+  messagingSenderId: "748712068097",
+  appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
 });
 const auth = getAuth(app);
+const db = getFirestore(app);
+const storage = getStorage(app);
 
 /* ===== helpers UI ===== */
-const $ = (id)=>document.getElementById(id);
+const $ = (id) => document.getElementById(id);
 const modal = $("authModal");
 const btnAbrir = $("btnAbrirLogin");
 const authText = $("authText");
 const userCircle = $("userCircle");
 
-function abrirModal(){ modal.style.display="flex"; document.body.style.overflow="hidden"; }
-window.fecharModal = function(){ modal.style.display="none"; document.body.style.overflow=""; }
+function abrirModal() { 
+  modal.style.display = "flex"; 
+  document.body.style.overflow = "hidden"; 
+}
+window.fecharModal = function() { 
+  modal.style.display = "none"; 
+  document.body.style.overflow = ""; 
+}
 btnAbrir.addEventListener("click", abrirModal);
-modal.addEventListener("click", e=>{ if(e.target===modal) fecharModal(); });
-window.addEventListener("keydown", e=>{ if(e.key==="Escape" && modal.style.display==="flex") fecharModal(); });
+modal.addEventListener("click", e => { if (e.target === modal) fecharModal(); });
+window.addEventListener("keydown", e => { if (e.key === "Escape" && modal.style.display === "flex") fecharModal(); });
 
 /* ===== alerta brand ===== */
 const alertBG = document.getElementById('alert');
 const alertTitle = document.getElementById('alertTitle');
 const alertMsg = document.getElementById('alertMsg');
 const alertActions = document.getElementById('alertActions');
-function showAlert({title="Aviso", html="", actions=[{text:"Fechar", kind:"solid"}]}){
-  alertTitle.textContent = title; alertMsg.innerHTML = html; alertActions.innerHTML = "";
-  actions.forEach(a=>{
-    const b=document.createElement('button');
-    b.className = (a.kind==='ghost'?'btn-ghost':'btn-solid');
+function showAlert({ title = "Aviso", html = "", actions = [{ text: "Fechar", kind: "solid" }] }) {
+  alertTitle.textContent = title;
+  alertMsg.innerHTML = html;
+  alertActions.innerHTML = "";
+  actions.forEach(a => {
+    const b = document.createElement('button');
+    b.className = (a.kind === 'ghost' ? 'btn-ghost' : 'btn-solid');
     b.textContent = a.text;
-    b.onclick = ()=>{ if(a.onClick) a.onClick(); closeAlert(); };
+    b.onclick = () => { if (a.onClick) a.onClick(); closeAlert(); };
     alertActions.appendChild(b);
   });
-  alertBG.style.display='flex';
+  alertBG.style.display = 'flex';
 }
-function closeAlert(){ alertBG.style.display='none'; }
+function closeAlert() { 
+  alertBG.style.display = 'none'; 
+}
 
 /* ===== mostrar senha via checkbox (substitui o olho) ===== */
-(function wireShowPassword(){
+(function wireShowPassword() {
   const input = $("senha"), chk = $("chkMostrarSenha");
-  if(!input || !chk) return;
-  const apply = ()=>{ input.type = chk.checked ? 'text' : 'password'; };
+  if (!input || !chk) return;
+  const apply = () => { input.type = chk.checked ? 'text' : 'password'; };
   chk.addEventListener('change', apply);
 })();
 
 /* ===== login ===== */
 const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const emailValido = v => emailRe.test(v);
-function getState(){
-  const now=Date.now();
-  const s = JSON.parse(sessionStorage.getItem('loginState')||'{}');
-  if(!s.lockUntil) s.lockUntil=0;
-  if(!s.failCount) s.failCount=0;
-  if(!s.blockMult) s.blockMult=1;
-  if(now > s.lockUntil){ s.lockUntil=0; }
+function getState() {
+  const now = Date.now();
+  const s = JSON.parse(sessionStorage.getItem('loginState') || '{}');
+  if (!s.lockUntil) s.lockUntil = 0;
+  if (!s.failCount) s.failCount = 0;
+  if (!s.blockMult) s.blockMult = 1;
+  if (now > s.lockUntil) s.lockUntil = 0;
   return s;
 }
-function setState(s){ sessionStorage.setItem('loginState', JSON.stringify(s)); }
-function isLocked(){ const s=getState(); return s.lockUntil && Date.now()<s.lockUntil; }
-function lockMore(){
-  const s=getState(); const base=30000;
-  s.blockMult = Math.min(s.blockMult*2, 8);
+function setState(s) { 
+  sessionStorage.setItem('loginState', JSON.stringify(s)); 
+}
+function isLocked() { 
+  const s = getState(); 
+  return s.lockUntil && Date.now() < s.lockUntil; 
+}
+function lockMore() {
+  const s = getState();
+  const base = 30000;
+  s.blockMult = Math.min(s.blockMult * 2, 8);
   s.lockUntil = Date.now() + base * s.blockMult;
   setState(s);
 }
-function incFail(){
-  const s=getState(); s.failCount=(s.failCount||0)+1;
-  if(s.failCount>=5){ s.failCount=0; lockMore(); }
+function incFail() {
+  const s = getState();
+  s.failCount = (s.failCount || 0) + 1;
+  if (s.failCount >= 5) { s.failCount = 0; lockMore(); }
   setState(s);
 }
-function resetFails(){ setState({failCount:0, blockMult:1, lockUntil:0}); }
-function showLockMsg(){
-  const s=getState(); const secs = Math.ceil((s.lockUntil - Date.now())/1000);
-  showAlert({title:"Muitas tentativas", html:`Aguarde <b>${secs}s</b> para tentar novamente.`});
+function resetFails() { 
+  setState({ failCount: 0, blockMult: 1, lockUntil: 0 }); 
+}
+function showLockMsg() {
+  const s = getState();
+  const secs = Math.ceil((s.lockUntil - Date.now()) / 1000);
+  showAlert({ title: "Muitas tentativas", html: `Aguarde <b>${secs}s</b> para tentar novamente.` });
 }
 
-async function loginEmailSenha(){
-  if(isLocked()) return showLockMsg();
+// Registrar log no Firestore
+async function logLogin(email, status, errorCode = null) {
+  try {
+    await addDoc(collection(db, 'logs_login'), {
+      email,
+      status,
+      errorCode,
+      timestamp: serverTimestamp(),
+      userAgent: navigator.userAgent
+    });
+  } catch (e) {
+    console.error('Erro ao registrar log:', e);
+  }
+}
+
+// Atualizar foto de perfil no Storage
+async function updateFotoPerfil(user, photoURL) {
+  if (photoURL) {
+    try {
+      await updateProfile(user, { photoURL });
+      localStorage.setItem("fotoPerfil", photoURL);
+    } catch (e) {
+      console.error('Erro ao atualizar foto de perfil:', e);
+    }
+  }
+}
+
+async function loginEmailSenha() {
+  if (isLocked()) return showLockMsg();
 
   const email = $("email").value.trim();
   const senha = $("senha").value;
 
-  if(!email) return showAlert({title:"E-mail vazio", html:"Digite seu e-mail para continuar."});
-  if(!emailValido(email)) return showAlert({title:"E-mail inválido", html:"Revise o endereço digitado."});
-  if(!senha) return showAlert({title:"Senha vazia", html:"Digite sua senha para continuar."});
+  if (!email) {
+    incFail();
+    await logLogin(email, 'erro', 'email_vazio');
+    return showAlert({ title: "E-mail vazio", html: "Digite seu e-mail para continuar." });
+  }
+  if (!emailValido(email)) {
+    incFail();
+    await logLogin(email, 'erro', 'email_invalido');
+    return showAlert({ title: "E-mail inválido", html: "Revise o endereço digitado." });
+  }
+  if (!senha) {
+    incFail();
+    await logLogin(email, 'erro', 'senha_vazia');
+    return showAlert({ title: "Senha vazia", html: "Digite sua senha para continuar." });
+  }
 
-  try{
+  try {
     const cred = await signInWithEmailAndPassword(auth, email, senha);
 
-    if(!cred.user.emailVerified){
+    if (!cred.user.emailVerified) {
       await sendEmailVerification(cred.user);
+      await logLogin(email, 'email_nao_verificado');
       showAlert({
-        title:"Confirme seu e-mail",
-        html:`Seu e-mail ainda não foi verificado.<br>Reenviamos o link para <b>${email}</b>. Verifique sua caixa de entrada (ou spam) e tente novamente após confirmar.`
+        title: "Confirme seu e-mail",
+        html: `Seu e-mail ainda não foi verificado.<br>Reenviamos o link para <b>${email}</b>. Verifique sua caixa de entrada (ou spam) e tente novamente após confirmar.`
       });
       return;
     }
 
     resetFails();
-    if(cred.user.photoURL) localStorage.setItem("fotoPerfil", cred.user.photoURL);
+    await logLogin(email, 'sucesso');
+    await updateFotoPerfil(cred.user, cred.user.photoURL);
     fecharModal();
-    location.href="/minha-conta.html";
+    location.href = "/minha-conta.html";
 
-  }catch(e){
-    const codes = ["auth/invalid-credential","auth/wrong-password","auth/user-not-found"];
-    if(codes.includes(e.code)){
-      incFail();
-      if(isLocked()) return showLockMsg();
+  } catch (e) {
+    incFail();
+    await logLogin(email, 'erro', e.code);
+    const codes = ["auth/invalid-credential", "auth/wrong-password", "auth/user-not-found"];
+    if (codes.includes(e.code)) {
+      if (isLocked()) return showLockMsg();
       return showAlert({
-        title:"Não conseguimos entrar",
-        html:"E-mail e/ou senha incorretos. Você pode tentar novamente ou recuperar a senha.",
-        actions:[
-          {text:"Recuperar senha", kind:"ghost", onClick:()=>location.href="/recuperar-senha.html"},
-          {text:"Cadastrar", kind:"ghost", onClick:()=>location.href="/cadastro.html"},
-          {text:"Fechar", kind:"solid"}
+        title: "Não conseguimos entrar",
+        html: "E-mail e/ou senha incorretos. Você pode tentar novamente ou recuperar a senha.",
+        actions: [
+          { text: "Recuperar senha", kind: "ghost", onClick: () => location.href = "/recuperar-senha.html" },
+          { text: "Cadastrar", kind: "ghost", onClick: () => location.href = "/cadastro.html" },
+          { text: "Fechar", kind: "solid" }
         ]
       });
     }
-    if(e.code==="auth/too-many-requests"){ lockMore(); return showLockMsg(); }
-    if(e.code==="auth/invalid-email"){ return showAlert({title:"E-mail inválido", html:"Revise o endereço digitado."}); }
-    showAlert({title:"Erro", html:`Erro inesperado (${e.code}). Tente novamente.`});
+    if (e.code === "auth/too-many-requests") {
+      lockMore();
+      return showLockMsg();
+    }
+    if (e.code === "auth/invalid-email") {
+      return showAlert({ title: "E-mail inválido", html: "Revise o endereço digitado." });
+    }
+    showAlert({ title: "Erro", html: `Erro inesperado (${e.code}). Tente novamente.` });
   }
 }
 document.getElementById("btnEntrar").onclick = loginEmailSenha;
-document.addEventListener('keydown', e=>{ if(e.key==='Enter' && modal.style.display==='flex') loginEmailSenha(); });
+document.addEventListener('keydown', e => { if (e.key === 'Enter' && modal.style.display === 'flex') loginEmailSenha(); });
 
 /* ===== estado de auth: avatar/entrar/sair ===== */
-onAuthStateChanged(auth, (user)=>{
+onAuthStateChanged(auth, (user) => {
   const fotoURL = localStorage.getItem("fotoPerfil");
-  if(user){
-    if(fotoURL){ userCircle.style.backgroundImage=`url('${fotoURL}')`; userCircle.textContent=""; }
-    else { const nome=(user.displayName||user.email||"?").trim(); userCircle.textContent=nome.charAt(0).toUpperCase(); userCircle.style.backgroundImage=""; }
-    userCircle.style.display="flex";
-    authText.style.display="inline";
-    btnAbrir.style.display="none";
-  }else{
-    userCircle.style.display="none";
-    authText.style.display="none";
-    btnAbrir.style.display="inline-block";
+  if (user) {
+    if (fotoURL) {
+      userCircle.style.backgroundImage = `url('${fotoURL}')`;
+      userCircle.textContent = "";
+    } else {
+      const nome = (user.displayName || user.email || "?").trim();
+      userCircle.textContent = nome.charAt(0).toUpperCase();
+      userCircle.style.backgroundImage = "";
+    }
+    userCircle.style.display = "flex";
+    authText.style.display = "inline";
+    btnAbrir.style.display = "none";
+  } else {
+    userCircle.style.display = "none";
+    authText.style.display = "none";
+    btnAbrir.style.display = "inline-block";
   }
 });
 
 /* ===== sair ===== */
-authText.addEventListener("click", async ()=>{
-  try{
+authText.addEventListener("click", async () => {
+  try {
     await signOut(auth);
+    await logLogin('desconhecido', 'logout');
     localStorage.removeItem("fotoPerfil");
     location.reload();
-  }catch(e){ showAlert({title:"Sair", html:"Não foi possível sair. Tente de novo."}); }
+  } catch (e) {
+    showAlert({ title: "Sair", html: "Não foi possível sair. Tente de novo." });
+  }
 });
 
 /* ===== menu ===== */
-window.toggleMenu = function(){
-  const menu=document.getElementById("menu");
-  menu.style.display = menu.style.display==="flex" ? "none" : "flex";
+window.toggleMenu = function() {
+  const menu = document.getElementById("menu");
+  menu.style.display = menu.style.display === "flex" ? "none" : "flex";
 };
 </script>
 </body>
