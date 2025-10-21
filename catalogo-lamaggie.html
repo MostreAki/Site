@@ -186,7 +186,7 @@
     .lb-count{position:absolute; bottom:10px; right:12px; background:rgba(0,0,0,.45); color:#ffeef2; font-size:.85rem; padding:6px 10px; border-radius:10px }
   </style>
 
-  <!-- Firebase (modular) –– lógica intacta -->
+  <!-- Firebase (modular) -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
     import { getFirestore, doc, getDoc, collection, query, orderBy, onSnapshot, limit as qLimit } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
@@ -237,7 +237,7 @@
     let ICON_WA = '';
     let ICON_ML = '';
 
-    /* ===== Carrossel banners (modo-aware) –– sem alterações de lógica ===== */
+    /* ===== Carrossel banners (modo-aware) ===== */
     let BANNER_SLIDES = [];
     let BANNER_IDX = 0;
     let BANNER_TIMER = null;
@@ -395,6 +395,7 @@
       }
     }
 
+    // Reconstrói banners se mudar de modo (mobile/desktop)
     function watchBannerMode(cfg){
       mq.addEventListener('change', ()=>{
         const mode = mq.matches ? 'mobile' : 'desktop';
@@ -403,6 +404,63 @@
           setupBanners(cfg);
         }
       });
+    }
+
+    // Adiciona suporte a swipe no carrossel de banners
+    function setupBannerSwipe() {
+      const bannerBox = document.getElementById('bannerBox');
+      if (!bannerBox || BANNER_SLIDES.length <= 1) return; // Sem swipe se houver 0 ou 1 banner
+
+      let touchX = null;
+
+      bannerBox.addEventListener('touchstart', e => {
+        touchX = e.changedTouches[0].clientX;
+        // Pausa o temporizador durante o toque
+        if (BANNER_TIMER) {
+          clearInterval(BANNER_TIMER);
+          BANNER_TIMER = null;
+        }
+      }, { passive: true });
+
+      bannerBox.addEventListener('touchend', e => {
+        if (touchX == null) return;
+        const dx = e.changedTouches[0].clientX - touchX;
+        touchX = null;
+
+        if (Math.abs(dx) > 40) { // Limite mínimo de deslocamento
+          const cur = BANNER_SLIDES[BANNER_IDX];
+          const curVid = cur.querySelector('video');
+          if (curVid) { curVid.pause(); curVid.currentTime = 0; }
+
+          if (dx < 0) { // Swipe para esquerda (próximo)
+            BANNER_IDX = (BANNER_IDX + 1) % BANNER_SLIDES.length;
+          } else { // Swipe para direita (anterior)
+            BANNER_IDX = (BANNER_IDX - 1 + BANNER_SLIDES.length) % BANNER_SLIDES.length;
+          }
+
+          cur.classList.remove('active');
+          const nxt = BANNER_SLIDES[BANNER_IDX];
+          nxt.classList.add('active');
+
+          const nxtVid = nxt.querySelector('video');
+          if (nxtVid) { nxtVid.play().catch(() => {}); }
+
+          // Reinicia o temporizador após o swipe
+          const interval = Number(cfg.bannerIntervalMs) || 7000;
+          BANNER_TIMER = setInterval(() => {
+            const cur = BANNER_SLIDES[BANNER_IDX];
+            const nxtIdx = (BANNER_IDX + 1) % BANNER_SLIDES.length;
+            const nxt = BANNER_SLIDES[nxtIdx];
+            const curVid = cur.querySelector('video');
+            if (curVid) { curVid.pause(); curVid.currentTime = 0; }
+            cur.classList.remove('active');
+            nxt.classList.add('active');
+            const nxtVid = nxt.querySelector('video');
+            if (nxtVid) { nxtVid.play().catch(() => {}); }
+            BANNER_IDX = nxtIdx;
+          }, interval);
+        }
+      }, { passive: true });
     }
 
     function renderPage(){
@@ -464,7 +522,7 @@
     window.goPrev = goPrev;
     window.goNext = goNext;
 
-    /* ===== Lightbox (inalterado) ===== */
+    /* ===== Lightbox ===== */
     const lbBg   = document.getElementById('lbBg');
     const lbImg  = document.getElementById('lbImg');
     const lbBtn  = document.getElementById('lbClose');
@@ -619,6 +677,7 @@
       /* Banners */
       setupBanners(cfg);
       watchBannerMode(cfg);
+      setupBannerSwipe();
 
       if (cfg.catalogoAtivo !== true){
         avisos.innerHTML = `<div class="warn">Este catálogo está desativado no momento.</div>`;
