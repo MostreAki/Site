@@ -40,8 +40,7 @@
     *{box-sizing:border-box}
     html,body{
       margin:0;padding:0;
-      background:
-        linear-gradient(180deg, #FFF7F1, #FFEFEA 55%, #FFE8E9);
+      background:linear-gradient(180deg, #FFF7F1, #FFEFEA 55%, #FFE8E9);
       color:#3f2327;
       font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Arial;
     }
@@ -54,13 +53,76 @@
       border-bottom:1px solid rgba(255,255,255,.10);
       color:#fff;
     }
-    .bar{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:12px;padding:14px 16px}
+    .bar{
+      max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:12px;padding:14px 16px;
+    }
     .brandLogo{
       width:28px;height:28px;border-radius:999px;object-fit:contain;
       display:none;background:#fff;box-shadow:0 4px 14px rgba(0,0,0,.18);
     }
     .brand{font-weight:800;letter-spacing:.4px;font-size:1.1rem;white-space:nowrap}
     .spacer{flex:1}
+
+    /* Menu Hamburguer */
+    .menu-btn{
+      display:none;
+      width:28px;height:28px;border:0;background:none;color:#fff;cursor:pointer;
+      position:relative;z-index:60;
+    }
+    .menu-btn svg{width:24px;height:24px;fill:currentColor}
+    @media (max-width:860px){.menu-btn{display:block}}
+    .menu{
+      position:fixed;top:0;left:0;bottom:0;width:260px;background:#FFF7F1;
+      transform:translateX(-100%);transition:transform .3s ease;
+      z-index:55;padding:60px 16px 16px;border-right:1px solid rgba(196,104,118,.22);
+      box-shadow:2px 0 12px rgba(0,0,0,.15);
+    }
+    .menu.open{transform:translateX(0)}
+    .menu-overlay{
+      position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:54;
+      opacity:0;visibility:hidden;transition:opacity .3s ease;
+    }
+    .menu.open + .menu-overlay{opacity:1;visibility:visible}
+    .menu ul{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+    .menu li a{
+      display:block;padding:12px 16px;color:#3f2327;font-weight:600;font-size:1rem;
+      border-radius:10px;background:rgba(196,104,118,.08);
+      transition:background .2s ease;
+    }
+    .menu li a:hover,.menu li a.active{background:rgba(196,104,118,.18)}
+    .menu-close{
+      position:absolute;top:16px;right:16px;border:0;background:none;color:#3f2327;
+      width:36px;height:36px;border-radius:999px;cursor:pointer;font-size:20px;
+      display:grid;place-items:center;
+    }
+    .menu-close:hover{background:rgba(196,104,118,.12)}
+    @media (min-width:860px){
+      .menu{position:static;transform:none;width:auto;background:none;padding:0;border:0;box-shadow:none}
+      .menu ul{display:flex;gap:12px}
+      .menu li a{padding:8px 14px;font-size:.95rem}
+      .menu-close{display:none}
+    }
+
+    /* Campo de Pesquisa */
+    .search-bar{
+      margin:18px 0;display:flex;gap:10px;
+      max-width:980px;justify-content:center;
+    }
+    .search-input{
+      flex:1;padding:10px 14px;border:2px solid rgba(196,104,118,.22);
+      border-radius:12px;background:#fff;color:#3f2327;font-size:.95rem;
+      outline:none;font-family:Poppins,sans-serif;
+      box-shadow:0 4px 12px rgba(0,0,0,.08);
+    }
+    .search-input:focus{border-color:var(--rose-700);box-shadow:0 4px 16px rgba(196,104,118,.2)}
+    .search-clear{
+      display:none;border:0;background:#fff;color:#7A3F46;font-size:18px;
+      width:36px;height:36px;border-radius:999px;cursor:pointer;
+      box-shadow:0 4px 12px rgba(0,0,0,.08);align-items:center;justify-content:center;
+    }
+    .search-clear.show{display:grid}
+    .search-clear:hover{background:rgba(196,104,118,.12)}
+    @media (min-width:860px){.search-bar{max-width:400px}}
 
     main{max-width:1100px;margin:0 auto;padding:28px 16px 90px}
 
@@ -76,17 +138,16 @@
     .banner{
       width:100%;max-width:980px;min-height:var(--banner-min-h-mobile);border-radius:18px;
       background:linear-gradient(180deg,#FFECEE,#FDE6EA);
-      box-shadow: 0 20px 60px rgba(0,0,0,.12);
-      overflow:hidden; position:relative;
+      box-shadow:0 20px 60px rgba(0,0,0,.12);
+      overflow:hidden;position:relative;
     }
-    @media (min-width:860px){ .banner{ min-height:var(--banner-min-h-desktop); } }
-
+    @media (min-width:860px){.banner{min-height:var(--banner-min-h-desktop)}}
     .banner .slide{
-      position:absolute; inset:0; opacity:0; transition:opacity .6s ease;
-      display:flex; pointer-events:none; z-index:1;
+      position:absolute;inset:0;opacity:0;transition:opacity .6s ease;
+      display:flex;pointer-events:none;z-index:1;
     }
-    .banner .slide.active{ opacity:1; pointer-events:auto; z-index:2; }
-    .banner .slide a{ position:absolute; inset:0; display:block; width:100%; height:100%; }
+    .banner .slide.active{opacity:1;pointer-events:auto;z-index:2}
+    .banner .slide a{position:absolute;inset:0;display:block;width:100%;height:100%}
     .banner img,.banner video{
       width:100%;height:100%;object-fit:var(--banner-fit);object-position:var(--banner-pos);display:block;
       pointer-events:none;
@@ -112,7 +173,7 @@
     .pageinfo{font-weight:700;color:var(--rose-700)}
 
     .grid{margin-top:18px;display:grid;gap:16px;grid-template-columns:repeat(2,minmax(0,1fr))}
-    @media (min-width:860px){ .grid{grid-template-columns:repeat(4,minmax(0,1fr));} }
+    @media (min-width:860px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
 
     .card{
       background:linear-gradient(180deg,#ffffff,#FFF4F6);
@@ -121,34 +182,34 @@
       box-shadow:0 12px 30px rgba(196,104,118,.15);
       transition:transform .15s ease, box-shadow .15s ease
     }
-    .card:hover{ transform:translateY(-2px); box-shadow:0 18px 44px rgba(196,104,118,.26); }
+    .card:hover{transform:translateY(-2px);box-shadow:0 18px 44px rgba(196,104,118,.26)}
     .imgWrap{aspect-ratio:1/1;background:#FBE6EA;display:grid;place-items:center;overflow:hidden;cursor:zoom-in}
     .imgWrap img{width:100%;height:100%;object-fit:cover}
 
-    .info{display:grid;grid-template-columns:1fr;row-gap:6px;align-items:start;padding:10px 12px 12px;}
+    .info{display:grid;grid-template-columns:1fr;row-gap:6px;align-items:start;padding:10px 12px 12px}
     .left{min-width:0}
     .nome{font-weight:700;color:var(--ink);margin-bottom:2px;font-size:.98rem}
     .preco{font-weight:800;color:var(--rose-900);font-size:1rem}
     .qtde{color:var(--muted);font-size:.86rem;margin-top:2px}
 
-    .thumbs{display:flex; gap:8px; margin:8px 0 6px}
+    .thumbs{display:flex;gap:8px;margin:8px 0 6px}
     .thumbs img{
       width:40px;height:40px;object-fit:cover;border-radius:8px;opacity:.95;
       border:1px solid rgba(196,104,118,.28);cursor:pointer;
       transition:transform .12s ease, opacity .12s ease
     }
-    .thumbs img:hover{ opacity:1; transform:translateY(-1px) }
+    .thumbs img:hover{opacity:1;transform:translateY(-1px)}
 
-    .actions{display:flex; flex-direction:column; gap:8px; margin-top:6px}
+    .actions{display:flex;flex-direction:column;gap:8px;margin-top:6px}
     .cta{
-      display:inline-flex; align-items:center; justify-content:flex-start; gap:10px; width:fit-content;
-      padding:10px 14px; border:0; border-radius:12px; font-weight:800; cursor:pointer;
-      box-shadow:0 10px 24px rgba(0,0,0,.10); text-shadow:0 1px 0 rgba(0,0,0,.06);
+      display:inline-flex;align-items:center;justify-content:flex-start;gap:10px;width:fit-content;
+      padding:10px 14px;border:0;border-radius:12px;font-weight:800;cursor:pointer;
+      box-shadow:0 10px 24px rgba(0,0,0,.10);text-shadow:0 1px 0 rgba(0,0,0,.06);
     }
-    .cta img{width:22px; height:22px; display:block}
-    .cta svg{width:22px; height:22px}
-    .cta-wa{background:var(--ok); color:#fff}
-    .cta-ml{background:#FFE600; color:#002E6C}
+    .cta img{width:22px;height:22px;display:block}
+    .cta svg{width:22px;height:22px}
+    .cta-wa{background:var(--ok);color:#fff}
+    .cta-ml{background:#FFE600;color:#002E6C}
     .cta:active{transform:translateY(1px)}
 
     /* Ícones redondos escondidos (layout mobile antigo) */
@@ -156,13 +217,13 @@
 
     /* FAB WhatsApp */
     .wa-float{
-      position:fixed; right:16px; bottom:16px; z-index:60; width:56px; height:56px; border-radius:999px;
-      background:var(--ok); display:none; align-items:center; justify-content:center;
+      position:fixed;right:16px;bottom:16px;z-index:60;width:56px;height:56px;border-radius:999px;
+      background:var(--ok);display:none;align-items:center;justify-content:center;
       box-shadow:0 12px 32px rgba(37,211,102,.35);
     }
-    .wa-float:active{ transform:scale(.97) }
-    .wa-float svg{ width:28px; height:28px; fill:#fff }
-    @media (min-width:860px){ .wa-float{ right:24px; bottom:24px; width:64px; height:64px } .wa-float svg{ width:30px; height:30px } }
+    .wa-float:active{transform:scale(.97)}
+    .wa-float svg{width:28px;height:28px;fill:#fff}
+    @media (min-width:860px){.wa-float{right:24px;bottom:24px;width:64px;height:64px}.wa-float svg{width:30px;height:30px}}
 
     .muted{margin:22px auto 0;max-width:780px;color:#7F5F65;text-align:center;font-size:.95rem}
     .warn{
@@ -175,15 +236,15 @@
     }
 
     /* Lightbox */
-    .lb-bg{position:fixed; inset:0; z-index:70; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,.7); backdrop-filter:saturate(120%) blur(2px); padding:16px}
-    .lb-card{position:relative; max-width:96vw; max-height:90vh; background:#2b0f14; border:1px solid rgba(255,255,255,.12); border-radius:16px; box-shadow:0 20px 80px rgba(0,0,0,.55); padding:10px}
-    .lb-img{display:block; max-width:92vw; max-height:82vh; width:auto; height:auto; object-fit:contain; border-radius:10px; background:#3a141b}
-    .lb-close{position:absolute; top:8px; right:8px; border:0; width:36px; height:36px; border-radius:10px; background:rgba(255,255,255,.12); color:#ffeef2; cursor:pointer; font-size:22px; line-height:36px}
-    .lb-close:active{ transform:scale(.95) }
-    .lb-arrow{position:absolute; top:50%; transform:translateY(-50%); border:0; width:42px; height:42px; border-radius:999px; background:rgba(255,255,255,.16); color:#ffeef2; cursor:pointer; font-size:22px; line-height:42px}
-    .lb-prev{ left:8px } .lb-next{ right:8px }
-    .lb-arrow:active{ transform:translateY(-50%) scale(.96) }
-    .lb-count{position:absolute; bottom:10px; right:12px; background:rgba(0,0,0,.45); color:#ffeef2; font-size:.85rem; padding:6px 10px; border-radius:10px }
+    .lb-bg{position:fixed;inset:0;z-index:70;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.7);backdrop-filter:saturate(120%) blur(2px);padding:16px}
+    .lb-card{position:relative;max-width:96vw;max-height:90vh;background:#2b0f14;border:1px solid rgba(255,255,255,.12);border-radius:16px;box-shadow:0 20px 80px rgba(0,0,0,.55);padding:10px}
+    .lb-img{display:block;max-width:92vw;max-height:82vh;width:auto;height:auto;object-fit:contain;border-radius:10px;background:#3a141b}
+    .lb-close{position:absolute;top:8px;right:8px;border:0;width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.12);color:#ffeef2;cursor:pointer;font-size:22px;line-height:36px}
+    .lb-close:active{transform:scale(.95)}
+    .lb-arrow{position:absolute;top:50%;transform:translateY(-50%);border:0;width:42px;height:42px;border-radius:999px;background:rgba(255,255,255,.16);color:#ffeef2;cursor:pointer;font-size:22px;line-height:42px}
+    .lb-prev{left:8px}.lb-next{right:8px}
+    .lb-arrow:active{transform:translateY(-50%) scale(.96)}
+    .lb-count{position:absolute;bottom:10px;right:12px;background:rgba(0,0,0,.45);color:#ffeef2;font-size:.85rem;padding:6px 10px;border-radius:10px}
   </style>
 
   <!-- Firebase (modular) -->
@@ -200,7 +261,7 @@
       appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
     };
     const app = initializeApp(firebaseConfig);
-    const db  = getFirestore(app);
+    const db = getFirestore(app);
 
     function getSlug() {
       const m = location.pathname.match(/catalogo-([^/.]+)\.html$/);
@@ -218,8 +279,8 @@
     );
 
     function waLink(phone, text) {
-      if(!phone) return null;
-      let p = String(phone).replace(/\D/g,'');
+      if (!phone) return null;
+      let p = String(phone).replace(/\D/g, '');
       if (p.startsWith('0')) p = p.slice(1);
       if (p.length <= 11 && !p.startsWith('55')) p = '55' + p;
       return `https://wa.me/${p}?text=${encodeURIComponent(text)}`;
@@ -227,13 +288,13 @@
 
     const PER_PAGE = 10;
     let itens = [];
+    let filteredItens = [];
     let page = 0;
 
-    function totalPages(){ return Math.max(1, Math.ceil(itens.length / PER_PAGE)); }
-    function clampPage(){ page = Math.min(page, totalPages()-1); if(page<0) page=0; }
+    function totalPages() { return Math.max(1, Math.ceil(filteredItens.length / PER_PAGE)); }
+    function clampPage() { page = Math.min(page, totalPages() - 1); if (page < 0) page = 0; }
 
     let MAX_FOTOS_ITEM = 3;
-
     let ICON_WA = '';
     let ICON_ML = '';
 
@@ -246,9 +307,9 @@
 
     const norm = v => (v ?? '').toString().trim();
 
-    function arrayFromAliases(obj, keys){
+    function arrayFromAliases(obj, keys) {
       const out = [];
-      for (const k of keys){
+      for (const k of keys) {
         const v = obj[k];
         if (Array.isArray(v)) out.push(...v);
         else if (typeof v === 'string' && v) out.push(v);
@@ -256,77 +317,77 @@
       return out;
     }
 
-    function collectBannerUrlsByMode(cfg){
+    function collectBannerUrlsByMode(cfg) {
       const isMob = mq.matches;
       const mobileList = arrayFromAliases(cfg, [
-        'bannerMobileUrls','mobileBannerUrls',
-        'bannerMobileUrl','bannerMobile1Url','bannerMobile2Url','bannerMobile3Url',
-        'mobileBannerUrl','mobileBanner1Url','mobileBanner2Url','mobileBanner3Url'
+        'bannerMobileUrls', 'mobileBannerUrls',
+        'bannerMobileUrl', 'bannerMobile1Url', 'bannerMobile2Url', 'bannerMobile3Url',
+        'mobileBannerUrl', 'mobileBanner1Url', 'mobileBanner2Url', 'mobileBanner3Url'
       ]);
       const desktopList = arrayFromAliases(cfg, [
-        'bannerDesktopUrls','desktopBannerUrls',
-        'bannerDesktopUrl','bannerDesktop1Url','bannerDesktop2Url','bannerDesktop3Url'
+        'bannerDesktopUrls', 'desktopBannerUrls',
+        'bannerDesktopUrl', 'bannerDesktop1Url', 'bannerDesktop2Url', 'bannerDesktop3Url'
       ]);
       let urls = isMob ? mobileList : desktopList;
-      if (!urls.length){
+      if (!urls.length) {
         urls = arrayFromAliases(cfg, [
-          'bannerUrls','banners',
-          'bannerUrl','banner1Url','banner2Url','banner3Url','bannerUrl1','bannerUrl2','bannerUrl3'
+          'bannerUrls', 'banners',
+          'bannerUrl', 'banner1Url', 'banner2Url', 'banner3Url', 'bannerUrl1', 'bannerUrl2', 'bannerUrl3'
         ]);
       }
-      urls = [...new Set(urls.filter(Boolean))].slice(0,3);
+      urls = [...new Set(urls.filter(Boolean))].slice(0, 3);
       return urls;
     }
 
-    function collectBannerLinksByMode(cfg){
+    function collectBannerLinksByMode(cfg) {
       const isMob = mq.matches;
       const mobileLinks = arrayFromAliases(cfg, [
-        'bannerMobileLinks','mobileBannerLinks',
-        'bannerMobileLink','bannerMobileLink1','bannerMobileLink2','bannerMobileLink3',
-        'mobileBannerLink','mobileBannerLink1','mobileBannerLink2','mobileBannerLink3'
+        'bannerMobileLinks', 'mobileBannerLinks',
+        'bannerMobileLink', 'bannerMobileLink1', 'bannerMobileLink2', 'bannerMobileLink3',
+        'mobileBannerLink', 'mobileBannerLink1', 'mobileBannerLink2', 'mobileBannerLink3'
       ]);
       const desktopLinks = arrayFromAliases(cfg, [
-        'bannerDesktopLinks','desktopBannerLinks',
-        'bannerDesktopLink','bannerDesktopLink1','bannerDesktopLink2','bannerDesktopLink3'
+        'bannerDesktopLinks', 'desktopBannerLinks',
+        'bannerDesktopLink', 'bannerDesktopLink1', 'bannerDesktopLink2', 'bannerDesktopLink3'
       ]);
       let links = isMob ? mobileLinks : desktopLinks;
-      if (!links.length){
+      if (!links.length) {
         links = arrayFromAliases(cfg, [
-          'bannerLinks','bannerLink','bannerLink1','bannerLink2','bannerLink3'
+          'bannerLinks', 'bannerLink', 'bannerLink1', 'bannerLink2', 'bannerLink3'
         ]);
       }
       const out = ['', '', ''];
-      for (let i = 0; i < 3; i++){
+      for (let i = 0; i < 3; i++) {
         const v = links[i];
         out[i] = (typeof v === 'string') ? v.trim() : '';
       }
       return out;
     }
 
-    function effectiveFit(cfg){
+    function effectiveFit(cfg) {
       const isMob = mq.matches;
       const v = isMob ? (cfg.bannerFitMobile || cfg.bannerfitMobile)
                       : (cfg.bannerFitDesktop || cfg.bannerfitDesktop);
       return (v || cfg.bannerFit || 'cover') === 'contain' ? 'contain' : 'cover';
     }
-    function effectivePosition(cfg){
+    function effectivePosition(cfg) {
       const isMob = mq.matches;
       return norm(isMob ? (cfg.bannerPositionMobile || cfg.bannerpositionMobile)
                         : (cfg.bannerPositionDesktop || cfg.bannerpositionDesktop))
              || norm(cfg.bannerPosition) || 'center';
     }
-    function effectiveMinHeight(cfg){
+    function effectiveMinHeight(cfg) {
       const isMob = mq.matches;
       const px = Number(isMob ? cfg.bannerHeightMobile : cfg.bannerHeightDesktop);
       return Number.isFinite(px) ? Math.max(80, Math.min(800, px)) : null;
     }
 
-    function setupBanners(cfg){
+    function setupBanners(cfg) {
       const box = document.getElementById('bannerBox');
       if (!box) return;
       box.innerHTML = '';
 
-      const urls  = collectBannerUrlsByMode(cfg);
+      const urls = collectBannerUrlsByMode(cfg);
       const links = collectBannerLinksByMode(cfg);
       if (!urls.length) return;
 
@@ -337,15 +398,15 @@
 
       BANNER_SLIDES = urls.map((u, i) => {
         const slide = document.createElement('div');
-        slide.className = 'slide' + (i===0 ? ' active' : '');
+        slide.className = 'slide' + (i === 0 ? ' active' : '');
 
         const low = u.toLowerCase();
         const hasLink = (typeof links[i] === 'string' && links[i].trim().length > 0);
         const wrap = hasLink ? Object.assign(document.createElement('a'), { href: links[i], target: '_blank', rel: 'noopener', 'aria-label': 'Ver mais' }) : null;
 
         const node = (low.endsWith('.mp4') || low.endsWith('.webm'))
-          ? (()=>{ const v = document.createElement('video'); v.src = u; v.muted = true; v.playsInline = true; v.preload = 'none'; if (urls.length === 1) v.autoplay = v.loop = true; return v; })()
-          : (()=>{ const img = new Image(); img.src = u; img.alt = 'Banner'; img.loading = 'lazy'; return img; })();
+          ? (() => { const v = document.createElement('video'); v.src = u; v.muted = true; v.playsInline = true; v.preload = 'none'; if (urls.length === 1) v.autoplay = v.loop = true; return v; })()
+          : (() => { const img = new Image(); img.src = u; img.alt = 'Banner'; img.loading = 'lazy'; return img; })();
 
         if (wrap) { wrap.appendChild(node); slide.appendChild(wrap); }
         else { slide.appendChild(node); }
@@ -355,39 +416,39 @@
       });
 
       const firstVid = BANNER_SLIDES[0].querySelector('video');
-      if (firstVid) firstVid.play().catch(()=>{});
+      if (firstVid) firstVid.play().catch(() => {});
 
-      if (BANNER_SLIDES.length > 1){
+      if (BANNER_SLIDES.length > 1) {
         const interval = Number(cfg.bannerIntervalMs) || 7000;
         clearInterval(BANNER_TIMER);
-        BANNER_TIMER = setInterval(()=>{
+        BANNER_TIMER = setInterval(() => {
           const cur = BANNER_SLIDES[BANNER_IDX];
           const nxtIdx = (BANNER_IDX + 1) % BANNER_SLIDES.length;
           const nxt = BANNER_SLIDES[nxtIdx];
 
           const curVid = cur.querySelector('video');
-          if (curVid){ curVid.pause(); curVid.currentTime = 0; }
+          if (curVid) { curVid.pause(); curVid.currentTime = 0; }
 
           cur.classList.remove('active');
           nxt.classList.add('active');
 
           const nxtVid = nxt.querySelector('video');
-          if (nxtVid){ nxtVid.play().catch(()=>{}); }
+          if (nxtVid) { nxtVid.play().catch(() => {}); }
 
           BANNER_IDX = nxtIdx;
         }, interval);
 
-        document.addEventListener('visibilitychange', ()=>{
-          if (document.hidden){ clearInterval(BANNER_TIMER); BANNER_TIMER = null; }
-          else if (!BANNER_TIMER){
+        document.addEventListener('visibilitychange', () => {
+          if (document.hidden) { clearInterval(BANNER_TIMER); BANNER_TIMER = null; }
+          else if (!BANNER_TIMER) {
             const interval = Number(cfg.bannerIntervalMs) || 7000;
-            BANNER_TIMER = setInterval(()=>{ 
+            BANNER_TIMER = setInterval(() => {
               const cur = BANNER_SLIDES[BANNER_IDX];
               const nxtIdx = (BANNER_IDX + 1) % BANNER_SLIDES.length;
               const nxt = BANNER_SLIDES[nxtIdx];
-              const curVid = cur.querySelector('video'); if (curVid){ curVid.pause(); curVid.currentTime = 0; }
+              const curVid = cur.querySelector('video'); if (curVid) { curVid.pause(); curVid.currentTime = 0; }
               cur.classList.remove('active'); nxt.classList.add('active');
-              const nxtVid = nxt.querySelector('video'); if (nxtVid){ nxtVid.play().catch(()=>{}); }
+              const nxtVid = nxt.querySelector('video'); if (nxtVid) { nxtVid.play().catch(() => {}); }
               BANNER_IDX = nxtIdx;
             }, interval);
           }
@@ -395,27 +456,24 @@
       }
     }
 
-    // Reconstrói banners se mudar de modo (mobile/desktop)
-    function watchBannerMode(cfg){
-      mq.addEventListener('change', ()=>{
+    function watchBannerMode(cfg) {
+      mq.addEventListener('change', () => {
         const mode = mq.matches ? 'mobile' : 'desktop';
-        if (mode !== lastMode){
+        if (mode !== lastMode) {
           lastMode = mode;
           setupBanners(cfg);
         }
       });
     }
 
-    // Adiciona suporte a swipe no carrossel de banners
     function setupBannerSwipe() {
       const bannerBox = document.getElementById('bannerBox');
-      if (!bannerBox || BANNER_SLIDES.length <= 1) return; // Sem swipe se houver 0 ou 1 banner
+      if (!bannerBox || BANNER_SLIDES.length <= 1) return;
 
       let touchX = null;
 
       bannerBox.addEventListener('touchstart', e => {
         touchX = e.changedTouches[0].clientX;
-        // Pausa o temporizador durante o toque
         if (BANNER_TIMER) {
           clearInterval(BANNER_TIMER);
           BANNER_TIMER = null;
@@ -427,14 +485,14 @@
         const dx = e.changedTouches[0].clientX - touchX;
         touchX = null;
 
-        if (Math.abs(dx) > 40) { // Limite mínimo de deslocamento
+        if (Math.abs(dx) > 40) {
           const cur = BANNER_SLIDES[BANNER_IDX];
           const curVid = cur.querySelector('video');
           if (curVid) { curVid.pause(); curVid.currentTime = 0; }
 
-          if (dx < 0) { // Swipe para esquerda (próximo)
+          if (dx < 0) {
             BANNER_IDX = (BANNER_IDX + 1) % BANNER_SLIDES.length;
-          } else { // Swipe para direita (anterior)
+          } else {
             BANNER_IDX = (BANNER_IDX - 1 + BANNER_SLIDES.length) % BANNER_SLIDES.length;
           }
 
@@ -445,7 +503,6 @@
           const nxtVid = nxt.querySelector('video');
           if (nxtVid) { nxtVid.play().catch(() => {}); }
 
-          // Reinicia o temporizador após o swipe
           const interval = Number(cfg.bannerIntervalMs) || 7000;
           BANNER_TIMER = setInterval(() => {
             const cur = BANNER_SLIDES[BANNER_IDX];
@@ -463,21 +520,92 @@
       }, { passive: true });
     }
 
-    function renderPage(){
+    /* ===== Menu Hamburguer ===== */
+    function setupMenu(cfg) {
+      const menu = document.getElementById('menu');
+      const menuBtn = document.getElementById('menuBtn');
+      const menuOverlay = document.getElementById('menuOverlay');
+      const menuClose = document.getElementById('menuClose');
+
+      const menuItems = [
+        { name: 'Página Inicial', href: '#', active: true },
+        { name: 'Vídeos', href: cfg.videoUrl || '#' },
+        { name: 'Redes Sociais', href: cfg.socialUrl || '#' },
+        { name: 'Parceiros', href: cfg.partnersUrl || '#' },
+        { name: 'Avaliações', href: cfg.reviewsUrl || '#' }
+      ];
+
+      menu.querySelector('ul').innerHTML = menuItems.map(item => `
+        <li><a href="${item.href}" class="${item.active ? 'active' : ''}">${item.name}</a></li>
+      `).join('');
+
+      function toggleMenu() {
+        menu.classList.toggle('open');
+        menuOverlay.classList.toggle('open');
+        document.body.style.overflow = menu.classList.contains('open') ? 'hidden' : '';
+      }
+
+      menuBtn.addEventListener('click', toggleMenu);
+      menuClose.addEventListener('click', toggleMenu);
+      menuOverlay.addEventListener('click', toggleMenu);
+    }
+
+    /* ===== Pesquisa ===== */
+    function setupSearch() {
+      const searchInput = document.getElementById('searchInput');
+      const searchClear = document.getElementById('searchClear');
+
+      function filterItems() {
+        const query = searchInput.value.trim().toLowerCase();
+        searchClear.classList.toggle('show', query.length > 0);
+
+        if (query.length === 0) {
+          filteredItens = itens;
+        } else {
+          const terms = query.split(/\s+/);
+          filteredItens = itens.filter(item => {
+            const text = (item.nome + ' ' + (item.tags || '')).toLowerCase();
+            return terms.every(term => text.includes(term));
+          });
+        }
+
+        page = 0;
+        renderPage();
+      }
+
+      searchInput.addEventListener('input', filterItems);
+      searchClear.addEventListener('click', () => {
+        searchInput.value = '';
+        searchClear.classList.remove('show');
+        filteredItens = itens;
+        page = 0;
+        renderPage();
+      });
+
+      searchInput.addEventListener('keydown', e => {
+        if (e.key === 'Enter') searchInput.blur();
+      });
+    }
+
+    function renderPage() {
       clampPage();
       const start = page * PER_PAGE;
-      const slice = itens.slice(start, start + PER_PAGE);
+      const slice = filteredItens.slice(start, start + PER_PAGE);
 
       const gridEl = document.getElementById('grid');
-      if(!gridEl){ return; }
+      if (!gridEl) return;
 
-      if(slice.length === 0){
-        gridEl.innerHTML = `<div class="warn" style="grid-column:1/-1">Ainda não há itens publicados neste catálogo.</div>`;
+      if (slice.length === 0) {
+        gridEl.innerHTML = `<div class="warn" style="grid-column:1/-1">${
+          filteredItens.length === 0 && itens.length > 0
+            ? 'Nenhum item encontrado para a pesquisa.'
+            : 'Ainda não há itens publicados neste catálogo.'
+        }</div>`;
       } else {
         gridEl.innerHTML = slice.map(d => {
-          const galAttr = JSON.stringify(d.fotos).replace(/"/g,'&quot;');
-          const thumbs  = d.fotos.slice(0, MAX_FOTOS_ITEM)
-            .map((u,i)=>`<img src="${u}" alt="" data-idx="${i}">`).join('');
+          const galAttr = JSON.stringify(d.fotos).replace(/"/g, '&quot;');
+          const thumbs = d.fotos.slice(0, MAX_FOTOS_ITEM)
+            .map((u, i) => `<img src="${u}" alt="" data-idx="${i}">`).join('');
 
           const waSvg = `<svg viewBox="0 0 32 32" aria-hidden="true"><path fill="#fff" d="M19.1 17.1c-.3-.2-1.7-.8-2-.9-.3-.1-.5-.2-.7.2-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.2-1.1-.4-2-1.2-.7-.6-1.2-1.4-1.3-1.6-.1-.3 0-.4.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2.1-.4 0-.6-.1-.2-.7-1.7-.9-2.3-.2-.5-.5-.4-.7-.4h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.7 0 1.6 1.1 3.1 1.2 3.3.1.2 2.2 3.4 5.4 4.7.8.4 1.4.6 1.9.8.8.3 1.6.3 2.2.2.7-.1 2-.8 2.2-1.6.3-.8.3-1.5.2-1.6 0-.1-.2-.1-.4-.2zM16 3C9.9 3 5 7.9 5 14c0 2.4.8 4.6 2.1 6.3L6 29l8-1.9c1.5.4 3.1.7 4.7.7 6.1 0 11-4.9 11-11S22.1 3 16 3z"/></svg>`;
           const mlSvg = `<svg viewBox="0 0 64 64" aria-hidden="true"><rect x="2" y="8" width="60" height="48" rx="24" fill="#002E6C" opacity=".0"/><path fill="#002E6C" d="M18 28c2-2 5-4 8-4s6 2 8 4c2 2 5 4 8 4s6-2 8-4l2 3c-2 2-6 5-10 5s-8-3-10-5c-2-2-5-4-8-4s-6 2-8 4-8 5-12 5l2-4c3 0 8-3 10-4Z"/></svg>`;
@@ -495,9 +623,7 @@
                 <div class="nome">${d.nome}</div>
                 <div class="preco">${d.precoBRL}</div>
                 <div class="qtde">Estoque: ${d.qtd}</div>
-
                 ${thumbs ? `<div class="thumbs" data-gal="${galAttr}">${thumbs}</div>` : ``}
-
                 <div class="actions">
                   ${d.zap ? `<a class="cta cta-wa" href="${d.zap}" target="_blank" rel="noopener">Whatsapp ${waIcon}</a>` : ``}
                   ${d.mlUrl ? `<a class="cta cta-ml" href="${d.mlUrl}" target="_blank" rel="noopener">Comprar ${mlIcon}</a>` : ``}
@@ -510,53 +636,53 @@
         }).join('');
       }
 
-      document.querySelectorAll('.pageinfo').forEach(el=>{
-        el.textContent = `Página ${Math.min(page+1,totalPages())} de ${totalPages()}`;
+      document.querySelectorAll('.pageinfo').forEach(el => {
+        el.textContent = `Página ${Math.min(page + 1, totalPages())} de ${totalPages()}`;
       });
-      document.querySelectorAll('.btnPrev').forEach(b=> b.disabled = (page<=0));
-      document.querySelectorAll('.btnNext').forEach(b=> b.disabled = (page>=totalPages()-1));
+      document.querySelectorAll('.btnPrev').forEach(b => b.disabled = (page <= 0));
+      document.querySelectorAll('.btnNext').forEach(b => b.disabled = (page >= totalPages() - 1));
     }
 
-    function goPrev(){ if(page>0){ page--; renderPage(); window.scrollTo({top:0,behavior:'smooth'}); } }
-    function goNext(){ if(page < totalPages()-1){ page++; renderPage(); window.scrollTo({top:0,behavior:'smooth'}); } }
+    function goPrev() { if (page > 0) { page--; renderPage(); window.scrollTo({ top: 0, behavior: 'smooth' }); } }
+    function goNext() { if (page < totalPages() - 1) { page++; renderPage(); window.scrollTo({ top: 0, behavior: 'smooth' }); } }
     window.goPrev = goPrev;
     window.goNext = goNext;
 
     /* ===== Lightbox ===== */
-    const lbBg   = document.getElementById('lbBg');
-    const lbImg  = document.getElementById('lbImg');
-    const lbBtn  = document.getElementById('lbClose');
+    const lbBg = document.getElementById('lbBg');
+    const lbImg = document.getElementById('lbImg');
+    const lbBtn = document.getElementById('lbClose');
     const lbPrevBtn = document.getElementById('lbPrev');
     const lbNextBtn = document.getElementById('lbNext');
-    const lbCount   = document.getElementById('lbCount');
+    const lbCount = document.getElementById('lbCount');
 
     let LB_GALLERY = [];
     let LB_IDX = 0;
 
-    function showLbImage(){
+    function showLbImage() {
       const src = LB_GALLERY[LB_IDX] || '';
       lbImg.src = src;
-      if (lbCount) lbCount.textContent = `${LB_IDX+1} / ${LB_GALLERY.length}`;
+      if (lbCount) lbCount.textContent = `${LB_IDX + 1} / ${LB_GALLERY.length}`;
     }
-    function openLightboxGallery(gal, idx=0){
-      if(!Array.isArray(gal) || gal.length===0) return;
-      LB_GALLERY = gal; LB_IDX = Math.max(0, Math.min(idx, gal.length-1));
+    function openLightboxGallery(gal, idx = 0) {
+      if (!Array.isArray(gal) || gal.length === 0) return;
+      LB_GALLERY = gal; LB_IDX = Math.max(0, Math.min(idx, gal.length - 1));
       lbBg.style.display = 'flex';
       document.body.style.overflow = 'hidden';
       showLbImage();
     }
-    function closeLightbox(){
+    function closeLightbox() {
       lbBg.style.display = 'none';
       lbImg.src = '';
       document.body.style.overflow = '';
       LB_GALLERY = []; LB_IDX = 0;
     }
-    function lbPrev(){ if(LB_GALLERY.length>1){ LB_IDX = (LB_IDX - 1 + LB_GALLERY.length) % LB_GALLERY.length; showLbImage(); } }
-    function lbNext(){ if(LB_GALLERY.length>1){ LB_IDX = (LB_IDX + 1) % LB_GALLERY.length; showLbImage(); } }
+    function lbPrev() { if (LB_GALLERY.length > 1) { LB_IDX = (LB_IDX - 1 + LB_GALLERY.length) % LB_GALLERY.length; showLbImage(); } }
+    function lbNext() { if (LB_GALLERY.length > 1) { LB_IDX = (LB_IDX + 1) % LB_GALLERY.length; showLbImage(); } }
 
     lbBtn.addEventListener('click', closeLightbox);
-    lbBg.addEventListener('click', (e)=>{ if(e.target === lbBg) closeLightbox(); });
-    window.addEventListener('keydown', (e)=>{
+    lbBg.addEventListener('click', (e) => { if (e.target === lbBg) closeLightbox(); });
+    window.addEventListener('keydown', (e) => {
       if (lbBg.style.display === 'flex') {
         if (e.key === 'Escape') closeLightbox();
         if (e.key === 'ArrowLeft') lbPrev();
@@ -567,35 +693,34 @@
     if (lbNextBtn) lbNextBtn.addEventListener('click', lbNext);
 
     let touchX = null;
-    lbBg.addEventListener('touchstart', e => { touchX = e.changedTouches[0].clientX; }, {passive:true});
+    lbBg.addEventListener('touchstart', e => { touchX = e.changedTouches[0].clientX; }, { passive: true });
     lbBg.addEventListener('touchend', e => {
       if (touchX == null) return;
       const dx = e.changedTouches[0].clientX - touchX;
       touchX = null;
       if (Math.abs(dx) > 40) { dx < 0 ? lbNext() : lbPrev(); }
-    }, {passive:true});
+    }, { passive: true });
 
-    document.addEventListener('click', (e)=>{
+    document.addEventListener('click', (e) => {
       const wrap = e.target.closest('.imgWrap');
-      if (wrap){
+      if (wrap) {
         try {
           const gal = JSON.parse(wrap.dataset.gal || '[]');
           if (gal.length) openLightboxGallery(gal, 0);
           return;
-        } catch(_) {}
+        } catch (_) {}
       }
       const thumb = e.target.closest('.thumbs img');
-      if (thumb){
+      if (thumb) {
         const cont = thumb.closest('.thumbs');
         try {
           const gal = JSON.parse(cont.dataset.gal || '[]');
           const idx = parseInt(thumb.dataset.idx || '0', 10);
           if (gal.length) openLightboxGallery(gal, idx);
-        } catch(_) {}
+        } catch (_) {}
       }
     });
 
-    /* ===== Logo pequeno no header (opcional via config) ===== */
     function applyHeaderLogo(cfg) {
       const qs = new URL(location.href).searchParams;
       const val = v => (v ?? '').toString().trim();
@@ -623,7 +748,7 @@
 
       Object.assign(img.style, {
         display: 'inline-block',
-        width:  size + 'px',
+        width: size + 'px',
         height: size + 'px',
         borderRadius: (shape === 'square') ? '8px' : '9999px',
         objectFit: 'contain',
@@ -631,55 +756,56 @@
       });
       img.alt = (cfg.nomeEmpresa || 'Logo');
       img.decoding = 'async';
-      img.loading  = 'eager';
+      img.loading = 'eager';
       img.referrerPolicy = 'no-referrer';
       img.src = url;
 
       img.onerror = () => { img.remove(); };
     }
 
-    async function carregar(){
+    async function carregar() {
       const avisos = document.getElementById('avisos');
 
-      if(!slug){
+      if (!slug) {
         avisos.innerHTML = `<div class="warn">Catálogo não encontrado. Informe o slug (?c=slug).</div>`;
         return;
       }
 
       const cfgRef = doc(db, `catalogos/${slug}/meta/config`);
       const cfgSnap = await getDoc(cfgRef);
-      if (!cfgSnap.exists()){
+      if (!cfgSnap.exists()) {
         avisos.innerHTML = `<div class="warn">Catálogo não encontrado.</div>`;
         return;
       }
       const cfg = cfgSnap.data();
 
       applyHeaderLogo(cfg);
+      setupMenu(cfg);
 
       ICON_WA = (cfg.iconWhatsUrl || '').trim();
-      ICON_ML = (cfg.iconMLUrl  || '').trim();
+      ICON_ML = (cfg.iconMLUrl || '').trim();
 
       const nome = cfg.nomeEmpresa || cfg.titulo || 'La Maggie';
       document.title = `Catálogo • ${nome}`;
       document.getElementById('empresaBar').textContent = nome;
       document.getElementById('tituloEmpresa').textContent = nome;
 
-      if (cfg.logoUrl){
+      if (cfg.logoUrl) {
         const el = document.getElementById('logoImg');
         el.src = cfg.logoUrl; el.style.display = 'block';
         const ring = document.getElementById('logoRing');
         const n = Number(cfg.logoScale);
-        if (Number.isFinite(n) && n>20 && n<=100){ ring.style.setProperty('--logo-size', n + '%'); }
-        if (typeof cfg.logoBg === 'string' && cfg.logoBg.trim()){ ring.style.background = cfg.logoBg.trim(); }
-        if (cfg.logoShape === 'square'){ ring.style.borderRadius = '18px'; el.style.borderRadius = '12px'; }
+        if (Number.isFinite(n) && n > 20 && n <= 100) { ring.style.setProperty('--logo-size', n + '%'); }
+        if (typeof cfg.logoBg === 'string' && cfg.logoBg.trim()) { ring.style.background = cfg.logoBg.trim(); }
+        if (cfg.logoShape === 'square') { ring.style.borderRadius = '18px'; el.style.borderRadius = '12px'; }
       }
 
-      /* Banners */
       setupBanners(cfg);
       watchBannerMode(cfg);
       setupBannerSwipe();
+      setupSearch();
 
-      if (cfg.catalogoAtivo !== true){
+      if (cfg.catalogoAtivo !== true) {
         avisos.innerHTML = `<div class="warn">Este catálogo está desativado no momento.</div>`;
         return;
       } else {
@@ -703,25 +829,25 @@
 
       const q = query(
         collection(db, `catalogos/${slug}/itens`),
-        orderBy('ordem','asc'),
+        orderBy('ordem', 'asc'),
         ...(limitePublico ? [qLimit(limitePublico)] : [])
       );
 
-      onSnapshot(q, snap=>{
+      onSnapshot(q, snap => {
         const arr = [];
         let idx = 0;
-        snap.forEach(docSnap=>{
+        snap.forEach(docSnap => {
           const d = docSnap.data(); if (d.ativo === false) return;
           idx++;
           const nomeItem = d.nome || `Item ${idx}`;
 
           let precoBRL = '—';
           if (typeof d.precoCentavos === 'number') {
-            precoBRL = (d.precoCentavos/100).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+            precoBRL = (d.precoCentavos / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
           } else if (typeof d.preco === 'number') {
-            precoBRL = d.preco.toLocaleString('pt-BR',{style:'currency','currency':'BRL'});
+            precoBRL = d.preco.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
           } else if (typeof d.preco === 'string') {
-            const n = Number(d.preco.replace(',','.')); if (Number.isFinite(n)) precoBRL = n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+            const n = Number(d.preco.replace(',', '.')); if (Number.isFinite(n)) precoBRL = n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
           }
 
           const qtd = (typeof d.quantidade === 'number') ? d.quantidade
@@ -747,25 +873,27 @@
             nome: nomeItem,
             precoBRL,
             qtd,
-            fotos: gal.length?gal:[PLACEHOLDER],
+            fotos: gal.length ? gal : [PLACEHOLDER],
             thumb,
             zap,
-            mlUrl: d.mlUrl || null
+            mlUrl: d.mlUrl || null,
+            tags: (Array.isArray(d.tags) ? d.tags.join(' ') : (d.tags || d.palavrasChave || '')).toString().trim()
           });
         });
 
         itens = arr;
+        filteredItens = itens;
         clampPage();
         renderPage();
       });
 
-      window.addEventListener('keydown', (ev)=>{
+      window.addEventListener('keydown', (ev) => {
         if (ev.key === 'ArrowRight') goNext();
         else if (ev.key === 'ArrowLeft') goPrev();
       });
     }
 
-    (function insertAvisos(){
+    (function insertAvisos() {
       const avisos = document.createElement('div');
       avisos.id = 'avisos';
       const anchor = document.getElementById('pagerTop');
@@ -778,9 +906,17 @@
 <body>
   <header>
     <div class="bar">
+      <button id="menuBtn" class="menu-btn" aria-label="Abrir menu">
+        <svg viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+      </button>
       <img id="brandLogo" class="brandLogo" alt="Logo">
       <div class="brand" id="empresaBar">La Maggie</div>
       <div class="spacer"></div>
+      <nav id="menu" class="menu">
+        <button id="menuClose" class="menu-close" aria-label="Fechar menu">×</button>
+        <ul></ul>
+      </nav>
+      <div id="menuOverlay" class="menu-overlay"></div>
     </div>
   </header>
 
@@ -790,12 +926,14 @@
         <img id="logoImg" alt="Logo" src="" onerror="this.style.display='none'">
       </div>
       <h1 class="title" id="tituloEmpresa">La Maggie</h1>
-
-      <!-- Banner/carrossel -->
       <div class="banner" id="bannerBox"></div>
     </section>
 
-    <!-- Pager Top -->
+    <div class="search-bar">
+      <input id="searchInput" class="search-input" type="text" placeholder="Pesquisar produtos..." aria-label="Pesquisar produtos">
+      <button id="searchClear" class="search-clear" aria-label="Limpar pesquisa">×</button>
+    </div>
+
     <div id="pagerTop" class="pager">
       <button class="navbtn btnPrev" onclick="goPrev()" aria-label="Anterior">
         <svg viewBox="0 0 24 24"><path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
@@ -810,7 +948,6 @@
 
     <section class="grid" id="grid"></section>
 
-    <!-- Pager Bottom -->
     <div class="pager" style="margin-top:16px">
       <button class="navbtn btnPrev" onclick="goPrev()" aria-label="Anterior">
         <svg viewBox="0 0 24 24"><path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
@@ -829,12 +966,10 @@
     </p>
   </main>
 
-  <!-- FAB WhatsApp -->
   <a id="waFloat" class="wa-float" href="#" target="_blank" rel="noopener" aria-label="WhatsApp">
     <svg viewBox="0 0 32 32" role="img" aria-hidden="true"><path d="M19.1 17.1c-.3-.2-1.7-.8-2-.9-.3-.1-.5-.2-.7.2-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.2-1.1-.4-2-1.2-.7-.6-1.2-1.4-1.3-1.6-.1-.3 0-.4.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2.1-.4 0-.6-.1-.2-.7-1.7-.9-2.3-.2-.5-.5-.4-.7-.4h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.7 0 1.6 1.1 3.1 1.2 3.3.1.2 2.2 3.4 5.4 4.7.8.4 1.4.6 1.9.8.8.3 1.6.3 2.2.2.7-.1 2-.8 2.2-1.6.3-.8.3-1.5.2-1.6 0-.1-.2-.1-.4-.2zM16 3C9.9 3 5 7.9 5 14c0 2.4.8 4.6 2.1 6.3L6 29l8-1.9c1.5.4 3.1.7 4.7.7 6.1 0 11-4.9 11-11S22.1 3 16 3z"/></svg>
   </a>
 
-  <!-- Lightbox -->
   <div id="lbBg" class="lb-bg" role="dialog" aria-modal="true" aria-label="Imagem ampliada" style="display:none">
     <div class="lb-card">
       <button id="lbClose" class="lb-close" aria-label="Fechar">×</button>
