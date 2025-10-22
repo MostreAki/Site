@@ -74,7 +74,7 @@
     .card .body{padding:16px}
 
     label{display:block;margin:10px 0 6px;color:#124b49;font-weight:600}
-    input[type="text"],input[type="file"],input[type="email"]{width:100%;padding:10px 12px;border:1px solid #cfe9e3;border-radius:10px}
+    input[type="text"],input[type="file"]{width:100%;padding:10px 12px;border:1px solid #cfe9e3;border-radius:10px}
     #fotoPreview{display:block;margin-top:10px;max-width:180px;border-radius:12px}
 
     .row-btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
@@ -172,25 +172,29 @@
   <div id="authModal" class="modal-bg" role="dialog" aria-modal="true" aria-labelledby="authTitle">
     <div class="modal-card">
       <div class="modal-head">
-        <h2 id="authTitle">Alterar E-mail</h2>
+        <h2 id="authTitle">Entrar no MostreAki</h2>
         <button class="modal-close" onclick="fecharModal()" aria-label="Fechar">×</button>
       </div>
       <div class="modal-body">
-        <label for="newEmail">Novo E-mail</label>
-        <input id="newEmail" type="email" autocomplete="username" required
-               pattern="^[^\s@]+@[^\s@]+\.[^\s@]{2,}$" placeholder="novo@exemplo.com">
+        <label for="email">E-mail</label>
+        <input id="email" type="email" autocomplete="username" required
+               pattern="^[^\s@]+@[^\s@]+\.[^\s@]{2,}$" placeholder="voce@exemplo.com">
 
-        <label for="currentPassword">Senha Atual</label>
+        <label for="senha">Senha</label>
         <div class="pwd-wrap">
-          <input id="currentPassword" type="password" autocomplete="current-password" required>
+          <input id="senha" type="password" autocomplete="current-password" required>
           <label class="showpwd" for="chkMostrarSenha">
-            <input id="chkMostrarSenha" type="checkbox" aria-controls="currentPassword" aria-label="Mostrar senha">
+            <input id="chkMostrarSenha" type="checkbox" aria-controls="senha" aria-label="Mostrar senha">
             Mostrar senha
           </label>
         </div>
 
-        <button class="primary" id="btnAlterarEmail">Alterar E-mail</button>
-        <p class="muted">Para segurança, confirme sua senha atual.</p>
+        <button class="primary" id="btnEntrar">Entrar</button>
+
+        <div class="muted" style="text-align:center;margin-top:6px">
+          Esqueceu a senha? <a href="/recuperar-senha.html">Recuperar senha</a>
+        </div>
+        <p class="muted">Não tem conta? <a href="/cadastro.html">Cadastre-se</a></p>
       </div>
     </div>
   </div>
@@ -203,7 +207,6 @@
     <div class="user-wrap">
       <div id="userCircle" class="user-circle"></div>
       <a id="authText" href="/login.html" class="btn ghost" style="text-decoration:none">Entrar</a>
-      <button id="btnAlterarEmailBtn" class="btn ghost" style="display:none">Alterar E-mail</button>
       <div id="menuBtn" class="menu-icon" aria-label="Abrir menu" role="button" tabindex="0">
         <span></span><span></span><span></span>
       </div>
@@ -286,7 +289,7 @@
 
   <script type="module">
     import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-    import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, sendEmailVerification, EmailAuthProvider, reauthenticateWithCredential, updateEmail } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+    import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, sendEmailVerification } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
     import { getFirestore, doc, getDoc, setDoc, onSnapshot, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
     import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
 
@@ -314,7 +317,7 @@
     window.addEventListener('keydown', e => { if (e.key === 'Escape' && modal?.style.display === 'flex') fecharModal(); });
 
     (function wireShowPassword() {
-      const input = $('#currentPassword'), chk = $('#chkMostrarSenha');
+      const input = $('#senha'), chk = $('#chkMostrarSenha');
       if (!input || !chk) return;
       const apply = () => { input.type = chk.checked ? 'text' : 'password'; };
       chk.addEventListener('change', apply);
@@ -373,7 +376,7 @@
       const el = $('#userCircle'); if (!el) return;
       el.textContent = ''; el.style.display = 'flex';
       const img = new Image();
-      img.src = cacheBust(url); img.alt = 'Foto'; img.style.width = '100%'; img.style.height = '100%'; img.style.objectFit = 'cover';
+      img.src = cacheBust(url); img.alt = 'Foto de Perfil'; img.style.width = '100%'; img.style.height = '100%'; img.style.objectFit = 'cover';
       el.append(img);
       const prev = $('#fotoPreview'); if (prev) prev.src = url;
     }
@@ -583,7 +586,6 @@
     /* Auth */
     onAuthStateChanged(auth, async (user) => {
       const a = $('#authText');
-      const btnAlterarEmailBtn = $('#btnAlterarEmailBtn');
       if (user) {
         a.textContent = 'Sair';
         a.onclick = async (e) => {
@@ -592,11 +594,6 @@
           localStorage.removeItem('fotoPerfil');
           location = '/index.html';
         };
-        btnAlterarEmailBtn.style.display = 'inline-block';
-        btnAlterarEmailBtn.onclick = (e) => {
-          e.preventDefault();
-          abrirModal();
-        };
         $('#foto').onchange = ev => previewImagem(ev, user.uid);
         $('#btnSalvar').onclick = () => salvar(user.uid);
         $('#btnExcluirFoto').onclick = () => removerFoto(user.uid);
@@ -604,7 +601,7 @@
         wireAssinatura(user.uid);
         await aplicarParametrosURL(user.uid);
         await carregar(user.uid);
-        await prefetchFoto(user.uid);
+        await prefetchFoto(user.uid); // Carrega a foto do Storage pro userCircle
         await wireCatalogo(user.uid);
       } else {
         $('#alertaLogin').style.display = 'block';
@@ -613,48 +610,8 @@
         setTimeout(() => location = '/index.html', 4000);
         a.textContent = 'Entrar';
         a.onclick = (e) => { e.preventDefault(); abrirModal(); };
-        btnAlterarEmailBtn.style.display = 'none';
       }
     });
-
-    /* Alterar E-mail */
-    async function alterarEmail() {
-      const user = auth.currentUser;
-      if (!user) {
-        alert('Você precisa estar logado para alterar o e-mail.');
-        return;
-      }
-      const newEmail = $('#newEmail').value.trim();
-      const currentPassword = $('#currentPassword').value;
-      if (!emailValido(newEmail)) {
-        alert('Por favor, insira um e-mail válido.');
-        return;
-      }
-      if (!currentPassword) {
-        alert('Por favor, insira sua senha atual.');
-        return;
-      }
-
-      try {
-        const credential = EmailAuthProvider.credential(user.email, currentPassword);
-        await reauthenticateWithCredential(user, credential);
-        await updateEmail(user, newEmail);
-        await sendEmailVerification(user);
-        alert('E-mail alterado com sucesso! Verifique seu novo e-mail para confirmar.');
-        fecharModal();
-      } catch (e) {
-        if (e.code === 'auth/wrong-password') {
-          alert('Senha atual incorreta.');
-        } else if (e.code === 'auth/requires-recent-login') {
-          alert('Por segurança, faça login novamente antes de alterar o e-mail.');
-        } else if (e.code === 'auth/email-already-in-use') {
-          alert('Este e-mail já está em uso por outra conta.');
-        } else {
-          alert('Erro ao alterar o e-mail. Tente novamente.');
-        }
-      }
-    }
-    $('#btnAlterarEmail').onclick = alterarEmail;
   </script>
 </body>
 </html>
