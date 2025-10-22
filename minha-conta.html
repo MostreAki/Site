@@ -127,6 +127,45 @@
       cursor:not-allowed!important;
     }
     .lock-note{font-size:.82rem;color:#6b6b6b;margin-top:4px}
+
+    /* Selo SSL acima do footer */
+.ssl-seal {
+  text-align: center;
+  padding: 16px 0;
+  background: var(--brandLight);
+  margin-top: 20px;
+  border-top: 1px solid rgba(250,30,39,.22);
+}
+.ssl-seal a {
+  text-decoration: none;
+  display: inline-block;
+}
+.ssl-seal img {
+  max-width: 100px;
+  height: auto;
+}
+.ssl-seal p {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin: 4px 0 0;
+}
+.ssl-seal p:hover {
+  color: var(--brand);
+}
+.ssl-seal .fallback-svg {
+  width: 50px;
+  height: 50px;
+  vertical-align: middle;
+}
+@media (max-width: 768px) {
+  .ssl-seal img {
+    max-width: 80px;
+  }
+  .ssl-seal p {
+    font-size: 0.75rem;
+  }
+}
+    
   </style>
 </head>
 <body>
@@ -216,6 +255,9 @@
           </div>
           <div id="catalogoInfo" class="help" style="display:none;margin-top:6px"></div>
         </div>
+
+        <footer>&copy; 2025 MostreAki. Todos os direitos reservados.</footer>
+
       </section>
 
       <section class="card">
@@ -563,3 +605,4 @@
   </script>
 </body>
 </html>
+
