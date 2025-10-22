@@ -3,72 +3,169 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Verificação de e-mail – MostreAki</title>
+<title>Confirmar ação – MostreAki</title>
 <style>
-  :root{ --brand:#15b0af; --brandLight:#c2e7df; --accent:#FA1E39; --ink:#063b39; --bg:#f4f7f7; --card:#ffffff; }
-  body{ font-family:Arial, sans-serif; background:var(--bg); min-height:100vh; display:flex; align-items:center; justify-content:center; padding:16px; }
-  .card{ background:var(--card); border-radius:16px; width:100%; max-width:520px; padding:24px; text-align:center; border:2px solid var(--brandLight);
-         box-shadow:0 10px 40px rgba(0,0,0,.08); }
-  .icon{ font-size:42px; line-height:1; margin-bottom:8px; }
-  .ok{ color:#0f7; } .warn{ color:#e67; }
-  h1{ color:#0f6f6e; font-size:1.35rem; margin:0 0 6px; }
-  p{ color:#344; margin:6px 0; }
-  .btn{ display:inline-block; margin-top:14px; padding:12px 18px; border-radius:12px; border:0; font-weight:bold; cursor:pointer; background:var(--brand); color:#fff; text-decoration:none; }
-  .muted{ color:#666; font-size:.92rem; margin-top:12px; }
+  :root{
+    --brand:#15b0af; --brandLight:#c2e7df; --accent:#FA1E39; --ink:#063b39;
+  }
+  body{font-family:Arial, sans-serif;background:#f4f7f7;display:flex;min-height:100vh;align-items:center;justify-content:center}
+  .card{background:#fff;border-radius:12px;box-shadow:0 6px 24px rgba(0,0,0,.08);padding:26px;max-width:420px;width:92%;text-align:center}
+  h1{margin:0 0 10px;color:#0f6f6e}
+  p{color:#444;font-size:15px;margin:0 0 16px}
+  input{width:100%;padding:10px;border:1px solid #ddd;border-radius:8px;margin:8px 0}
+  button{width:100%;padding:12px;border-radius:8px;border:0;font-weight:bold;cursor:pointer;margin-top:10px;transition:all .2s ease}
+  .primary{background:var(--brand);color:#fff}
+  .primary:hover{filter:brightness(1.05)}
+  .muted{font-size:.9rem;color:#666;margin-top:8px}
+  a{color:var(--brand);text-decoration:none;font-weight:bold}
+  .hidden{display:none}
+
+  /* ALERT estilizado */
+  .alert-bg{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:9999;animation:fadeIn .3s ease}
+  .alert-card{background:#fff;border-radius:16px;overflow:hidden;max-width:460px;width:90%;box-shadow:0 22px 70px rgba(0,0,0,.25);border:2px solid var(--brandLight);animation:popIn .25s ease}
+  .alert-head{background:linear-gradient(90deg,var(--brandLight),var(--brand));padding:14px 16px;display:flex;align-items:center;gap:10px}
+  .alert-dot{width:10px;height:10px;border-radius:50%;background:var(--accent)}
+  .alert-title{color:var(--ink);font-weight:bold}
+  .alert-body{padding:16px;color:#2b2b2b}
+  .alert-actions{display:flex;gap:10px;flex-wrap:wrap;padding:0 16px 16px}
+  .btn{flex:1;border-radius:8px;padding:10px 14px;font-weight:bold;border:0;cursor:pointer;transition:.15s}
+  .btn-solid{background:var(--brand);color:#fff}
+  .btn-ghost{background:#fff;border:2px solid var(--brand);color:var(--brand)}
+  .btn-danger{background:var(--accent);color:#fff}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  @keyframes popIn{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
+
 </style>
 </head>
 <body>
-<div class="card" id="box">
-  <div class="icon">⏳</div>
-  <h1>Validando seu e-mail…</h1>
-  <p>Aguarde alguns segundos.</p>
+<div class="card" id="loading">
+  <h1>Verificando...</h1>
+  <p>Aguarde um instante, estamos confirmando seu link.</p>
+</div>
+
+<div class="card hidden" id="verified">
+  <h1>🎉 E-mail confirmado!</h1>
+  <p>Seu e-mail foi verificado com sucesso. Agora você pode entrar normalmente.</p>
+  <button class="primary" onclick="location.href='/login.html'">Ir para login</button>
+</div>
+
+<div class="card hidden" id="reset">
+  <h1>Redefinir senha</h1>
+  <p>Digite sua nova senha abaixo.</p>
+  <input id="novaSenha" type="password" placeholder="Nova senha" minlength="6" required>
+  <input id="confirmaSenha" type="password" placeholder="Confirmar nova senha" minlength="6" required>
+  <button class="primary" id="btnTrocar">Trocar senha</button>
+</div>
+
+<div class="card hidden" id="done">
+  <h1>Senha redefinida ✅</h1>
+  <p>Sua senha foi alterada com sucesso!</p>
+  <button class="primary" onclick="location.href='/login.html'">Entrar</button>
+</div>
+
+<div class="card hidden" id="erro">
+  <h1>Link inválido ou expirado</h1>
+  <p>Este link não é mais válido. Solicite um novo e-mail de verificação ou redefinição de senha.</p>
+  <button class="primary" onclick="location.href='/login.html'">Voltar</button>
+</div>
+
+<!-- ALERT -->
+<div id="alert" class="alert-bg">
+  <div class="alert-card">
+    <div class="alert-head">
+      <div class="alert-dot"></div>
+      <div id="alertTitle" class="alert-title">Mensagem</div>
+    </div>
+    <div id="alertMsg" class="alert-body">...</div>
+    <div id="alertActions" class="alert-actions"></div>
+  </div>
 </div>
 
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-import { getAuth, applyActionCode } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import {
+  getAuth, applyActionCode, verifyPasswordResetCode, confirmPasswordReset
+} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 
 const app = initializeApp({
   apiKey:"AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
   authDomain:"mostreaki-2025.firebaseapp.com",
   projectId:"mostreaki-2025",
-  storageBucket:"mostreaki-2025.appspot.com",
+  storageBucket:"mostreaki-2025.firebasestorage.app",
   messagingSenderId:"748712068097",
   appId:"1:748712068097:web:09cf043fbb45917ef6ec00"
 });
 const auth = getAuth(app);
 
-const box = document.getElementById('box');
-const params = new URLSearchParams(location.search);
-const mode = params.get('mode');
-const oobCode = params.get('oobCode');
+const qs = new URLSearchParams(location.search);
+const mode = qs.get("mode");
+const oobCode = qs.get("oobCode");
 
-async function run(){
-  if(mode!=='verifyEmail' || !oobCode){
-    box.innerHTML = `
-      <div class="icon warn">⚠️</div>
-      <h1>Link inválido</h1>
-      <p>O link de verificação está incompleto ou expirou.</p>
-      <p class="muted">Solicite um novo e-mail de verificação e tente novamente.</p>`;
-    return;
-  }
+const $ = (id)=>document.getElementById(id);
+function show(id){
+  document.querySelectorAll('.card').forEach(c=>c.classList.add('hidden'));
+  $(id).classList.remove('hidden');
+}
+
+/* Alert reutilizável */
+const alertBG = $('alert');
+const alertTitle = $('alertTitle');
+const alertMsg = $('alertMsg');
+const alertActions = $('alertActions');
+function showAlert({title=\"Aviso\",html=\"\",actions=[{text:\"Fechar\",kind:\"solid\"}]}){
+  alertTitle.textContent=title;alertMsg.innerHTML=html;alertActions.innerHTML=\"\";
+  actions.forEach(a=>{
+    const b=document.createElement('button');
+    b.className='btn '+(a.kind==='danger'?'btn-danger':a.kind==='ghost'?'btn-ghost':'btn-solid');
+    b.textContent=a.text;
+    b.onclick=()=>{if(a.onClick)a.onClick();closeAlert();};
+    alertActions.appendChild(b);
+  });
+  alertBG.style.display='flex';
+}
+function closeAlert(){alertBG.style.display='none';}
+alertBG.addEventListener('click',e=>{if(e.target===alertBG)closeAlert();});
+window.addEventListener('keydown',e=>{if(e.key==='Escape'&&alertBG.style.display==='flex')closeAlert();});
+
+async function main(){
   try{
-    await applyActionCode(auth, oobCode);
-    box.innerHTML = `
-      <div class="icon ok">✅</div>
-      <h1>E-mail verificado com sucesso!</h1>
-      <p>Seu cadastro foi confirmado. Você já pode fazer login.</p>
-      <a class="btn" href="/login.html">Fazer Login</a>
-      <p class="muted">Caso a página de login não abra, use o menu do site.</p>`;
+    if(!mode||!oobCode) throw new Error('Link inválido.');
+
+    if(mode==='verifyEmail'){
+      await applyActionCode(auth,oobCode);
+      show('verified');
+      return;
+    }
+
+    if(mode==='resetPassword'){
+      await verifyPasswordResetCode(auth,oobCode);
+      show('reset');
+      $('btnTrocar').onclick = async ()=>{
+        const p1 = $('novaSenha').value.trim();
+        const p2 = $('confirmaSenha').value.trim();
+        if(!p1 || !p2) return showAlert({title:'Campos vazios',html:'Digite e confirme a nova senha.'});
+        if(p1.length<6) return showAlert({title:'Senha curta',html:'A senha precisa ter pelo menos 6 caracteres.'});
+        if(p1!==p2) return showAlert({title:'Senhas diferentes',html:'As senhas digitadas não coincidem.'});
+        try{
+          await confirmPasswordReset(auth,oobCode,p1);
+          show('done');
+        }catch(err){
+          console.error(err);
+          show('erro');
+        }
+      };
+      return;
+    }
+
+    throw new Error('Ação desconhecida.');
   }catch(e){
-    box.innerHTML = `
-      <div class="icon warn">⚠️</div>
-      <h1>Não foi possível verificar</h1>
-      <p>O link pode ter expirado ou já ter sido utilizado.</p>
-      <p class="muted">Abra o app e solicite um novo e-mail de verificação.</p>`;
+    console.error(e);
+    show('erro');
+  }finally{
+    $('loading').classList.add('hidden');
   }
 }
-run();
+main();
 </script>
 </body>
 </html>
