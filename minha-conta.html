@@ -122,43 +122,42 @@
     .showpwd input{width:auto}
 
     /* Selo SSL acima do footer */
-.ssl-seal {
-  text-align: center;
-  padding: 16px 0;
-  background: var(--brandLight);
-  margin-top: 20px;
-  border-top: 1px solid rgba(250,30,39,.22);
-}
-.ssl-seal a {
-  text-decoration: none;
-  display: inline-block;
-}
-.ssl-seal img {
-  max-width: 100px;
-  height: auto;
-}
-.ssl-seal p {
-  font-size: 0.8rem;
-  color: var(--muted);
-  margin: 4px 0 0;
-}
-.ssl-seal p:hover {
-  color: var(--brand);
-}
-.ssl-seal .fallback-svg {
-  width: 50px;
-  height: 50px;
-  vertical-align: middle;
-}
-@media (max-width: 768px) {
-  .ssl-seal img {
-    max-width: 80px;
-  }
-  .ssl-seal p {
-    font-size: 0.75rem;
-  }
-}
-    
+    .ssl-seal {
+      text-align: center;
+      padding: 16px 0;
+      background: var(--brandLight);
+      margin-top: 20px;
+      border-top: 1px solid rgba(250,30,39,.22);
+    }
+    .ssl-seal a {
+      text-decoration: none;
+      display: inline-block;
+    }
+    .ssl-seal img {
+      max-width: 100px;
+      height: auto;
+    }
+    .ssl-seal p {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin: 4px 0 0;
+    }
+    .ssl-seal p:hover {
+      color: var(--brand);
+    }
+    .ssl-seal .fallback-svg {
+      width: 50px;
+      height: 50px;
+      vertical-align: middle;
+    }
+    @media (max-width: 768px) {
+      .ssl-seal img {
+        max-width: 80px;
+      }
+      .ssl-seal p {
+        font-size: 0.75rem;
+      }
+    }
   </style>
 </head>
 <body>
@@ -622,7 +621,7 @@
     }
 
     /* Troca de E-mail */
-    const LOGIN_URL = 'https://www.mostreaki.com.br/login.html'; // Certifique-se de que esta URL está configurada no Firebase Console
+    const LOGIN_URL = 'https://app.mostreaki.com.br/confirmar-email.html'; // URL ajustada para a nova página de confirmação
     function showMsg(txt, ok=false) {
       const el = $('#msgTrocaEmail');
       if (!el) return;
@@ -663,7 +662,7 @@
 
           await verifyBeforeUpdateEmail(user, novoEmail, {
             url: LOGIN_URL,
-            handleCodeInApp: false // Desativado para forçar o link direto no e-mail
+            handleCodeInApp: false // Força o link direto no e-mail
           });
 
           showMsg('Enviamos um link de confirmação para o novo e-mail. Abra e confirme para concluir a troca.', true);
@@ -720,4 +719,3 @@
   </script>
 </body>
 </html>
-
