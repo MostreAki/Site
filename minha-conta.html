@@ -661,10 +661,10 @@
           const cred = EmailAuthProvider.credential(user.email, senhaAtual);
           await reauthenticateWithCredential(user, cred);
 
-          // Inicia a troca de e-mail
+          // Inicia a troca de e-mail com handleCodeInApp: true
           await verifyBeforeUpdateEmail(user, novoEmail, {
             url: LOGIN_URL,
-            handleCodeInApp: false
+            handleCodeInApp: true
           });
 
           showMsg('Enviamos um link de confirmação para o novo e-mail. Abra e confirme para concluir a troca.', true);
