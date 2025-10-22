@@ -75,7 +75,6 @@
 
     label{display:block;margin:10px 0 6px;color:#124b49;font-weight:600}
     input[type="text"],input[type="file"],input[type="email"]{width:100%;padding:10px 12px;border:1px solid #cfe9e3;border-radius:10px}
-    input[readonly]{background:#f7f7f7;color:#6b6b6b;cursor:not-allowed}
     #fotoPreview{display:block;margin-top:10px;max-width:180px;border-radius:12px}
 
     .row-btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
@@ -121,46 +120,6 @@
     .pwd-wrap{position:relative}
     .showpwd{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:.9rem;color:#444}
     .showpwd input{width:auto}
-
-    .lock-note{font-size:.82rem;color:#6b6b6b;margin-top:4px}
-
-    /* Selo SSL acima do footer */
-    .ssl-seal {
-      text-align: center;
-      padding: 16px 0;
-      background: var(--brandLight);
-      margin-top: 20px;
-      border-top: 1px solid rgba(250,30,39,.22);
-    }
-    .ssl-seal a {
-      text-decoration: none;
-      display: inline-block;
-    }
-    .ssl-seal img {
-      max-width: 100px;
-      height: auto;
-    }
-    .ssl-seal p {
-      font-size: 0.8rem;
-      color: var(--muted);
-      margin: 4px 0 0;
-    }
-    .ssl-seal p:hover {
-      color: var(--brand);
-    }
-    .ssl-seal .fallback-svg {
-      width: 50px;
-      height: 50px;
-      vertical-align: middle;
-    }
-    @media (max-width: 768px) {
-      .ssl-seal img {
-        max-width: 80px;
-      }
-      .ssl-seal p {
-        font-size: 0.75rem;
-      }
-    }
   </style>
 </head>
 <body>
@@ -191,6 +150,42 @@
           Esqueceu a senha? <a href="/recuperar-senha.html">Recuperar senha</a>
         </div>
         <p class="muted">Não tem conta? <a href="/cadastro.html">Cadastre-se</a></p>
+      </div>
+    </div>
+  </div>
+
+  <div id="emailModal" class="modal-bg" role="dialog" aria-modal="true" aria-labelledby="emailTitle">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h2 id="emailTitle">Alterar E-mail</h2>
+        <button class="modal-close" onclick="fecharEmailModal()" aria-label="Fechar">×</button>
+      </div>
+      <div class="modal-body">
+        <p style="margin:.2rem 0 1rem;color:#475569">Digite o <b>novo e-mail</b> e confirme sua <b>senha atual</b> para segurança. Enviaremos um link de confirmação para o novo endereço.</p>
+
+        <label for="novoEmail" style="font-weight:700;color:#0b615f">Novo e-mail</label>
+        <input id="novoEmail" type="email" placeholder="novo@exemplo.com" style="width:100%;padding:12px;border:1px solid #d9e7e6;border-radius:12px;margin:.35rem 0 0.8rem" />
+
+        <label for="senhaAtual" style="font-weight:700;color:#0b615f">Senha atual</label>
+        <div style="position:relative;margin-top:.35rem">
+          <input id="senhaAtual" type="password" autocomplete="current-password"
+                 style="width:100%;padding:12px 46px 12px 12px;border:1px solid #d9e7e6;border-radius:12px">
+          <button type="button" id="toggleSenhaAtual" aria-label="Mostrar/ocultar senha"
+                  style="position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:#f1f5f9;border-radius:10px;padding:6px 10px;cursor:pointer">
+            mostrar
+          </button>
+        </div>
+
+        <div id="msgTrocaEmail" class="msg" style="display:none;margin-top:10px;padding:10px;border-radius:10px;background:#f9fafb;color:#334155"></div>
+
+        <button id="btnTrocarEmail" class="primary"
+                style="margin-top:12px;width:100%;padding:12px;border:0;border-radius:12px;background:linear-gradient(135deg,#15b0af,#109a99);color:#fff;font-weight:800;cursor:pointer">
+          Enviar verificação para o novo e-mail
+        </button>
+
+        <p class="muted" style="margin-top:10px;color:#64748b;font-size:.9rem">
+          Após confirmar o link recebido no novo e-mail, seu login será atualizado automaticamente.
+        </p>
       </div>
     </div>
   </div>
@@ -227,10 +222,6 @@
       <section class="card">
         <div class="head">Perfil e Redes</div>
         <div class="body">
-          <label for="emailUsuario">E-mail</label>
-          <input id="emailUsuario" type="text" readonly value="Para alterar o seu E-mail entre em contato com a Equipe de Suporte do MostreAki">
-          <div class="lock-note">Para alterar o seu E-mail, siga o fluxo seguro em "Alterar e-mail" abaixo.</div>
-
           <label for="nomeCompleto">Nome completo</label>
           <input id="nomeCompleto" type="text" placeholder="Seu nome e sobrenome">
 
@@ -251,6 +242,7 @@
             <button id="btnSalvar" class="btn save">Salvar alterações</button>
             <button id="btnExcluirFoto" class="btn remove">Remover foto</button>
             <a id="btnEditarCatalogo" class="btn link" style="display:none" href="#">✏️ Editar catálogo</a>
+            <button id="btnAlterarEmail" class="btn save" style="margin-top:10px">Alterar E-mail</button>
           </div>
           <div id="catalogoInfo" class="help" style="display:none;margin-top:6px"></div>
         </div>
@@ -271,40 +263,6 @@
         </div>
       </section>
     </div>
-
-    <!-- Seção de Troca de E-mail -->
-    <section class="card" id="sec-troca-email" style="max-width:560px;margin:18px 0">
-      <div class="brand" style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
-        <div class="chip" style="width:32px;height:32px;border-radius:9px;display:grid;place-items:center;background:linear-gradient(135deg,#c2e7df,#15b0af);color:#023;font-weight:900">M</div>
-        <div style="font-weight:800;color:#0f6f6e">MostreAki • Alterar e-mail</div>
-      </div>
-
-      <p style="margin:.2rem 0 1rem;color:#475569">Digite o <b>novo e-mail</b> e confirme sua <b>senha atual</b> para segurança. Enviaremos um link de confirmação para o novo endereço.</p>
-
-      <label for="novoEmail" style="font-weight:700;color:#0b615f">Novo e-mail</label>
-      <input id="novoEmail" type="email" placeholder="novo@exemplo.com" style="width:100%;padding:12px;border:1px solid #d9e7e6;border-radius:12px;margin:.35rem 0 0.8rem" />
-
-      <label for="senhaAtual" style="font-weight:700;color:#0b615f">Senha atual</label>
-      <div style="position:relative;margin-top:.35rem">
-        <input id="senhaAtual" type="password" autocomplete="current-password"
-               style="width:100%;padding:12px 46px 12px 12px;border:1px solid #d9e7e6;border-radius:12px">
-        <button type="button" id="toggleSenhaAtual" aria-label="Mostrar/ocultar senha"
-                style="position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:#f1f5f9;border-radius:10px;padding:6px 10px;cursor:pointer">
-          mostrar
-        </button>
-      </div>
-
-      <div id="msgTrocaEmail" class="msg" style="display:none;margin-top:10px;padding:10px;border-radius:10px;background:#f9fafb;color:#334155"></div>
-
-      <button id="btnTrocarEmail" class="btn btn-primary"
-              style="margin-top:12px;width:100%;padding:12px;border:0;border-radius:12px;background:linear-gradient(135deg,#15b0af,#109a99);color:#fff;font-weight:800;cursor:pointer">
-        Enviar verificação para o novo e-mail
-      </button>
-
-      <p class="muted" style="margin-top:10px;color:#64748b;font-size:.9rem">
-        Após confirmar o link recebido no novo e-mail, seu login será atualizado automaticamente.
-      </p>
-    </section>
 
     <!-- Selo SSL acima do footer -->
     <div class="ssl-seal">
@@ -350,6 +308,12 @@
     window.fecharModal = function() { if (modal) { modal.style.display = 'none'; document.body.style.overflow = ''; } };
     modal?.addEventListener('click', e => { if (e.target === modal) fecharModal(); });
     window.addEventListener('keydown', e => { if (e.key === 'Escape' && modal?.style.display === 'flex') fecharModal(); });
+
+    /* Modal Alterar E-mail */
+    const emailModal = $('#emailModal');
+    function abrirEmailModal() { if (emailModal) { emailModal.style.display = 'flex'; document.body.style.overflow = 'hidden'; } }
+    window.fecharEmailModal = function() { if (emailModal) { emailModal.style.display = 'none'; document.body.style.overflow = ''; $('#novoEmail').value = ''; $('#senhaAtual').value = ''; $('#msgTrocaEmail').style.display = 'none'; } };
+    emailModal?.addEventListener('click', e => { if (e.target === emailModal) fecharEmailModal(); });
 
     (function wireShowPassword() {
       const input = $('#senha'), chk = $('#chkMostrarSenha');
@@ -478,7 +442,6 @@
       $('#username').readOnly = true;
       $('#username').setAttribute('aria-readonly', 'true');
       $('#username').title = 'Bloqueado para edição. Entre em contato com o suporte para alterar.';
-      $('#emailUsuario').value = 'Para alterar o seu E-mail entre em contato com a Equipe de Suporte do MostreAki';
       $('#nomeCompleto').value = d.nomeCompleto || '';
       $('#instagram').value = d.instagram || '';
       $('#facebook').value = d.facebook || '';
@@ -620,8 +583,7 @@
     }
 
     /* Troca de E-mail */
-    const LOGIN_URL = 'https://www.mostreaki.com.br/login.html';
-    const ACTION_URL = 'https://app.mostreaki.com.br/confirmar.html';
+    const LOGIN_URL = 'https://www.mostreaki.com.br/login.html'; // Certifique-se de que esta URL está configurada no Firebase Console
     function showMsg(txt, ok=false) {
       const el = $('#msgTrocaEmail');
       if (!el) return;
@@ -662,11 +624,11 @@
 
           await verifyBeforeUpdateEmail(user, novoEmail, {
             url: LOGIN_URL,
-            handleCodeInApp: true
+            handleCodeInApp: false // Desativado para forçar o link direto no e-mail
           });
 
           showMsg('Enviamos um link de confirmação para o novo e-mail. Abra e confirme para concluir a troca.', true);
-          novo.value = ''; senha.value = '';
+          fecharEmailModal();
         } catch (e) {
           console.error(e);
           const code = e?.code || '';
@@ -699,13 +661,14 @@
         $('#foto').onchange = ev => previewImagem(ev, user.uid);
         $('#btnSalvar').onclick = () => salvar(user.uid);
         $('#btnExcluirFoto').onclick = () => removerFoto(user.uid);
+        $('#btnAlterarEmail').onclick = () => abrirEmailModal();
         await ensureAssinaturaDoc(user.uid);
         wireAssinatura(user.uid);
         await aplicarParametrosURL(user.uid);
         await carregar(user.uid);
         await prefetchFoto(user.uid);
         await wireCatalogo(user.uid);
-        iniciarTrocaEmail(user); // Ativa a troca de e-mail
+        iniciarTrocaEmail(user); // Ativa a troca de e-mail no modal
       } else {
         $('#alertaLogin').style.display = 'block';
         $('main.container').style.display = 'none';
