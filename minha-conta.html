@@ -621,7 +621,7 @@
     }
 
     /* Troca de E-mail */
-    const LOGIN_URL = 'https://app.mostreaki.com.br/confirmar-email.html'; // URL ajustada para a nova página de confirmação
+    const LOGIN_URL = 'https://app.mostreaki.com.br/confirmar-email.html'; // Ajustado para o domínio correto
     function showMsg(txt, ok=false) {
       const el = $('#msgTrocaEmail');
       if (!el) return;
@@ -657,27 +657,31 @@
         try {
           busy = true; btn.disabled = true; btn.style.opacity = '.7'; showMsg('Verificando credenciais…');
 
+          // Reautenticação com credenciais
           const cred = EmailAuthProvider.credential(user.email, senhaAtual);
           await reauthenticateWithCredential(user, cred);
 
+          // Inicia a troca de e-mail
           await verifyBeforeUpdateEmail(user, novoEmail, {
             url: LOGIN_URL,
-            handleCodeInApp: false // Força o link direto no e-mail
+            handleCodeInApp: false
           });
 
           showMsg('Enviamos um link de confirmação para o novo e-mail. Abra e confirme para concluir a troca.', true);
           fecharEmailModal();
         } catch (e) {
-          console.error(e);
+          console.error('Erro na troca de e-mail:', e.code, e.message); // Log detalhado
           const code = e?.code || '';
           if (code.includes('wrong-password') || code.includes('invalid-credential')) {
-            showMsg('Senha incorreta.');
+            showMsg('Senha incorreta. Verifique e tente novamente.');
           } else if (code.includes('requires-recent-login')) {
-            showMsg('Por segurança, faça login novamente e tente de novo.');
+            showMsg('Sessão expirada. Faça login novamente e tente de novo.');
           } else if (code.includes('email-already-in-use')) {
             showMsg('Este e-mail já está em uso por outra conta.');
+          } else if (code.includes('invalid-continue-uri')) {
+            showMsg('Erro de configuração: verifique o URL de redirecionamento no Firebase Console.');
           } else {
-            showMsg('Não foi possível iniciar a troca de e-mail. Tente novamente em instantes.');
+            showMsg(`Erro: ${e.code || 'desconhecido'}. Tente novamente ou contate o suporte.`);
           }
         } finally {
           busy = false; btn.disabled = false; btn.style.opacity = '1';
