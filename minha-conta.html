@@ -120,6 +120,45 @@
     .pwd-wrap{position:relative}
     .showpwd{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:.9rem;color:#444}
     .showpwd input{width:auto}
+
+    /* Selo SSL acima do footer */
+.ssl-seal {
+  text-align: center;
+  padding: 16px 0;
+  background: var(--brandLight);
+  margin-top: 20px;
+  border-top: 1px solid rgba(250,30,39,.22);
+}
+.ssl-seal a {
+  text-decoration: none;
+  display: inline-block;
+}
+.ssl-seal img {
+  max-width: 100px;
+  height: auto;
+}
+.ssl-seal p {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin: 4px 0 0;
+}
+.ssl-seal p:hover {
+  color: var(--brand);
+}
+.ssl-seal .fallback-svg {
+  width: 50px;
+  height: 50px;
+  vertical-align: middle;
+}
+@media (max-width: 768px) {
+  .ssl-seal img {
+    max-width: 80px;
+  }
+  .ssl-seal p {
+    font-size: 0.75rem;
+  }
+}
+    
   </style>
 </head>
 <body>
@@ -681,3 +720,4 @@
   </script>
 </body>
 </html>
+
