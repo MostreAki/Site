@@ -621,7 +621,7 @@
     }
 
     /* Troca de E-mail */
-    const LOGIN_URL = 'https://app.mostreaki.com.br/confirmar.html'; // URL do seu handler
+    const LOGIN_URL = 'https://mostreaki-2025.web.app/confirmar.html'; // Ajustado para o domínio correto
     function showMsg(txt, ok=false) {
       const el = $('#msgTrocaEmail');
       if (!el) return;
@@ -670,7 +670,7 @@
           showMsg('Enviamos um link de confirmação para o novo e-mail. Abra e confirme para concluir a troca.', true);
           fecharEmailModal();
         } catch (e) {
-          console.error('Erro na troca de e-mail:', e.code, e.message); // Log para depuração
+          console.error('Erro na troca de e-mail:', e.code, e.message); // Log detalhado para depuração
           const code = e?.code || '';
           if (code.includes('wrong-password') || code.includes('invalid-credential')) {
             showMsg('Senha incorreta. Verifique e tente novamente.');
