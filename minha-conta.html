@@ -74,7 +74,7 @@
     .card .body{padding:16px}
 
     label{display:block;margin:10px 0 6px;color:#124b49;font-weight:600}
-    input[type="text"],input[type="file"]{width:100%;padding:10px 12px;border:1px solid #cfe9e3;border-radius:10px}
+    input[type="text"],input[type="file"],input[type="email"]{width:100%;padding:10px 12px;border:1px solid #cfe9e3;border-radius:10px}
     #fotoPreview{display:block;margin-top:10px;max-width:180px;border-radius:12px}
 
     .row-btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
@@ -231,6 +231,9 @@
       <section class="card">
         <div class="head">Perfil e Redes</div>
         <div class="body">
+          <label for="emailUsuario">E-mail</label>
+          <input id="emailUsuario" type="email" placeholder="seuemail@exemplo.com">
+
           <label for="nomeCompleto">Nome completo</label>
           <input id="nomeCompleto" type="text" placeholder="Seu nome e sobrenome">
 
@@ -289,7 +292,7 @@
 
   <script type="module">
     import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-    import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, sendEmailVerification } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+    import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, sendEmailVerification, updateEmail } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
     import { getFirestore, doc, getDoc, setDoc, onSnapshot, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
     import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
 
@@ -376,7 +379,7 @@
       const el = $('#userCircle'); if (!el) return;
       el.textContent = ''; el.style.display = 'flex';
       const img = new Image();
-      img.src = cacheBust(url); img.alt = 'Foto de Perfil'; img.style.width = '100%'; img.style.height = '100%'; img.style.objectFit = 'cover';
+      img.src = cacheBust(url); img.alt = 'Foto'; img.style.width = '100%'; img.style.height = '100%'; img.style.objectFit = 'cover';
       el.append(img);
       const prev = $('#fotoPreview'); if (prev) prev.src = url;
     }
@@ -420,9 +423,11 @@
         .replace(/-{2,}/g, '-').replace(/^[-_.]+|[-_.]+$/g, '');
     }
     async function salvar(uid) {
+      const email = $('#emailUsuario').value.trim();
       const nomeCompleto = $('#nomeCompleto').value.trim();
       const username = ORIGINAL_USERNAME;
       const data = {
+        email,
         nomeCompleto,
         instagram: $('#instagram').value.trim(),
         facebook: $('#facebook').value.trim(),
@@ -430,6 +435,15 @@
         youtube: $('#youtube').value.trim(),
         updatedAt: serverTimestamp()
       };
+      if (email && email !== auth.currentUser.email && emailValido(email)) {
+        try {
+          await updateEmail(auth.currentUser, email);
+          alert('E-mail atualizado com sucesso! Reautentique-se na próxima vez.');
+        } catch (e) {
+          alert('Erro ao atualizar o e-mail. Pode ser necessário reautenticar-se primeiro.');
+          return;
+        }
+      }
       await setDoc(doc(db, 'usuarios', uid), data, { merge: true });
       alert('Dados salvos! (nome de usuário permanece bloqueado)');
       wireCatalogo(uid);
@@ -444,6 +458,7 @@
       $('#username').setAttribute('aria-readonly', 'true');
       $('#username').title = 'Bloqueado para edição. Entre em contato com o suporte para alterar.';
       $('#nomeCompleto').value = d.nomeCompleto || '';
+      $('#emailUsuario').value = auth.currentUser?.email || '';
       $('#instagram').value = d.instagram || '';
       $('#facebook').value = d.facebook || '';
       $('#whatsapp').value = d.whatsapp || '';
@@ -601,7 +616,7 @@
         wireAssinatura(user.uid);
         await aplicarParametrosURL(user.uid);
         await carregar(user.uid);
-        await prefetchFoto(user.uid); // Carrega a foto do Storage pro userCircle
+        await prefetchFoto(user.uid);
         await wireCatalogo(user.uid);
       } else {
         $('#alertaLogin').style.display = 'block';
