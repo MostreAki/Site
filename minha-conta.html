@@ -74,7 +74,7 @@
     .card .body{padding:16px}
 
     label{display:block;margin:10px 0 6px;color:#124b49;font-weight:600}
-    input[type="text"],input[type="file"]{width:100%;padding:10px 12px;border:1px solid #cfe9e3;border-radius:10px}
+    input[type="text"],input[type="file"],input[type="email"]{width:100%;padding:10px 12px;border:1px solid #cfe9e3;border-radius:10px}
     #fotoPreview{display:block;margin-top:10px;max-width:180px;border-radius:12px}
 
     .row-btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
@@ -129,43 +129,42 @@
     .lock-note{font-size:.82rem;color:#6b6b6b;margin-top:4px}
 
     /* Selo SSL acima do footer */
-.ssl-seal {
-  text-align: center;
-  padding: 16px 0;
-  background: var(--brandLight);
-  margin-top: 20px;
-  border-top: 1px solid rgba(250,30,39,.22);
-}
-.ssl-seal a {
-  text-decoration: none;
-  display: inline-block;
-}
-.ssl-seal img {
-  max-width: 100px;
-  height: auto;
-}
-.ssl-seal p {
-  font-size: 0.8rem;
-  color: var(--muted);
-  margin: 4px 0 0;
-}
-.ssl-seal p:hover {
-  color: var(--brand);
-}
-.ssl-seal .fallback-svg {
-  width: 50px;
-  height: 50px;
-  vertical-align: middle;
-}
-@media (max-width: 768px) {
-  .ssl-seal img {
-    max-width: 80px;
-  }
-  .ssl-seal p {
-    font-size: 0.75rem;
-  }
-}
-    
+    .ssl-seal {
+      text-align: center;
+      padding: 16px 0;
+      background: var(--brandLight);
+      margin-top: 20px;
+      border-top: 1px solid rgba(250,30,39,.22);
+    }
+    .ssl-seal a {
+      text-decoration: none;
+      display: inline-block;
+    }
+    .ssl-seal img {
+      max-width: 100px;
+      height: auto;
+    }
+    .ssl-seal p {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin: 4px 0 0;
+    }
+    .ssl-seal p:hover {
+      color: var(--brand);
+    }
+    .ssl-seal .fallback-svg {
+      width: 50px;
+      height: 50px;
+      vertical-align: middle;
+    }
+    @media (max-width: 768px) {
+      .ssl-seal img {
+        max-width: 80px;
+      }
+      .ssl-seal p {
+        font-size: 0.75rem;
+      }
+    }
   </style>
 </head>
 <body>
@@ -173,29 +172,25 @@
   <div id="authModal" class="modal-bg" role="dialog" aria-modal="true" aria-labelledby="authTitle">
     <div class="modal-card">
       <div class="modal-head">
-        <h2 id="authTitle">Entrar no MostreAki</h2>
+        <h2 id="authTitle">Alterar E-mail</h2>
         <button class="modal-close" onclick="fecharModal()" aria-label="Fechar">×</button>
       </div>
       <div class="modal-body">
-        <label for="email">E-mail</label>
-        <input id="email" type="email" autocomplete="username" required
-               pattern="^[^\s@]+@[^\s@]+\.[^\s@]{2,}$" placeholder="voce@exemplo.com">
+        <label for="newEmail">Novo E-mail</label>
+        <input id="newEmail" type="email" autocomplete="username" required
+               pattern="^[^\s@]+@[^\s@]+\.[^\s@]{2,}$" placeholder="novo@exemplo.com">
 
-        <label for="senha">Senha</label>
+        <label for="currentPassword">Senha Atual</label>
         <div class="pwd-wrap">
-          <input id="senha" type="password" autocomplete="current-password" required>
+          <input id="currentPassword" type="password" autocomplete="current-password" required>
           <label class="showpwd" for="chkMostrarSenha">
-            <input id="chkMostrarSenha" type="checkbox" aria-controls="senha" aria-label="Mostrar senha">
+            <input id="chkMostrarSenha" type="checkbox" aria-controls="currentPassword" aria-label="Mostrar senha">
             Mostrar senha
           </label>
         </div>
 
-        <button class="primary" id="btnEntrar">Entrar</button>
-
-        <div class="muted" style="text-align:center;margin-top:6px">
-          Esqueceu a senha? <a href="/recuperar-senha.html">Recuperar senha</a>
-        </div>
-        <p class="muted">Não tem conta? <a href="/cadastro.html">Cadastre-se</a></p>
+        <button class="primary" id="btnAlterarEmail">Alterar E-mail</button>
+        <p class="muted">Para segurança, confirme sua senha atual.</p>
       </div>
     </div>
   </div>
@@ -208,6 +203,7 @@
     <div class="user-wrap">
       <div id="userCircle" class="user-circle"></div>
       <a id="authText" href="/login.html" class="btn ghost" style="text-decoration:none">Entrar</a>
+      <button id="btnAlterarEmailBtn" class="btn ghost" style="display:none">Alterar E-mail</button>
       <div id="menuBtn" class="menu-icon" aria-label="Abrir menu" role="button" tabindex="0">
         <span></span><span></span><span></span>
       </div>
@@ -255,7 +251,6 @@
           </div>
           <div id="catalogoInfo" class="help" style="display:none;margin-top:6px"></div>
         </div>
-        
       </section>
 
       <section class="card">
@@ -272,27 +267,26 @@
           </div>
         </div>
       </section>
-
-<!-- Selo SSL acima do footer -->
-<div class="ssl-seal">
-  <a href="https://www.ssllabs.com/ssltest/analyze.html?d=app.mostreaki.com.br&hideResults=on" target="_blank" rel="noopener" title="Verificar Certificado SSL (SSL Labs)">
-    <img src="https://seal.ssl2buy.com/images/seal/ssl2buy-seal.gif?v=2" alt="SSL Secured by SSL2BUY" onerror="this.style.display='none';this.nextElementSibling.style.display='inline-block';">
-    <svg class="fallback-svg" style="display:none;" viewBox="0 0 24 24" fill="none" stroke="#15b0af" stroke-width="2">
-      <path d="M12 17v4m0-4c-2.8 0-5-2.2-5-5V8c0-1.1.9-2 2-2h6c1.1 0 2 .9 2 2v4c0 2.8-2.2 5-5 5z"/>
-      <path d="M9 8V6c0-1.7 1.3-3 3-3s3 1.3 3 3v2"/>
-    </svg>
-  </a>
-  <p>Site Seguro com Certificado SSL</p>
-</div>
-      
-        <footer>&copy; 2025 MostreAki. Todos os direitos reservados.</footer>
-      
     </div>
+
+    <!-- Selo SSL acima do footer -->
+    <div class="ssl-seal">
+      <a href="https://www.ssllabs.com/ssltest/analyze.html?d=app.mostreaki.com.br&hideResults=on" target="_blank" rel="noopener" title="Verificar Certificado SSL (SSL Labs)">
+        <img src="https://seal.ssl2buy.com/images/seal/ssl2buy-seal.gif?v=2" alt="SSL Secured by SSL2BUY" onerror="this.style.display='none';this.nextElementSibling.style.display='inline-block';">
+        <svg class="fallback-svg" style="display:none;" viewBox="0 0 24 24" fill="none" stroke="#15b0af" stroke-width="2">
+          <path d="M12 17v4m0-4c-2.8 0-5-2.2-5-5V8c0-1.1.9-2 2-2h6c1.1 0 2 .9 2 2v4c0 2.8-2.2 5-5 5z"/>
+          <path d="M9 8V6c0-1.7 1.3-3 3-3s3 1.3 3 3v2"/>
+        </svg>
+      </a>
+      <p>Site Seguro com Certificado SSL</p>
+    </div>
+
+    <footer>&copy; 2025 MostreAki. Todos os direitos reservados.</footer>
   </main>
 
   <script type="module">
     import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-    import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, sendEmailVerification } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+    import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, sendEmailVerification, EmailAuthProvider, reauthenticateWithCredential, updateEmail } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
     import { getFirestore, doc, getDoc, setDoc, onSnapshot, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
     import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
 
@@ -320,7 +314,7 @@
     window.addEventListener('keydown', e => { if (e.key === 'Escape' && modal?.style.display === 'flex') fecharModal(); });
 
     (function wireShowPassword() {
-      const input = $('#senha'), chk = $('#chkMostrarSenha');
+      const input = $('#currentPassword'), chk = $('#chkMostrarSenha');
       if (!input || !chk) return;
       const apply = () => { input.type = chk.checked ? 'text' : 'password'; };
       chk.addEventListener('change', apply);
@@ -589,6 +583,7 @@
     /* Auth */
     onAuthStateChanged(auth, async (user) => {
       const a = $('#authText');
+      const btnAlterarEmailBtn = $('#btnAlterarEmailBtn');
       if (user) {
         a.textContent = 'Sair';
         a.onclick = async (e) => {
@@ -596,6 +591,11 @@
           await signOut(auth);
           localStorage.removeItem('fotoPerfil');
           location = '/index.html';
+        };
+        btnAlterarEmailBtn.style.display = 'inline-block';
+        btnAlterarEmailBtn.onclick = (e) => {
+          e.preventDefault();
+          abrirModal();
         };
         $('#foto').onchange = ev => previewImagem(ev, user.uid);
         $('#btnSalvar').onclick = () => salvar(user.uid);
@@ -613,11 +613,48 @@
         setTimeout(() => location = '/index.html', 4000);
         a.textContent = 'Entrar';
         a.onclick = (e) => { e.preventDefault(); abrirModal(); };
+        btnAlterarEmailBtn.style.display = 'none';
       }
     });
+
+    /* Alterar E-mail */
+    async function alterarEmail() {
+      const user = auth.currentUser;
+      if (!user) {
+        alert('Você precisa estar logado para alterar o e-mail.');
+        return;
+      }
+      const newEmail = $('#newEmail').value.trim();
+      const currentPassword = $('#currentPassword').value;
+      if (!emailValido(newEmail)) {
+        alert('Por favor, insira um e-mail válido.');
+        return;
+      }
+      if (!currentPassword) {
+        alert('Por favor, insira sua senha atual.');
+        return;
+      }
+
+      try {
+        const credential = EmailAuthProvider.credential(user.email, currentPassword);
+        await reauthenticateWithCredential(user, credential);
+        await updateEmail(user, newEmail);
+        await sendEmailVerification(user);
+        alert('E-mail alterado com sucesso! Verifique seu novo e-mail para confirmar.');
+        fecharModal();
+      } catch (e) {
+        if (e.code === 'auth/wrong-password') {
+          alert('Senha atual incorreta.');
+        } else if (e.code === 'auth/requires-recent-login') {
+          alert('Por segurança, faça login novamente antes de alterar o e-mail.');
+        } else if (e.code === 'auth/email-already-in-use') {
+          alert('Este e-mail já está em uso por outra conta.');
+        } else {
+          alert('Erro ao alterar o e-mail. Tente novamente.');
+        }
+      }
+    }
+    $('#btnAlterarEmail').onclick = alterarEmail;
   </script>
 </body>
 </html>
-
-
-
