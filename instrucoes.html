@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Instruções – MostreAki</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon"/>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
+
+    body{
+      background-image:url("fundo-mobile-mostreaki.png");
+      background-size:cover;background-repeat:no-repeat;background-attachment:fixed;
+      min-height:100vh;display:flex;flex-direction:column;
+    }
+    @media (min-width:768px){ body{ background-image:url("fundo-desktop-mostreaki.png"); } }
+
+    header{
+      background:#c2e7df;height:60px;display:flex;align-items:center;justify-content:space-between;
+      padding:0 20px;position:relative;box-shadow:0 2px 6px rgba(0,0,0,.1);
+    }
+    .logo-container{display:flex;align-items:center;cursor:pointer}
+    .logo-container img{height:40px;margin-right:10px}
+    .logo{font-size:1.5rem;font-weight:bold}
+    .logo .mostre{color:#00C2BF}.logo .aki{color:#FA1E39}
+
+    .menu-icon{font-size:1.5rem;cursor:pointer}
+    .menu-list{
+      position:absolute;top:60px;right:20px;background:#16807C;border:2px solid #000;border-radius:6px;
+      display:none;flex-direction:column;padding:10px;z-index:1000;
+    }
+    .menu-list a{
+      background:#FA1E39;color:#fff;text-decoration:none;padding:10px;margin-bottom:8px;border-radius:6px;
+      text-align:center;font-weight:bold;
+    }
+    .menu-list a:hover{background:#b8313b}
+
+    .header-auth{display:flex;align-items:center;gap:10px}
+    #btnAbrirLogin{
+      background:#15b0af;color:#fff;font-weight:bold;border:none;border-radius:8px;
+      padding:8px 12px;cursor:pointer;
+    }
+    #authText{font-weight:bold;color:#15b0af;cursor:pointer;display:none}
+    .user-circle{
+      background:#15b0af;color:#fff;font-weight:bold;border-radius:50%;
+      width:32px;height:32px;display:none;align-items:center;justify-content:center;
+      background-size:cover;background-position:center;font-size:.9rem;
+    }
+
+    main{ padding:60px 20px; max-width:1100px; margin:0 auto; }
+
+    .section{
+      background:#fff;margin:0 auto 32px auto;padding:30px;max-width:900px;border-radius:10px;
+      box-shadow:0 0 10px #0001;text-align:center;
+    }
+
+    /* VÍDEOS VERTICAIS (Shorts 9:16) */
+    .video-short {
+      position: relative;
+      width: 100%;
+      max-width: 400px;
+      margin: 20px auto;
+      aspect-ratio: 9/16;
+      background: #000;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,.15);
+    }
+    .video-short iframe {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      border: 0;
+    }
+
+    /* BOTÃO WHATSAPP */
+    .whatsapp-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: #25D366;
+      color: white;
+      font-weight: bold;
+      text-decoration: none;
+      padding: 14px 20px;
+      border-radius: 50px;
+      font-size: 1.1rem;
+      margin: 20px auto;
+      max-width: 300px;
+      box-shadow: 0 4px 12px rgba(37,211,102,.3);
+      transition: all .3s ease;
+    }
+    .whatsapp-btn:hover {
+      background: #1DA851;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(37,211,102,.4);
+    }
+    .whatsapp-btn svg {
+      width: 24px; height: 24px;
+    }
+
+    footer{background:#c2e7df;padding:20px;text-align:center;color:#555;font-size:.9rem;margin-top:auto}
+
+    .ssl-seal {
+      text-align: center;
+      padding: 16px 0;
+      background: #c2e7df;
+      margin-top: 20px;
+      border-top: 1px solid rgba(250,30,39,.22);
+    }
+    .ssl-seal a { text-decoration: none; }
+    .ssl-seal img { max-width: 100px; height: auto; }
+    .ssl-seal p { font-size: 0.8rem; color: #666; margin: 4px 0 0; }
+    @media (max-width: 768px) {
+      .ssl-seal img { max-width: 80px; }
+      .ssl-seal p { font-size: 0.75rem; }
+    }
+
+    /* MODAL */
+    .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:9999;padding:20px}
+    .modal-card{background:#fff;width:100%;max-width:420px;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.25);overflow:hidden;border:2px solid #c2e7df;}
+    .modal-head{background:linear-gradient(90deg,#c2e7df,#15b0af);padding:16px 18px;color:#0b4d4c;display:flex;align-items:center;justify-content:space-between;}
+    .modal-head h2{font-size:1.1rem;color:#063b39}
+    .modal-close{background:transparent;border:none;font-size:22px;line-height:1;cursor:pointer;color:#063b39}
+    .modal-body{padding:18px}
+    .modal-body p.muted{color:#555;margin-bottom:10px}
+    label{display:block;margin:10px 0 6px;color:#333}
+    input{width:100%;padding:10px;border:1px solid #ddd;border-radius:8px}
+    .primary{background:#15b0af;color:#fff;border:0;border-radius:8px;padding:12px;font-weight:bold;cursor:pointer;width:100%;margin-top:12px}
+    .muted{font-size:.9rem;color:#666;margin-top:10px}
+    .muted a{color:#15b0af;text-decoration:none;font-weight:bold}
+    .pwd-wrap{position:relative}
+    .showpwd{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:.9rem;color:#444}
+    .showpwd input{width:auto}
+
+    /* ALERT */
+    .alert-bg{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:10000;padding:20px}
+    .alert-card{background:#fff;border-radius:16px;overflow:hidden;max-width:460px;width:100%;box-shadow:0 22px 70px rgba(0,0,0,.25);border:2px solid #c2e7df}
+    .alert-head{background:linear-gradient(90deg,#c2e7df,#15b0af);padding:14px 16px;display:flex;align-items:center;gap:10px}
+    .alert-dot{width:10px;height:10px;border-radius:50%;background:#FA1E39}
+    .alert-title{color:#063b39;font-weight:bold}
+    .alert-body{padding:16px;color:#2b2b2b}
+    .alert-actions{display:flex;gap:10px;flex-wrap:wrap;padding:0 16px 16px}
+    .btn-solid{background:#15b0af;color:#fff;border:0;border-radius:8px;padding:10px 14px;font-weight:bold;cursor:pointer}
+    .btn-ghost{background:#fff;border:2px solid #15b0af;color:#15b0af;border-radius:8px;padding:10px 14px;font-weight:bold}
+  </style>
+</head>
+<body>
+
+<!-- MODAL: LOGIN -->
+<div id="authModal" class="modal-bg" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h2 id="authTitle">Entrar no MostreAki</h2>
+      <button class="modal-close" onclick="fecharModal()" aria-label="Fechar">×</button>
+    </div>
+    <div class="modal-body">
+      <label for="email">E-mail</label>
+      <input id="email" type="email" autocomplete="username" required placeholder="voce@exemplo.com">
+
+      <label for="senha">Senha</label>
+      <div class="pwd-wrap">
+        <input id="senha" type="password" autocomplete="current-password" required>
+        <label class="showpwd" for="chkMostrarSenha">
+          <input id="chkMostrarSenha" type="checkbox"> Mostrar senha
+        </label>
+      </div>
+
+      <button class="primary" id="btnEntrar">Entrar</button>
+
+      <div class="muted" style="text-align:center;margin-top:6px">
+        Esqueceu a senha? <a href="/recuperar-senha.html">Recuperar</a>
+      </div>
+
+      <p class="muted">Não tem conta? <a href="/cadastro.html">Cadastre-se</a></p>
+    </div>
+  </div>
+</div>
+
+<header>
+  <div class="logo-container" onclick="location.href='index.html'">
+    <img src="logomarca-mostreaki.svg" alt="Logo"/>
+    <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
+  </div>
+
+  <div class="header-auth">
+    <button id="btnAbrirLogin">Entrar</button>
+    <span id="authText" style="display:none;">Sair</span>
+    <div id="userCircle" class="user-circle" title="Perfil"></div>
+    <div class="menu-icon" onclick="toggleMenu()">Menu</div>
+  </div>
+
+  <div class="menu-list" id="menu">
+    <a href="/index.html">Página Inicial</a>
+    <a href="/minha-conta.html">Minha Conta</a>
+    <a href="/planos.html">Planos</a>
+    <a href="/parceiros.html">Parceiros</a>
+    <a href="/instrucoes.html">Instruções</a>
+    <a href="/servicos-adicionais.html">Serviços Adicionais</a>
+    <a href="/redes-sociais.html">Redes Sociais</a>
+    <a href="/contatos.html">Contatos</a>
+  </div>
+</header>
+
+<main>
+  <div class="section">
+    <h2>Como Usar o MostreAki</h2>
+    <p>Assista aos vídeos curtos abaixo e domine a plataforma em minutos!</p>
+  </div>
+
+  <!-- VÍDEO 1 -->
+  <div class="section">
+    <h3 style="color:#0e7270;margin-bottom:12px">1. Criar Conta</h3>
+    <div class="video-short">
+      <iframe
+        src="https://www.youtube.com/embed/SEU_ID_AQUI_1?rel=0"
+        title="Criar Conta"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen></iframe>
+    </div>
+  </div>
+
+  <!-- VÍDEO 2 -->
+  <div class="section">
+    <h3 style="color:#0e7270;margin-bottom:12px">2. Adicionar Produtos</h3>
+    <div class="video-short">
+      <iframe
+        src="https://www.youtube.com/embed/SEU_ID_AQUI_2?rel=0"
+        title="Adicionar Produtos"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen></iframe>
+    </div>
+  </div>
+
+  <!-- VÍDEO 3 -->
+  <div class="section">
+    <h3 style="color:#0e7270;margin-bottom:12px">3. Personalizar Vitrine</h3>
+    <div class="video-short">
+      <iframe
+        src="https://www.youtube.com/embed/SEU_ID_AQUI_3?rel=0"
+        title="Personalizar Vitrine"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen></iframe>
+    </div>
+  </div>
+
+  <!-- BOTÃO WHATSAPP -->
+  <div class="section">
+    <a href="https://wa.me/5511999999999?text=Oi!%20Preciso%20de%20ajuda%20com%20o%20MostreAki" 
+       class="whatsapp-btn" target="_blank">
+      <svg viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.297-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.626.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.261c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.884 3.488"/></svg>
+      Falar com Suporte no WhatsApp
+    </a>
+    <p style="font-size:0.9rem;color:#555;margin-top:8px">Resposta em até 2 minutos!</p>
+  </div>
+</main>
+
+<div class="ssl-seal">
+  <a href="https://www.ssllabs.com/ssltest/analyze.html?d=app.mostreaki.com.br" target="_blank">
+    <img src="https://seal.ssl2buy.com/images/seal/ssl2buy-seal.gif?v=2" alt="SSL Seguro">
+  </a>
+  <p>Site Seguro com Certificado SSL</p>
+</div>
+
+<footer>&copy; 2025 MostreAki. Todos os direitos reservados.</footer>
+
+<!-- ALERT -->
+<div id="alert" class="alert-bg" role="dialog" aria-modal="true" aria-labelledby="alertTitle">
+  <div class="alert-card">
+    <div class="alert-head">
+      <div class="alert-dot"></div>
+      <div id="alertTitle" class="alert-title">Mensagem</div>
+    </div>
+    <div id="alertMsg" class="alert-body">...</div>
+    <div id="alertActions" class="alert-actions"></div>
+  </div>
+</div>
+
+<!-- FIREBASE + AUTH + FIRESTORE + USER CIRCLE -->
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, sendEmailVerification } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+const app = initializeApp({
+  apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
+  authDomain: "mostreaki-2025.firebaseapp.com",
+  projectId: "mostreaki-2025",
+  storageBucket: "mostreaki-2025.firebasestorage.app",
+  messagingSenderId: "748712068097",
+  appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
+});
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const $ = (id) => document.getElementById(id);
+const modal = $("authModal");
+const btnAbrir = $("btnAbrirLogin");
+const authText = $("authText");
+const userCircle = $("userCircle");
+
+function abrirModal() { modal.style.display = "flex"; document.body.style.overflow = "hidden"; }
+window.fecharModal = () => { modal.style.display = "none"; document.body.style.overflow = ""; };
+btnAbrir.addEventListener("click", abrirModal);
+modal.addEventListener("click", e => { if (e.target === modal) fecharModal(); });
+window.addEventListener("keydown", e => { if (e.key === "Escape" && modal.style.display === "flex") fecharModal(); });
+
+const alertBG = $("alert");
+const alertTitle = $("alertTitle");
+const alertMsg = $("alertMsg");
+const alertActions = $("alertActions");
+function showAlert({title="Aviso", html="", actions=[{text:"Fechar", kind:"solid"}]}){
+  alertTitle.textContent = title; alertMsg.innerHTML = html; alertActions.innerHTML = "";
+  actions.forEach(a => {
+    const b = document.createElement('button');
+    b.className = a.kind === 'ghost' ? 'btn-ghost' : 'btn-solid';
+    b.textContent = a.text;
+    b.onclick = () => { if (a.onClick) a.onClick(); closeAlert(); };
+    alertActions.appendChild(b);
+  });
+  alertBG.style.display = 'flex';
+}
+function closeAlert() { alertBG.style.display = 'none'; }
+
+(function wireShowPassword(){
+  const input = $("senha"), chk = $("chkMostrarSenha");
+  if (!input || !chk) return;
+  chk.addEventListener('change', () => { input.type = chk.checked ? 'text' : 'password'; });
+})();
+
+const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+function getState(){ const s = JSON.parse(sessionStorage.getItem('loginState')||'{}'); return s; }
+function setState(s){ sessionStorage.setItem('loginState', JSON.stringify(s)); }
+function isLocked(){ const s = getState(); return s.lockUntil && Date.now() < s.lockUntil; }
+function lockMore(){ const s = getState(); s.blockMult = Math.min((s.blockMult||1)*2, 8); s.lockUntil = Date.now() + 30000 * s.blockMult; setState(s); }
+function incFail(){ const s = getState(); s.failCount = (s.failCount||0)+1; if (s.failCount >= 5) { s.failCount = 0; lockMore(); } setState(s); }
+function resetFails(){ setState({failCount:0, blockMult:1, lockUntil:0}); }
+function showLockMsg(){ const s = getState(); const secs = Math.ceil((s.lockUntil - Date.now())/1000); showAlert({title:"Muitas tentativas", html:`Aguarde <b>${secs}s</b> para tentar novamente.`}); }
+
+async function loginEmailSenha(){
+  if (isLocked()) return showLockMsg();
+  const email = $("email").value.trim();
+  const senha = $("senha").value;
+  if (!email) return showAlert({title:"E-mail vazio", html:"Digite seu e-mail."});
+  if (!emailRe.test(email)) return showAlert({title:"E-mail inválido", html:"Revise o endereço."});
+  if (!senha) return showAlert({title:"Senha vazia", html:"Digite sua senha."});
+
+  try {
+    const cred = await signInWithEmailAndPassword(auth, email, senha);
+    if (!cred.user.emailVerified) {
+      await sendEmailVerification(cred.user);
+      showAlert({title:"Confirme seu e-mail", html:`Link enviado para <b>${email}</b>. Verifique sua caixa.`});
+      return;
+    }
+    resetFails();
+    if (cred.user.photoURL) localStorage.setItem("fotoPerfil", cred.user.photoURL);
+    fecharModal();
+    location.href = "/minha-conta.html";
+  } catch (e) {
+    if (["auth/invalid-credential","auth/wrong-password","auth/user-not-found"].includes(e.code)) {
+      incFail(); if (isLocked()) return showLockMsg();
+      return showAlert({
+        title:"Não conseguimos entrar",
+        html:"E-mail e/ou senha incorretos.",
+        actions: [
+          {text:"Recuperar senha", kind:"ghost", onClick:()=>location.href="/recuperar-senha.html"},
+          {text:"Cadastrar", kind:"ghost", onClick:()=>location.href="/cadastro.html"},
+          {text:"Fechar", kind:"solid"}
+        ]
+      });
+    }
+    if (e.code === "auth/too-many-requests") { lockMore(); return showLockMsg(); }
+    showAlert({title:"Erro", html:`Erro inesperado (${e.code}).`});
+  }
+}
+$("btnEntrar").onclick = loginEmailSenha;
+document.addEventListener('keydown', e => { if (e.key === 'Enter' && modal.style.display === 'flex') loginEmailSenha(); });
+
+onAuthStateChanged(auth, async (user) => {
+  const fotoURL = localStorage.getItem("fotoPerfil");
+  if (user) {
+    let displayName = user.displayName;
+    let photoURL = user.photoURL;
+
+    // BUSCA NO FIRESTORE SE NÃO TIVER NOME/FOTO NO AUTH
+    if (!displayName || !photoURL) {
+      const docRef = doc(db, "usuarios", user.uid);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        displayName = data.nome || displayName;
+        photoURL = data.foto || photoURL;
+        if (photoURL) localStorage.setItem("fotoPerfil", photoURL);
+      }
+    }
+
+    if (photoURL) {
+      userCircle.style.backgroundImage = `url('${photoURL}')`;
+      userCircle.textContent = "";
+    } else {
+      const nome = (displayName || user.email || "?").trim();
+      userCircle.textContent = nome.charAt(0).toUpperCase();
+      userCircle.style.backgroundImage = "";
+    }
+    userCircle.style.display = "flex";
+    authText.style.display = "inline";
+    btnAbrir.style.display = "none";
+  } else {
+    userCircle.style.display = "none";
+    authText.style.display = "none";
+    btnAbrir.style.display = "inline-block";
+  }
+});
+
+authText.addEventListener("click", async () => {
+  try {
+    await signOut(auth);
+    localStorage.removeItem("fotoPerfil");
+    location.reload();
+  } catch (e) {
+    showAlert({title:"Sair", html:"Não foi possível sair."});
+  }
+});
+
+window.toggleMenu = () => {
+  const menu = $("menu");
+  menu.style.display = menu.style.display === "flex" ? "none" : "flex";
+};
+</script>
+</body>
+</html>
