@@ -100,22 +100,44 @@
       width: 24px; height: 24px;
     }
 
-    footer{background:#c2e7df;padding:20px;text-align:center;color:#555;font-size:.9rem;margin-top:auto}
 
+    /* Selo SSL acima do footer */
     .ssl-seal {
       text-align: center;
       padding: 16px 0;
-      background: #c2e7df;
+      background: var(--brandLight);
       margin-top: 20px;
-      border-top: 1px solid rgba(250,30,39,.22);
+      border-top: 1px solid rgba(250,30,57,.22);
     }
-    .ssl-seal a { text-decoration: none; }
-    .ssl-seal img { max-width: 100px; height: auto; }
-    .ssl-seal p { font-size: 0.8rem; color: #666; margin: 4px 0 0; }
+    .ssl-seal a {
+      text-decoration: none;
+      display: inline-block;
+    }
+    .ssl-seal img {
+      max-width: 100px;
+      height: auto;
+    }
+    .ssl-seal p {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin: 4px 0 0;
+    }
+    .ssl-seal p:hover {
+      color: var(--brand);
+    }
+    .ssl-seal .fallback-svg {
+      width: 50px;
+      height: 50px;
+      vertical-align: middle;
+    }
     @media (max-width: 768px) {
-      .ssl-seal img { max-width: 80px; }
-      .ssl-seal p { font-size: 0.75rem; }
-    }
+      .ssl-seal img {
+        max-width: 80px;
+      }
+      .ssl-seal p {
+        font-size: 0.75rem;
+    
+    footer{background:#c2e7df;padding:20px;text-align:center;color:#555;font-size:.9rem;margin-top:auto}
 
     /* MODAL */
     .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:9999;padding:20px}
