@@ -181,20 +181,22 @@ async function loginEmailSenha(){
 $("btnEntrar").onclick = loginEmailSenha;
 document.addEventListener('keydown', (ev)=>{ if(ev.key === 'Enter') loginEmailSenha(); });
 
-/* ===== CAPTURA REDIRECT DO GOOGLE (NO INÍCIO) ===== */
-(async () => {
+/* ===== CAPTURA REDIRECT DO GOOGLE – COM window.onload ===== */
+window.addEventListener('load', async () => {
   try {
     const result = await getRedirectResult(auth);
     if (!result) return;
 
     const user = result.user;
-    console.log("[REDIRECT] Usuário voltou:", user.uid);
+    console.log("[REDIRECT] Usuário voltou:", user.uid, user.email);
 
     const snap = await getDoc(doc(db, 'usuarios', user.uid));
     if (snap.exists() && snap.data().cadastroCompleto === true) {
+      console.log("[REDIRECT] Tem cadastro → entrando...");
       localStorage.setItem('fotoPerfil', user.photoURL || '');
       location.href = '/minha-conta.html';
     } else {
+      console.log("[REDIRECT] Sem cadastro → indo pro cadastro");
       await auth.signOut();
       location.href = '/cadastro.html?google=1';
     }
@@ -202,7 +204,7 @@ document.addEventListener('keydown', (ev)=>{ if(ev.key === 'Enter') loginEmailSe
     console.error("[REDIRECT] Erro:", error);
     showAlert({ title: "Erro", html: "Falha ao processar login com Google." });
   }
-})();
+});
 
 /* ===== BOTÃO GOOGLE ===== */
 document.getElementById('btnGoogleLogin')?.addEventListener('click', async () => {
