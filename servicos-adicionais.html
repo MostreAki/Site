@@ -530,36 +530,5 @@ window.toggleMenu = function(){
   menu.style.display = menu.style.display==="flex" ? "none" : "flex";
 };
 </script>
-
- <!-- BLOQUEIO DE ACESSO SEM CADASTRO COMPLETO -->
-<script type="module">
-import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-
-// Usa o app já inicializado (do cadastro.html ou outro)
-const auth = getAuth();
-const db = getFirestore();
-
-onAuthStateChanged(auth, async (user) => {
-  if (!user) {
-    // Se não logado → vai pro login
-    if (location.pathname !== '/login.html') {
-      location.href = '/login.html';
-    }
-    return;
-  }
-
-  // Verifica cadastro completo
-  const snap = await getDoc(doc(db, 'usuarios', user.uid));
-  const data = snap.data();
-
-  if (!data?.cadastroCompleto) {
-    // Se não completou → vai pro cadastro
-    if (location.pathname !== '/cadastro.html') {
-      location.href = '/cadastro.html';
-    }
-  }
-});
-</script>
 </body>
 </html>
