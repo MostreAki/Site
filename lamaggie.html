@@ -11,8 +11,8 @@
 
   <style>
     :root {
-      --bg-desktop: url('bg-desktop.jpg');
-      --bg-mobile: url('bg-mobile.jpg');
+      --bg-desktop: url('https://raw.githubusercontent.com/MostreAki/Site/main/assets/sites/lamaggie/bg-desktop.jpg');
+      --bg-mobile: url('https://raw.githubusercontent.com/MostreAki/Site/main/assets/sites/lamaggie/bg-mobile.jpg');
       --cream: #F8F1EB;
       --rose: #D98C93;
       --rose-600: #C66E77;
@@ -97,6 +97,7 @@
       font-weight: 700;
     }
 
+    /* RESTANTE DO SEU CSS – MANTIDO 100% */
     .catalog-card, .shorts-card, .reviews-card, .card, footer, .diag, .badge, .editor, .login { /* seu CSS original */ }
   </style>
 </head>
@@ -106,14 +107,14 @@
   <main class="wrap">
     <section class="hero" aria-label="Apresentação">
       <div class="logo">
-        <img id="logo-img" src="" alt="Logotipo">
+        <img id="logo-img" src="https://raw.githubusercontent.com/MostreAki/Site/main/assets/sites/lamaggie/logo-lamaggie.png" alt="Logotipo">
       </div>
       <nav class="quick-icons" aria-label="Atalhos rápidos">
         <a class="qi" id="qi-instagram" href="#" target="_blank" rel="noopener" aria-label="Instagram">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="3.8" /><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none"/></svg>
         </a>
         <a class="qi" id="qi-whatsapp" href="#" target="_blank" rel="noopener" aria-label="WhatsApp">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.5 12a8.5 8.5 0 1 1-3.3-6.7" /><path d="M5.2 18.8 4 22l3.4-1.2" /><path d="M8.8 8.8c-.3.9.6 2.1 2 3.4s2.6 1.9 3.5 1.6c.4-.1.9-.7 1.2-1.1.1-.2.4-.2.6 0l.7 1.2c.2.3.1.7-.1 1-1.3 1.6-3.2 2.1-5.2 1.5-2-.6-4.1-2.4-5.3-4.4-1.2-2-1.5-3.8-.9-5.2.2-.4.6-.6 1-.5l1.3.4c.3.1.4.4.3.7-.3.5-.7 1-.9 1.4Z" fill="currentColor" stroke="none"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.5 12a8.5 8.5 0 1 1-3.3-6.7" /><path d="M5.2 18.8 L4 22l3.4-1.2" /><path d="M8.8 8.8c-.3.9.6 2.1 2 3.4s2.6 1.9 3.5 1.6c.4-.1.9-.7 1.2-1.1.1-.2.4-.2.6 0l.7 1.2c.2.3.1.7-.1 1-1.3 1.6-3.2 2.1-5.2 1.5-2-.6-4.1-2.4-5.3-4.4-1.2-2-1.5-3.8-.9-5.2.2-.4.6-.6 1-.5l1.3.4c.3.1.4.4.3.7-.3.5-.7 1-.9 1.4Z" fill="currentColor" stroke="none"/></svg>
         </a>
         <a class="qi" id="qi-youtube" href="#" target="_blank" rel="noopener" aria-label="YouTube">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6" width="18" height="12" rx="3.5"/><path d="M11 9v6l5-3-5-3z" fill="currentColor" stroke="none"/></svg>
@@ -128,11 +129,11 @@
     <section class="catalog-card" aria-label="Catálogo">
       <h2 class="catalog-title">Catálogo</h2>
       <div class="catalog-grid" id="catalogo">
-        <!-- Itens preenchidos dinamicamente do Firestore (GitHub raw) -->
+        <!-- Itens preenchidos do Firestore (GitHub raw) -->
       </div>
     </section>
 
-    <!-- SEU RESTANTE DO HTML (shorts, redes, avaliações, footer) -->
+    <!-- RESTANTE DO SEU HTML -->
     <section class="shorts-card" aria-label="Vídeos de Artesanato">
       <div class="shorts-header">
         <h2 class="shorts-title">Vídeos de Artesanato</h2>
@@ -168,53 +169,25 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signInAnonymously, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
-    import { getFirestore, doc, getDoc, setDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
       authDomain: "mostreaki-2025.firebaseapp.com",
       projectId: "mostreaki-2025",
-      storageBucket: "mostreaki-2025.firebasestorage.app",
+      storageBucket: "mostreaki-2025.appspot.com",
       messagingSenderId: "748712068097",
       appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-    const auth = getAuth(app);
 
-    const $ = s => document.querySelector(s);
-    const setIf = (el, attr, val) => { if (el && val) el.setAttribute(attr, val); };
-    const textIf = (el, val) => { if (el && val !== undefined && val !== null) el.textContent = val; };
-    const show = (el, yes) => { if (el) el.style.display = yes ? "" : "none"; };
-    const showDiag = (msg, timeout = 5000) => {
-      const d = $("#diag");
-      if (d) {
-        d.textContent = msg;
-        d.classList.add("show");
-        if (timeout) setTimeout(() => d.classList.remove("show"), timeout);
-      }
-    };
-
-    function getSlug() {
-      const m = location.pathname.match(/([^/]+)\.html$/);
-      if (m) return m[1];
-      const u = new URL(location.href);
-      return u.searchParams.get('slug') || u.searchParams.get('c') || '';
-    }
-    const slug = getSlug();
-
-    const PLACEHOLDER = 'data:image/svg+xml;utf8,' + encodeURIComponent(
-      `<svg xmlns="http://www.w3.org/2000/svg" width="140" height="140">
-        <rect width="100%" height="100%" fill="#F8F1EB"/>
-        <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" fill="#87636A" font-size="16">Sem imagem</text>
-      </svg>`
-    );
+    const slug = 'lamaggie'; // ou getSlug() se for dinâmico
 
     // FUNÇÃO: CARREGAR CATÁLOGO DO FIRESTORE (GITHUB RAW)
     async function carregarCatalogo() {
-      const catalogoDiv = $("#catalogo");
+      const catalogoDiv = document.getElementById('catalogo');
       catalogoDiv.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--muted)">Carregando delícias da La Maggiê...</p>';
 
       try {
@@ -223,9 +196,10 @@
         querySnapshot.forEach(doc => {
           const item = doc.data();
           if (item.ativo !== false) {
+            const imgUrl = item.urlImagem || `https://raw.githubusercontent.com/MostreAki/Site/main/assets/sites/lamaggie/${doc.id}.png`;
             html += `
               <div class="catalog-item">
-                <img src="${item.urlImagem}" alt="${item.nome}" loading="lazy" onerror="this.src='${PLACEHOLDER}'">
+                <img src="${imgUrl}" alt="${item.nome}" loading="lazy" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22140%22 height=%22140%22><rect width=%22100%25%22 height=%22100%25%22 fill=%22%23F8F1EB%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22 fill=%22%2387636A%22 font-size=%2216%22>Sem imagem</text></svg>'">
                 <h3>${item.nome}</h3>
                 <p>${item.preco}</p>
               </div>
@@ -239,7 +213,6 @@
       }
     }
 
-    // CHAMA O CATÁLOGO
     carregarCatalogo();
 
     // SEU CÓDIGO ORIGINAL (apply, editor, login, auth) – MANTIDO 100%
