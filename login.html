@@ -13,6 +13,8 @@
   input{width:100%;padding:10px;border:1px solid #ddd;border-radius:8px}
   button,.btn{width:100%;margin-top:12px;padding:12px;border-radius:8px;border:0;font-weight:bold;cursor:pointer}
   .primary{background:var(--brand);color:#fff}
+  .btn-google{background:#4285F4;color:#fff;display:flex;align-items:center;justify-content:center;gap:12px}
+  .btn-google img{width:20px}
   .muted{font-size:.9rem;color:#666;margin-top:10px}
   a{color:var(--brand);text-decoration:none;font-weight:bold}
 
@@ -62,6 +64,12 @@
   </div>
 
   <p class="muted">Não tem conta? <a href="/cadastro.html">Cadastre-se</a></p>
+
+  <!-- BOTÃO GOOGLE (NOVO) -->
+  <button id="btnGoogleLogin" class="btn-google">
+    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+    Entrar com Google
+  </button>
 </div>
 
 <!-- POPUP -->
@@ -79,9 +87,10 @@
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
 import {
-  getAuth, signInWithEmailAndPassword,
+  getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider,
   onAuthStateChanged, sendEmailVerification, signOut
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
 const app = initializeApp({
   apiKey:"AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
@@ -92,8 +101,10 @@ const app = initializeApp({
   appId:"1:748712068097:web:09cf043fbb45917ef6ec00"
 });
 const auth = getAuth(app);
+const db = getFirestore(app);
+const googleProvider = new GoogleAuthProvider();
 
-/* Popup */
+/* ===== POPUP ===== */
 const alertBG = document.getElementById('alert');
 const alertTitle = document.getElementById('alertTitle');
 const alertMsg = document.getElementById('alertMsg');
@@ -115,59 +126,35 @@ window.addEventListener('keydown', e=>{ if(e.key==='Escape' && alertBG.style.dis
 
 const $ = (id)=>document.getElementById(id);
 
-/* Checkbox “Mostrar senha” (substitui o olho) */
+/* ===== Checkbox “Mostrar senha” ===== */
 (function wireShowPassword(){
   const input = $("senha"), chk = $("chkMostrarSenha");
   if(!input || !chk) return;
-  const apply = ()=>{ input.type = chk.checked ? 'text' : 'password'; };
-  chk.addEventListener('change', apply);
+  chk.addEventListener('change', ()=>{ input.type = chk.checked ? 'text' : 'password'; });
 })();
 
-/* Validação leve */
+/* ===== Validação leve ===== */
 const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-const emailValido = v => emailRe.test(v);
 
-/* Trava de tentativas local (UX): 5 falhas => bloqueia 30s (exponencial) */
-function getState(){
-  const now=Date.now();
-  const s = JSON.parse(sessionStorage.getItem('loginState')||'{}');
-  if(!s.lockUntil) s.lockUntil=0;
-  if(!s.failCount) s.failCount=0;
-  if(!s.blockMult) s.blockMult=1;
-  if(now > s.lockUntil){ s.lockUntil=0; }
-  return s;
-}
+/* ===== Trava de tentativas ===== */
+function getState(){ const s = JSON.parse(sessionStorage.getItem('loginState')||'{}'); if(!s.lockUntil) s.lockUntil=0; if(!s.failCount) s.failCount=0; if(!s.blockMult) s.blockMult=1; if(Date.now() > s.lockUntil) s.lockUntil=0; return s; }
 function setState(s){ sessionStorage.setItem('loginState', JSON.stringify(s)); }
 function isLocked(){ const s=getState(); return s.lockUntil && Date.now()<s.lockUntil; }
-function lockMore(){
-  const s=getState();
-  const base=30000; // 30s
-  s.blockMult = Math.min(s.blockMult*2, 8);
-  s.lockUntil = Date.now() + base * s.blockMult;
-  setState(s);
-}
-function incFail(){
-  const s=getState(); s.failCount=(s.failCount||0)+1;
-  if(s.failCount>=5){ s.failCount=0; lockMore(); }
-  setState(s);
-}
+function lockMore(){ const s=getState(); const base=30000; s.blockMult = Math.min(s.blockMult*2, 8); s.lockUntil = Date.now() + base * s.blockMult; setState(s); }
+function incFail(){ const s=getState(); s.failCount=(s.failCount||0)+1; if(s.failCount>=5){ s.failCount=0; lockMore(); } setState(s); }
 function resetFails(){ setState({failCount:0, blockMult:1, lockUntil:0}); }
-function showLockMsg(){
-  const s=getState();
-  const secs = Math.ceil((s.lockUntil - Date.now())/1000);
-  showAlert({title:"Muitas tentativas", html:`Aguarde <b>${secs}s</b> para tentar novamente.`});
-}
+function showLockMsg(){ const s=getState(); const secs = Math.ceil((s.lockUntil - Date.now())/1000); showAlert({title:"Muitas tentativas", html:`Aguarde <b>${secs}s</b> para tentar novamente.`}); }
 
-/* Entrar */
+/* ===== LOGIN COM E-MAIL E SENHA ===== */
 async function loginEmailSenha(){
   if(isLocked()) return showLockMsg();
 
   const email = $("email").value.trim();
   const senha = $("senha").value;
 
-  if(!email) return showAlert({title:"E-mail vazio", html:"Digite seu e-mail para continuar."});
-  if(!emailValido(email)) return showAlert({title:"E-mail inválido", html:"Revise o endereço digitado."});
-  if(!senha) return showAlert({title:"Senha vazia", html:"Digite sua senha para continuar."});
+  if(!email) return showAlert({title:"E-mail vazio", html:"Digite seu e-mail."});
+  if(!emailRe.test(email)) return showAlert({title:"E-mail inválido", html:"Revise o endereço."});
+  if(!senha) return showAlert({title:"Senha vazia", html:"Digite sua senha."});
 
   try{
     const cred = await signInWithEmailAndPassword(auth, email, senha);
@@ -176,8 +163,8 @@ async function loginEmailSenha(){
       await sendEmailVerification(cred.user);
       showAlert({
         title:"Confirme seu e-mail",
-        html:`Seu e-mail ainda não foi verificado.<br>Reenviamos o link para <b>${email}</b>. Verifique sua caixa de entrada (ou spam) e tente novamente após confirmar.`,
-        actions:[ {text:"OK, vou verificar", kind:"solid"} ]
+        html:`Reenviamos o link para <b>${email}</b>. Verifique sua caixa de entrada (ou spam).`,
+        actions:[{text:"OK", kind:"solid"}]
       });
       await signOut(auth);
       return;
@@ -193,10 +180,9 @@ async function loginEmailSenha(){
       $("recoverLine").style.display = "block";
       incFail();
       if(isLocked()) return showLockMsg();
-
       return showAlert({
         title:"Não conseguimos entrar",
-        html:"E-mail e/ou senha incorretos. Você pode tentar novamente ou recuperar a senha.",
+        html:"E-mail e/ou senha incorretos.",
         actions:[
           {text:"Recuperar senha", kind:"ghost", onClick:()=>location.href="/recuperar-senha.html"},
           {text:"Cadastrar", kind:"ghost", onClick:()=>location.href="/cadastro.html"},
@@ -205,17 +191,53 @@ async function loginEmailSenha(){
       });
     }
     if(e.code==="auth/too-many-requests"){ lockMore(); return showLockMsg(); }
-    if(e.code==="auth/invalid-email"){ return showAlert({title:"E-mail inválido", html:"Revise o endereço digitado."}); }
-    showAlert({title:"Erro", html:`Erro inesperado (${e.code}). Tente novamente.`});
+    showAlert({title:"Erro", html:`Erro inesperado (${e.code}).`});
   }
 }
 $("btnEntrar").onclick = loginEmailSenha;
-
-/* Enter envia */
 document.addEventListener('keydown', (ev)=>{ if(ev.key === 'Enter') loginEmailSenha(); });
 
-/* Já logado e verificado → painel */
-onAuthStateChanged(auth, (u)=>{ if(u && u.emailVerified) location.href="/minha-conta.html"; });
+/* ===== LOGIN COM GOOGLE INTELIGENTE ===== */
+document.getElementById('btnGoogleLogin')?.addEventListener('click', async () => {
+  try {
+    const result = await signInWithPopup(auth, googleProvider);
+    const user = result.user;
+
+    // VERIFICA SE JÁ TEM CADASTRO COMPLETO
+    const snap = await getDoc(doc(db, 'usuarios', user.uid));
+    const data = snap.data();
+
+    if (data?.cadastroCompleto) {
+      // TEM CADASTRO → ENTRA DIRETO
+      localStorage.setItem('fotoPerfil', user.photoURL || '');
+      location.href = '/minha-conta.html';
+    } else {
+      // NÃO TEM CADASTRO → DESLOGA E VAI PRO CADASTRO
+      await signOut(auth);
+      location.href = '/cadastro.html?google=1';
+    }
+  } catch (error) {
+    if (error.code !== 'auth/popup-closed-by-user') {
+      showAlert({ title: "Erro", html: "Falha ao entrar com Google." });
+    }
+  }
+});
+
+/* ===== DETECTA ?google=1 NO CADASTRO (opcional) ===== */
+if (location.pathname === '/cadastro.html' && new URLSearchParams(location.search).get('google') === '1') {
+  showAlert({
+    title: "Complete seu cadastro!",
+    html: "Você entrou com Google. Preencha os dados para continuar.",
+    actions: [{ text: "OK", kind: "solid" }]
+  });
+}
+
+/* ===== Já logado e verificado → painel ===== */
+onAuthStateChanged(auth, (u)=>{ 
+  if(u && u.emailVerified && location.pathname !== '/minha-conta.html') {
+    location.href="/minha-conta.html"; 
+  }
+});
 </script>
 </body>
 </html>
