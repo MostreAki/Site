@@ -181,25 +181,37 @@ async function loginEmailSenha(){
 $("btnEntrar").onclick = loginEmailSenha;
 document.addEventListener('keydown', (ev)=>{ if(ev.key === 'Enter') loginEmailSenha(); });
 
-/* ===== LOGIN COM GOOGLE – SÓ ENTRA SE TIVER CADASTRO ===== */
+/* ===== LOGIN COM GOOGLE – COM LOGS + VERIFICAÇÃO FORÇADA ===== */
 document.getElementById('btnGoogleLogin')?.addEventListener('click', async () => {
   try {
     const result = await signInWithPopup(auth, googleProvider);
     const user = result.user;
 
-    // VERIFICA NO FIRESTORE
-    const snap = await getDoc(doc(db, 'usuarios', user.uid));
+    console.log("[LOGIN GOOGLE] Usuário:", user.uid, user.email);
 
-    if (snap.exists() && snap.data().cadastroCompleto === true) {
-      // TEM CADASTRO → ENTRA
+    const snap = await getDoc(doc(db, 'usuarios', user.uid));
+    console.log("[LOGIN GOOGLE] Documento existe?", snap.exists());
+
+    if (snap.exists()) {
+      const data = snap.data();
+      console.log("[LOGIN GOOGLE] Dados:", data);
+      console.log("[LOGIN GOOGLE] cadastroCompleto:", data.cadastroCompleto, typeof data.cadastroCompleto);
+    } else {
+      console.log("[LOGIN GOOGLE] Nenhum documento encontrado para este UID");
+    }
+
+    // VERIFICAÇÃO FORÇADA
+    if (snap.exists() && data?.cadastroCompleto === true) {
+      console.log("[LOGIN GOOGLE] Tem cadastro → entrando...");
       localStorage.setItem('fotoPerfil', user.photoURL || '');
       location.href = '/minha-conta.html';
     } else {
-      // NÃO TEM → DESLOGA E VAI PRO CADASTRO
+      console.log("[LOGIN GOOGLE] Sem cadastro → indo pro cadastro");
       await auth.signOut();
       location.href = '/cadastro.html?google=1';
     }
   } catch (error) {
+    console.error("[LOGIN GOOGLE] Erro:", error);
     if (error.code !== 'auth/popup-closed-by-user') {
       showAlert({ title: "Erro", html: "Falha ao entrar com Google." });
     }
