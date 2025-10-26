@@ -11,8 +11,8 @@
 
   <style>
     :root {
-      --bg-desktop: url('bg-desktop.jpg');
-      --bg-mobile: url('bg-mobile.jpg');
+      --bg-desktop: url('https://raw.githubusercontent.com/MostreAki/Site/main/assets/sites/lamaggie/bg-desktop.jpg');
+      --bg-mobile: url('https://raw.githubusercontent.com/MostreAki/Site/main/assets/sites/lamaggie/bg-mobile.jpg');
       --cream: #F8F1EB;
       --rose: #D98C93;
       --rose-600: #C66E77;
@@ -82,7 +82,7 @@
       background: linear-gradient(180deg, rgba(217, 140, 147, .18), rgba(217, 140, 147, .08)); border: 1px solid rgba(176, 89, 99, .22); }
     .shorts-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
     @media (max-width: 640px) { .shorts-grid { grid-template-columns: repeat(3, 1fr); } }
-    .short { position: position: relative; aspect-ratio: 9/16; border-radius: 14px; overflow: hidden; background: #eee; border: 1px solid rgba(92, 62, 66, .12); }
+    .short { position: relative; aspect-ratio: 9/16; border-radius: 14px; overflow: hidden; background: #eee; border: 1px solid rgba(92, 62, 66, .12); }
     .short img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .25s ease; }
     .short:hover img { transform: scale(1.03); }
     .play { position: absolute; inset: auto 8px 8px auto; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center;
@@ -158,7 +158,7 @@
     </section>
     <section class="catalog-card" aria-label="Catálogo">
       <h2 class="catalog-title">Catálogo</h2>
-      <a class="catalog-link" id="catalog-link" href="catalogo-lamaggie.html" aria-label="Abrir catálogo">
+      <a class="catalog-link" id="catalog-link" href="/catalogo-lamaggie.html" aria-label="Abrir catálogo">
         <div class="catalog-cover">
           <img id="catalog-cover" src="" alt="Imagem de capa do catálogo">
           <span class="catalog-badge">Abrir catálogo ➜</span>
@@ -366,7 +366,7 @@
       if (s.youtube) { setIf($("#qi-youtube"), "href", s.youtube); setIf($("#btn-youtube"), "href", s.youtube); }
 
       const routes = page.routes || site.routes || [];
-      let catalogHref = `catalogo-${slug}.html`;
+      let catalogHref = `/catalogo-lamaggie.html`;
       const cat = routes.find(r => r.path === "/catalogo");
       if (cat) catalogHref = (cat.type === "external" && cat.url) ? cat.url : (cat.path || catalogHref);
       setIf($("#catalog-link"), "href", catalogHref);
@@ -494,7 +494,7 @@
       const url = new URL(location.href);
       const USUARIO = url.searchParams.get("usuario");
       const EDIT_MODE = !!USUARIO;
-      if (!EDIT_MODE) return;
+      if (!EDIT_MODE)  return;
       $("#badge")?.classList.add("show");
       show($("#login"), true);
 
