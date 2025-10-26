@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Cadastro – MostreAki</title>
-<link rel="icon" href=".icon" type="image/x-icon"/>
+<link rel="icon" href="favicon.ico" type="image/x-icon"/>
 <style>
   /* ====== DESIGN BASE (inalterado) ====== */
   :root{
@@ -54,7 +54,7 @@
     background:var(--card); border-radius:16px; width:100%;
     box-shadow:0 10px 40px rgba(0,0,0,.08); padding:22px 20px; border:2px solid var(--brandLight);
   }
-  .card h1{margin:0 0 4px; color:#0f6Prison; font-size:1.45rem}
+  .card h1{margin:0 0 4px; color:#0f6f6e; font-size:1.45rem}
   .sub{color:#4a6665; font-size:.95rem; margin-bottom:16px}
   .section-title{margin-top:16px; font-weight:700; color:#0f6f6e}
 
@@ -146,7 +146,8 @@
   <div class="header-auth">
     <span id="authText" style="font-weight:bold;color:#15b0af;cursor:pointer;display:none">Entrar</span>
     <div id="userCircle" class="user-circle" title="Perfil">F</div>
-    <div id="menuBtn" class="menu-icon" aria-controls="menu" aria-expanded="false">Menu</div>
+    <!-- HAMBÚRGUER CORRIGIDO -->
+    <div id="menuBtn" class="menu-icon" aria-controls="menu" aria-expanded="false">☰</div>
   </div>
   <nav class="menu-list" id="menu">
     <a href="/index.html">Página Inicial</a>
@@ -171,10 +172,6 @@
     </button>
 
     <div class="section-title" style="margin-top:24px">Ou cadastre com e-mail</div>
-
-    <!-- FORMULÁRIO (inalterado) -->
-    <!-- ... todo o formulário igual ao original ... -->
-    <!-- (copiado da versão antiga, sem alterações) -->
 
     <div class="section-title">Tipo de cadastro</div>
     <div class="radio-row">
@@ -321,7 +318,7 @@ const googleProvider = new GoogleAuthProvider();
 googleProvider.addScope('email');
 googleProvider.addScope('profile');
 
-/* ===== HEADER: MENU E AVATAR (CORRIGIDO) ===== */
+/* ===== HEADER: MENU E AVATAR (100% FUNCIONAL) ===== */
 const cacheBust = u => u ? u + (u.includes('?')?'&':'?') + 'v=' + Date.now() : u;
 function setAvatar(url){
   if(!url) return;
@@ -370,11 +367,44 @@ async function prefetchFoto(uid){
 })();
 
 /* ===== RESTO DO CÓDIGO (inalterado) ===== */
-function wireFloat(){ /* ... */ } wireFloat();
-const alertBG = document.getElementById('alert'); /* ... */
-function showAlert(/* ... */){ /* ... */ }
-function closeAlert(){ /* ... */ }
-/* ... todos os helpers, máscaras, validações, popups, cadastro ... */
+function wireFloat(){
+  document.querySelectorAll('.field').forEach(f=>{
+    const i=f.querySelector('input,select');
+    const set = ()=>{ f.classList.toggle('has-value', !!i.value); };
+    i.addEventListener('focus', ()=>f.classList.add('focus'));
+    i.addEventListener('blur', ()=>f.classList.remove('focus'));
+    i.addEventListener('input', set); set();
+  });
+}
+wireFloat();
+
+const alertBG = document.getElementById('alert');
+const alertTitle = document.getElementById('alertTitle');
+const alertMsg = document.getElementById('alertMsg');
+const alertActions = document.getElementById('alertActions');
+function showAlert({title="Aviso", html="", actions=[{text:"Fechar", kind:"solid"}]}){
+  alertTitle.textContent = title;
+  alertMsg.innerHTML = html;
+  alertActions.innerHTML = "";
+  actions.forEach(a=>{ const b=document.createElement('button'); b.className = 'btn ' + (a.kind==='ghost'?'btn-ghost':'btn-solid'); b.textContent = a.text; b.onclick = ()=>{ if(a.onClick) a.onClick(); closeAlert(); }; alertActions.appendChild(b); });
+  alertBG.style.display='flex';
+}
+function closeAlert(){ alertBG.style.display='none'; }
+alertBG.addEventListener('click', e=>{ if(e.target===alertBG) closeAlert(); });
+window.addEventListener('keydown', e=>{ if(e.key==='Escape' && alertBG.style.display==='flex') closeAlert(); });
+
+const termsAlertBG = document.getElementById('termsAlert');
+function showTermsAlert({onAccept=()=>{}}){
+  const acceptBtn = document.getElementById('btnAcceptTerms');
+  const cancelBtn = document.getElementById('btnCancelTerms');
+  acceptBtn.disabled = true;
+  acceptBtn.onclick = ()=>{ onAccept(); closeTermsAlert(); };
+  cancelBtn.onclick = closeTermsAlert;
+  document.getElementById('chkTerms').addEventListener('change', ()=>{ acceptBtn.disabled = !this.checked; });
+  termsAlertBG.style.display = 'flex';
+}
+function closeTermsAlert(){ termsAlertBG.style.display='none'; }
+termsAlertBG.addEventListener('click', e=>{ if(e.target===termsAlertBG) closeTermsAlert(); });
 
 /* ===== GOOGLE AUTH + CADASTRO OBRIGATÓRIO ===== */
 document.getElementById('btnGoogleCadastro')?.addEventListener('click', async () => {
@@ -512,7 +542,79 @@ async function aceitarTermos() {
 
 /* ===== RESTO DO CÓDIGO (máscaras, validações, etc.) ===== */
 const $ = (id)=>document.getElementById(id);
-/* ... todas as funções auxiliares originais ... */
+const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+function onlyDigits(s){ return (s||'').replace(/\D/g,''); }
+function stripDiacritics(s){ return (s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,''); }
+function normalizeUsername(s){ return stripDiacritics(String(s).toLowerCase()).replace(/\s+/g,'-').replace(/[^a-z0-9._-]/g,'').replace(/-+/g,'-').slice(0,40); }
+function isUsernameValid(u){ return /^[a-z0-9._-]{3,40}$/.test(u); }
+
+const fone = $("fone");
+fone.addEventListener("input", () => {
+  let v = onlyDigits(fone.value);
+  if (v.length > 11) v = v.slice(0,11);
+  if (v.length >= 3 && v.length <= 6) fone.value = `(${v.slice(0,2)}) ${v.slice(2)}`;
+  else if (v.length >= 7 && v.length <= 10) fone.value = `(${v.slice(0,2)}) ${v.slice(2,6)}-${v.slice(6)}`;
+  else if (v.length === 11) fone.value = `(${v.slice(0,2)}) ${v.slice(2,7)}-${v.slice(7)}`;
+  else fone.value = v;
+});
+
+$("cep").addEventListener("input", async ()=>{
+  let v = onlyDigits($("cep").value).slice(0,8);
+  $("cep").value = v.length>5 ? `${v.slice(0,5)}-${v.slice(5)}` : v;
+  if(v.length===8){
+    try{
+      const r = await fetch(`https://viacep.com.br/ws/${v}/json/`);
+      const data = await r.json();
+      if(data.erro) return showAlert({title:"CEP não encontrado", html:"Verifique o CEP informado."});
+      $("logradouro").value = data.logradouro || "";
+      $("bairro").value     = data.bairro || "";
+      $("cidade").value     = data.localidade || "";
+      $("uf").value         = data.uf || "";
+      ["logradouro","bairro","cidade","uf"].forEach(id=>{ $(id).closest('.field')?.classList.add('has-value'); });
+    }catch(e){ showAlert({title:"Falha ao buscar CEP", html:"Tente novamente em instantes."}); }
+  }
+});
+
+const cpfI = $("cpf"), cnpjI = $("cnpj");
+cpfI.addEventListener('input', ()=>{
+  let v = onlyDigits(cpfI.value).slice(0,11);
+  if(v.length>9) cpfI.value = v.replace(/^(\d{3})(\d{3})(\d{3})(\d{0,2}).*$/, "$1.$2.$3-$4");
+  else if(v.length>6) cpfI.value = v.replace(/^(\d{3})(\d{3})(\d{0,3}).*$/, "$1.$2.$3");
+  else if(v.length>3) cpfI.value = v.replace(/^(\d{3})(\d{0,3}).*$/, "$1.$2");
+  else cpfI.value = v;
+});
+cnpjI.addEventListener('input', ()=>{
+  let v = onlyDigits(cnpjI.value).slice(0,14);
+  if(v.length>12) cnpjI.value = v.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{0,2}).*$/, "$1.$2.$3/$4-$5");
+  else if(v.length>8) cnpjI.value = v.replace(/^(\d{2})(\d{3})(\d{3})(\d{0,4}).*$/, "$1.$2.$3/$4");
+  else if(v.length>5) cnpjI.value = v.replace(/^(\d{2})(\d{3})(\d{0,3}).*$/, "$1.$2.$3");
+  else if(v.length>2) cnpjI.value = v.replace(/^(\d{2})(\d{0,3}).*$/, "$1.$2");
+  else cnpjI.value = v;
+});
+function validaCPF(raw){ const s = onlyDigits(raw); if(!s || s.length!==11 || /(\d)\1+/.test(s)) return false; let soma=0; for(let i=0;i<9;i++) soma+=parseInt(s[i])*(10-i); let d1 = 11-(soma%11); d1 = (d1>9)?0:d1; if(d1!==parseInt(s[9])) return false; soma=0; for(let i=0;i<10;i++) soma+=parseInt(s[i])*(11-i); let d2 = 11-(soma%11); d2 = (d2>9)?0:d2; return d2===parseInt(s[10]); }
+function validaCNPJ(raw){ const s = onlyDigits(raw); if(!s || s.length!==14 || /(\d)\1+/.test(s)) return false; const calc=(base)=>{let soma=0,pos=base.length-7;for(let i=0;i<base.length;i++){soma+=base[i]*pos--; if(pos<2) pos=9;} return soma%11<2?0:11-soma%11;}; const nums = s.substring(0,12).split('').map(Number); const dv1 = calc(nums); nums.push(dv1); const dv2 = calc(nums); return dv1===parseInt(s[12]) && dv2===parseInt(s[13]); }
+
+const grupoPF = $("grupoPF"), grupoPJ = $("grupoPJ"), isentoIE = $("isentoIE");
+function setTipo(tipo){ const pf = tipo==='PF'; grupoPF.style.display = pf ? '' : 'none'; grupoPJ.style.display = pf ? 'none' : ''; $("nome").required = pf; $("cpf").required = pf; $("razao").required = !pf; $("cnpj").required = !pf; $("ie").disabled = isentoIE.checked; $("ie").required = !isentoIE.checked && !pf; }
+Array.from(document.querySelectorAll('input[name="tipoPessoa"]')).forEach(r=>{ r.addEventListener('change', ()=> setTipo(r.value)); });
+isentoIE.addEventListener('change', ()=> setTipo(document.querySelector('input[name="tipoPessoa"]:checked').value));
+setTipo('PF');
+
+(function wireShowPasswords(){
+  const pairs = [{input:'senha', chk:'chkMostrarSenha'},{input:'senha2', chk:'chkMostrarSenha2'}];
+  pairs.forEach(({input,chk})=>{
+    const i = document.getElementById(input);
+    const c = document.getElementById(chk);
+    if(i && c){ c.addEventListener('change', ()=>{ i.type = c.checked ? 'text' : 'password'; }); }
+  });
+})();
+
+const params = new URLSearchParams(location.search); const origemCadastro = params.get('c') || 'site';
+async function reservarUsername(username){ const ref = doc(db,'usernames', username); const snap = await getDoc(ref); if(snap.exists()) return false; await setDoc(ref, { reserved:true, reservedAt: Date.now() }); return true; }
+async function liberarUsername(username){ try{ await deleteDoc(doc(db,'usernames', username)); }catch{} }
+function uiBusy(b){ const btn = document.getElementById('btnCadastrar'); btn.disabled = b; btn.textContent = b ? 'Enviando…' : 'Criar conta'; }
+function showErr(title, html){ showAlert({title, html}); }
+function phoneDigits(v){ return (v||'').replace(/\D/g,'').length; }
 </script>
 </body>
 </html>
