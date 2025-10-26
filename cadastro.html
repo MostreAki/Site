@@ -6,7 +6,7 @@
 <title>Cadastro – MostreAki</title>
 <link rel="icon" href="favicon.ico" type="image/x-icon"/>
 <style>
-  /* ====== DESIGN BASE ====== */
+  /* ====== DESIGN BASE (alinhado ao anexo de Planos) ====== */
   :root{
     --brand:#15b0af; --brandLight:#c2e7df; --accent:#FA1E39; --ink:#063b39;
     --card:#ffffff; --muted:#445; --bg:#f4f7f7; --ok:#18a957; --err:#ef4444;
@@ -68,16 +68,20 @@
   .field input, .field select{ width:100%; border:0; outline:0; font-size:1rem; background:transparent; padding:10px 0 2px; color:#233; }
   .field label{ position:absolute; left:12px; top:10px; color:#667; font-size:.95rem; pointer-events:none; transition:all .18s ease; background:#fff; padding:0 6px; border-radius:6px; transform-origin:left top; }
 
+  /* rótulo flutuante NÃO afeta a label.showpwd */
   .field.focus label:not(.showpwd),
   .field.has-value label:not(.showpwd){
     top:-8px; font-size:.78rem; color:var(--brand);
   }
 
+  /* Campo de senha */
   .field.pwd input{ padding-right:0; }
 
+  /* Checkbox “Mostrar senha” */
   .showpwd{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:.9rem;color:#444}
   .showpwd input{width:auto}
 
+  /* A label da caixinha deve ser estática, abaixo do input */
   .field label.showpwd{
     position:static; top:auto; left:auto;
     background:transparent; padding:0; margin-top:8px;
@@ -85,13 +89,15 @@
     font-size:.9rem; color:#444; pointer-events:auto;
   }
 
-  button,.btn{width:100%; margin-top:12px; padding:12px; border-radius:12px; border:0; font936:700; cursor:pointer; transition:filter .15s ease, transform .1s ease}
+  /* BOTÕES */
+  button,.btn{width:100%; margin-top:12px; padding:12px; border-radius:12px; border:0; font-weight:700; cursor:pointer; transition:filter .15s ease, transform .1s ease}
   .primary{background:linear-gradient(135deg,var(--brand) 0%, #24c5bd 100%); color:#fff}
   .primary:hover{filter:brightness(1.06)}
   .primary:active{transform:translateY(1px)}
   .muted{font-size:.92rem; color:#666; margin-top:10px}
   a{color:var(--brand); text-decoration:none; font-weight:700}
 
+  /* POPUP brand */
   .alert-bg{position:fixed; inset:0; background:rgba(0,0,0,.55); display:none; align-items:center; justify-content:center; z-index:9999; padding:20px}
   .alert-card{background:#fff; border-radius:16px; overflow:hidden; max-width:520px; width:100%; box-shadow:0 22px 70px rgba(0,0,0,.25); border:2px solid var(--brandLight)}
   .alert-head{background:linear-gradient(90deg,var(--brandLight),var(--brand)); padding:14px 16px; display:flex; align-items:center; gap:10px}
@@ -102,6 +108,7 @@
   .btn-solid{background:var(--brand); color:#fff}
   .btn-ghost{background:#fff; border:2px solid var(--brand); color:var(--brand)}
 
+  /* Estilo para o checkbox de termos no popup */
   .terms-checkbox{display:flex;align-items:center;gap:8px;margin:16px 0;font-size:.9rem;color:#444}
   .terms-checkbox input{width:auto}
 
@@ -110,31 +117,44 @@
 
   footer{background:var(--brandLight);padding:20px;text-align:center;color:#555;font-size:.9rem;margin-top:40px}
 
-  .ssl-seal {
-    text-align: center;
-    padding: 16px 0;
-    background: var(--brandLight);
-    margin-top: 20px;
-    border-top: 1px solid rgba(250,30,39,.22);
+  /* Selo SSL acima do footer */
+.ssl-seal {
+  text-align: center;
+  padding: 16px 0;
+  background: var(--brandLight);
+  margin-top: 20px;
+  border-top: 1px solid rgba(250,30,39,.22);
+}
+.ssl-seal a {
+  text-decoration: none;
+  display: inline-block;
+}
+.ssl-seal img {
+  max-width: 100px;
+  height: auto;
+}
+.ssl-seal p {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin: 4px 0 0;
+}
+.ssl-seal p:hover {
+  color: var(--brand);
+}
+.ssl-seal .fallback-svg {
+  width: 50px;
+  height: 50px;
+  vertical-align: middle;
+}
+@media (max-width: 768px) {
+  .ssl-seal img {
+    max-width: 80px;
   }
-  .ssl-seal a { text-decoration: none; display: inline-block; }
-  .ssl-seal img { max-width: 100px; height: auto; }
-  .ssl-seal p { font-size: 0.8rem; color: var(--muted); margin: 4px 0 0; }
-  .ssl-seal p:hover { color: var(--brand); }
-  .ssl-seal .fallback-svg { width: 50px; height: 50px; vertical-align: middle; }
-  @media (max-width: 768px) {
-    .ssl-seal img { max-width: 80px; }
-    .ssl-seal p { font-size: 0.75rem; }
+  .ssl-seal p {
+    font-size: 0.75rem;
   }
-
-  /* BOTÃO GOOGLE */
-  .btn-google{
-    background:#4285F4; color:white; border:none; padding:12px 20px; 
-    border-radius:12px; font-weight:700; cursor:pointer; display:flex; 
-    align-items:center; justify-content:center; gap:10px; margin:20px auto 0;
-    font-size:1rem; width:100%; max-width:400px;
-  }
-  .btn-google img{width:20px}
+}
+  
 </style>
 </head>
 <body>
@@ -146,7 +166,6 @@
   <div class="header-auth">
     <span id="authText" style="font-weight:bold;color:#15b0af;cursor:pointer;display:none">Entrar</span>
     <div id="userCircle" class="user-circle" title="Perfil">F</div>
-    <!-- HAMBÚRGUER -->
     <div id="menuBtn" class="menu-icon" aria-controls="menu" aria-expanded="false">☰</div>
   </div>
   <nav class="menu-list" id="menu">
@@ -164,14 +183,6 @@
   <div class="card">
     <h1>Criar conta</h1>
     <div class="sub">Preencha seus dados para começar a usar o MostreAki.</div>
-
-    <!-- BOTÃO GOOGLE -->
-    <button id="btnGoogleCadastro" class="btn-google">
-      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="">
-      Cadastrar com Google
-    </button>
-
-    <div class="section-title" style="margin-top:24px">Ou cadastre com e-mail</div>
 
     <div class="section-title">Tipo de cadastro</div>
     <div class="radio-row">
@@ -227,6 +238,7 @@
 
     <div class="section-title">Acesso</div>
     <div class="form-grid cols-2">
+      <!-- Campo de senha COM checkbox “Mostrar senha” (sem botão olho) -->
       <div class="field pwd">
         <label for="senha">Senha (mín. 6) *</label>
         <input id="senha" type="password" required autocomplete="new-password">
@@ -235,6 +247,8 @@
           Mostrar senha
         </label>
       </div>
+
+      <!-- Confirmação de senha COM checkbox -->
       <div class="field pwd">
         <label for="senha2">Confirmar senha *</label>
         <input id="senha2" type="password" required>
@@ -251,6 +265,7 @@
   </div>
 </main>
 
+  <!-- Selo SSL acima do footer -->
 <div class="ssl-seal">
   <a href="https://www.ssllabs.com/ssltest/analyze.html?d=app.mostreaki.com.br&hideResults=on" target="_blank" rel="noopener" title="Verificar Certificado SSL (SSL Labs)">
     <img src="https://seal.ssl2buy.com/images/seal/ssl2buy-seal.gif?v=2" alt="SSL Secured by SSL2BUY" onerror="this.style.display='none';this.nextElementSibling.style.display='inline-block';">
@@ -261,10 +276,10 @@
   </a>
   <p>Site Seguro com Certificado SSL</p>
 </div>
-
+  
 <footer>&copy; 2025 MostreAki. Todos os direitos reservados.</footer>
 
-<!-- POPUPS -->
+<!-- POPUP EXISTENTE -->
 <div id="alert" class="alert-bg" role="dialog" aria-modal="true" aria-labelledby="alertTitle">
   <div class="alert-card">
     <div class="alert-head">
@@ -276,6 +291,7 @@
   </div>
 </div>
 
+<!-- NOVO POPUP DE TERMOS -->
 <div id="termsAlert" class="alert-bg" role="dialog" aria-modal="true" aria-labelledby="termsTitle">
   <div class="alert-card">
     <div class="alert-head">
@@ -298,7 +314,7 @@
 
 <script type="module">
 import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-import { getAuth, createUserWithEmailAndPassword, updateProfile, sendEmailVerification, signOut, onAuthStateChanged, GoogleAuthProvider, signInWithPopup } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import { getAuth, createUserWithEmailAndPassword, updateProfile, sendEmailVerification, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 import { getFirestore, doc, setDoc, getDoc, deleteDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 import { getStorage, ref, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
 
@@ -314,17 +330,12 @@ const app = getApps().length ? getApp() : initializeApp(cfg);
 const auth = getAuth(app);
 const db   = getFirestore(app);
 const stg  = getStorage(app, 'gs://mostreaki-2025.firebasestorage.app');
-const googleProvider = new GoogleAuthProvider();
-googleProvider.addScope('email');
-googleProvider.addScope('profile');
 
-/* ===== HEADER: MENU E AVATAR ===== */
+/* ===== HEADER: menu e avatar ===== */
 const cacheBust = u => u ? u + (u.includes('?')?'&':'?') + 'v=' + Date.now() : u;
 function setAvatar(url){
-  if(!url) return;
-  localStorage.setItem('fotoPerfil', url);
-  const el = document.getElementById('userCircle');
-  if(!el) return;
+  if(!url) return; localStorage.setItem('fotoPerfil', url);
+  const el = document.getElementById('userCircle'); if(!el) return;
   el.textContent=''; el.style.display='flex';
   const img = new Image(); img.src = cacheBust(url); img.alt='Foto'; img.style.width='100%'; img.style.height='100%'; img.style.objectFit='cover';
   el.append(img);
@@ -335,48 +346,28 @@ async function prefetchFoto(uid){
   try{
     const tryExt = async e => getDownloadURL(ref(stg, `usuarios/${uid}/perfil/avatar.${e}`)).catch(()=>null);
     const direct = await tryExt('jpg') || await tryExt('png') || await tryExt('webp') || await tryExt('gif');
-    if(direct){
-      try{ await setDoc(doc(db,'usuarios',uid), { fotoPerfil:direct }, { merge:true }); }catch{}
-      setAvatar(direct);
-      return;
-    }
+    if(direct){ try{ await setDoc(doc(db,'usuarios',uid), { fotoPerfil:direct }, { merge:true }); }catch{} setAvatar(direct); return; }
   }catch{}
   if(auth.currentUser?.photoURL) setAvatar(auth.currentUser.photoURL);
 }
 (function wireMenu(){
-  const btn = document.getElementById('menuBtn');
-  const menu = document.getElementById('menu');
-  if(!btn || !menu) return;
-  const open = () => { menu.style.display='flex'; btn.setAttribute('aria-expanded','true'); document.addEventListener('click',onDoc,true); document.addEventListener('keydown',onKey); };
-  const close = () => { menu.style.display='none'; btn.setAttribute('aria-expanded','false'); document.removeEventListener('click',onDoc,true); document.removeEventListener('keydown',onKey); };
-  const toggle = () => menu.style.display==='flex'?close():open();
+  const btn = document.getElementById('menuBtn'); const menu = document.getElementById('menu'); if(!btn||!menu) return;
+  const open=()=>{menu.style.display='flex';btn.setAttribute('aria-expanded','true');document.addEventListener('click',onDoc,true);document.addEventListener('keydown',onKey)};
+  const close=()=>{menu.style.display='none';btn.setAttribute('aria-expanded','false');document.removeEventListener('click',onDoc,true);document.removeEventListener('keydown',onKey)};
+  const toggle=()=> menu.style.display==='flex'?close():open();
   function onDoc(e){ if(!menu.contains(e.target) && e.target!==btn) close(); }
   function onKey(e){ if(e.key==='Escape') close(); }
-  btn.addEventListener('click', e => { e.stopPropagation(); toggle(); });
+  btn.addEventListener('click',e=>{e.stopPropagation();toggle();});
 })();
 (function wireAuthUI(){
   const at = document.getElementById('authText');
-  onAuthStateChanged(auth, user => {
-    if(user){
-      if(at){ at.textContent='Sair'; at.style.display='inline'; at.onclick = async () => { await signOut(auth); localStorage.removeItem('fotoPerfil'); location='/index.html'; }; }
-      prefetchFoto(user.uid);
-    } else {
-      if(at){ at.textContent='Entrar'; at.style.display='inline'; at.onclick = () => location='/login.html'; }
-    }
+  onAuthStateChanged(auth, user=>{
+    if(user){ if(at){ at.textContent='Sair'; at.style.display='inline'; at.onclick = async ()=>{ await signOut(auth); localStorage.removeItem('fotoPerfil'); location='/index.html'; }; } prefetchFoto(user.uid); }
+    else{ if(at){ at.textContent='Entrar'; at.style.display='inline'; at.onclick = ()=> location='/login.html'; } }
   });
 })();
 
-/* ===== BLOQUEIO DE ROTAS ATÉ CADASTRO COMPLETO ===== */
-onAuthStateChanged(auth, async (user) => {
-  if (!user) return;
-  const snap = await getDoc(doc(db, 'usuarios', user.uid));
-  const data = snap.data();
-  if (!data?.cadastroCompleto && location.pathname !== '/cadastro.html') {
-    location.href = '/cadastro.html';
-  }
-});
-
-/* ===== RESTO DO CÓDIGO ===== */
+/* ===== Floating label ===== */
 function wireFloat(){
   document.querySelectorAll('.field').forEach(f=>{
     const i=f.querySelector('input,select');
@@ -388,6 +379,7 @@ function wireFloat(){
 }
 wireFloat();
 
+/* ===== POPUP helpers ===== */
 const alertBG = document.getElementById('alert');
 const alertTitle = document.getElementById('alertTitle');
 const alertMsg = document.getElementById('alertMsg');
@@ -403,140 +395,34 @@ function closeAlert(){ alertBG.style.display='none'; }
 alertBG.addEventListener('click', e=>{ if(e.target===alertBG) closeAlert(); });
 window.addEventListener('keydown', e=>{ if(e.key==='Escape' && alertBG.style.display==='flex') closeAlert(); });
 
+/* ===== NOVO POPUP DE TERMOS ===== */
 const termsAlertBG = document.getElementById('termsAlert');
-function showTermsAlert({onAccept=()=>{}}){
-  const acceptBtn = document.getElementById('btnAcceptTerms');
-  const cancelBtn = document.getElementById('btnCancelTerms');
-  acceptBtn.disabled = true;
-  acceptBtn.onclick = ()=>{ onAccept(); closeTermsAlert(); };
-  cancelBtn.onclick = closeTermsAlert;
-  document.getElementById('chkTerms').addEventListener('change', ()=>{ acceptBtn.disabled = !this.checked; });
+const termsTitle = document.getElementById('termsTitle');
+const termsMsg = document.getElementById('termsMsg');
+const termsActions = document.getElementById('termsActions');
+function showTermsAlert({title="Aceite os Termos", html="", onAccept=()=>{}}){
+  termsTitle.textContent = title;
+  termsMsg.innerHTML = html || `Para prosseguir com o cadastro, leia e aceite nossos <a href="/termos-servicos.html" target="_blank">Termos de Serviço</a> e <a href="/termos-privacidade.html" target="_blank">Política de Privacidade</a>.
+    <div class="terms-checkbox">
+      <input type="checkbox" id="chkTerms" aria-label="Aceitar Termos de Serviço e Política de Privacidade">
+      <label for="chkTerms">Li e aceito os Termos de Serviço e a Política de Privacidade</label>
+    </div>`;
+  termsActions.innerHTML = "";
+  const acceptBtn = document.createElement('button'); acceptBtn.className = 'btn btn-solid'; acceptBtn.id = 'btnAcceptTerms'; acceptBtn.textContent = 'Aceito'; acceptBtn.disabled = true; acceptBtn.onclick = ()=>{ onAccept(); closeTermsAlert(); };
+  const cancelBtn = document.createElement('button'); cancelBtn.className = 'btn btn-ghost'; cancelBtn.textContent = 'Cancelar'; cancelBtn.onclick = closeTermsAlert;
+  termsActions.append(acceptBtn, cancelBtn);
   termsAlertBG.style.display = 'flex';
+  const chk = document.getElementById('chkTerms');
+  chk.addEventListener('change', ()=>{ acceptBtn.disabled = !chk.checked; });
 }
 function closeTermsAlert(){ termsAlertBG.style.display='none'; }
 termsAlertBG.addEventListener('click', e=>{ if(e.target===termsAlertBG) closeTermsAlert(); });
+window.addEventListener('keydown', e=>{ if(e.key==='Escape' && termsAlertBG.style.display==='flex') closeTermsAlert(); });
 
-/* ===== GOOGLE AUTH ===== */
-document.getElementById('btnGoogleCadastro')?.addEventListener('click', async () => {
-  try {
-    const result = await signInWithPopup(auth, googleProvider);
-    const user = result.user;
-    const nomeCompleto = user.displayName || '';
-    const [primeiroNome = '', ...resto] = nomeCompleto.split(' ');
-    $('email').value = user.email || '';
-    $('email2').value = user.email || '';
-    $('nome').value = nomeCompleto;
-    if ($('razao')) $('razao').value = nomeCompleto;
-    ['email', 'email2', 'nome', 'razao'].forEach(id => {
-      const el = $(id);
-      if (el && el.value) el.closest('.field')?.classList.add('has-value');
-    });
-    showAlert({
-      title: "Quase lá!",
-      html: `Olá <b>${primeiroNome}</b>!<br>Complete os dados abaixo para ativar seu site.<br><b>Username não pode ser alterado depois.</b>`,
-      actions: [{ text: "OK", kind: "solid" }]
-    });
-  } catch (error) {
-    const msg = error.code === 'auth/popup-closed-by-user' ? 'Cadastro cancelado.' : 'Erro com Google.';
-    showAlert({ title: "Ops!", html: msg });
-  }
-});
-
-/* ===== BLOQUEIA USERNAME ===== */
-onAuthStateChanged(auth, async (user) => {
-  if (!user) return;
-  const snap = await getDoc(doc(db, 'usuarios', user.uid));
-  if (snap.exists() && snap.data().username) {
-    const input = $('username');
-    if (input) {
-      input.value = snap.data().username;
-      input.disabled = true;
-      input.closest('.field').insertAdjacentHTML('beforeend', 
-        '<div style="font-size:0.8rem;color:#15b0af;margin-top:4px;">Este nome não pode ser alterado.</div>'
-      );
-    }
-  }
-});
-
-/* ===== CADASTRO FINAL ===== */
-document.getElementById('btnCadastrar').onclick = async () => {
-  if (!await aceitarTermos()) return;
-  const user = auth.currentUser;
-  if (!user) { showAlert({ title: "Erro", html: "Faça login com Google ou e-mail." }); return; }
-
-  const tipo = document.querySelector('input[name="tipoPessoa"]:checked').value;
-  const usernameRaw = $('username').value.trim();
-  const username = normalizeUsername(usernameRaw);
-
-  if (!isUsernameValid(username)) return showErr('Nome de usuário inválido', 'Use 3–40 caracteres: letras, números, ponto, hífen ou underline.');
-  if (tipo === 'PF') {
-    if (!$('nome').value.trim()) return showErr('Nome obrigatório', 'Informe seu <b>nome completo</b>.');
-    if (!validaCPF($('cpf').value)) return showErr('CPF inválido', 'Revise o CPF.');
-  } else {
-    if (!$('razao').value.trim()) return showErr('Razão Social obrigatória', 'Informe a <b>razão social</b>.');
-    if (!validaCNPJ($('cnpj').value)) return showErr('CNPJ inválido', 'Revise o CNPJ.');
-  }
-
-  uiBusy(true);
-  try {
-    const ok = await reservarUsername(username);
-    if (!ok) throw { code: 'username-taken' };
-
-    const payload = {
-      uid: user.uid,
-      tipoPessoa: tipo,
-      origemCadastro: user.providerData[0]?.providerId || 'email',
-      username,
-      nomeCompleto: tipo === 'PF' ? $('nome').value.trim() : '',
-      cpf: tipo === 'PF' ? onlyDigits($('cpf').value) : '',
-      razaoSocial: tipo === 'PJ' ? $('razao').value.trim() : '',
-      cnpj: tipo === 'PJ' ? onlyDigits($('cnpj').value) : '',
-      ie: tipo === 'PJ' ? ($('isentoIE').checked ? 'ISENTO' : $('ie').value.trim()) : '',
-      isentoIE: tipo === 'PJ' ? $('isentoIE').checked : null,
-      fone: $('fone').value.trim(),
-      email: user.email,
-      endereco: {
-        cep: onlyDigits($('cep').value),
-        uf: $('uf').value,
-        cidade: $('cidade').value.trim(),
-        bairro: $('bairro').value.trim(),
-        logradouro: $('logradouro').value.trim(),
-        numero: $('numero').value.trim(),
-        complemento: $('complemento').value.trim()
-      },
-      createdAt: serverTimestamp(),
-      cadastroCompleto: true
-    };
-
-    await setDoc(doc(db, 'usuarios', user.uid), payload, { merge: true });
-    await setDoc(doc(db, 'usernames', username), { uid: user.uid, createdAt: serverTimestamp() });
-    await setDoc(doc(db, 'assinaturas', user.uid), { plano: 'pendente', status: 'aguardando_pagamento', provider: 'manual', createdAt: serverTimestamp() });
-
-    showAlert({
-      title: 'Cadastro concluído!',
-      html: `Seu site será ativado após o pagamento.<br>Username: <b>${username}</b> (não pode ser alterado).`,
-      actions: [{ text: 'Ir para Planos', kind: 'solid', onClick: () => location.href = '/planos.html' }]
-    });
-
-  } catch (e) {
-    await liberarUsername(username);
-    const msg = e.code === 'username-taken' ? 'Este nome de usuário já está em uso.' : 'Erro ao salvar.';
-    showAlert({ title: 'Erro', html: msg });
-  } finally {
-    uiBusy(false);
-  }
-};
-
-async function aceitarTermos() {
-  return new Promise(resolve => {
-    showTermsAlert({ onAccept: () => resolve(true) });
-    document.getElementById('btnCancelTerms').onclick = () => resolve(false);
-  });
-}
-
-/* ===== FUNÇÕES AUXILIARES ===== */
+/* ===== Helpers e máscaras ===== */
 const $ = (id)=>document.getElementById(id);
 const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const emailValido = v => emailRe.test(v);
 function onlyDigits(s){ return (s||'').replace(/\D/g,''); }
 function stripDiacritics(s){ return (s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,''); }
 function normalizeUsername(s){ return stripDiacritics(String(s).toLowerCase()).replace(/\s+/g,'-').replace(/[^a-z0-9._-]/g,'').replace(/-+/g,'-').slice(0,40); }
@@ -594,8 +480,12 @@ Array.from(document.querySelectorAll('input[name="tipoPessoa"]')).forEach(r=>{ r
 isentoIE.addEventListener('change', ()=> setTipo(document.querySelector('input[name="tipoPessoa"]:checked').value));
 setTipo('PF');
 
+/* ===== Checkbox “Mostrar senha” (substitui o botão olho) ===== */
 (function wireShowPasswords(){
-  const pairs = [{input:'senha', chk:'chkMostrarSenha'},{input:'senha2', chk:'chkMostrarSenha2'}];
+  const pairs = [
+    {input:'senha', chk:'chkMostrarSenha'},
+    {input:'senha2', chk:'chkMostrarSenha2'}
+  ];
   pairs.forEach(({input,chk})=>{
     const i = document.getElementById(input);
     const c = document.getElementById(chk);
@@ -603,12 +493,87 @@ setTipo('PF');
   });
 })();
 
+/* ===== Cadastro + reserva de username + origem do funil ===== */
 const params = new URLSearchParams(location.search); const origemCadastro = params.get('c') || 'site';
 async function reservarUsername(username){ const ref = doc(db,'usernames', username); const snap = await getDoc(ref); if(snap.exists()) return false; await setDoc(ref, { reserved:true, reservedAt: Date.now() }); return true; }
 async function liberarUsername(username){ try{ await deleteDoc(doc(db,'usernames', username)); }catch{} }
 function uiBusy(b){ const btn = document.getElementById('btnCadastrar'); btn.disabled = b; btn.textContent = b ? 'Enviando…' : 'Criar conta'; }
 function showErr(title, html){ showAlert({title, html}); }
 function phoneDigits(v){ return (v||'').replace(/\D/g,'').length; }
+
+/* ===== Função de Cadastro com Verificação de Termos ===== */
+document.getElementById('btnCadastrar').onclick = () => {
+  showTermsAlert({
+    onAccept: async () => {
+      const tipo = document.querySelector('input[name="tipoPessoa"]:checked').value;
+      const usernameRaw = document.getElementById('username').value.trim();
+      const username    = normalizeUsername(usernameRaw);
+      const nome = document.getElementById('nome').value.trim();
+      const cpf  = document.getElementById('cpf').value.trim();
+      const razao= document.getElementById('razao').value.trim();
+      const cnpj = document.getElementById('cnpj').value.trim();
+      const ie   = document.getElementById('ie').value.trim();
+      const ieIsento = document.getElementById('isentoIE').checked;
+      const foneV = document.getElementById('fone').value.trim();
+      const email = document.getElementById('email').value.trim(), email2 = document.getElementById('email2').value.trim();
+      const s1 = document.getElementById('senha').value, s2 = document.getElementById('senha2').value;
+      const cep = document.getElementById('cep').value.trim();
+      const uf = document.getElementById('uf').value.trim();
+      const cidade = document.getElementById('cidade').value.trim();
+      const bairro = document.getElementById('bairro').value.trim();
+      const logradouro = document.getElementById('logradouro').value.trim();
+      const numero = document.getElementById('numero').value.trim();
+      const complemento = document.getElementById('complemento').value.trim();
+
+      if(!isUsernameValid(username)) return showErr('Nome de usuário inválido','Use 3–40 caracteres minúsculos: letras, números, ponto, hífen ou underline.');
+      if(tipo==='PF'){ if(!nome) return showErr('Nome obrigatório','Informe seu <b>nome completo</b>.'); if(!validaCPF(cpf)) return showErr('CPF inválido','Revise o CPF informado.'); }
+      else{ if(!razao) return showErr('Razão Social obrigatória','Informe a <b>razão social</b>.'); if(!validaCNPJ(cnpj)) return showErr('CNPJ inválido','Revise o CNPJ informado.'); if(!ieIsento && !ie) return showErr('IE obrigatória','Informe a IE ou marque <b>Isento</b>.'); }
+      if(!(phoneDigits(foneV)===10 || phoneDigits(foneV)===11)) return showErr('Celular inválido','Informe um número com DDD (10 ou 11 dígitos).');
+      const emailRe=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/; if(!emailRe.test(email)||!emailRe.test(email2)) return showErr('E-mail inválido','Revise os e-mails digitados.');
+      if(email!==email2) return showErr('E-mails não conferem','Digite o mesmo e-mail nos dois campos.');
+      if((cep.replace(/\D/g,'').length)!==8) return showErr('CEP inválido','Informe 8 dígitos de CEP.');
+      if(!uf||!cidade||!bairro||!logradouro||!numero) return showErr('Endereço incompleto','Preencha UF, cidade, bairro, logradouro e número.');
+      if(s1.length<6) return showErr('Senha fraca','Use pelo menos 6 caracteres.');
+      if(s1!==s2) return showErr('Senhas não conferem','Digite a mesma senha nos dois campos.');
+
+      uiBusy(true);
+      try{
+        const ok = await reservarUsername(username);
+        if(!ok){ uiBusy(false); return showErr('Nome de usuário indisponível',`Tente outra variação (ex.: <b>${username}-br</b>).`); }
+
+        const cred = await createUserWithEmailAndPassword(auth, email, s1);
+        const uid = cred.user.uid;
+        await updateProfile(cred.user,{ displayName: tipo==='PF' ? nome : razao });
+
+        const payload = {
+          uid, tipoPessoa: tipo, origemCadastro,
+          username,
+          nomeCompleto: tipo==='PF' ? nome : '', cpf: tipo==='PF' ? cpf.replace(/\D/g,'') : '',
+          razaoSocial: tipo==='PJ' ? razao : '', cnpj: tipo==='PJ' ? cnpj.replace(/\D/g,'') : '',
+          ie: (tipo==='PJ' ? (ieIsento ? 'ISENTO' : ie) : ''), isentoIE: tipo==='PJ' ? !!ieIsento : null,
+          fone: foneV, email,
+          endereco: { cep: cep.replace(/\D/g,''), uf, cidade, bairro, logradouro, numero, complemento },
+          createdAt: serverTimestamp()
+        };
+        await setDoc(doc(db,'usuarios',uid), payload, { merge:true });
+        await setDoc(doc(db,'usernames', username), { uid, createdAt: serverTimestamp() }, { merge:true });
+
+        await sendEmailVerification(cred.user);
+        showAlert({ title:'Confirme seu e-mail', html:`Enviamos um link para <b>${email}</b>.<br>Depois de confirmar, você poderá <b>Fazer Login</b>.`, actions:[{text:'OK, vou verificar', kind:'solid', onClick:()=>{ location.href='/login.html'; }}] });
+        await signOut(auth);
+      }catch(e){
+        await liberarUsername(username);
+        const mapa={
+          'auth/email-already-in-use':"Este e-mail já possui cadastro.<br><a href='/login.html' style='color:var(--brand);font-weight:700;'>Ir para o login</a>",
+          'auth/invalid-email':'E-mail inválido. Revise o endereço.',
+          'auth/weak-password':'Senha fraca (mínimo 6 caracteres).',
+          'auth/network-request-failed':'Falha de rede. Verifique sua conexão.'
+        };
+        showAlert({title:'Não foi possível cadastrar', html: mapa[e.code] || `Erro inesperado (${e.code}). Tente novamente.`});
+      } finally { uiBusy(false); }
+    }
+  });
+};
 </script>
 </body>
 </html>
