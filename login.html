@@ -60,7 +60,6 @@
 
   <p class="muted">Ainda não tem conta? <a href="/cadastro.html">Cadastre-se</a></p>
 
-  <!-- BOTÃO GOOGLE COM type="button" -->
   <button type="button" id="btnGoogleLogin" class="btn-google">
     <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
     Entrar com Google
@@ -183,12 +182,13 @@ $("btnEntrar").onclick = loginEmailSenha;
 document.addEventListener('keydown', (ev)=>{ if(ev.key === 'Enter') loginEmailSenha(); });
 
 /* ===== CAPTURA REDIRECT DO GOOGLE (NO INÍCIO) ===== */
-getRedirectResult(auth)
-  .then(async (result) => {
+(async () => {
+  try {
+    const result = await getRedirectResult(auth);
     if (!result) return;
 
     const user = result.user;
-    console.log("[REDIRECT] Usuário:", user.uid);
+    console.log("[REDIRECT] Usuário voltou:", user.uid);
 
     const snap = await getDoc(doc(db, 'usuarios', user.uid));
     if (snap.exists() && snap.data().cadastroCompleto === true) {
@@ -198,16 +198,16 @@ getRedirectResult(auth)
       await auth.signOut();
       location.href = '/cadastro.html?google=1';
     }
-  })
-  .catch((error) => {
+  } catch (error) {
     console.error("[REDIRECT] Erro:", error);
     showAlert({ title: "Erro", html: "Falha ao processar login com Google." });
-  });
+  }
+})();
 
-/* ===== BOTÃO GOOGLE (COM type="button") ===== */
+/* ===== BOTÃO GOOGLE ===== */
 document.getElementById('btnGoogleLogin')?.addEventListener('click', async () => {
   try {
-    console.log("[BOTÃO] Clicou em Entrar com Google");
+    console.log("[BOTÃO] Clicou em Google");
     await signInWithRedirect(auth, googleProvider);
   } catch (error) {
     console.error("[BOTÃO] Erro:", error);
