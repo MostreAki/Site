@@ -6,7 +6,7 @@
 <title>Cadastro – MostreAki</title>
 <link rel="icon" href="favicon.ico" type="image/x-icon"/>
 <style>
-  /* ====== DESIGN BASE (inalterado) ====== */
+  /* ====== DESIGN BASE ====== */
   :root{
     --brand:#15b0af; --brandLight:#c2e7df; --accent:#FA1E39; --ink:#063b39;
     --card:#ffffff; --muted:#445; --bg:#f4f7f7; --ok:#18a957; --err:#ef4444;
@@ -85,7 +85,7 @@
     font-size:.9rem; color:#444; pointer-events:auto;
   }
 
-  button,.btn{width:100%; margin-top:12px; padding:12px; border-radius:12px; border:0; font-weight:700; cursor:pointer; transition:filter .15s ease, transform .1s ease}
+  button,.btn{width:100%; margin-top:12px; padding:12px; border-radius:12px; border:0; font936:700; cursor:pointer; transition:filter .15s ease, transform .1s ease}
   .primary{background:linear-gradient(135deg,var(--brand) 0%, #24c5bd 100%); color:#fff}
   .primary:hover{filter:brightness(1.06)}
   .primary:active{transform:translateY(1px)}
@@ -146,7 +146,7 @@
   <div class="header-auth">
     <span id="authText" style="font-weight:bold;color:#15b0af;cursor:pointer;display:none">Entrar</span>
     <div id="userCircle" class="user-circle" title="Perfil">F</div>
-    <!-- HAMBÚRGUER CORRIGIDO -->
+    <!-- HAMBÚRGUER -->
     <div id="menuBtn" class="menu-icon" aria-controls="menu" aria-expanded="false">☰</div>
   </div>
   <nav class="menu-list" id="menu">
@@ -318,7 +318,7 @@ const googleProvider = new GoogleAuthProvider();
 googleProvider.addScope('email');
 googleProvider.addScope('profile');
 
-/* ===== HEADER: MENU E AVATAR (100% FUNCIONAL) ===== */
+/* ===== HEADER: MENU E AVATAR ===== */
 const cacheBust = u => u ? u + (u.includes('?')?'&':'?') + 'v=' + Date.now() : u;
 function setAvatar(url){
   if(!url) return;
@@ -369,16 +369,14 @@ async function prefetchFoto(uid){
 /* ===== BLOQUEIO DE ROTAS ATÉ CADASTRO COMPLETO ===== */
 onAuthStateChanged(auth, async (user) => {
   if (!user) return;
-
   const snap = await getDoc(doc(db, 'usuarios', user.uid));
   const data = snap.data();
-
   if (!data?.cadastroCompleto && location.pathname !== '/cadastro.html') {
     location.href = '/cadastro.html';
   }
 });
 
-/* ===== RESTO DO CÓDIGO (inalterado) ===== */
+/* ===== RESTO DO CÓDIGO ===== */
 function wireFloat(){
   document.querySelectorAll('.field').forEach(f=>{
     const i=f.querySelector('input,select');
@@ -418,39 +416,33 @@ function showTermsAlert({onAccept=()=>{}}){
 function closeTermsAlert(){ termsAlertBG.style.display='none'; }
 termsAlertBG.addEventListener('click', e=>{ if(e.target===termsAlertBG) closeTermsAlert(); });
 
-/* ===== GOOGLE AUTH + CADASTRO OBRIGATÓRIO ===== */
+/* ===== GOOGLE AUTH ===== */
 document.getElementById('btnGoogleCadastro')?.addEventListener('click', async () => {
   try {
     const result = await signInWithPopup(auth, googleProvider);
     const user = result.user;
-
     const nomeCompleto = user.displayName || '';
     const [primeiroNome = '', ...resto] = nomeCompleto.split(' ');
-    const nomeSugestao = resto.join(' ') || primeiroNome;
-
     $('email').value = user.email || '';
     $('email2').value = user.email || '';
     $('nome').value = nomeCompleto;
     if ($('razao')) $('razao').value = nomeCompleto;
-
     ['email', 'email2', 'nome', 'razao'].forEach(id => {
       const el = $(id);
       if (el && el.value) el.closest('.field')?.classList.add('has-value');
     });
-
     showAlert({
       title: "Quase lá!",
       html: `Olá <b>${primeiroNome}</b>!<br>Complete os dados abaixo para ativar seu site.<br><b>Username não pode ser alterado depois.</b>`,
       actions: [{ text: "OK", kind: "solid" }]
     });
-
   } catch (error) {
     const msg = error.code === 'auth/popup-closed-by-user' ? 'Cadastro cancelado.' : 'Erro com Google.';
     showAlert({ title: "Ops!", html: msg });
   }
 });
 
-/* ===== BLOQUEIA USERNAME APÓS CADASTRO ===== */
+/* ===== BLOQUEIA USERNAME ===== */
 onAuthStateChanged(auth, async (user) => {
   if (!user) return;
   const snap = await getDoc(doc(db, 'usuarios', user.uid));
@@ -466,15 +458,11 @@ onAuthStateChanged(auth, async (user) => {
   }
 });
 
-/* ===== CADASTRO FINAL (E-MAIL OU GOOGLE) ===== */
+/* ===== CADASTRO FINAL ===== */
 document.getElementById('btnCadastrar').onclick = async () => {
   if (!await aceitarTermos()) return;
-
   const user = auth.currentUser;
-  if (!user) {
-    showAlert({ title: "Erro", html: "Faça login com Google ou use e-mail/senha." });
-    return;
-  }
+  if (!user) { showAlert({ title: "Erro", html: "Faça login com Google ou e-mail." }); return; }
 
   const tipo = document.querySelector('input[name="tipoPessoa"]:checked').value;
   const usernameRaw = $('username').value.trim();
@@ -522,13 +510,7 @@ document.getElementById('btnCadastrar').onclick = async () => {
 
     await setDoc(doc(db, 'usuarios', user.uid), payload, { merge: true });
     await setDoc(doc(db, 'usernames', username), { uid: user.uid, createdAt: serverTimestamp() });
-
-    await setDoc(doc(db, 'assinaturas', user.uid), {
-      plano: 'pendente',
-      status: 'aguardando_pagamento',
-      provider: 'manual',
-      createdAt: serverTimestamp()
-    });
+    await setDoc(doc(db, 'assinaturas', user.uid), { plano: 'pendente', status: 'aguardando_pagamento', provider: 'manual', createdAt: serverTimestamp() });
 
     showAlert({
       title: 'Cadastro concluído!',
@@ -552,7 +534,7 @@ async function aceitarTermos() {
   });
 }
 
-/* ===== RESTO DO CÓDIGO (máscaras, validações, etc.) ===== */
+/* ===== FUNÇÕES AUXILIARES ===== */
 const $ = (id)=>document.getElementById(id);
 const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 function onlyDigits(s){ return (s||'').replace(/\D/g,''); }
@@ -592,7 +574,7 @@ cpfI.addEventListener('input', ()=>{
   let v = onlyDigits(cpfI.value).slice(0,11);
   if(v.length>9) cpfI.value = v.replace(/^(\d{3})(\d{3})(\d{3})(\d{0,2}).*$/, "$1.$2.$3-$4");
   else if(v.length>6) cpfI.value = v.replace(/^(\d{3})(\d{3})(\d{0,3}).*$/, "$1.$2.$3");
-  else if(v.length>3) cpfI.value = v.replace /^(\d{3})(\d{0,3}).*$/, "$1.$2");
+  else if(v.length>3) cpfI.value = v.replace(/^(\d{3})(\d{0,3}).*$/, "$1.$2");
   else cpfI.value = v;
 });
 cnpjI.addEventListener('input', ()=>{
