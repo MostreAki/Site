@@ -418,7 +418,7 @@
 </div>
 
 <div id="toast" class="toast">Faça login para continuar.</div>
-  
+
 <script type="module">
 import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
 import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, sendEmailVerification } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
@@ -626,6 +626,10 @@ function redirecionarPagamento(planId){
   }[planId] || '/minha-conta.html';
   location.href = route;
 }
+
+  <!-- COLE NO FINAL, ANTES DO </body> -->
+<script type="module" src="/seguranca.js"></script>
+  
 </script>
 </body>
 </html>
