@@ -366,6 +366,18 @@ async function prefetchFoto(uid){
   });
 })();
 
+/* ===== BLOQUEIO DE ROTAS ATÉ CADASTRO COMPLETO ===== */
+onAuthStateChanged(auth, async (user) => {
+  if (!user) return;
+
+  const snap = await getDoc(doc(db, 'usuarios', user.uid));
+  const data = snap.data();
+
+  if (!data?.cadastroCompleto && location.pathname !== '/cadastro.html') {
+    location.href = '/cadastro.html';
+  }
+});
+
 /* ===== RESTO DO CÓDIGO (inalterado) ===== */
 function wireFloat(){
   document.querySelectorAll('.field').forEach(f=>{
@@ -521,7 +533,7 @@ document.getElementById('btnCadastrar').onclick = async () => {
     showAlert({
       title: 'Cadastro concluído!',
       html: `Seu site será ativado após o pagamento.<br>Username: <b>${username}</b> (não pode ser alterado).`,
-      actions: [{ text: 'Ir para Minha Conta', kind: 'solid', onClick: () => location.href = '/minha-conta.html' }]
+      actions: [{ text: 'Ir para Planos', kind: 'solid', onClick: () => location.href = '/planos.html' }]
     });
 
   } catch (e) {
@@ -580,7 +592,7 @@ cpfI.addEventListener('input', ()=>{
   let v = onlyDigits(cpfI.value).slice(0,11);
   if(v.length>9) cpfI.value = v.replace(/^(\d{3})(\d{3})(\d{3})(\d{0,2}).*$/, "$1.$2.$3-$4");
   else if(v.length>6) cpfI.value = v.replace(/^(\d{3})(\d{3})(\d{0,3}).*$/, "$1.$2.$3");
-  else if(v.length>3) cpfI.value = v.replace(/^(\d{3})(\d{0,3}).*$/, "$1.$2");
+  else if(v.length>3) cpfI.value = v.replace /^(\d{3})(\d{0,3}).*$/, "$1.$2");
   else cpfI.value = v;
 });
 cnpjI.addEventListener('input', ()=>{
