@@ -617,7 +617,7 @@ function iniciarFluxoAssinatura(planId){
   const user = auth.currentUser;
   if(!user){ toast(); abrirModal(); return; }
   abrirTermos(planId);
-}
+};
 function redirecionarPagamento(planId){
   const route = {
     basico:   'https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=15d147b90d6347849f237cb97af164f6',
@@ -626,9 +626,8 @@ function redirecionarPagamento(planId){
   }[planId] || '/minha-conta.html';
   location.href = route;
 }
- 
-<script type="module" src="/seguranca.js"></script>
-  
+  type="module" src="/seguranca.js
+  }
 </script>
 </body>
 </html>
