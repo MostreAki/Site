@@ -31,7 +31,6 @@
   .alert-actions{display:flex;gap:10px;flex-wrap:wrap;padding:0 16px 16px}
   .btn-solid{background:var(--brand);color:#fff}
   .btn-ghost{background:#fff;border:2px solid var(--brand);color:var(--brand)}
-  .btn-danger{background:var(--accent);color:#fff}
 
   #recoverLine{display:none;text-align:center;margin-top:6px}
 </style>
@@ -61,7 +60,6 @@
 
   <p class="muted">Ainda não tem conta? <a href="/cadastro.html">Cadastre-se</a></p>
 
-  <!-- BOTÃO GOOGLE -->
   <button id="btnGoogleLogin" class="btn-google">
     <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
     Entrar com Google
@@ -109,7 +107,7 @@ function showAlert({title="Aviso", html="", actions=[{text:"Fechar", kind:"solid
   alertTitle.textContent = title; alertMsg.innerHTML = html; alertActions.innerHTML = "";
   actions.forEach(a=>{
     const b=document.createElement('button');
-    b.className = 'btn ' + (a.kind==='danger'?'btn-danger':a.kind==='ghost'?'btn-ghost':'btn-solid');
+    b.className = 'btn ' + (a.kind==='ghost'?'btn-ghost':'btn-solid');
     b.textContent = a.text;
     b.onclick = ()=>{ if(a.onClick) a.onClick(); closeAlert(); };
     alertActions.appendChild(b);
@@ -189,11 +187,10 @@ document.getElementById('btnGoogleLogin')?.addEventListener('click', async () =>
     const result = await signInWithPopup(auth, googleProvider);
     const user = result.user;
 
-    // VERIFICA SE TEM CADASTRO COMPLETO NO FIRESTORE
+    // VERIFICA NO FIRESTORE
     const snap = await getDoc(doc(db, 'usuarios', user.uid));
-    const data = snap.data();
 
-    if (data?.cadastroCompleto) {
+    if (snap.exists() && snap.data().cadastroCompleto === true) {
       // TEM CADASTRO → ENTRA
       localStorage.setItem('fotoPerfil', user.photoURL || '');
       location.href = '/minha-conta.html';
@@ -209,7 +206,7 @@ document.getElementById('btnGoogleLogin')?.addEventListener('click', async () =>
   }
 });
 
-/* ===== AVISO NO CADASTRO (SE VEIO DO GOOGLE) ===== */
+/* ===== AVISO NO CADASTRO ===== */
 if (location.pathname === '/cadastro.html' && new URLSearchParams(location.search).get('google') === '1') {
   showAlert({
     title: "Complete seu cadastro!",
