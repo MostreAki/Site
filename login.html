@@ -33,7 +33,7 @@
   .alert-actions{display:flex;gap:10px;flex-wrap:wrap;padding:0 16px 16px}
   .btn-solid{background:var(--brand);color:#fff}
   .btn-ghost{background:#fff;border:2px solid var(--brand);color:var(--brand)}
-  .btn-danger{background:var(--accent);color:#fff}
+  .btn-danger{backgrounduvos:var(--accent);color:#fff}
 
   /* Link “recuperar senha” que só aparece após 1º erro */
   #recoverLine{display:none;text-align:center;margin-top:6px}
@@ -65,7 +65,7 @@
 
   <p class="muted">Não tem conta? <a href="/cadastro.html">Cadastre-se</a></p>
 
-  <!-- BOTÃO GOOGLE (NOVO) -->
+  <!-- BOTÃO GOOGLE -->
   <button id="btnGoogleLogin" class="btn-google">
     <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
     Entrar com Google
@@ -148,32 +148,23 @@ function showLockMsg(){ const s=getState(); const secs = Math.ceil((s.lockUntil 
 /* ===== LOGIN COM E-MAIL E SENHA ===== */
 async function loginEmailSenha(){
   if(isLocked()) return showLockMsg();
-
   const email = $("email").value.trim();
   const senha = $("senha").value;
-
   if(!email) return showAlert({title:"E-mail vazio", html:"Digite seu e-mail."});
   if(!emailRe.test(email)) return showAlert({title:"E-mail inválido", html:"Revise o endereço."});
   if(!senha) return showAlert({title:"Senha vazia", html:"Digite sua senha."});
 
   try{
     const cred = await signInWithEmailAndPassword(auth, email, senha);
-
     if (!cred.user.emailVerified){
       await sendEmailVerification(cred.user);
-      showAlert({
-        title:"Confirme seu e-mail",
-        html:`Reenviamos o link para <b>${email}</b>. Verifique sua caixa de entrada (ou spam).`,
-        actions:[{text:"OK", kind:"solid"}]
-      });
+      showAlert({title:"Confirme seu e-mail", html:`Reenviamos o link para <b>${email}</b>.`, actions:[{text:"OK", kind:"solid"}]});
       await signOut(auth);
       return;
     }
-
     resetFails();
     if(cred.user.photoURL) localStorage.setItem("fotoPerfil", cred.user.photoURL);
     location.href="/minha-conta.html";
-
   }catch(e){
     const codes = ["auth/invalid-credential","auth/wrong-password","auth/user-not-found"];
     if(codes.includes(e.code)){
@@ -197,22 +188,22 @@ async function loginEmailSenha(){
 $("btnEntrar").onclick = loginEmailSenha;
 document.addEventListener('keydown', (ev)=>{ if(ev.key === 'Enter') loginEmailSenha(); });
 
-/* ===== LOGIN COM GOOGLE INTELIGENTE ===== */
+/* ===== LOGIN COM GOOGLE – NÃO ENTRA SEM CADASTRO ===== */
 document.getElementById('btnGoogleLogin')?.addEventListener('click', async () => {
   try {
     const result = await signInWithPopup(auth, googleProvider);
     const user = result.user;
 
-    // VERIFICA SE JÁ TEM CADASTRO COMPLETO
+    // VERIFICA NO FIRESTORE
     const snap = await getDoc(doc(db, 'usuarios', user.uid));
     const data = snap.data();
 
     if (data?.cadastroCompleto) {
-      // TEM CADASTRO → ENTRA DIRETO
+      // TEM CADASTRO → ENTRA
       localStorage.setItem('fotoPerfil', user.photoURL || '');
       location.href = '/minha-conta.html';
     } else {
-      // NÃO TEM CADASTRO → DESLOGA E VAI PRO CADASTRO
+      // NÃO TEM → DESLOGA IMEDIATAMENTE
       await signOut(auth);
       location.href = '/cadastro.html?google=1';
     }
@@ -223,19 +214,33 @@ document.getElementById('btnGoogleLogin')?.addEventListener('click', async () =>
   }
 });
 
-/* ===== DETECTA ?google=1 NO CADASTRO (opcional) ===== */
+/* ===== AVISO NO CADASTRO SE VEIO DO GOOGLE ===== */
 if (location.pathname === '/cadastro.html' && new URLSearchParams(location.search).get('google') === '1') {
   showAlert({
     title: "Complete seu cadastro!",
-    html: "Você entrou com Google. Preencha os dados para continuar.",
+    html: "Você entrou com Google. Preencha os dados para ativar sua conta.",
     actions: [{ text: "OK", kind: "solid" }]
   });
 }
 
-/* ===== Já logado e verificado → painel ===== */
-onAuthStateChanged(auth, (u)=>{ 
-  if(u && u.emailVerified && location.pathname !== '/minha-conta.html') {
-    location.href="/minha-conta.html"; 
+/* ===== JÁ LOGADO → VERIFICA CADASTRO COMPLETO ===== */
+onAuthStateChanged(auth, async (user) => {
+  if (!user) return;
+
+  const snap = await getDoc(doc(db, 'usuarios', user.uid));
+  const data = snap.data();
+
+  if (data?.cadastroCompleto) {
+    // TEM CADASTRO → LIBERA
+    if (location.pathname !== '/minha-conta.html') {
+      location.href = '/minha-conta.html';
+    }
+  } else {
+    // NÃO TEM CADASTRO → DESLOGA E VAI PRO CADASTRO
+    await signOut(auth);
+    if (location.pathname !== '/cadastro.html') {
+      location.href = '/cadastro.html?google=1';
+    }
   }
 });
 </script>
