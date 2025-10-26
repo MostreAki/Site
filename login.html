@@ -13,15 +13,15 @@
   input{width:100%;padding:10px;border:1px solid #ddd;border-radius:8px}
   button,.btn{width:100%;margin-top:12px;padding:12px;border-radius:8px;border:0;font-weight:bold;cursor:pointer}
   .primary{background:var(--brand);color:#fff}
+  .btn-google{background:#4285F4;color:#fff;display:flex;align-items:center;justify-content:center;gap:12px;margin-top:16px}
+  .btn-google img{width:20px}
   .muted{font-size:.9rem;color:#666;margin-top:10px}
   a{color:var(--brand);text-decoration:none;font-weight:bold}
 
-  /* Campo de senha — agora com checkbox “Mostrar senha” */
   .pwd-wrap{position:relative}
   .showpwd{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:.9rem;color:#444}
   .showpwd input{width:auto}
 
-  /* POPUP */
   .alert-bg{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:9999;padding:20px}
   .alert-card{background:#fff;border-radius:16px;overflow:hidden;max-width:460px;width:100%;box-shadow:0 22px 70px rgba(0,0,0,.25);border:2px solid var(--brandLight)}
   .alert-head{background:linear-gradient(90deg,var(--brandLight),var(--brand));padding:14px 16px;display:flex;align-items:center;gap:10px}
@@ -33,7 +33,6 @@
   .btn-ghost{background:#fff;border:2px solid var(--brand);color:var(--brand)}
   .btn-danger{background:var(--accent);color:#fff}
 
-  /* Link “recuperar senha” que só aparece após 1º erro */
   #recoverLine{display:none;text-align:center;margin-top:6px}
 </style>
 </head>
@@ -48,7 +47,6 @@
   <label for="senha">Senha</label>
   <div class="pwd-wrap">
     <input id="senha" type="password" autocomplete="current-password" required>
-    <!-- Checkbox que substitui o botão “olho” -->
     <label class="showpwd" for="chkMostrarSenha">
       <input id="chkMostrarSenha" type="checkbox" aria-controls="senha" aria-label="Mostrar senha">
       Mostrar senha
@@ -61,7 +59,13 @@
     Esqueceu a senha? <a href="/recuperar-senha.html">Recuperar senha</a>
   </div>
 
-  <p class="muted">Não tem conta? <a href="/cadastro.html">Cadastre-se</a></p>
+  <p class="muted">Ainda não tem conta? <a href="/cadastro.html">Cadastre-se</a></p>
+
+  <!-- BOTÃO GOOGLE -->
+  <button id="btnGoogleLogin" class="btn-google">
+    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+    Entrar com Google
+  </button>
 </div>
 
 <!-- POPUP -->
@@ -79,9 +83,10 @@
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
 import {
-  getAuth, signInWithEmailAndPassword,
-  onAuthStateChanged, sendEmailVerification, signOut
+  getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider,
+  sendEmailVerification
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
 const app = initializeApp({
   apiKey:"AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
@@ -92,8 +97,10 @@ const app = initializeApp({
   appId:"1:748712068097:web:09cf043fbb45917ef6ec00"
 });
 const auth = getAuth(app);
+const db = getFirestore(app);
+const googleProvider = new GoogleAuthProvider();
 
-/* Popup */
+/* ===== POPUP ===== */
 const alertBG = document.getElementById('alert');
 const alertTitle = document.getElementById('alertTitle');
 const alertMsg = document.getElementById('alertMsg');
@@ -115,88 +122,53 @@ window.addEventListener('keydown', e=>{ if(e.key==='Escape' && alertBG.style.dis
 
 const $ = (id)=>document.getElementById(id);
 
-/* Checkbox “Mostrar senha” (substitui o olho) */
+/* ===== Checkbox “Mostrar senha” ===== */
 (function wireShowPassword(){
   const input = $("senha"), chk = $("chkMostrarSenha");
   if(!input || !chk) return;
-  const apply = ()=>{ input.type = chk.checked ? 'text' : 'password'; };
-  chk.addEventListener('change', apply);
+  chk.addEventListener('change', ()=>{ input.type = chk.checked ? 'text' : 'password'; });
 })();
 
-/* Validação leve */
+/* ===== Validação leve ===== */
 const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-const emailValido = v => emailRe.test(v);
 
-/* Trava de tentativas local (UX): 5 falhas => bloqueia 30s (exponencial) */
-function getState(){
-  const now=Date.now();
-  const s = JSON.parse(sessionStorage.getItem('loginState')||'{}');
-  if(!s.lockUntil) s.lockUntil=0;
-  if(!s.failCount) s.failCount=0;
-  if(!s.blockMult) s.blockMult=1;
-  if(now > s.lockUntil){ s.lockUntil=0; }
-  return s;
-}
+/* ===== Trava de tentativas ===== */
+function getState(){ const s = JSON.parse(sessionStorage.getItem('loginState')||'{}'); if(!s.lockUntil) s.lockUntil=0; if(!s.failCount) s.failCount=0; if(!s.blockMult) s.blockMult=1; if(Date.now() > s.lockUntil) s.lockUntil=0; return s; }
 function setState(s){ sessionStorage.setItem('loginState', JSON.stringify(s)); }
 function isLocked(){ const s=getState(); return s.lockUntil && Date.now()<s.lockUntil; }
-function lockMore(){
-  const s=getState();
-  const base=30000; // 30s
-  s.blockMult = Math.min(s.blockMult*2, 8);
-  s.lockUntil = Date.now() + base * s.blockMult;
-  setState(s);
-}
-function incFail(){
-  const s=getState(); s.failCount=(s.failCount||0)+1;
-  if(s.failCount>=5){ s.failCount=0; lockMore(); }
-  setState(s);
-}
+function lockMore(){ const s=getState(); const base=30000; s.blockMult = Math.min(s.blockMult*2, 8); s.lockUntil = Date.now() + base * s.blockMult; setState(s); }
+function incFail(){ const s=getState(); s.failCount=(s.failCount||0)+1; if(s.failCount>=5){ s.failCount=0; lockMore(); } setState(s); }
 function resetFails(){ setState({failCount:0, blockMult:1, lockUntil:0}); }
-function showLockMsg(){
-  const s=getState();
-  const secs = Math.ceil((s.lockUntil - Date.now())/1000);
-  showAlert({title:"Muitas tentativas", html:`Aguarde <b>${secs}s</b> para tentar novamente.`});
-}
+function showLockMsg(){ const s=getState(); const secs = Math.ceil((s.lockUntil - Date.now())/1000); showAlert({title:"Muitas tentativas", html:`Aguarde <b>${secs}s</b> para tentar novamente.`}); }
 
-/* Entrar */
+/* ===== LOGIN COM E-MAIL E SENHA ===== */
 async function loginEmailSenha(){
   if(isLocked()) return showLockMsg();
-
   const email = $("email").value.trim();
   const senha = $("senha").value;
-
-  if(!email) return showAlert({title:"E-mail vazio", html:"Digite seu e-mail para continuar."});
-  if(!emailValido(email)) return showAlert({title:"E-mail inválido", html:"Revise o endereço digitado."});
-  if(!senha) return showAlert({title:"Senha vazia", html:"Digite sua senha para continuar."});
+  if(!email) return showAlert({title:"E-mail vazio", html:"Digite seu e-mail."});
+  if(!emailRe.test(email)) return showAlert({title:"E-mail inválido", html:"Revise o endereço."});
+  if(!senha) return showAlert({title:"Senha vazia", html:"Digite sua senha."});
 
   try{
     const cred = await signInWithEmailAndPassword(auth, email, senha);
-
     if (!cred.user.emailVerified){
       await sendEmailVerification(cred.user);
-      showAlert({
-        title:"Confirme seu e-mail",
-        html:`Seu e-mail ainda não foi verificado.<br>Reenviamos o link para <b>${email}</b>. Verifique sua caixa de entrada (ou spam) e tente novamente após confirmar.`,
-        actions:[ {text:"OK, vou verificar", kind:"solid"} ]
-      });
-      await signOut(auth);
+      showAlert({title:"Confirme seu e-mail", html:`Reenviamos o link para <b>${email}</b>.`, actions:[{text:"OK", kind:"solid"}]});
       return;
     }
-
     resetFails();
     if(cred.user.photoURL) localStorage.setItem("fotoPerfil", cred.user.photoURL);
     location.href="/minha-conta.html";
-
   }catch(e){
     const codes = ["auth/invalid-credential","auth/wrong-password","auth/user-not-found"];
     if(codes.includes(e.code)){
       $("recoverLine").style.display = "block";
       incFail();
       if(isLocked()) return showLockMsg();
-
       return showAlert({
         title:"Não conseguimos entrar",
-        html:"E-mail e/ou senha incorretos. Você pode tentar novamente ou recuperar a senha.",
+        html:"E-mail e/ou senha incorretos.",
         actions:[
           {text:"Recuperar senha", kind:"ghost", onClick:()=>location.href="/recuperar-senha.html"},
           {text:"Cadastrar", kind:"ghost", onClick:()=>location.href="/cadastro.html"},
@@ -205,17 +177,46 @@ async function loginEmailSenha(){
       });
     }
     if(e.code==="auth/too-many-requests"){ lockMore(); return showLockMsg(); }
-    if(e.code==="auth/invalid-email"){ return showAlert({title:"E-mail inválido", html:"Revise o endereço digitado."}); }
-    showAlert({title:"Erro", html:`Erro inesperado (${e.code}). Tente novamente.`});
+    showAlert({title:"Erro", html:`Erro inesperado (${e.code}).`});
   }
 }
 $("btnEntrar").onclick = loginEmailSenha;
-
-/* Enter envia */
 document.addEventListener('keydown', (ev)=>{ if(ev.key === 'Enter') loginEmailSenha(); });
 
-/* Já logado e verificado → painel */
-onAuthStateChanged(auth, (u)=>{ if(u && u.emailVerified) location.href="/minha-conta.html"; });
+/* ===== LOGIN COM GOOGLE – SÓ ENTRA SE TIVER CADASTRO ===== */
+document.getElementById('btnGoogleLogin')?.addEventListener('click', async () => {
+  try {
+    const result = await signInWithPopup(auth, googleProvider);
+    const user = result.user;
+
+    // VERIFICA SE TEM CADASTRO COMPLETO NO FIRESTORE
+    const snap = await getDoc(doc(db, 'usuarios', user.uid));
+    const data = snap.data();
+
+    if (data?.cadastroCompleto) {
+      // TEM CADASTRO → ENTRA
+      localStorage.setItem('fotoPerfil', user.photoURL || '');
+      location.href = '/minha-conta.html';
+    } else {
+      // NÃO TEM → DESLOGA E VAI PRO CADASTRO
+      await auth.signOut();
+      location.href = '/cadastro.html?google=1';
+    }
+  } catch (error) {
+    if (error.code !== 'auth/popup-closed-by-user') {
+      showAlert({ title: "Erro", html: "Falha ao entrar com Google." });
+    }
+  }
+});
+
+/* ===== AVISO NO CADASTRO (SE VEIO DO GOOGLE) ===== */
+if (location.pathname === '/cadastro.html' && new URLSearchParams(location.search).get('google') === '1') {
+  showAlert({
+    title: "Complete seu cadastro!",
+    html: "Você entrou com Google. Preencha os dados para ativar sua conta.",
+    actions: [{ text: "OK", kind: "solid" }]
+  });
+}
 </script>
 </body>
 </html>
