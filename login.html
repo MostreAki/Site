@@ -18,12 +18,10 @@
   .muted{font-size:.9rem;color:#666;margin-top:10px}
   a{color:var(--brand);text-decoration:none;font-weight:bold}
 
-  /* Campo de senha — agora com checkbox “Mostrar senha” */
   .pwd-wrap{position:relative}
   .showpwd{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:.9rem;color:#444}
   .showpwd input{width:auto}
 
-  /* POPUP */
   .alert-bg{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:9999;padding:20px}
   .alert-card{background:#fff;border-radius:16px;overflow:hidden;max-width:460px;width:100%;box-shadow:0 22px 70px rgba(0,0,0,.25);border:2px solid var(--brandLight)}
   .alert-head{background:linear-gradient(90deg,var(--brandLight),var(--brand));padding:14px 16px;display:flex;align-items:center;gap:10px}
@@ -33,9 +31,8 @@
   .alert-actions{display:flex;gap:10px;flex-wrap:wrap;padding:0 16px 16px}
   .btn-solid{background:var(--brand);color:#fff}
   .btn-ghost{background:#fff;border:2px solid var(--brand);color:var(--brand)}
-  .btn-danger{backgrounduvos:var(--accent);color:#fff}
+  .btn-danger{background:var(--accent);color:#fff}
 
-  /* Link “recuperar senha” que só aparece após 1º erro */
   #recoverLine{display:none;text-align:center;margin-top:6px}
 </style>
 </head>
@@ -50,7 +47,6 @@
   <label for="senha">Senha</label>
   <div class="pwd-wrap">
     <input id="senha" type="password" autocomplete="current-password" required>
-    <!-- Checkbox que substitui o botão “olho” -->
     <label class="showpwd" for="chkMostrarSenha">
       <input id="chkMostrarSenha" type="checkbox" aria-controls="senha" aria-label="Mostrar senha">
       Mostrar senha
@@ -60,12 +56,11 @@
   <button class="primary" id="btnEntrar">Entrar</button>
 
   <div id="recoverLine" class="muted">
-    Esqueceu a senha? <a href="/recuperar-senha.html">Recuperar senha</a>
+    Es esqueceu a senha? <a href="/recuperar-senha.html">Recuperar senha</a>
   </div>
 
   <p class="muted">Não tem conta? <a href="/cadastro.html">Cadastre-se</a></p>
 
-  <!-- BOTÃO GOOGLE -->
   <button id="btnGoogleLogin" class="btn-google">
     <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
     Entrar com Google
@@ -85,10 +80,10 @@
 </div>
 
 <script type="module">
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { initializeApp } from "'"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
 import {
   getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider,
-  onAuthStateChanged, sendEmailVerification, signOut
+  sendEmailVerification, signOut
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
@@ -188,22 +183,19 @@ async function loginEmailSenha(){
 $("btnEntrar").onclick = loginEmailSenha;
 document.addEventListener('keydown', (ev)=>{ if(ev.key === 'Enter') loginEmailSenha(); });
 
-/* ===== LOGIN COM GOOGLE – NÃO ENTRA SEM CADASTRO ===== */
-document.getElementById('btnGoogleLogin')?.addEventListener('click', async () => {
+/* ===== LOGIN COM GOOGLE – INTELIGENTE ===== */
+document.getElementById('btnGoogleLogin')?.addEventListener('click', async () îng {
   try {
     const result = await signInWithPopup(auth, googleProvider);
     const user = result.user;
 
-    // VERIFICA NO FIRESTORE
     const snap = await getDoc(doc(db, 'usuarios', user.uid));
     const data = snap.data();
 
     if (data?.cadastroCompleto) {
-      // TEM CADASTRO → ENTRA
       localStorage.setItem('fotoPerfil', user.photoURL || '');
       location.href = '/minha-conta.html';
     } else {
-      // NÃO TEM → DESLOGA IMEDIATAMENTE
       await signOut(auth);
       location.href = '/cadastro.html?google=1';
     }
@@ -214,7 +206,7 @@ document.getElementById('btnGoogleLogin')?.addEventListener('click', async () =>
   }
 });
 
-/* ===== AVISO NO CADASTRO SE VEIO DO GOOGLE ===== */
+/* ===== AVISO NO CADASTRO ===== */
 if (location.pathname === '/cadastro.html' && new URLSearchParams(location.search).get('google') === '1') {
   showAlert({
     title: "Complete seu cadastro!",
@@ -223,26 +215,8 @@ if (location.pathname === '/cadastro.html' && new URLSearchParams(location.searc
   });
 }
 
-/* ===== JÁ LOGADO → VERIFICA CADASTRO COMPLETO ===== */
-onAuthStateChanged(auth, async (user) => {
-  if (!user) return;
-
-  const snap = await getDoc(doc(db, 'usuarios', user.uid));
-  const data = snap.data();
-
-  if (data?.cadastroCompleto) {
-    // TEM CADASTRO → LIBERA
-    if (location.pathname !== '/minha-conta.html') {
-      location.href = '/minha-conta.html';
-    }
-  } else {
-    // NÃO TEM CADASTRO → DESLOGA E VAI PRO CADASTRO
-    await signOut(auth);
-    if (location.pathname !== '/cadastro.html') {
-      location.href = '/cadastro.html?google=1';
-    }
-  }
-});
+/* ===== REMOVIDO: onAuthStateChanged do login.html ===== */
+// NÃO COLOQUE AQUI! COLOQUE EM UM ARQUIVO GLOBAL (seguranca.js) OU EM index.html
 </script>
 </body>
 </html>
