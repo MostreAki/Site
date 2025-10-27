@@ -1,12 +1,10 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-  <!-- BUILD: 2025-10-27 (Percival-Brics • imagens otimizadas WebP/JPG com srcset/sizes) -->
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Catálogo • Percival-Brics</title>
   <meta name="theme-color" content="#0f766e" />
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
@@ -14,104 +12,59 @@
   <style>
     :root{
       --teal-900:#134e4a; --teal-800:#115e59; --teal-700:#0f766e;
-      --teal-600:#0d9488; --teal-100:#ccfbf1;
-      --ink:#0b1324; --muted:#6b7280;
-      --bg:#061a22; --panel:#0a2537; --card:#ffffff;
-      --ring:rgba(13,148,136,.25); --brand:#16b0af; --ok:#25D366;
-
-      --logo-size:86%;
-      --banner-fit:cover;
-      --banner-pos:center;
-      --banner-min-h-mobile:160px;
-      --banner-min-h-desktop:220px;
+      --ok:#25D366; --ring:rgba(13,148,136,.25);
     }
     *{box-sizing:border-box}
-    html,body{margin:0;padding:0;background:linear-gradient(180deg,var(--teal-900),#0a2537 45%, #05202a);color:#ecfeff;font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Arial}
+    html,body{margin:0;padding:0;background:linear-gradient(180deg,#134e4a,#0a2537 45%, #05202a);color:#ecfeff;font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Arial}
     a{color:inherit;text-decoration:none}
-
-    header{
-      position:sticky;top:0;z-index:50;
-      background:linear-gradient(90deg,var(--teal-900),var(--teal-700));
-      border-bottom:1px solid rgba(255,255,255,.08);
-    }
+    header{position:sticky;top:0;z-index:50;background:linear-gradient(90deg,#134e4a,#0f766e);border-bottom:1px solid rgba(255,255,255,.08)}
     .bar{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:12px;padding:14px 16px}
-    .brandLogo{width:28px;height:28px;border-radius:999px;object-fit:contain;display:none;background:#fff;box-shadow:0 4px 14px rgba(0,0,0,.18)}
-    .brand{font-weight:800;letter-spacing:.4px;font-size:1.1rem;white-space:nowrap}
+    .brandLogo{width:32px;height:32px;border-radius:999px;object-fit:contain;display:none;background:#fff;box-shadow:0 4px 14px rgba(0,0,0,.18)}
+    .brand{font-weight:800;letter-spacing:.4px;font-size:1.1rem}
     .spacer{flex:1}
-
     main{max-width:1100px;margin:0 auto;padding:28px 16px 90px}
-
     .hero{display:flex;flex-direction:column;align-items:center;gap:18px;margin-top:6px}
-    .logoRing{
-      width:140px;height:140px;border-radius:999px;background:#fff;
-      display:grid;place-items:center;position:relative;box-shadow:0 12px 40px rgba(0,0,0,.35), inset 0 0 0 6px var(--ring)
-    }
-    .logoRing img{width:var(--logo-size);height:var(--logo-size);object-fit:contain;border-radius:999px}
-
-    .banner{
-      width:100%;max-width:980px;min-height:var(--banner-min-h-mobile);border-radius:18px;
-      background:linear-gradient(180deg,#e0f7f4,#c7f1ec);
-      box-shadow:0 20px 60px rgba(0,0,0,.25);
-      overflow:hidden;position:relative;
-    }
-    @media (min-width:860px){ .banner{min-height:var(--banner-min-h-desktop)} }
-    .banner .slide{position:absolute;inset:0;opacity:0;transition:opacity .6s ease;display:flex;pointer-events:none;z-index:1}
-    .banner .slide.active{opacity:1;pointer-events:auto;z-index:2}
-    .banner .slide a{position:absolute;inset:0;display:block;width:100%;height:100%}
-    .banner img,.banner video{width:100%;height:100%;object-fit:var(--banner-fit);object-position:var(--banner-pos);display:block;pointer-events:none}
-
+    .logoRing{width:140px;height:140px;border-radius:999px;background:#fff;display:grid;place-items:center;position:relative;box-shadow:0 12px 40px rgba(0,0,0,.35), inset 0 0 0 6px var(--ring)}
+    .logoRing img{width:86%;height:86%;object-fit:contain;border-radius:999px}
     h1.title{margin:0;margin-top:8px;font-size:clamp(1.35rem,2.2vw,1.9rem);font-weight:900;letter-spacing:.3px;text-shadow:0 2px 14px rgba(0,0,0,.35)}
-
     .pager{margin-top:18px;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
     .navbtn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;border:2px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#d1fae5;font-weight:800;cursor:pointer}
     .navbtn[disabled]{opacity:.4;cursor:not-allowed}
     .navbtn svg{width:18px;height:18px;fill:#d1fae5}
     .pageinfo{font-weight:700;color:#b6e9e2}
-
     .grid{margin-top:18px;display:grid;gap:16px;grid-template-columns:repeat(2,minmax(0,1fr))}
     @media (min-width:860px){ .grid{grid-template-columns:repeat(4,minmax(0,1fr))} }
-
     .card{background:linear-gradient(180deg,#fdfefe,#eef7f6);border:1px solid rgba(3,94,86,.12);border-radius:16px;overflow:hidden;box-shadow:0 12px 30px rgba(0,0,0,.18);transition:transform .15s ease, box-shadow .15s ease}
     .card:hover{transform:translateY(-2px);box-shadow:0 18px 44px rgba(0,0,0,.26)}
     .imgWrap{aspect-ratio:1/1;background:#e6f6f4;display:grid;place-items:center;overflow:hidden;cursor:zoom-in}
     .imgWrap img{width:100%;height:100%;object-fit:cover}
-
     .info{display:grid;grid-template-columns:1fr;row-gap:6px;align-items:start;padding:10px 12px 12px}
     .nome{font-weight:700;color:#0c2d2b;margin-bottom:2px;font-size:.98rem}
     .preco{font-weight:800;color:#0c2d2b;font-size:1rem}
     .qtde{color:#476f6c;font-size:.86rem;margin-top:2px}
-
     .thumbs{display:flex;gap:8px;margin:8px 0 6px}
-    .thumbs img{width:40px;height:40px;object-fit:cover;border-radius:8px;opacity:.9;border:1px solid rgba(3,94,86,.22);cursor:pointer;transition:transform .12s ease, opacity .12s ease}
-    .thumbs img:hover{opacity:1;transform:translateY(-1px)}
-
+    .thumbs img{width:40px;height:40px;object-fit:cover;border-radius:8px;opacity:.95;border:1px solid rgba(3,94,86,.22);cursor:pointer}
     .actions{display:flex;flex-direction:column;gap:8px;margin-top:6px}
     .cta{display:inline-flex;align-items:center;gap:10px;width:fit-content;padding:10px 14px;border:0;border-radius:12px;font-weight:800;cursor:pointer;box-shadow:0 10px 24px rgba(0,0,0,.12)}
-    .cta img,.cta svg{width:22px;height:22px}
     .cta-wa{background:var(--ok);color:#fff}
     .cta-ml{background:#FFE600;color:#002E6C}
-    .cta:active{transform:translateY(1px)}
-
     .wa-float{position:fixed;right:16px;bottom:16px;z-index:60;width:56px;height:56px;border-radius:999px;background:var(--ok);display:none;align-items:center;justify-content:center;box-shadow:0 12px 32px rgba(37,211,102,.35)}
     .wa-float svg{width:28px;height:28px;fill:#fff}
-
-    .muted{margin:22px auto 0;max-width:780px;color:#b6e9e2;text-align:center;font-size:.95rem}
     .warn{background:#fee2e2;color:#7f1d1d;border:1px solid #fecaca;padding:12px 14px;border-radius:12px;margin:18px auto;max-width:840px}
     footer{color:#bbf7d0;font-size:.8rem;text-align:center;padding:32px 16px;border-top:1px solid rgba(255,255,255,.07)}
-
     .lb-bg{position:fixed;inset:0;z-index:70;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.7);backdrop-filter:saturate(120%) blur(2px);padding:16px}
     .lb-card{position:relative;max-width:96vw;max-height:90vh;background:#031d24;border:1px solid rgba(255,255,255,.12);border-radius:16px;box-shadow:0 20px 80px rgba(0,0,0,.55);padding:10px}
     .lb-img{display:block;max-width:92vw;max-height:82vh;object-fit:contain;border-radius:10px;background:#0a2a33}
     .lb-close{position:absolute;top:8px;right:8px;border:0;width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.12);color:#e8ffff;cursor:pointer;font-size:22px;line-height:36px}
     .lb-arrow{position:absolute;top:50%;transform:translateY(-50%);border:0;width:42px;height:42px;border-radius:999px;background:rgba(255,255,255,.16);color:#e8ffff;cursor:pointer;font-size:22px;line-height:42px}
-    .lb-prev{left:8px}.lb-next{right:8px}
-    .lb-count{position:absolute;bottom:10px;right:12px;background:rgba(0,0,0,.45);color:#e8ffff;font-size:.85rem;padding:6px 10px;border-radius:10px}
+    .lb-prev{left:8px}.lb-next{right:8px}.lb-count{position:absolute;bottom:10px;right:12px;background:rgba(0,0,0,.45);color:#e8ffff;font-size:.85rem;padding:6px 10px;border-radius:10px}
   </style>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
     import { getFirestore, doc, getDoc, collection, query, orderBy, onSnapshot, limit as qLimit } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
 
+    /* ===== Firebase ===== */
     const firebaseConfig = {
       apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
       authDomain: "mostreaki-2025.firebaseapp.com",
@@ -123,29 +76,12 @@
     const app = initializeApp(firebaseConfig);
     const db  = getFirestore(app);
 
-    /* ======== SLUG ROBUSTO ======== */
-    function getSlug(){
-      const ds = document.body?.getAttribute('data-slug');
-      if (ds && ds.trim()) return ds.trim();
-      const u = new URL(location.href);
-      const q = u.searchParams.get('slug') || u.searchParams.get('c');
-      if (q && q.trim()) return q.trim();
-      const m = location.pathname.match(/catalogo-([^/.]+)(?:\.html)?$/);
-      if (m) return m[1];
-      if (location.hostname.includes('percival')) return 'percival-brics';
-      if (location.hostname.includes('brics')) return 'percival-brics';
-      return '';
+    /* ===== Helpers de imagem/slug ===== */
+    function normalizaNome(s) {
+      return String(s || "")
+        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
     }
-    const SLUG_DEFAULT = 'percival-brics';
-    const slug = getSlug() || SLUG_DEFAULT;
-
-    /* ======== UTILS ======== */
-    const PLACEHOLDER = 'data:image/svg+xml;utf8,' + encodeURIComponent(
-      `<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512">
-        <rect width="100%" height="100%" fill="#e6f6f4"/>
-        <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" fill="#7fb4ad" font-size="28" font-family="Arial">sem imagem</text>
-      </svg>`
-    );
     function normalizeImgUrl(u){
       if(!u) return '';
       let url = String(u).trim();
@@ -155,6 +91,65 @@
       if (g) return `https://drive.google.com/uc?export=view&id=${g[1]}`;
       return url;
     }
+    function keyFromUrl(u){ if(!u) return null; const last=(String(u).split('/').pop()||''); return last.replace(/\.[a-zA-Z0-9]+$/,''); }
+    function keyFromName(name){ return normalizaNome(name||'item'); }
+
+    function getSlug(){
+      const ds = document.body?.getAttribute('data-slug');
+      if (ds && ds.trim()) return ds.trim();
+      const u = new URL(location.href);
+      const q = u.searchParams.get('slug') || u.searchParams.get('c');
+      if (q && q.trim()) return q.trim();
+      const m = location.pathname.match(/catalogo-([^/.]+)(?:\.html)?$/);
+      if (m) return m[1];
+      if (location.hostname.includes('percival')) return 'percival-brics';
+      return '';
+    }
+    const SLUG_DEFAULT = 'percival-brics';
+    const slug = getSlug() || SLUG_DEFAULT;
+
+    /* ===== Base de mídia otimizada no Hosting ===== */
+    const MEDIA = { 'percival-brics':'/media/percival' };
+    const baseMedia = MEDIA[slug] || '/media/default';
+
+    function pickImages(d, base = baseMedia) {
+      const urlCard  = d.urlImagemCard || d.urlImagem || null;
+      const urlFull  = d.urlImagemFull || d.urlImagem || null;
+      const urlThumb = d.urlImagemThumb || null;
+
+      const key = d.codigoFoto?.toString().trim()
+            || keyFromUrl(urlCard || urlFull || urlThumb)
+            || keyFromName(d.nome || "");
+
+      const local = {
+        thumbWebp: `${base}/thumb/${key}-256.webp`,
+        thumbPng : `${base}/thumb/${key}-256.png`,
+        cardWebp : `${base}/card/${key}-640.webp`,
+        cardJpg  : `${base}/card/${key}-640.jpg`,
+        fullWebp : `${base}/full/${key}-1280.webp`,
+        fullJpg  : `${base}/full/${key}-1280.jpg`,
+      };
+
+      const card = urlCard ? normalizeImgUrl(urlCard) : (local.cardWebp || local.cardJpg);
+      const full = urlFull ? normalizeImgUrl(urlFull) : (local.fullWebp || local.fullJpg);
+      const thumb = urlThumb ? normalizeImgUrl(urlThumb) : (local.thumbWebp || local.thumbPng || card);
+
+      return {
+        cardWebp: card.endsWith('.webp') ? card : '',
+        cardJpg : card.endsWith('.webp') ? local.cardJpg : card,
+        fullWebp: full.endsWith('.webp') ? full : '',
+        fullJpg : full.endsWith('.webp') ? local.fullJpg : full,
+        thumb, ...local
+      };
+    }
+
+    /* ===== UI util ===== */
+    const PLACEHOLDER = 'data:image/svg+xml;utf8,' + encodeURIComponent(
+      `<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512">
+        <rect width="100%" height="100%" fill="#e6f6f4"/>
+        <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" fill="#7fb4ad" font-size="28" font-family="Arial">sem imagem</text>
+      </svg>`
+    );
     function waLink(phone, text){
       if(!phone) return null;
       let p = String(phone).replace(/\D/g,'');
@@ -163,88 +158,21 @@
       return `https://wa.me/${p}?text=${encodeURIComponent(text)}`;
     }
 
-    /* ======== MEDIA BASE POR CLIENTE ======== */
-    const MEDIA = { 'percival-brics':'/media/percival' };
-    const baseMedia = MEDIA[slug] || '/media/default';
+    /* ===== Estado/paginação ===== */
+    const PER_PAGE = 10; let itens=[], filtered=[]; let page=0;
+    const totalPages = ()=> Math.max(1, Math.ceil((filtered.length||itens.length)/PER_PAGE));
+    const clampPage=()=>{ page=Math.min(page,totalPages()-1); if(page<0) page=0; };
+    let MAX_FOTOS_ITEM=3;
 
-    /* Converte URL/Texto em chave de arquivo (sem extensão) */
-    function keyFromUrl(u){
-      if(!u) return null;
-      const last = String(u).split('/').pop() || '';
-      return last.replace(/\.[a-zA-Z0-9]+$/, ''); // remove extensão
-    }
-    function keyFromName(name){
-      return String(name||'item')
-        .toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'');
-    }
-
-    /* ======== PAGINAÇÃO/ESTADO ======== */
-    const PER_PAGE = 10;
-    let itens = [], filtered = [];
-    let page = 0;
-    function totalPages(){ return Math.max(1, Math.ceil((filtered.length||itens.length)/PER_PAGE)); }
-    function clampPage(){ page = Math.min(page, totalPages()-1); if (page<0) page=0; }
-    let MAX_FOTOS_ITEM = 3;
-    let ICON_WA = '', ICON_ML = '';
-
-    /* ======== BANNERS (inalterado) ======== */
-    let BANNER_SLIDES = []; let BANNER_IDX = 0; let BANNER_TIMER = null;
-    const mq = window.matchMedia('(max-width: 720px)'); let lastMode = mq.matches ? 'mobile' : 'desktop';
-    const val = v => (v ?? '').toString().trim();
-    const arr = (o,ks)=> ks.flatMap(k=> Array.isArray(o[k])?o[k] : (typeof o[k]==='string'&&o[k]? [o[k]]:[]));
-    function collectBannerUrlsByMode(cfg){
-      const isMob = mq.matches;
-      let urls = isMob
-        ? arr(cfg,['bannerMobileUrls','mobileBannerUrls','bannerMobileUrl','bannerMobile1Url','bannerMobile2Url','bannerMobile3Url'])
-        : arr(cfg,['bannerDesktopUrls','desktopBannerUrls','bannerDesktopUrl','bannerDesktop1Url','bannerDesktop2Url','bannerDesktop3Url']);
-      if (!urls.length) urls = arr(cfg,['bannerUrls','banners','bannerUrl','banner1Url','banner2Url','banner3Url','bannerUrl1','bannerUrl2','bannerUrl3']);
-      return [...new Set(urls.filter(Boolean))].slice(0,3);
-    }
-    function collectBannerLinksByMode(cfg){
-      const isMob = mq.matches;
-      let links = isMob
-        ? arr(cfg,['bannerMobileLinks','mobileBannerLinks','bannerMobileLink','bannerMobileLink1','bannerMobileLink2','bannerMobileLink3'])
-        : arr(cfg,['bannerDesktopLinks','desktopBannerLinks','bannerDesktopLink','bannerDesktopLink1','bannerDesktopLink2','bannerDesktopLink3']);
-      if (!links.length) links = arr(cfg,['bannerLinks','bannerLink','bannerLink1','bannerLink2','bannerLink3']);
-      const out = ['', '', '']; for (let i=0;i<3;i++) out[i] = (typeof links[i]==='string') ? links[i].trim() : ''; return out;
-    }
-    const effectiveFit = cfg => (mq.matches ? (cfg.bannerFitMobile||cfg.bannerfitMobile) : (cfg.bannerFitDesktop||cfg.bannerfitDesktop)) || cfg.bannerFit || 'cover';
-    const effectivePosition = cfg => val(mq.matches ? (cfg.bannerPositionMobile||cfg.bannerpositionMobile) : (cfg.bannerPositionDesktop||cfg.bannerpositionDesktop)) || val(cfg.bannerPosition) || 'center';
-    const effectiveMinHeight = cfg => { const px = Number(mq.matches ? cfg.bannerHeightMobile : cfg.bannerHeightDesktop); return Number.isFinite(px) ? Math.max(80, Math.min(800, px)) : null; };
-    function setupBanners(cfg){
-      const box = document.getElementById('bannerBox'); if (!box) return; box.innerHTML = '';
-      const urls = collectBannerUrlsByMode(cfg); const links = collectBannerLinksByMode(cfg); if (!urls.length) return;
-      box.style.setProperty('--banner-fit', effectiveFit(cfg)==='contain'?'contain':'cover');
-      box.style.setProperty('--banner-pos', effectivePosition(cfg)); const minH = effectiveMinHeight(cfg); box.style.minHeight = minH ? (minH+'px') : '';
-      BANNER_SLIDES = urls.map((u,i)=>{
-        const slide = document.createElement('div'); slide.className = 'slide'+(i===0?' active':'');
-        const low = u.toLowerCase(); const hasLink = (typeof links[i]==='string' && links[i].trim());
-        const wrap = hasLink ? Object.assign(document.createElement('a'),{href:links[i],target:'_blank',rel:'noopener','aria-label':'Ver mais'}) : null;
-        const node = (low.endsWith('.mp4')||low.endsWith('.webm')) ? (()=>{const v=document.createElement('video'); v.src=u; v.muted=true; v.playsInline=true; v.preload='none'; if(urls.length===1) v.autoplay=v.loop=true; return v;})()
-                                                                  : (()=>{const img=new Image(); img.src=u; img.alt='Banner'; img.loading='lazy'; return img;})();
-        if (wrap){ wrap.appendChild(node); slide.appendChild(wrap); } else { slide.appendChild(node); }
-        box.appendChild(slide); return slide;
-      });
-      const firstVid = BANNER_SLIDES[0].querySelector('video'); if (firstVid) firstVid.play().catch(()=>{});
-      if (BANNER_SLIDES.length>1){
-        const run=()=>{const cur=BANNER_SLIDES[BANNER_IDX], nxtIdx=(BANNER_IDX+1)%BANNER_SLIDES.length, nxt=BANNER_SLIDES[nxtIdx];
-          const cv=cur.querySelector('video'); if(cv){cv.pause();cv.currentTime=0;}
-          cur.classList.remove('active'); nxt.classList.add('active'); const nv=nxt.querySelector('video'); if(nv){nv.play().catch(()=>{});} BANNER_IDX=nxtIdx;};
-        const interval = Number(cfg.bannerIntervalMs)||7000; clearInterval(BANNER_TIMER); BANNER_TIMER=setInterval(run, interval);
-        document.addEventListener('visibilitychange',()=>{ if(document.hidden){clearInterval(BANNER_TIMER);BANNER_TIMER=null;} else if(!BANNER_TIMER){BANNER_TIMER=setInterval(run,interval);} });
-      }
-    }
-    function watchBannerMode(cfg){ mq.addEventListener('change',()=>{ const mode=mq.matches?'mobile':'desktop'; if(mode!==lastMode){ lastMode=mode; setupBanners(cfg); } }); }
-
-    /* ======== LIGHTBOX ======== */
+    /* ===== Lightbox ===== */
     const lbBg = document.getElementById('lbBg');
     const lbImg = document.getElementById('lbImg');
     const lbBtn = document.getElementById('lbClose');
     const lbPrevBtn = document.getElementById('lbPrev');
     const lbNextBtn = document.getElementById('lbNext');
     const lbCount = document.getElementById('lbCount');
-    let LB_GALLERY = []; let LB_IDX = 0;
-    function showLbImage(){ const src=LB_GALLERY[LB_IDX]||''; lbImg.src=src; if(lbCount) lbCount.textContent=`${LB_IDX+1} / ${LB_GALLERY.length}`; }
+    let LB_GALLERY = []; let LB_IDX=0;
+    function showLbImage(){ const src=LB_GALLERY[LB_IDX]||''; lbImg.src=src; lbCount.textContent=`${LB_IDX+1} / ${LB_GALLERY.length}`; }
     function openLightboxGallery(gal, idx=0){ if(!Array.isArray(gal)||!gal.length) return; LB_GALLERY=gal; LB_IDX=Math.max(0,Math.min(idx,gal.length-1)); lbBg.style.display='flex'; document.body.style.overflow='hidden'; showLbImage(); }
     function closeLightbox(){ lbBg.style.display='none'; lbImg.src=''; document.body.style.overflow=''; LB_GALLERY=[]; LB_IDX=0; }
     function lbPrev(){ if(LB_GALLERY.length>1){ LB_IDX=(LB_IDX-1+LB_GALLERY.length)%LB_GALLERY.length; showLbImage(); } }
@@ -254,67 +182,46 @@
     window.addEventListener('keydown', e=>{ if(lbBg.style.display==='flex'){ if(e.key==='Escape') closeLightbox(); if(e.key==='ArrowLeft') lbPrev(); if(e.key==='ArrowRight') lbNext(); }});
     let touchX=null; lbBg.addEventListener('touchstart',e=>{touchX=e.changedTouches[0].clientX;},{passive:true}); lbBg.addEventListener('touchend',e=>{ if(touchX==null) return; const dx=e.changedTouches[0].clientX-touchX; touchX=null; if(Math.abs(dx)>40){ dx<0?lbNext():lbPrev(); } },{passive:true});
 
-    /* ======== HEADER MINI LOGO ======== */
-    function applyHeaderLogo(cfg){
-      const qs = new URL(location.href).searchParams;
-      const pick = (...xs)=> xs.map(v=>(v??'').toString().trim()).find(Boolean);
-      const url = pick(qs.get('logo'), cfg.headerLogoUrl,cfg.logoHeaderUrl,cfg.logoUrl);
-      if (!url) return;
-      const img = document.getElementById('brandLogo');
-      Object.assign(img.style,{display:'inline-block',width:'32px',height:'32px',borderRadius:'9999px',objectFit:'contain',background:'#fff'});
-      img.alt = (cfg.nomeEmpresa || 'Logo'); img.decoding='async'; img.loading='eager'; img.referrerPolicy='no-referrer'; img.src = normalizeImgUrl(url);
-      img.onerror = ()=> img.remove();
-    }
-
-    /* ======== RENDER / PAGINAÇÃO (AGORA COM <picture> E SRCSET) ======== */
+    /* ===== Render ===== */
     function renderPage(){
       clampPage();
       const data = (filtered.length?filtered:itens);
-      const start = page * PER_PAGE;
+      const start = page*PER_PAGE;
       const slice = data.slice(start, start + PER_PAGE);
-      const gridEl = document.getElementById('grid'); const pageEls = document.querySelectorAll('.pageinfo');
+      const gridEl = document.getElementById('grid');
+      const pageEls = document.querySelectorAll('.pageinfo');
 
       if (!slice.length){
         gridEl.innerHTML = `<div class="warn" style="grid-column:1/-1">${ data.length? 'Nenhum item para a pesquisa.' : 'Ainda não há itens publicados neste catálogo.' }</div>`;
       } else {
         gridEl.innerHTML = slice.map(d=>{
           const galAttr = JSON.stringify(d.fotos).replace(/"/g,'&quot;');
-
-          // miniaturas (usam os FULLS porque abrem a lightbox nesses índices; mas visualmente baixas o navegador pega do cache do FULL escolhido ao abrir)
           const thumbsHtml = d.fotos.slice(0, MAX_FOTOS_ITEM).map((u,i)=>`<img src="${u}" alt="" data-idx="${i}" referrerpolicy="no-referrer" loading="lazy" decoding="async">`).join('');
-
-          const waSvg = `<svg viewBox="0 0 32 32" aria-hidden="true"><path fill="#fff" d="M19.1 17.1c-.3-.2-1.7-.8-2-.9-.3-.1-.5-.2-.7.2-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.2-1.1-.4-2-1.2-.7-.6-1.2-1.4-1.3-1.6-.1-.3 0-.4.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2.1-.4 0-.6-.1-.2-.7-1.7-.9-2.3-.2-.5-.5-.4-.7-.4h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.7 0 1.6 1.1 3.1 1.2 3.3.1.2 2.2 3.4 5.4 4.7.8.4 1.4.6 1.9.8.8.3 1.6.3 2.2.2.7-.1 2-.8 2.2-1.6.3-.8.3-1.5.2-1.6 0-.1-.2-.1-.4-.2zM16 3C9.9 3 5 7.9 5 14c0 2.4.8 4.6 2.1 6.3L6 29l8-1.9c1.5.4 3.1.7 4.7.7 6.1 0 11-4.9 11-11S22.1 3 16 3z"/></svg>`;
-          const mlSvg = `<svg viewBox="0 0 64 64" aria-hidden="true"><rect x="2" y="8" width="60" height="48" rx="24" fill="#002E6C" opacity=".0"/><path fill="#002E6C" d="M18 28c2-2 5-4 8-4s6 2 8 4c2 2 5 4 8 4s6-2 8-4l2 3c-2 2-6 5-10 5s-8-3-10-5c-2-2-5-4-8-4s-6 2-8 4-8 5-12 5l2-4c3 0 8-3 10-4Z"/></svg>`;
-          const waIcon = ICON_WA ? `<img src="${ICON_WA}" alt="WhatsApp" referrerpolicy="no-referrer">` : waSvg;
-          const mlIcon = ICON_ML ? `<img src="${ICON_ML}" alt="Mercado Livre" referrerpolicy="no-referrer">` : mlSvg;
-
           return `
           <article class="card">
             <div class="imgWrap" data-gal="${galAttr}">
               <picture>
                 <source type="image/webp"
-                        srcset="${d.img.cardWebp} 640w, ${d.img.fullWebp} 1280w"
+                        srcset="${d.img.cardWebp || d.img.fullWebp}"
                         sizes="(min-width: 860px) 25vw, 45vw">
                 <source type="image/jpeg"
-                        srcset="${d.img.cardJpg} 640w, ${d.img.fullJpg} 1280w"
+                        srcset="${d.img.cardJpg || d.img.fullJpg}"
                         sizes="(min-width: 860px) 25vw, 45vw">
                 <img loading="lazy" decoding="async" fetchpriority="low"
                      alt="${d.nome}" width="640" height="640"
                      src="${d.img.cardWebp || d.img.cardJpg || d.thumb}"
                      referrerpolicy="no-referrer"
-                     onerror="this.src='${PLACEHOLDER}'">
+                     onerror="this.onerror=null; this.src='${d.img.cardJpg || d.img.thumbPng || PLACEHOLDER}'">
               </picture>
             </div>
             <div class="info">
-              <div class="left">
-                <div class="nome">${d.nome}</div>
-                <div class="preco">${d.precoBRL}</div>
-                <div class="qtde">Estoque: ${d.qtd}</div>
-                ${thumbsHtml ? `<div class="thumbs" data-gal="${galAttr}">${thumbsHtml}</div>` : ``}
-                <div class="actions">
-                  ${d.zap ? `<a class="cta cta-wa" href="${d.zap}" target="_blank" rel="noopener">Whatsapp ${waIcon}</a>` : ``}
-                  ${d.mlUrl ? `<a class="cta cta-ml" href="${d.mlUrl}" target="_blank" rel="noopener">Comprar ${mlIcon}</a>` : ``}
-                </div>
+              <div class="nome">${d.nome}</div>
+              <div class="preco">${d.precoBRL}</div>
+              <div class="qtde">Estoque: ${d.qtd}</div>
+              ${thumbsHtml ? `<div class="thumbs" data-gal="${galAttr}">${thumbsHtml}</div>` : ``}
+              <div class="actions">
+                ${d.zap ? `<a class="cta cta-wa" href="${d.zap}" target="_blank" rel="noopener">Whatsapp</a>` : ``}
+                ${d.mlUrl ? `<a class="cta cta-ml" href="${d.mlUrl}" target="_blank" rel="noopener">Comprar</a>` : ``}
               </div>
             </div>
           </article>`;
@@ -324,7 +231,6 @@
       document.querySelectorAll('.btnPrev').forEach(b=> b.disabled = (page<=0));
       document.querySelectorAll('.btnNext').forEach(b=> b.disabled = (page>=totalPages()-1));
 
-      // Delegates para lightbox (uma vez é suficiente)
       document.addEventListener('click', e=>{
         const wrap = e.target.closest('.imgWrap'); if(wrap){ try{ const gal=JSON.parse(wrap.dataset.gal||'[]'); if(gal.length) openLightboxGallery(gal,0); return; }catch(_){} }
         const thumb = e.target.closest('.thumbs img'); if(thumb){ const cont=thumb.closest('.thumbs'); try{ const gal=JSON.parse(cont.dataset.gal||'[]'); const idx=parseInt(thumb.dataset.idx||'0',10); if(gal.length) openLightboxGallery(gal,idx);}catch(_){} }
@@ -334,7 +240,7 @@
     function goNext(){ if(page<totalPages()-1){ page++; renderPage(); window.scrollTo({top:0,behavior:'smooth'}); } }
     window.goPrev=goPrev; window.goNext=goNext;
 
-    /* ======== BOOT: lê config e itens, monta URLs otimizadas ======== */
+    /* ===== Boot ===== */
     async function carregar(){
       const avisos = document.getElementById('avisos');
       if(!slug){ avisos.innerHTML = `<div class="warn">Catálogo não encontrado. Informe o slug (?slug=percival-brics).</div>`; return; }
@@ -344,8 +250,14 @@
       if (!cfgSnap.exists()){ avisos.innerHTML = `<div class="warn">Catálogo não encontrado.</div>`; return; }
       const cfg = cfgSnap.data();
 
-      // header/logo/banners
-      applyHeaderLogo(cfg);
+      // mini logo no header
+      if (cfg.logoUrl){
+        const img=document.getElementById('brandLogo');
+        img.src = normalizeImgUrl(cfg.logoUrl);
+        img.style.display='inline-block';
+      }
+
+      // ring/logo grande
       if (cfg.logoUrl){
         const el=document.getElementById('logoImg'); el.src=normalizeImgUrl(cfg.logoUrl); el.style.display='block';
         const ring=document.getElementById('logoRing'); const n=Number(cfg.logoScale);
@@ -353,36 +265,30 @@
         if (typeof cfg.logoBg==='string' && cfg.logoBg.trim()) ring.style.background = cfg.logoBg.trim();
         if ((cfg.logoShape||'').toLowerCase()==='square'){ ring.style.borderRadius='18px'; el.style.borderRadius='12px'; }
       }
-      setupBanners(cfg); watchBannerMode(cfg);
-
-      ICON_WA = (cfg.iconWhatsUrl || '').toString().trim();
-      ICON_ML = (cfg.iconMLUrl   || '').toString().trim();
 
       const nome = cfg.nomeEmpresa || cfg.titulo || 'Percival-Brics';
       document.title = `Catálogo • ${nome}`;
       document.getElementById('empresaBar').textContent   = nome;
       document.getElementById('tituloEmpresa').textContent = nome;
 
-      // WhatsApp flutuante
+      // botão WA flutuante
       const whats = (cfg.whats || '').toString().trim();
       const waFab = document.getElementById('waFloat');
       if (whats){ const link = waLink(whats, `Olá! Tenho interesse no catálogo ${nome}.`); if(link){ waFab.href = link; waFab.style.display='flex'; } }
-      else { waFab.style.display='none'; }
 
-      // Limites
-      const limitePublico = Number.isFinite(cfg.limitePublico) ? cfg.limitePublico : null;
+      // limites
       if (Number.isFinite(cfg.maxFotosPorItem)) MAX_FOTOS_ITEM = Math.max(1, Math.min(3, cfg.maxFotosPorItem));
+      const limitePublico = Number.isFinite(cfg.limitePublico) ? cfg.limitePublico : null;
 
-      // Coleção de itens
+      // itens
       const qRef = query(collection(db, `catalogos/${slug}/itens`), orderBy('ordem','asc'), ...(limitePublico?[qLimit(limitePublico)]:[]));
       onSnapshot(qRef, snap=>{
         const arr = []; let idx=0;
         snap.forEach(docSnap=>{
           const d = docSnap.data()||{}; if (d.ativo===false) return; idx++;
-
           const nomeItem = d.nome || `Item ${idx}`;
 
-          // Preço
+          // preço BRL
           let precoBRL = '—';
           if (typeof d.precoCentavos==='number')      precoBRL = (d.precoCentavos/100).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
           else if (typeof d.preco==='number')         precoBRL = d.preco.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
@@ -390,30 +296,17 @@
 
           const qtd = (typeof d.quantidade==='number') ? d.quantidade : (typeof d.qtde==='number' ? d.qtde : '—');
 
-          // 1) Pega possíveis URLs originais (para fallback)
+          // originais (para fallback)
           let fotosOrig = [];
-          if (Array.isArray(d.imagens) && d.imagens.length) fotosOrig = d.imagens.filter(Boolean);
+          if (Array.isArray(d.imagens) && d.imagens.length) fotosOrig = d.imagens;
           else fotosOrig = [d.urlImagem, d.urlImagem2, d.urlImagem3].filter(Boolean);
           fotosOrig = fotosOrig.map(normalizeImgUrl);
 
-          // 2) Deriva uma "key" estável (ordem de preferência)
-          const key = d.codigoFoto
-            ? String(d.codigoFoto)
-            : (keyFromUrl(fotosOrig[0]) || keyFromName(nomeItem));
+          // finais (preferência Firestore; fallback Hosting)
+          const imgs = pickImages(d, baseMedia);
 
-          // 3) Monta os caminhos otimizados (WebP/JPG) no Hosting
-          const img = {
-            thumbWebp: `${baseMedia}/thumb/${key}-256.webp`,
-            thumbPng : `${baseMedia}/thumb/${key}-256.png`,
-            cardWebp : `${baseMedia}/card/${key}-640.webp`,
-            cardJpg  : `${baseMedia}/card/${key}-640.jpg`,
-            fullWebp : `${baseMedia}/full/${key}-1280.webp`,
-            fullJpg  : `${baseMedia}/full/${key}-1280.jpg`,
-          };
-
-          // 4) Galeria/lightbox: prioriza otimizadas; se faltar, cai pro original
-          const gal = [img.fullWebp, img.fullJpg, ...fotosOrig].filter(Boolean);
-          const thumb = img.cardWebp || img.cardJpg || img.thumbWebp || img.thumbPng || fotosOrig[0] || PLACEHOLDER;
+          // galeria
+          const gal = [imgs.fullWebp, imgs.fullJpg, ...fotosOrig].filter(Boolean);
 
           const msg = `Olá! Tenho interesse no *${nomeItem}* do catálogo ${nome}.`;
           const zap = waLink(d.whats || whats, msg);
@@ -423,8 +316,8 @@
             precoBRL,
             qtd,
             fotos: gal,
-            thumb,
-            img,
+            thumb: imgs.thumb,
+            img: imgs,
             zap,
             mlUrl: d.mlUrl || null
           });
@@ -456,7 +349,6 @@
     <section class="hero">
       <div class="logoRing" id="logoRing"><img id="logoImg" alt="Logo" src="" referrerpolicy="no-referrer" onerror="this.style.display='none'"></div>
       <h1 class="title" id="tituloEmpresa">Catálogo</h1>
-      <div class="banner" id="bannerBox"></div>
     </section>
 
     <div id="pagerTop" class="pager">
@@ -484,8 +376,6 @@
         <svg viewBox="0 0 24 24"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
       </button>
     </div>
-
-    <p class="muted">Imagens otimizadas para carregar rápido no celular. Toque numa imagem para ver a galeria. Use as setas do teclado, clique nas setas do popup ou faça swipe no celular. Clique no botão <b>Whatsapp</b> para falar com o vendedor. Se o item tiver link no Mercado Livre, o botão <b>Comprar</b> também aparece.</p>
   </main>
 
   <a id="waFloat" class="wa-float" href="#" target="_blank" rel="noopener" aria-label="WhatsApp">
