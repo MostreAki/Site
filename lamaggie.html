@@ -10,6 +10,70 @@
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
 
   <style>
+    /* ===== Topbar e Menu ===== */
+    html { scroll-behavior: smooth; }
+    section, footer { scroll-margin-top: 80px; } /* compensa o header fixo */
+
+    .topbar {
+      position: sticky; top: 0; z-index: 50;
+      backdrop-filter: blur(8px);
+      background: rgba(248,241,235,.7);
+      border-bottom: 1px solid rgba(92,62,66,.12);
+    }
+    .topbar-inner {
+      max-width: 920px; margin: 0 auto; padding: 10px 20px;
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    }
+    .brand {
+      display: flex; align-items: center; gap: 10px; font-weight: 900; color: var(--ink);
+    }
+    .brand img { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }
+
+    .nav {
+      display: flex; gap: 14px; align-items: center;
+    }
+    .nav a {
+      text-decoration: none; color: var(--ink); font-weight: 800;
+      padding: 8px 10px; border-radius: 10px;
+    }
+    .nav a:hover { background: rgba(255,255,255,.7); }
+
+    .burger {
+      appearance: none; border: 1px solid rgba(92,62,66,.18);
+      width: 40px; height: 40px; border-radius: 12px;
+      background: rgba(255,255,255,.85);
+      display: none; place-items: center; color: var(--rose-700);
+    }
+    .burger svg { width: 22px; height: 22px; }
+
+    @media (max-width: 860px) {
+      .nav { display: none; }
+      .burger { display: grid; }
+    }
+
+    /* Drawer mobile */
+    .drawer {
+      position: fixed; inset: 0 0 0 auto; width: 84vw; max-width: 360px;
+      background: #fff; box-shadow: -20px 0 60px rgba(0,0,0,.25);
+      transform: translateX(100%); transition: transform .2s ease; z-index: 60;
+      display: flex; flex-direction: column;
+    }
+    .drawer.open { transform: translateX(0); }
+    .drawer header {
+      padding: 16px; border-bottom: 1px solid #eee; display: flex; align-items: center; justify-content: space-between;
+    }
+    .drawer nav { padding: 10px 12px; display: grid; gap: 6px; }
+    .drawer a {
+      padding: 12px 14px; border-radius: 12px; text-decoration: none; color: var(--ink); font-weight: 800;
+      border: 1px solid rgba(92,62,66,.12); background: rgba(248,241,235,.5);
+    }
+    .drawer a:hover { background: rgba(248,241,235,.75); }
+
+    .backdrop {
+      position: fixed; inset: 0; background: rgba(0,0,0,.28); z-index: 55; display: none;
+    }
+    .backdrop.show { display: block; }
+
     :root {
       --bg-desktop: url('https://raw.githubusercontent.com/MostreAki/Site/main/assets/sites/lamaggie/bg-desktop.jpg');
       --bg-mobile: url('https://raw.githubusercontent.com/MostreAki/Site/main/assets/sites/lamaggie/bg-mobile.jpg');
@@ -134,10 +198,52 @@
   </style>
 </head>
 <body>
+  <header class="topbar" role="banner">
+    <div class="topbar-inner">
+      <a class="brand" href="#inicio">
+        <img src="" alt="" id="brand-mini">
+        <span>La Maggiê</span>
+      </a>
+
+      <nav class="nav" aria-label="Menu principal">
+        <a href="#inicio">Início</a>
+        <a href="#catalogo">Catálogo</a>
+        <a href="#videos">Vídeos</a>
+        <a href="#avaliacoes">Avaliações</a>
+        <a href="#contato">Contato</a>
+      </nav>
+
+      <button class="burger" id="btnMenu" aria-label="Abrir menu" aria-controls="menuDrawer" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="backdrop" id="backdrop" aria-hidden="true"></div>
+  <aside class="drawer" id="menuDrawer" aria-label="Menu lateral" aria-hidden="true">
+    <header>
+      <strong>Menu</strong>
+      <button class="burger" id="btnClose" aria-label="Fechar menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M6 6l12 12M18 6l-12 12"/>
+        </svg>
+      </button>
+    </header>
+    <nav>
+      <a href="#inicio">Início</a>
+      <a href="#catalogo">Catálogo</a>
+      <a href="#videos">Vídeos</a>
+      <a href="#avaliacoes">Avaliações</a>
+      <a href="#contato">Contato</a>
+    </nav>
+  </aside>
+
   <div class="overlay" aria-hidden="true"></div>
 
   <main class="wrap">
-    <section class="hero" aria-label="Apresentação">
+    <section class="hero" id="inicio" aria-label="Apresentação">
       <div class="logo">
         <img id="logo-img" src="" alt="Logotipo">
       </div>
@@ -156,7 +262,7 @@
       <p class="tagline" id="site-tagline">Artesanato</p>
       <p class="bio" id="site-bio">Bem-vindos ao Portal.</p>
     </section>
-    <section class="catalog-card" aria-label="Catálogo">
+    <section class="catalog-card" id="catalogo" aria-label="Catálogo">
       <h2 class="catalog-title">Catálogo</h2>
       <a class="catalog-link" id="catalog-link" href="/catalogo-lamaggie.html" aria-label="Abrir catálogo">
         <div class="catalog-cover">
@@ -165,7 +271,7 @@
         </div>
       </a>
     </section>
-    <section class="shorts-card" aria-label="Vídeos de Artesanato">
+    <section class="shorts-card" id="videos" aria-label="Vídeos de Artesanato">
       <div class="shorts-header">
         <h2 class="shorts-title">Vídeos de Artesanato</h2>
         <a class="shorts-more" id="shorts-more" href="videos.html" aria-label="Ver todos os shorts">Ver todos</a>
@@ -174,7 +280,7 @@
         <!-- Shorts serão preenchidos dinamicamente -->
       </div>
     </section>
-    <section class="card" aria-label="Redes oficiais">
+    <section class="card" id="redes" aria-label="Redes oficiais">
       <nav class="links">
         <a class="btn" id="btn-instagram" href="#" target="_blank" rel="noopener"><span class="icon" aria-hidden="true">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5Z" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.6"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor"/></svg>
@@ -187,13 +293,13 @@
         </span><span class="text">YouTube</span><span class="go" aria-hidden="true">➜</span></a>
       </nav>
     </section>
-    <section class="reviews-card" aria-label="Avaliações de clientes">
+    <section class="reviews-card" id="avaliacoes" aria-label="Avaliações de clientes">
       <h2 class="reviews-title">Avaliações dos clientes</h2>
       <div class="reviews" id="reviews">
         <!-- Avaliações serão preenchidas dinamicamente -->
       </div>
     </section>
-    <footer>©2025 Todos os direitos reservados | Feito com carinho pelo <a href="https://mostreaki.com" target="_blank" rel="noopener">MostreAki</a></footer>
+    <footer id="contato">©2025 Todos os direitos reservados | Feito com carinho pelo <a href="https://mostreaki.com" target="_blank" rel="noopener">MostreAki</a></footer>
   </main>
 
   <div id="diag" class="diag"></div>
@@ -343,6 +449,14 @@
           console.error("Erro ao carregar imagem do logo:", logoUrl);
           showDiag("Erro: Não foi possível carregar o logo. Verifique a URL.");
           img.src = PLACEHOLDER;
+        };
+      }
+      const brandMini = $("#brand-mini");
+      if (brandMini && logoUrl) {
+        brandMini.src = logoUrl;
+        brandMini.onerror = () => {
+          console.error("Erro ao carregar imagem do brand mini:", logoUrl);
+          brandMini.src = PLACEHOLDER;
         };
       }
 
@@ -520,6 +634,34 @@
       });
     }
 
+    // Integração do menu hamburger
+    function initMenu() {
+      const btnMenu = $("#btnMenu");
+      const btnClose = $("#btnClose");
+      const backdrop = $("#backdrop");
+      const drawer = $("#menuDrawer");
+
+      if (!btnMenu || !btnClose || !backdrop || !drawer) return;
+
+      const openMenu = () => {
+        drawer.classList.add("open");
+        backdrop.classList.add("show");
+        btnMenu.setAttribute("aria-expanded", "true");
+        drawer.setAttribute("aria-hidden", "false");
+      };
+
+      const closeMenu = () => {
+        drawer.classList.remove("open");
+        backdrop.classList.remove("show");
+        btnMenu.setAttribute("aria-expanded", "false");
+        drawer.setAttribute("aria-hidden", "true");
+      };
+
+      btnMenu.onclick = openMenu;
+      btnClose.onclick = closeMenu;
+      backdrop.onclick = closeMenu;
+    }
+
     (async function boot() {
       try {
         const { site, home } = await safeRead(slug);
@@ -531,11 +673,13 @@
         apply(site, home);
         const url = new URL(location.href);
         if (url.searchParams.get("usuario")) initAuthFlow();
+        initMenu();
       } catch (e) {
         console.error("Erro geral:", e);
         showDiag(e?.code === "permission-denied"
           ? "Erro: Leitura negada. Ajuste as regras do Firestore para leitura pública ou habilite autenticação anônima."
           : `Erro ao ler Firestore: ${e?.message || e}`);
+        initMenu(); // Inicializa menu mesmo em erro
       }
     })();
   </script>
