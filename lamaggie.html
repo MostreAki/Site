@@ -233,7 +233,7 @@
     </header>
     <nav>
       <a href="#inicio">Início</a>
-      <a href="#catalogo">Catálogo</a>
+      <a href="catalogo-lamaggie.html">Catálogo</a>
       <a href="#videos">Vídeos</a>
       <a href="#avaliacoes">Avaliações</a>
       <a href="#contato">Contato</a>
@@ -368,11 +368,19 @@
       }
     };
 
+    /* ✅ AJUSTE CRÍTICO — Slug correto no domínio */
     function getSlug() {
       const m = location.pathname.match(/([^/]+)\.html$/);
       if (m) return m[1];
+
       const u = new URL(location.href);
-      return u.searchParams.get('slug') || u.searchParams.get('c') || '';
+      let s = u.searchParams.get('slug') || u.searchParams.get('c') || '';
+
+      if (!s) {
+        const host = location.hostname;
+        if (host.includes('lamaggie')) s = 'lamaggie';
+      }
+      return s;
     }
     const slug = getSlug();
 
@@ -480,7 +488,8 @@
       if (s.youtube) { setIf($("#qi-youtube"), "href", s.youtube); setIf($("#btn-youtube"), "href", s.youtube); }
 
       const routes = page.routes || site.routes || [];
-      let catalogHref = `/catalogo-lamaggie.html`;
+      /* ✅ AJUSTE — link do catálogo sem .html */
+      let catalogHref = `/catalogo-lamaggie`;
       const cat = routes.find(r => r.path === "/catalogo");
       if (cat) catalogHref = (cat.type === "external" && cat.url) ? cat.url : (cat.path || catalogHref);
       setIf($("#catalog-link"), "href", catalogHref);
