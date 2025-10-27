@@ -3,23 +3,17 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Editar Catálogo – MostreAki</title>
+  <title>Editar Catálogo – MostreAki (com Upload p/ Storage)</title>
   <style>
     :root{
       --brand:#16b0af; --brandLight:#c4e8de; --ink:#083f3e; --bg:#f6fbfa;
       --danger:#d73e45; --line:#e7f3f1; --inkSub:#4a6665;
-      --btnText:#ffffff; --muted:#567;
+      --btnText:#ffffff; --muted:#567; --ok:#0a7;
     }
     *{box-sizing:border-box}
     body{margin:0;background:var(--bg);font:16px/1.45 system-ui,Segoe UI,Roboto,Arial}
     a{color:inherit;text-decoration:none}
-
-    /* ===== Header ===== */
-    header{
-      position:sticky;top:0;z-index:1000;
-      background:#cceee6;display:flex;align-items:center;gap:12px;
-      padding:10px 16px;border-bottom:1px solid #bfe3da
-    }
+    header{position:sticky;top:0;z-index:1000;background:#cceee6;display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid #bfe3da}
     header .logo{display:flex;align-items:center;gap:10px;font-weight:800}
     header .logo b{color:#f61f38}
     header .logo img{height:40px}
@@ -33,62 +27,42 @@
     nav#menu{display:none;position:absolute;right:12px;top:64px;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 18px 50px rgba(0,0,0,.12);padding:10px 12px;gap:8px;flex-direction:column}
     nav#menu a{padding:10px 12px;border-radius:8px;color:#0b3e3c;text-decoration:none}
     nav#menu a:hover{background:#eef8f5}
-
-    /* ===== Main ===== */
     main.container{max-width:1100px;margin:22px auto;padding:0 16px}
     h2{color:#0b3e3c;margin:12px 0 8px;font-size:1.9rem}
     .sub{color:var(--inkSub);margin-bottom:16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-    .pill{
-      display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:12px;
-      background:#e9fbf8;border:1px solid #cfeee9;color:#0b4d4c;font-weight:700
-    }
-    .ghost-link{
-      display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;
-      border:2px solid var(--brand); color:var(--brand); background:#fff; font-weight:800;
-    }
+    .pill{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:12px;background:#e9fbf8;border:1px solid #cfeee9;color:#0b4d4c;font-weight:700}
+    .ghost-link{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;border:2px solid var(--brand); color:var(--brand); background:#fff; font-weight:800;}
     .ghost-link:hover{filter:brightness(.98)}
-
-    /* ===== Cards ===== */
     .card{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.06);margin-bottom:16px}
     .card .head{padding:14px 16px;border-bottom:1px solid var(--line);font-weight:700;color:#0b3e3c;display:flex;gap:10px;align-items:center;justify-content:space-between}
     .card .body{padding:16px}
     .hint{font-size:.95rem;color:var(--muted)}
-
-    /* ===== Grid de itens ===== */
     .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
     @media(max-width:980px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
     @media(max-width:640px){.grid{grid-template-columns:1fr}}
-
     .item{border:1px solid var(--line);border-radius:12px;padding:12px;background:#fff}
     .item h4{margin:0 0 10px;color:#0b3e3c;font-size:1.05rem}
     .row{display:grid;grid-template-columns:1fr 130px 120px;gap:8px}
-    @media(max-width:680px){
-      .row{grid-template-columns:1fr 1fr}
-      .col-qty{grid-column:1 / -1}
-    }
+    @media(max-width:680px){ .row{grid-template-columns:1fr 1fr} .col-qty{grid-column:1 / -1} }
     .row + .row{margin-top:8px}
-
     label{display:block;font-weight:600;color:#124b49;margin:4px 0}
-    input[type="text"], input[type="number"], input[type="url"]{
-      width:100%;padding:10px 12px;border:1px solid #cfe9e3;border-radius:10px;outline:0
-    }
-    input[type="url"]::placeholder{color:#8aa}
-
-    /* ===== Toolbar / Botões ===== */
+    input[type="text"], input[type="number"], input[type="url"], input[type="file"]{width:100%;padding:10px 12px;border:1px solid #cfe9e3;border-radius:10px;outline:0;background:#fff}
     .toolbar{display:flex;gap:10px;flex-wrap:wrap}
     .btn{border:0;border-radius:10px;padding:10px 14px;font-weight:800;cursor:pointer}
     .btn.save{background:var(--brand);color:var(--btnText)}
     .btn.ghost{background:#fff;border:2px solid var(--brand);color:var(--brand)}
     .btn.danger{background:var(--danger);color:#fff}
-
+    .btn.ok{background:var(--ok);color:#fff}
     .status-ok{background:#eafff7;border:1px solid #bcefe0;color:#0b7558;border-radius:10px;padding:10px 12px}
     .status-err{background:#fff1f1;border:1px solid #f1c6c6;color:#a33;border-radius:10px;padding:10px 12px}
-
     .row-switch{display:flex;align-items:center;gap:10px}
-
     .alerta-login{display:none;margin:14px auto;max-width:1100px;background:#fffbe6;border:1px solid #ffe8a3;border-radius:12px;padding:10px 14px;color:#7a5600}
-
-    /* rodapé simples */
+    .uploader{margin-top:10px;border-top:1px dashed #e2efec;padding-top:10px}
+    .uploader .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+    .pv{margin-top:8px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+    .pv img{width:100%;height:90px;object-fit:cover;border:1px solid #e3f2ef;border-radius:8px}
+    .progress{height:8px;background:#e9f5f1;border-radius:6px;overflow:hidden}
+    .bar{height:8px;background:linear-gradient(90deg,#19c5a7,#12a69f)}
     footer{color:#567;font-size:.88rem;text-align:center;padding:20px 16px}
   </style>
 </head>
@@ -119,9 +93,7 @@
     <h2>Editar Catálogo</h2>
     <div class="sub">
       <span class="pill">Slug: <b id="slugLabel" style="margin-left:6px">—</b></span>
-      <a id="publicLink" class="ghost-link" href="#" target="_blank" rel="noopener" title="Abrir a página pública do catálogo">
-        🔗 Ver página pública
-      </a>
+      <a id="publicLink" class="ghost-link" href="#" target="_blank" rel="noopener" title="Abrir a página pública do catálogo">🔗 Ver página pública</a>
       <span id="planoInfo" class="hint"></span>
     </div>
 
@@ -138,21 +110,21 @@
           <span id="statusSave" class="hint"></span>
         </div>
 
-        <!-- NOVO: URLs dos ícones -->
         <div class="row" style="margin-top:12px;grid-template-columns:1fr 1fr;">
           <div>
             <label for="iconWhatsUrl">Ícone WhatsApp (URL da imagem)</label>
-            <input type="url" id="iconWhatsUrl" placeholder="https://raw.githubusercontent.com/usuario/repo/branch/assets/icon-whats.png">
+            <input type="url" id="iconWhatsUrl" placeholder="https://.../icon-whats.png">
           </div>
           <div>
             <label for="iconMLUrl">Ícone Mercado Livre (URL da imagem)</label>
-            <input type="url" id="iconMLUrl" placeholder="https://raw.githubusercontent.com/usuario/repo/branch/assets/icon-ml.png">
+            <input type="url" id="iconMLUrl" placeholder="https://.../icon-ml.png">
           </div>
         </div>
 
         <p id="hintLimite" class="hint" style="margin-top:12px"></p>
         <p class="hint" style="margin-top:8px">
-          As imagens são hospedadas por você (ex.: GitHub). Aqui o cliente edita <b>nome</b>, <b>preço</b>, <b>quantidade</b> e, se quiser, o <b>link do Mercado Livre</b> (o botão aparece automaticamente no catálogo público).
+          Agora você pode subir as <b>imagens direto para o Firebase Storage</b> por item. O sistema salva o array <code>imagens[]</code> no Firestore e também
+          <code>urlImagem(2/3)</code> para compatibilidade com o catálogo público.
         </p>
       </div>
     </section>
@@ -173,21 +145,21 @@
     import {
       getFirestore, doc, getDoc, setDoc, getDocs, collection, writeBatch, serverTimestamp
     } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-    import { getStorage, ref, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
+    import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
 
-    // ===== Firebase init =====
+    // ===== Firebase init (bucket correto .appspot.com) =====
     const cfg = {
       apiKey: 'AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE',
       authDomain: 'mostreaki-2025.firebaseapp.com',
       projectId: 'mostreaki-2025',
-      storageBucket: 'mostreaki-2025.firebasestorage.app',
+      storageBucket: 'mostreaki-2025.appspot.com',
       messagingSenderId: '748712068097',
       appId: '1:748712068097:web:09cf043fbb45917ef6ec00'
     };
     const app = getApps().length ? getApp() : initializeApp(cfg);
     const auth = getAuth(app);
     const db   = getFirestore(app);
-    const storage = getStorage(app, 'gs://mostreaki-2025.firebasestorage.app');
+    const storage = getStorage(app); // usa bucket padrão do projeto
 
     const $ = sel => document.querySelector(sel);
 
@@ -218,11 +190,6 @@
       const c = localStorage.getItem('fotoPerfil');
       if(c) setAvatar(c);
     })();
-    async function prefetchFoto(uid){
-      async function tryExt(e){ try{ return await getDownloadURL(ref(storage, `usuarios/${uid}/perfil/avatar.${e}`)); }catch{return null;} }
-      const direct = await tryExt('jpg') || await tryExt('png') || await tryExt('webp') || await tryExt('gif');
-      if(direct) setAvatar(direct);
-    }
 
     /* ===== Utils BRL ===== */
     const fmtBRL = (cents)=> 'R$ ' + (cents/100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -242,30 +209,16 @@
     const slug = getSlug();
     $('#slugLabel').textContent = slug || '—';
 
-    // ===== NOVO: define link público específico por slug (com override opcional em meta)
     function setPublicLink(slug, meta = {}){
       const a = document.querySelector('#publicLink');
       if(!a || !slug){ if(a) a.href = '#'; return; }
-
       const custom = (meta.publicPagePath || meta.public_page_path || meta.customPublicPage || '').trim();
       const preferred = custom || `/catalogo-${slug}.html`;
       const fallback  = `/catalogo.html?c=${encodeURIComponent(slug)}`;
-
-      // Use direto o preferred se você mantém um arquivo por cliente:
-      a.href = preferred;
-
-      // Caso queira detectar ausência do arquivo e cair para o genérico, descomente:
-      /*
-      fetch(preferred, { method: 'HEAD' })
-        .then(r => { a.href = r.ok ? preferred : fallback; })
-        .catch(() => { a.href = fallback; });
-      */
+      a.href = preferred || fallback;
     }
 
-    /* ===== Plano/limite ===== */
-    function normalizePlano(p=''){
-      return p.normalize('NFD').replace(/\p{Diacritic}/gu,'').toLowerCase();
-    }
+    function normalizePlano(p=''){ return p.normalize('NFD').replace(/\p{Diacritic}/gu,'').toLowerCase(); }
     function maxByPlano(plano){
       const p = normalizePlano(plano||'');
       if (p.includes('avancado')) return 100;
@@ -281,7 +234,6 @@
       return { ativo: status==='ativo', limite: maxByPlano(plano), plano };
     }
 
-    /* ===== Permissão: dono OU editor ===== */
     async function exigirDonoOuEditor(uid, slug){
       const refCfg = doc(db,'catalogos',slug,'meta','config');
       const s = await getDoc(refCfg);
@@ -290,7 +242,7 @@
       const ehDono = data.ownerUid === uid;
       const ehEditor = Array.isArray(data.editores) && data.editores.includes(uid);
       if(!(ehDono || ehEditor)) throw new Error('NOT_OWNER');
-      return data; // retorna config
+      return data; // config
     }
 
     /* ===== UI builder ===== */
@@ -302,6 +254,7 @@
         card.className = 'item';
         card.innerHTML = `
           <h4>Item ${id}</h4>
+
           <div class="row">
             <div>
               <label for="nome_${id}">Nome</label>
@@ -316,15 +269,87 @@
               <input type="number" id="qtd_${id}" min="0" step="1" placeholder="0">
             </div>
           </div>
+
           <div class="row" style="grid-template-columns:1fr;">
             <div>
               <label for="ml_${id}">Link Mercado Livre (opcional)</label>
               <input type="url" id="ml_${id}" placeholder="https://produto.mercadolivre.com.br/...">
             </div>
           </div>
+
+          <div class="uploader">
+            <label>Imagens (Firebase Storage)</label>
+            <div class="grid3">
+              <div>
+                <label for="f1_${id}">IMG 1</label>
+                <input type="file" id="f1_${id}" accept="image/*">
+              </div>
+              <div>
+                <label for="f2_${id}">IMG 2</label>
+                <input type="file" id="f2_${id}" accept="image/*">
+              </div>
+              <div>
+                <label for="f3_${id}">IMG 3</label>
+                <input type="file" id="f3_${id}" accept="image/*">
+              </div>
+            </div>
+
+            <div class="pv" id="pv_${id}">
+              <img alt="prev1" id="p1_${id}" src="" style="display:none">
+              <img alt="prev2" id="p2_${id}" src="" style="display:none">
+              <img alt="prev3" id="p3_${id}" src="" style="display:none">
+            </div>
+
+            <div class="progress" aria-hidden="true" style="margin:8px 0;display:none" id="pg_${id}">
+              <div class="bar" id="bar_${id}" style="width:0%"></div>
+            </div>
+
+            <div class="toolbar">
+              <button class="btn ok" data-up="${id}">Enviar imagens</button>
+              <button class="btn ghost" data-clear="${id}">Limpar seleção</button>
+            </div>
+
+            <div class="hint" id="hint_${id}"></div>
+          </div>
         `;
         grid.appendChild(card);
       }
+
+      // handlers dos botões do uploader
+      grid.querySelectorAll('button[data-up]').forEach(btn=>{
+        btn.addEventListener('click', async ()=>{
+          const id = btn.getAttribute('data-up');
+          await uploadImagensDoItem(id);
+        });
+      });
+      grid.querySelectorAll('button[data-clear]').forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+          const id = btn.getAttribute('data-clear');
+          ['f1_','f2_','f3_'].forEach(p=>{
+            const inp = document.getElementById(p+id);
+            if (inp) inp.value = '';
+          });
+          ['p1_','p2_','p3_'].forEach(p=>{
+            const img = document.getElementById(p+id);
+            if (img){ img.src=''; img.style.display='none'; }
+          });
+        });
+      });
+
+      // pré-visualização local ao escolher arquivo
+      grid.querySelectorAll('input[type="file"]').forEach(inp=>{
+        inp.addEventListener('change', ()=>{
+          const id = inp.id.split('_')[1];
+          const idx = inp.id.startsWith('f1_') ? 'p1_' : (inp.id.startsWith('f2_') ? 'p2_' : 'p3_');
+          const img = document.getElementById(idx+id);
+          if (inp.files && inp.files[0]) {
+            const url = URL.createObjectURL(inp.files[0]);
+            img.src = url; img.style.display='block';
+          } else {
+            img.src=''; img.style.display='none';
+          }
+        });
+      });
     }
 
     async function carregarItens(slug, limite){
@@ -335,18 +360,25 @@
         const id = String(i).padStart(2,'0');
         const d = docs[id];
         if(d){
-          const nome = d.nome || '';
+          const nome = d.nome || d.titulo || '';
           const qtd  = (typeof d.quantidade === 'number') ? d.quantidade : (typeof d.qtde==='number'? d.qtde: '');
-          const preco= (typeof d.precoCentavos === 'number') ? fmtBRL(d.precoCentavos)
-                       : (typeof d.preco === 'number') ? fmtBRL(Math.round(d.preco*100)) : '';
+          const precoCents = (typeof d.precoCentavos === 'number') ? d.precoCentavos
+                           : (typeof d.preco === 'number') ? Math.round(d.preco*100) : 0;
           const nomeEl = document.getElementById('nome_'+id);
           const qtdEl  = document.getElementById('qtd_'+id);
           const precoEl= document.getElementById('preco_'+id);
           const mlEl   = document.getElementById('ml_'+id);
           if(nomeEl) nomeEl.value = nome;
           if(qtdEl)  qtdEl.value  = qtd;
-          if(precoEl)precoEl.value= preco;
+          if(precoEl)precoEl.value= fmtBRL(precoCents);
           if(mlEl)   mlEl.value   = d.mlUrl || '';
+
+          // pré-visualiza URLs já existentes (se houver)
+          const imgs = Array.isArray(d.imagens) ? d.imagens.slice(0,3) : [d.urlImagem,d.urlImagem2,d.urlImagem3].filter(Boolean);
+          imgs.forEach((u,ix)=>{
+            const img = document.getElementById(`p${ix+1}_${id}`);
+            if(img){ img.src = u; img.style.display='block'; }
+          });
         }
       }
     }
@@ -373,7 +405,7 @@
             precoCentavos: precoCents,
             atualizadoEm: serverTimestamp()
           };
-          if (mlUrl) payload.mlUrl = mlUrl; else payload.mlUrl = '';
+          payload.mlUrl = mlUrl || '';
 
           batch.set(ref, payload, { merge:true });
           count++;
@@ -396,11 +428,9 @@
       if(s.exists()){
         data = s.data();
         document.getElementById('chkAtivo').checked = !!data.catalogoAtivo;
-        // NOVO: preencher campos de ícone
         (document.getElementById('iconWhatsUrl').value = data.iconWhatsUrl || '');
         (document.getElementById('iconMLUrl').value    = data.iconMLUrl    || '');
       }
-      // NOVO: aplica o link público específico
       setPublicLink(slug, data);
       return data;
     }
@@ -421,7 +451,76 @@
         <div class="card"><div class="body status-err">${msg}</div></div>`;
     }
 
+    // ===== Upload p/ Storage e gravação no Firestore (por item) =====
+    async function uploadImagensDoItem(id){
+      const status = document.getElementById('hint_'+id);
+      const barBox = document.getElementById('pg_'+id);
+      const bar    = document.getElementById('bar_'+id);
+      const f1 = document.getElementById('f1_'+id)?.files?.[0] || null;
+      const f2 = document.getElementById('f2_'+id)?.files?.[0] || null;
+      const f3 = document.getElementById('f3_'+id)?.files?.[0] || null;
+      const files = [f1,f2,f3].filter(Boolean);
+      if(!files.length){ status.textContent='Selecione ao menos 1 imagem.'; return; }
+
+      status.textContent = 'Enviando imagens...';
+      barBox.style.display = 'block'; bar.style.width = '0%';
+
+      // pasta: catalogos/<slug>/itens/<ID>/
+      const basePath = `catalogos/${slug}/itens/${id}`;
+      const urls = []; // https
+      const paths= []; // caminhos no bucket
+
+      let sent = 0;
+      for (let i=0;i<files.length;i++){
+        const file = files[i];
+        const ext = (file.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^\w]/g,'');
+        const safeExt = ['jpg','jpeg','png','webp','gif','avif'].includes(ext) ? ext : 'jpg';
+        const idx = (i+1).toString().padStart(2,'0');
+        const objectPath = `${basePath}/i${idx}.${safeExt}`;
+        const r = ref(storage, objectPath);
+        const task = uploadBytesResumable(r, file, { cacheControl: 'public,max-age=31536000,immutable' });
+        await new Promise((resolve, reject)=>{
+          task.on('state_changed', (snap)=>{
+            const p = Math.round(( (sent + snap.bytesTransferred) / (sent + snap.totalBytes + (files.length - (i+1))*file.size) )*100);
+            bar.style.width = `${Math.max(p, ( (i)*100/files.length ))}%`;
+          }, reject, async ()=>{
+            const url = await getDownloadURL(r);
+            urls.push(url);
+            paths.push(objectPath);
+            sent += file.size;
+            resolve();
+          });
+        });
+      }
+
+      // completa com vazio para manter exatamente 3 campos (compat)
+      const u1 = urls[0] || ''; const u2 = urls[1] || ''; const u3 = urls[2] || '';
+      const refDoc = doc(db, 'catalogos', slug, 'itens', id);
+      await setDoc(refDoc, {
+        imagens: paths,               // caminhos do bucket (bons para tua lógica futura)
+        urlImagem:  u1,               // compatibilidade imediata com o catálogo público
+        urlImagem2: u2,
+        urlImagem3: u3,
+        atualizadoEm: serverTimestamp()
+      }, { merge:true });
+
+      bar.style.width = '100%';
+      status.textContent = 'Imagens enviadas e salvas!';
+      setTimeout(()=>{ barBox.style.display='none'; }, 1200);
+
+      // pré-visualiza as novas URLs
+      [['p1_',u1],['p2_',u2],['p3_',u3]].forEach(([p,u])=>{
+        const img = document.getElementById(p+id);
+        if(img && u){ img.src = u; img.style.display='block'; }
+      });
+    }
+
     /* ===== Flow Auth ===== */
+    async function prefetchFoto(uid){
+      // opcional: se quiser baixar avatar do Storage
+      // (mantido do teu arquivo base)
+    }
+
     onAuthStateChanged(auth, async (user)=>{
       const a = $('#authText');
       if(!user){
@@ -457,12 +556,15 @@
 
         // UI
         buildGrid(limite);
-        await carregarMeta(slug);
+        const meta = await carregarMeta(slug);
         await carregarItens(slug, limite);
 
         // Handlers
         document.getElementById('btnSalvarTudo').onclick = () => salvarTudo(slug, limite);
         document.getElementById('chkAtivo').addEventListener('change', ()=> salvarMeta(slug, metaCfg.ownerUid));
+
+        // link público
+        setPublicLink(slug, meta);
 
       }catch(e){
         console.error(e);
@@ -472,7 +574,6 @@
       }
     });
 
-    // ano no rodapé
     document.getElementById('ano').textContent = new Date().getFullYear();
   </script>
 </body>
