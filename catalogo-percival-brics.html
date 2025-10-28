@@ -1,828 +1,526 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Catálogo • MostreAki</title>
-  <meta name="theme-color" content="#0f766e" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Editar Catálogo – MostreAki (Storage ≤ 400KB + Firestore)</title>
   <style>
     :root{
-      --teal-900:#134e4a; --teal-800:#115e59; --teal-700:#0f766e;
-      --teal-600:#0d9488; --teal-100:#ccfbf1;
-      --ink:#0b1324; --muted:#6b7280;
-      --bg:#061a22; --panel:#0a2537; --card:#ffffff;
-      --ring:rgba(13,148,136,.25); --brand:#16b0af;
-      --ok:#25D366;
-      --logo-size: 86%;
-      --banner-fit: cover;
-      --banner-pos: center;
-      --banner-min-h-mobile: 160px;
-      --banner-min-h-desktop: 220px;
+      --brand:#16b0af; --brandLight:#c4e8de; --ink:#083f3e; --bg:#f6fbfa;
+      --danger:#d73e45; --line:#e7f3f1; --inkSub:#4a6665; --btnText:#fff; --muted:#567; --ok:#0a7;
     }
     *{box-sizing:border-box}
-    html,body{margin:0;padding:0;background:linear-gradient(180deg,var(--teal-900),#0a2537 45%, #05202a);color:#ecfeff;font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Arial}
+    body{margin:0;background:var(--bg);font:16px/1.45 system-ui,Segoe UI,Roboto,Arial}
     a{color:inherit;text-decoration:none}
-
-    header{
-      position:sticky;top:0;z-index:50;
-      background:linear-gradient(90deg,var(--teal-900),var(--teal-700));
-      border-bottom:1px solid rgba(255,255,255,.08);
-    }
-    .bar{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:12px;padding:14px 16px}
-    .brandLogo{
-      width:28px;height:28px;border-radius:999px;object-fit:contain;
-      display:none;background:#fff;box-shadow:0 4px 14px rgba(0,0,0,.18);
-    }
-    .brand{font-weight:800;letter-spacing:.4px;font-size:1.1rem;white-space:nowrap}
-    .spacer{flex:1}
-
-    main{max-width:1100px;margin:0 auto;padding:28px 16px 90px}
-
-    .hero{display:flex;flex-direction:column;align-items:center;gap:18px;margin-top:6px}
-    .logoRing{
-      width:140px;height:140px;border-radius:999px;background:#fff;
-      display:grid;place-items:center;position:relative;box-shadow:0 12px 40px rgba(0,0,0,.35), inset 0 0 0 6px var(--ring)
-    }
-    .logoRing img{width:var(--logo-size);height:var(--logo-size);object-fit:contain;border-radius:999px}
-
-    /* Banner container (carrossel) */
-    .banner{
-      width:100%;max-width:980px;min-height:var(--banner-min-h-mobile);border-radius:18px;
-      background:linear-gradient(180deg,#e0f7f4,#c7f1ec);
-      box-shadow: 0 20px 60px rgba(0,0,0,.25);
-      overflow:hidden;
-      position:relative;
-    }
-    @media (min-width:860px){ .banner{ min-height:var(--banner-min-h-desktop); } }
-
-    /* ✅ Apenas o slide ativo recebe cliques */
-    .banner .slide{
-      position:absolute; inset:0;
-      opacity:0; transition:opacity .6s ease;
-      display:flex;
-      pointer-events:none;
-      z-index:1;
-    }
-    .banner .slide.active{
-      opacity:1;
-      pointer-events:auto;
-      z-index:2;
-    }
-    /* Link ocupa toda a área do slide */
-    .banner .slide a{
-      position:absolute; inset:0;
-      display:block; width:100%; height:100%;
-    }
-    /* Vídeo não captura clique; passa para o <a> */
-    .banner img,.banner video{
-      width:100%;height:100%;object-fit:var(--banner-fit);object-position:var(--banner-pos);display:block;
-      pointer-events:none;
-    }
-
-    h1.title{margin:0;margin-top:8px;font-size:clamp(1.35rem,2.2vw,1.9rem);font-weight:900;letter-spacing:.3px;text-shadow:0 2px 14px rgba(0,0,0,.35)}
-
-    .pager{margin-top:18px;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
-    .navbtn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;border:2px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#d1fae5;font-weight:800;cursor:pointer}
-    .navbtn[disabled]{opacity:.4;cursor:not-allowed}
-    .navbtn svg{width:18px;height:18px;fill:#d1fae5}
-    .pageinfo{font-weight:700;color:#b6e9e2}
-
-    .grid{margin-top:18px;display:grid;gap:16px;grid-template-columns:repeat(2,minmax(0,1fr))}
-    @media (min-width:860px){ .grid{grid-template-columns:repeat(4,minmax(0,1fr));} }
-
-    .card{background:linear-gradient(180deg,#fdfefe,#eef7f6);border:1px solid rgba(3,94,86,.12);border-radius:16px;overflow:hidden;box-shadow:0 12px 30px rgba(0,0,0,.18);transition:transform .15s ease, box-shadow .15s ease}
-    .card:hover{ transform:translateY(-2px); box-shadow:0 18px 44px rgba(0,0,0,.26); }
-    .imgWrap{aspect-ratio:1/1;background:#e6f6f4;display:grid;place-items:center;overflow:hidden;cursor:zoom-in}
-    .imgWrap img{width:100%;height:100%;object-fit:cover}
-
-    .info{display:grid;grid-template-columns: 1fr;row-gap:6px;align-items:start;padding:10px 12px 12px;}
-    .left{min-width:0}
-    .nome{font-weight:700;color:#0c2d2b;margin-bottom:2px;font-size:.98rem}
-    .preco{font-weight:800;color:#0c2d2b;font-size:1rem}
-    .qtde{color:#476f6c;font-size:.86rem;margin-top:2px}
-
-    .thumbs{display:flex; gap:8px; margin:8px 0 6px}
-    .thumbs img{width:40px; height:40px; object-fit:cover; border-radius:8px; opacity:.9; border:1px solid rgba(3,94,86,.22); cursor:pointer; transition:transform .12s ease, opacity .12s ease}
-    .thumbs img:hover{ opacity:1; transform:translateY(-1px) }
-
-    .actions{display:flex; flex-direction:column; gap:8px; margin-top:6px}
-    .cta{display:inline-flex; align-items:center; justify-content:flex-start; gap:10px; width:fit-content; padding:10px 14px; border:0; border-radius:12px; font-weight:800; cursor:pointer; box-shadow:0 10px 24px rgba(0,0,0,.12); text-shadow:0 1px 0 rgba(0,0,0,.06);}
-    .cta img{width:22px; height:22px; display:block}
-    .cta svg{width:22px; height:22px}
-    .cta-wa{background:var(--ok); color:#fff}
-    .cta-ml{background:#FFE600; color:#002E6C}
-    .cta:active{transform:translateY(1px)}
-
-    .zap,.mlbtn{display:none !important}
-
-    .wa-float{position:fixed; right:16px; bottom:16px; z-index:60; width:56px; height:56px; border-radius:999px; background:var(--ok); display:none; align-items:center; justify-content:center; box-shadow:0 12px 32px rgba(37,211,102,.35);}
-    .wa-float:active{ transform:scale(.97) }
-    .wa-float svg{ width:28px; height:28px; fill:#fff }
-    @media (min-width:860px){ .wa-float{ right:24px; bottom:24px; width:64px; height:64px } .wa-float svg{ width:30px; height:30px } }
-
-    .muted{margin:22px auto 0;max-width:780px;color:#b6e9e2;text-align:center;font-size:.95rem}
-    .warn{background:#fee2e2;color:#7f1d1d;border:1px solid #fecaca;padding:12px 14px;border-radius:12px;margin:18px auto;max-width:840px}
-    footer{color:#bbf7d0;font-size:.8rem;text-align:center;padding:32px 16px;border-top:1px solid rgba(255,255,255,.07)}
-
-    .lb-bg{position:fixed; inset:0; z-index:70; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,.7); backdrop-filter:saturate(120%) blur(2px); padding:16px}
-    .lb-card{position:relative; max-width:96vw; max-height:90vh; background:#031d24; border:1px solid rgba(255,255,255,.12); border-radius:16px; box-shadow:0 20px 80px rgba(0,0,0,.55); padding:10px}
-    .lb-img{display:block; max-width:92vw; max-height:82vh; width:auto; height:auto; object-fit:contain; border-radius:10px; background:#0a2a33}
-    .lb-close{position:absolute; top:8px; right:8px; border:0; width:36px; height:36px; border-radius:10px; background:rgba(255,255,255,.12); color:#e8ffff; cursor:pointer; font-size:22px; line-height:36px}
-    .lb-close:active{ transform:scale(.95) }
-    .lb-arrow{position:absolute; top:50%; transform:translateY(-50%); border:0; width:42px; height:42px; border-radius:999px; background:rgba(255,255,255,.16); color:#e8ffff; cursor:pointer; font-size:22px; line-height:42px}
-    .lb-prev{ left:8px } .lb-next{ right:8px }
-    .lb-arrow:active{ transform:translateY(-50%) scale(.96) }
-    .lb-count{position:absolute; bottom:10px; right:12px; background:rgba(0,0,0,.45); color:#e8ffff; font-size:.85rem; padding:6px 10px; border-radius:10px }
+    header{position:sticky;top:0;z-index:10;background:#cceee6;display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid #bfe3da}
+    header .logo{display:flex;align-items:center;gap:10px;font-weight:800}
+    header .logo b{color:#f61f38}
+    header .logo img{height:40px}
+    .user-wrap{margin-left:auto;display:flex;align-items:center;gap:10px}
+    .user-circle{width:42px;height:42px;border-radius:50%;overflow:hidden;display:none;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.15);background:#0b3e3c;color:#fff;font-weight:800;display:none;align-items:center;justify-content:center}
+    .menu-icon{width:36px;height:26px;position:relative;display:flex;align-items:center;justify-content:center;cursor:pointer}
+    .menu-icon span{position:absolute;width:24px;height:3px;background:#1b1b1b;border-radius:3px}
+    .menu-icon span:nth-child(1){top:2px}
+    .menu-icon span:nth-child(2){top:11px}
+    .menu-icon span:nth-child(3){bottom:2px}
+    nav#menu{display:none;position:absolute;right:12px;top:64px;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 18px 50px rgba(0,0,0,.12);padding:10px 12px;gap:8px;flex-direction:column}
+    nav#menu a{padding:10px 12px;border-radius:8px;color:#0b3e3c}
+    nav#menu a:hover{background:#eef8f5}
+    main.container{max-width:1100px;margin:22px auto;padding:0 16px}
+    h2{color:#0b3e3c;margin:12px 0 8px;font-size:1.9rem}
+    .sub{color:var(--inkSub);margin-bottom:16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .pill{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:12px;background:#e9fbf8;border:1px solid #cfeee9;color:#0b4d4c;font-weight:700}
+    .ghost-link{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;border:2px solid var(--brand); color:var(--brand); background:#fff; font-weight:800;}
+    .card{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.06);margin-bottom:16px}
+    .card .head{padding:14px 16px;border-bottom:1px solid var(--line);font-weight:700;color:#0b3e3c;display:flex;gap:10px;align-items:center;justify-content:space-between}
+    .card .body{padding:16px}
+    .hint{font-size:.95rem;color:var(--muted)}
+    .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+    @media(max-width:980px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:640px){.grid{grid-template-columns:1fr}}
+    .item{border:1px solid var(--line);border-radius:12px;padding:12px;background:#fff}
+    .item h4{margin:0 0 10px;color:#0b3e3c;font-size:1.05rem}
+    .row{display:grid;grid-template-columns:1fr 130px 120px;gap:8px}
+    @media(max-width:680px){ .row{grid-template-columns:1fr 1fr} .col-qty{grid-column:1 / -1} }
+    .row + .row{margin-top:8px}
+    label{display:block;font-weight:600;color:#124b49;margin:4px 0}
+    input[type="text"], input[type="number"], input[type="url"], input[type="file"]{width:100%;padding:10px 12px;border:1px solid #cfe9e3;border-radius:10px;background:#fff}
+    .toolbar{display:flex;gap:10px;flex-wrap:wrap}
+    .btn{border:0;border-radius:10px;padding:10px 14px;font-weight:800;cursor:pointer}
+    .btn.save{background:var(--brand);color:var(--btnText)}
+    .btn.ghost{background:#fff;border:2px solid var(--brand);color:var(--brand)}
+    .btn.ok{background:var(--ok);color:#fff}
+    .status-ok{background:#eafff7;border:1px solid #bcefe0;color:#0b7558;border-radius:10px;padding:10px 12px}
+    .status-err{background:#fff1f1;border:1px solid #f1c6c6;color:#a33;border-radius:10px;padding:10px 12px}
+    .row-switch{display:flex;align-items:center;gap:10px}
+    .uploader{margin-top:10px;border-top:1px dashed #e2efec;padding-top:10px}
+    .uploader .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+    .pv{margin-top:8px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+    .pv-wrap { position: relative; }
+    .pv img{width:100%;height:90px;object-fit:cover;border:1px solid #e3f2ef;border-radius:8px}
+    .progress{height:8px;background:#e9f5f1;border-radius:6px;overflow:hidden}
+    .bar{height:8px;background:linear-gradient(90deg,#19c5a7,#12a69f)}
+    footer{color:#567;font-size:.88rem;text-align:center;padding:20px 16px}
+    .btn.auth{min-width:92px;text-align:center}
   </style>
-
-  <!-- Firebase (modular) -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
-    import { getFirestore, doc, getDoc, collection, query, orderBy, onSnapshot, limit as qLimit } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
-      authDomain: "mostreaki-2025.firebaseapp.com",
-      projectId: "mostreaki-2025",
-      storageBucket: "mostreaki-2025.firebasestorage.app",
-      messagingSenderId: "748712068097",
-      appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
-    };
-    const app = initializeApp(firebaseConfig);
-    const db  = getFirestore(app);
-
-    function getSlug() {
-      const m = location.pathname.match(/catalogo-([^/.]+)\.html$/);
-      if (m) return m[1];
-      const u = new URL(location.href);
-      return u.searchParams.get('c') || u.searchParams.get('slug') || '';
-    }
-    const slug = getSlug();
-
-    const PLACEHOLDER = 'data:image/svg+xml;utf8,' + encodeURIComponent(
-      `<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512">
-        <rect width="100%" height="100%" fill="#e6f6f4"/>
-        <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" fill="#7fb4ad" font-size="28" font-family="Arial">sem imagem</text>
-      </svg>`
-    );
-
-    function waLink(phone, text) {
-      if(!phone) return null;
-      let p = String(phone).replace(/\D/g,'');
-      if (p.startsWith('0')) p = p.slice(1);
-      if (p.length <= 11 && !p.startsWith('55')) p = '55' + p;
-      return `https://wa.me/${p}?text=${encodeURIComponent(text)}`;
-    }
-
-    const PER_PAGE = 10;
-    let itens = [];
-    let page = 0;
-
-    function totalPages(){ return Math.max(1, Math.ceil(itens.length / PER_PAGE)); }
-    function clampPage(){ page = Math.min(page, totalPages()-1); if(page<0) page=0; }
-
-    let MAX_FOTOS_ITEM = 3;
-
-    // Ícones externos via config (se definidos)
-    let ICON_WA = '';
-    let ICON_ML = '';
-
-    /* ===================== CARROSSEL DE BANNERS (MOBILE vs DESKTOP) ===================== */
-    let BANNER_SLIDES = [];
-    let BANNER_IDX = 0;
-    let BANNER_TIMER = null;
-    const mq = window.matchMedia('(max-width: 720px)');
-    let lastMode = mq.matches ? 'mobile' : 'desktop';
-
-    const norm = v => (v ?? '').toString().trim();
-
-    function arrayFromAliases(obj, keys){
-      const out = [];
-      for (const k of keys){
-        const v = obj[k];
-        if (Array.isArray(v)) out.push(...v);
-        else if (typeof v === 'string' && v) out.push(v);
-      }
-      return out;
-    }
-
-    function collectBannerUrlsByMode(cfg){
-      const isMob = mq.matches;
-
-      // 1) Tenta específicos por dispositivo
-      const mobileList = arrayFromAliases(cfg, [
-        'bannerMobileUrls','mobileBannerUrls',
-        'bannerMobileUrl','bannerMobile1Url','bannerMobile2Url','bannerMobile3Url',
-        'mobileBannerUrl','mobileBanner1Url','mobileBanner2Url','mobileBanner3Url'
-      ]);
-      const desktopList = arrayFromAliases(cfg, [
-        'bannerDesktopUrls','desktopBannerUrls',
-        'bannerDesktopUrl','bannerDesktop1Url','bannerDesktop2Url','bannerDesktop3Url'
-      ]);
-
-      let urls = isMob ? mobileList : desktopList;
-
-      // 2) Fallback para os genéricos já existentes
-      if (!urls.length){
-        urls = arrayFromAliases(cfg, [
-          'bannerUrls','banners',
-          'bannerUrl','banner1Url','banner2Url','banner3Url','bannerUrl1','bannerUrl2','bannerUrl3'
-        ]);
-      }
-      urls = [...new Set(urls.filter(Boolean))].slice(0,3);
-      return urls;
-    }
-
-    /* Links por modo + fallback — preservando índices (sem filtrar) */
-    function collectBannerLinksByMode(cfg){
-      const isMob = mq.matches;
-
-      const mobileLinks = arrayFromAliases(cfg, [
-        'bannerMobileLinks','mobileBannerLinks',
-        'bannerMobileLink','bannerMobileLink1','bannerMobileLink2','bannerMobileLink3',
-        'mobileBannerLink','mobileBannerLink1','mobileBannerLink2','mobileBannerLink3'
-      ]);
-
-      const desktopLinks = arrayFromAliases(cfg, [
-        'bannerDesktopLinks','desktopBannerLinks',
-        'bannerDesktopLink','bannerDesktopLink1','bannerDesktopLink2','bannerDesktopLink3'
-      ]);
-
-      let links = isMob ? mobileLinks : desktopLinks;
-
-      if (!links.length){
-        links = arrayFromAliases(cfg, [
-          'bannerLinks',
-          'bannerLink','bannerLink1','bannerLink2','bannerLink3'
-        ]);
-      }
-
-      // ✅ Mantém 3 posições, mesmo se a primeira estiver vazia
-      const out = ['', '', ''];
-      for (let i = 0; i < 3; i++){
-        const v = links[i];
-        out[i] = (typeof v === 'string') ? v.trim() : '';
-      }
-      return out;
-    }
-
-    function effectiveFit(cfg){
-      const isMob = mq.matches;
-      const v = isMob ? (cfg.bannerFitMobile || cfg.bannerfitMobile)
-                      : (cfg.bannerFitDesktop || cfg.bannerfitDesktop);
-      return (v || cfg.bannerFit || 'cover') === 'contain' ? 'contain' : 'cover';
-    }
-    function effectivePosition(cfg){
-      const isMob = mq.matches;
-      return norm(isMob ? (cfg.bannerPositionMobile || cfg.bannerpositionMobile)
-                        : (cfg.bannerPositionDesktop || cfg.bannerpositionDesktop))
-             || norm(cfg.bannerPosition) || 'center';
-    }
-    function effectiveMinHeight(cfg){
-      const isMob = mq.matches;
-      const px = Number(isMob ? cfg.bannerHeightMobile : cfg.bannerHeightDesktop);
-      return Number.isFinite(px) ? Math.max(80, Math.min(800, px)) : null;
-    }
-
-    function setupBanners(cfg){
-      const box = document.getElementById('bannerBox');
-      if (!box) return;
-      box.innerHTML = '';
-
-      const urls  = collectBannerUrlsByMode(cfg);
-      const links = collectBannerLinksByMode(cfg);
-      if (!urls.length) return;
-
-      // Ajustes visuais por modo
-      box.style.setProperty('--banner-fit', effectiveFit(cfg));
-      box.style.setProperty('--banner-pos', effectivePosition(cfg));
-      const minH = effectiveMinHeight(cfg);
-      if (minH) box.style.minHeight = minH + 'px'; else box.style.minHeight = '';
-
-      BANNER_SLIDES = urls.map((u, i) => {
-        const slide = document.createElement('div');
-        slide.className = 'slide' + (i===0 ? ' active' : '');
-
-        const low = u.toLowerCase();
-        const hasLink = (typeof links[i] === 'string' && links[i].trim().length > 0);
-        const wrap = hasLink ? Object.assign(document.createElement('a'), { href: links[i], target: '_blank', rel: 'noopener', 'aria-label': 'Ver mais' }) : null;
-
-        const node = (low.endsWith('.mp4') || low.endsWith('.webm'))
-          ? (()=>{ const v = document.createElement('video'); v.src = u; v.muted = true; v.playsInline = true; v.preload = 'none'; if (urls.length === 1) v.autoplay = v.loop = true; return v; })()
-          : (()=>{ const img = new Image(); img.src = u; img.alt = 'Banner'; img.loading = 'lazy'; return img; })();
-
-        if (wrap) { wrap.appendChild(node); slide.appendChild(wrap); }
-        else { slide.appendChild(node); }
-
-        box.appendChild(slide);
-        return slide;
-      });
-
-      // inicia o 1º vídeo
-      const firstVid = BANNER_SLIDES[0].querySelector('video');
-      if (firstVid) firstVid.play().catch(()=>{});
-
-      if (BANNER_SLIDES.length > 1){
-        const interval = Number(cfg.bannerIntervalMs) || 7000;
-        clearInterval(BANNER_TIMER);
-        BANNER_TIMER = setInterval(()=>{
-          const cur = BANNER_SLIDES[BANNER_IDX];
-          const nxtIdx = (BANNER_IDX + 1) % BANNER_SLIDES.length;
-          const nxt = BANNER_SLIDES[nxtIdx];
-
-          const curVid = cur.querySelector('video');
-          if (curVid){ curVid.pause(); curVid.currentTime = 0; }
-
-          cur.classList.remove('active');
-          nxt.classList.add('active');
-
-          const nxtVid = nxt.querySelector('video');
-          if (nxtVid){ nxtVid.play().catch(()=>{}); }
-
-          BANNER_IDX = nxtIdx;
-        }, interval);
-
-        document.addEventListener('visibilitychange', ()=>{
-          if (document.hidden){ clearInterval(BANNER_TIMER); BANNER_TIMER = null; }
-          else if (!BANNER_TIMER){
-            const interval = Number(cfg.bannerIntervalMs) || 7000;
-            BANNER_TIMER = setInterval(()=>{ 
-              const cur = BANNER_SLIDES[BANNER_IDX];
-              const nxtIdx = (BANNER_IDX + 1) % BANNER_SLIDES.length;
-              const nxt = BANNER_SLIDES[nxtIdx];
-              const curVid = cur.querySelector('video'); if (curVid){ curVid.pause(); curVid.currentTime = 0; }
-              cur.classList.remove('active'); nxt.classList.add('active');
-              const nxtVid = nxt.querySelector('video'); if (nxtVid){ nxtVid.play().catch(()=>{}); }
-              BANNER_IDX = nxtIdx;
-            }, interval);
-          }
-        });
-      }
-    }
-
-    // Reconstrói banners se mudar de modo (mobile/desktop)
-    function watchBannerMode(cfg){
-      mq.addEventListener('change', ()=>{
-        const mode = mq.matches ? 'mobile' : 'desktop';
-        if (mode !== lastMode){
-          lastMode = mode;
-          setupBanners(cfg);
-        }
-      });
-    }
-
-    // Adiciona suporte a swipe no carrossel de banners
-    function setupBannerSwipe() {
-      const bannerBox = document.getElementById('bannerBox');
-      if (!bannerBox || BANNER_SLIDES.length <= 1) return; // Sem swipe se houver 0 ou 1 banner
-
-      let touchX = null;
-
-      bannerBox.addEventListener('touchstart', e => {
-        touchX = e.changedTouches[0].clientX;
-        // Pausa o temporizador durante o toque
-        if (BANNER_TIMER) {
-          clearInterval(BANNER_TIMER);
-          BANNER_TIMER = null;
-        }
-      }, { passive: true });
-
-      bannerBox.addEventListener('touchend', e => {
-        if (touchX == null) return;
-        const dx = e.changedTouches[0].clientX - touchX;
-        touchX = null;
-
-        if (Math.abs(dx) > 40) { // Limite mínimo de deslocamento
-          const cur = BANNER_SLIDES[BANNER_IDX];
-          const curVid = cur.querySelector('video');
-          if (curVid) { curVid.pause(); curVid.currentTime = 0; }
-
-          if (dx < 0) { // Swipe para esquerda (próximo)
-            BANNER_IDX = (BANNER_IDX + 1) % BANNER_SLIDES.length;
-          } else { // Swipe para direita (anterior)
-            BANNER_IDX = (BANNER_IDX - 1 + BANNER_SLIDES.length) % BANNER_SLIDES.length;
-          }
-
-          cur.classList.remove('active');
-          const nxt = BANNER_SLIDES[BANNER_IDX];
-          nxt.classList.add('active');
-
-          const nxtVid = nxt.querySelector('video');
-          if (nxtVid) { nxtVid.play().catch(() => {}); }
-
-          // Reinicia o temporizador após o swipe
-          const interval = Number(cfg.bannerIntervalMs) || 7000;
-          BANNER_TIMER = setInterval(() => {
-            const cur = BANNER_SLIDES[BANNER_IDX];
-            const nxtIdx = (BANNER_IDX + 1) % BANNER_SLIDES.length;
-            const nxt = BANNER_SLIDES[nxtIdx];
-            const curVid = cur.querySelector('video');
-            if (curVid) { curVid.pause(); curVid.currentTime = 0; }
-            cur.classList.remove('active');
-            nxt.classList.add('active');
-            const nxtVid = nxt.querySelector('video');
-            if (nxtVid) { nxtVid.play().catch(() => {}); }
-            BANNER_IDX = nxtIdx;
-          }, interval);
-        }
-      }, { passive: true });
-    }
-
-    function renderPage(){
-      clampPage();
-      const start = page * PER_PAGE;
-      const slice = itens.slice(start, start + PER_PAGE);
-
-      const gridEl = document.getElementById('grid');
-      if(!gridEl){ return; }
-
-      if(slice.length === 0){
-        gridEl.innerHTML = `<div class="warn" style="grid-column:1/-1">Ainda não há itens publicados neste catálogo.</div>`;
-      } else {
-        gridEl.innerHTML = slice.map(d => {
-          const galAttr = JSON.stringify(d.fotos).replace(/"/g,'&quot;');
-          const thumbs  = d.fotos.slice(0, MAX_FOTOS_ITEM)
-            .map((u,i)=>`<img src="${u}" alt="" data-idx="${i}">`).join('');
-
-          const waSvg = `<svg viewBox="0 0 32 32" aria-hidden="true"><path fill="#fff" d="M19.1 17.1c-.3-.2-1.7-.8-2-.9-.3-.1-.5-.2-.7.2-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.2-1.1-.4-2-1.2-.7-.6-1.2-1.4-1.3-1.6-.1-.3 0-.4.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2.1-.4 0-.6-.1-.2-.7-1.7-.9-2.3-.2-.5-.5-.4-.7-.4h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.7 0 1.6 1.1 3.1 1.2 3.3.1.2 2.2 3.4 5.4 4.7.8.4 1.4.6 1.9.8.8.3 1.6.3 2.2.2.7-.1 2-.8 2.2-1.6.3-.8.3-1.5.2-1.6 0-.1-.2-.1-.4-.2zM16 3C9.9 3 5 7.9 5 14c0 2.4.8 4.6 2.1 6.3L6 29l8-1.9c1.5.4 3.1.7 4.7.7 6.1 0 11-4.9 11-11S22.1 3 16 3z"/></svg>`;
-          const mlSvg = `<svg viewBox="0 0 64 64" aria-hidden="true"><rect x="2" y="8" width="60" height="48" rx="24" fill="#002E6C" opacity=".0"/><path fill="#002E6C" d="M18 28c2-2 5-4 8-4s6 2 8 4c2 2 5 4 8 4s6-2 8-4l2 3c-2 2-6 5-10 5s-8-3-10-5c-2-2-5-4-8-4s-6 2-8 4-8 5-12 5l2-4c3 0 8-3 10-4Z"/></svg>`;
-
-          const waIcon = ICON_WA ? `<img src="${ICON_WA}" alt="WhatsApp">` : waSvg;
-          const mlIcon = ICON_ML ? `<img src="${ICON_ML}" alt="Mercado Livre">` : mlSvg;
-
-          return `
-          <article class="card">
-            <div class="imgWrap" data-gal="${galAttr}">
-              <img loading="lazy" alt="${d.nome}" src="${d.thumb}" onerror="this.src='${PLACEHOLDER}'">
-            </div>
-            <div class="info">
-              <div class="left">
-                <div class="nome">${d.nome}</div>
-                <div class="preco">${d.precoBRL}</div>
-                <div class="qtde">Estoque: ${d.qtd}</div>
-
-                ${thumbs ? `<div class="thumbs" data-gal="${galAttr}">${thumbs}</div>` : ``}
-
-                <div class="actions">
-                  ${d.zap ? `<a class="cta cta-wa" href="${d.zap}" target="_blank" rel="noopener">Whatsapp ${waIcon}</a>` : ``}
-                  ${d.mlUrl ? `<a class="cta cta-ml" href="${d.mlUrl}" target="_blank" rel="noopener">Comprar ${mlIcon}</a>` : ``}
-                </div>
-              </div>
-              ${d.zap ? `<button class="zap" aria-label="WhatsApp" onclick="window.open('${d.zap}','_blank')"></button>` : ``}
-              ${d.mlUrl ? `<button class="mlbtn" aria-label="Mercado Livre" onclick="window.open('${d.mlUrl}','_blank')"></button>` : ``}
-            </div>
-          </article>`;
-        }).join('');
-      }
-
-      document.querySelectorAll('.pageinfo').forEach(el=>{
-        el.textContent = `Página ${Math.min(page+1,totalPages())} de ${totalPages()}`;
-      });
-      document.querySelectorAll('.btnPrev').forEach(b=> b.disabled = (page<=0));
-      document.querySelectorAll('.btnNext').forEach(b=> b.disabled = (page>=totalPages()-1));
-    }
-
-    function goPrev(){ if(page>0){ page--; renderPage(); window.scrollTo({top:0,behavior:'smooth'}); } }
-    function goNext(){ if(page < totalPages()-1){ page++; renderPage(); window.scrollTo({top:0,behavior:'smooth'}); } }
-    window.goPrev = goPrev;
-    window.goNext = goNext;
-
-    /* ================= Lightbox ================= */
-    const lbBg   = document.getElementById('lbBg');
-    const lbImg  = document.getElementById('lbImg');
-    const lbBtn  = document.getElementById('lbClose');
-    const lbPrevBtn = document.getElementById('lbPrev');
-    const lbNextBtn = document.getElementById('lbNext');
-    const lbCount   = document.getElementById('lbCount');
-
-    let LB_GALLERY = [];
-    let LB_IDX = 0;
-
-    function showLbImage(){
-      const src = LB_GALLERY[LB_IDX] || '';
-      lbImg.src = src;
-      if (lbCount) lbCount.textContent = `${LB_IDX+1} / ${LB_GALLERY.length}`;
-    }
-    function openLightboxGallery(gal, idx=0){
-      if(!Array.isArray(gal) || gal.length===0) return;
-      LB_GALLERY = gal; LB_IDX = Math.max(0, Math.min(idx, gal.length-1));
-      lbBg.style.display = 'flex';
-      document.body.style.overflow = 'hidden';
-      showLbImage();
-    }
-    function closeLightbox(){
-      lbBg.style.display = 'none';
-      lbImg.src = '';
-      document.body.style.overflow = '';
-      LB_GALLERY = []; LB_IDX = 0;
-    }
-    function lbPrev(){ if(LB_GALLERY.length>1){ LB_IDX = (LB_IDX - 1 + LB_GALLERY.length) % LB_GALLERY.length; showLbImage(); } }
-    function lbNext(){ if(LB_GALLERY.length>1){ LB_IDX = (LB_IDX + 1) % LB_GALLERY.length; showLbImage(); } }
-
-    lbBtn.addEventListener('click', closeLightbox);
-    lbBg.addEventListener('click', (e)=>{ if(e.target === lbBg) closeLightbox(); });
-    window.addEventListener('keydown', (e)=>{
-      if (lbBg.style.display === 'flex') {
-        if (e.key === 'Escape') closeLightbox();
-        if (e.key === 'ArrowLeft') lbPrev();
-        if (e.key === 'ArrowRight') lbNext();
-      }
-    });
-    if (lbPrevBtn) lbPrevBtn.addEventListener('click', lbPrev);
-    if (lbNextBtn) lbNextBtn.addEventListener('click', lbNext);
-
-    let touchX = null;
-    lbBg.addEventListener('touchstart', e => { touchX = e.changedTouches[0].clientX; }, {passive:true});
-    lbBg.addEventListener('touchend', e => {
-      if (touchX == null) return;
-      const dx = e.changedTouches[0].clientX - touchX;
-      touchX = null;
-      if (Math.abs(dx) > 40) { dx < 0 ? lbNext() : lbPrev(); }
-    }, {passive:true});
-
-    document.addEventListener('click', (e)=>{
-      const wrap = e.target.closest('.imgWrap');
-      if (wrap){
-        try {
-          const gal = JSON.parse(wrap.dataset.gal || '[]');
-          if (gal.length) openLightboxGallery(gal, 0);
-          return;
-        } catch(_) {}
-      }
-      const thumb = e.target.closest('.thumbs img');
-      if (thumb){
-        const cont = thumb.closest('.thumbs');
-        try {
-          const gal = JSON.parse(cont.dataset.gal || '[]');
-          const idx = parseInt(thumb.dataset.idx || '0', 10);
-          if (gal.length) openLightboxGallery(gal, idx);
-        } catch(_) {}
-      }
-    });
-
-    /* ================= Header logo (pequena) ================= */
-    function applyHeaderLogo(cfg) {
-      const qs = new URL(location.href).searchParams;
-      const val = v => (v ?? '').toString().trim();
-      const pick = (...xs) => xs.map(val).find(Boolean);
-
-      const url = pick(
-        qs.get('logo'),
-        cfg.headerLogoUrl, cfg.headerlogoUrl, cfg.header_logo_url, cfg.headerLogoURL, cfg.logoHeaderUrl, cfg.logoUrl
-      );
-      if (!url) return;
-
-      const shape = (pick(qs.get('shape'), cfg.headerLogoShape, cfg.headerlogoShape, cfg.logoHeaderShape, cfg.logoShape) || 'circle').toLowerCase();
-      let size = Number(pick(qs.get('size'), cfg.headerLogoSize, cfg.headerlogoSize, cfg.logoHeaderSize));
-      if (!Number.isFinite(size)) size = 32;
-      size = Math.max(20, Math.min(96, size));
-
-      let img = document.getElementById('brandLogo');
-      if (!img) {
-        const bar = document.querySelector('header .bar') || document.querySelector('header');
-        img = document.createElement('img');
-        img.id = 'brandLogo';
-        img.className = 'brandLogo';
-        if (bar) bar.insertBefore(img, bar.firstChild);
-      }
-
-      Object.assign(img.style, {
-        display: 'inline-block',
-        width:  size + 'px',
-        height: size + 'px',
-        borderRadius: (shape === 'square') ? '8px' : '9999px',
-        objectFit: 'contain',
-        background: '#fff'
-      });
-      img.alt = (cfg.nomeEmpresa || 'Logo');
-      img.decoding = 'async';
-      img.loading  = 'eager';
-      img.referrerPolicy = 'no-referrer';
-      img.src = url;
-
-      img.onerror = () => { img.remove(); };
-    }
-
-    async function carregar(){
-      const avisos = document.getElementById('avisos');
-
-      if(!slug){
-        avisos.innerHTML = `<div class="warn">Catálogo não encontrado. Informe o slug (?c=slug).</div>`;
-        return;
-      }
-
-      const cfgRef = doc(db, `catalogos/${slug}/meta/config`);
-      const cfgSnap = await getDoc(cfgRef);
-      if (!cfgSnap.exists()){
-        avisos.innerHTML = `<div class="warn">Catálogo não encontrado.</div>`;
-        return;
-      }
-      const cfg = cfgSnap.data();
-
-      applyHeaderLogo(cfg);
-
-      ICON_WA = (cfg.iconWhatsUrl || '').trim();
-      ICON_ML = (cfg.iconMLUrl  || '').trim();
-
-      const nome = cfg.nomeEmpresa || cfg.titulo || slug;
-      document.title = `Catálogo • ${nome}`;
-      document.getElementById('empresaBar').textContent = nome;
-      document.getElementById('tituloEmpresa').textContent = nome;
-
-      if (cfg.logoUrl){
-        const el = document.getElementById('logoImg');
-        el.src = cfg.logoUrl; el.style.display = 'block';
-        const ring = document.getElementById('logoRing');
-        const n = Number(cfg.logoScale);
-        if (Number.isFinite(n) && n>20 && n<=100){ ring.style.setProperty('--logo-size', n + '%'); }
-        if (typeof cfg.logoBg === 'string' && cfg.logoBg.trim()){ ring.style.background = cfg.logoBg.trim(); }
-        if (cfg.logoShape === 'square'){ ring.style.borderRadius = '18px'; el.style.borderRadius = '12px'; }
-      }
-
-      /* ==== Banners: agora separados por dispositivo + links ==== */
-      setupBanners(cfg);
-      watchBannerMode(cfg);
-      setupBannerSwipe();
-
-      if (cfg.catalogoAtivo !== true){
-        avisos.innerHTML = `<div class="warn">Este catálogo está desativado no momento.</div>`;
-        return;
-      } else {
-        avisos.innerHTML = '';
-      }
-
-      const whats = (cfg.whats || '').toString().trim();
-      const waFab = document.getElementById('waFloat');
-      if (whats) {
-        const msg = `Olá! Tenho interesse no catálogo ${nome}.`;
-        const link = waLink(whats, msg);
-        if (link) { waFab.href = link; waFab.style.display = 'flex'; }
-      } else {
-        waFab.style.display = 'none';
-      }
-
-      const limitePublico = Number.isFinite(cfg.limitePublico) ? cfg.limitePublico : null;
-      if (Number.isFinite(cfg.maxFotosPorItem)) {
-        MAX_FOTOS_ITEM = Math.max(1, Math.min(3, cfg.maxFotosPorItem));
-      }
-
-      const q = query(
-        collection(db, `catalogos/${slug}/itens`),
-        orderBy('ordem','asc'),
-        ...(limitePublico ? [qLimit(limitePublico)] : [])
-      );
-
-      onSnapshot(q, snap=>{
-        const arr = [];
-        let idx = 0;
-        snap.forEach(docSnap=>{
-          const d = docSnap.data(); if (d.ativo === false) return;
-          idx++;
-          const nomeItem = d.nome || `Item ${idx}`;
-
-          let precoBRL = '—';
-          if (typeof d.precoCentavos === 'number') {
-            precoBRL = (d.precoCentavos/100).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-          } else if (typeof d.preco === 'number') {
-            precoBRL = d.preco.toLocaleString('pt-BR',{style:'currency','currency':'BRL'});
-          } else if (typeof d.preco === 'string') {
-            const n = Number(d.preco.replace(',','.')); if (Number.isFinite(n)) precoBRL = n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-          }
-
-          const qtd = (typeof d.quantidade === 'number') ? d.quantidade
-                    : (typeof d.qtde === 'number') ? d.qtde : '—';
-
-// helper: aceita só URLs http(s)
-const httpOnly = arr => Array.isArray(arr)
-  ? arr.filter(u => typeof u === 'string' && /^https?:\/\//i.test(u))
-  : [];
-
-// ===== Compat de imagens (prioriza campos soltos; arrays só se precisar) =====
-let fotos = [
-  d.imagem, d.imagem2, d.imagem3,
-  d.urlImagem, d.urlImagem2, d.urlImagem3
-].filter(u => typeof u === 'string' && /^https?:\/\//i.test(u));
-
-if (!fotos.length) {
-  if (Array.isArray(d.imagens) && d.imagens.length) {
-    fotos = httpOnly(d.imagens);
-  } else if (Array.isArray(d.imagensFull) && d.imagensFull.length) {
-    fotos = httpOnly(d.imagensFull);
-  }
-}
-
-// placeholder se nada encontrado
-const gal   = fotos.length ? fotos : [PLACEHOLDER];
-const thumb = gal[0];
-
-          const msg = `Olá! Tenho interesse no *${nomeItem}* do catálogo ${nome}.`;
-          const zap = waLink(d.whats || whats, msg);
-
-          arr.push({
-            nome: nomeItem,
-            precoBRL,
-            qtd,
-            fotos: gal.length?gal:[PLACEHOLDER],
-            thumb,
-            zap,
-            mlUrl: d.mlUrl || null
-          });
-        });
-
-        itens = arr;
-        clampPage();
-        renderPage();
-      });
-
-      window.addEventListener('keydown', (ev)=>{
-        if (ev.key === 'ArrowRight') goNext();
-        else if (ev.key === 'ArrowLeft') goPrev();
-      });
-    }
-
-    (function insertAvisos(){
-      const avisos = document.createElement('div');
-      avisos.id = 'avisos';
-      const anchor = document.getElementById('pagerTop');
-      if (anchor && anchor.parentNode) anchor.parentNode.insertBefore(avisos, anchor);
-    })();
-
-    carregar();
-  </script>
 </head>
 <body>
   <header>
-    <div class="bar">
-      <img id="brandLogo" class="brandLogo" alt="Logo">
-      <div class="brand" id="empresaBar">MostreAki</div>
-      <div class="spacer"></div>
+    <div class="logo"><img src="/logomarca-mostreaki.svg" alt="Logo"> <b>MostreAki</b></div>
+    <div class="user-wrap">
+      <div id="userCircle" class="user-circle" title="Usuário"></div>
+      <a id="authBtn" href="#" class="btn ghost auth">Entrar</a>
+      <div id="menuBtn" class="menu-icon" aria-label="Abrir menu" role="button" tabindex="0">
+        <span></span><span></span><span></span>
+      </div>
+      <nav id="menu">
+        <a href="/index.html">Página Inicial</a>
+        <a href="/sobre.html">Sobre</a>
+        <a href="/parceiros.html">Parceiros</a>
+        <a href="/servicos-adicionais.html">Serviços Adicionais</a>
+        <a href="/redes-sociais.html">Redes Sociais</a>
+        <a href="/contatos.html">Contatos</a>
+        <a href="/minha-conta.html">Minha Conta</a>
+      </nav>
     </div>
   </header>
 
-  <main>
-    <section class="hero">
-      <div class="logoRing" id="logoRing">
-        <img id="logoImg" alt="Logo" src="" onerror="this.style.display='none'">
-      </div>
-      <h1 class="title" id="tituloEmpresa">Catálogo</h1>
+  <main class="container">
+    <h2>Editar Catálogo</h2>
+    <div class="sub">
+      <span class="pill">Slug: <b id="slugLabel" style="margin-left:6px">—</b></span>
+      <a id="publicLink" class="ghost-link" href="#" target="_blank" rel="noopener" title="Abrir a página pública do catálogo">🔗 Ver página pública</a>
+      <span id="planoInfo" class="hint"></span>
+    </div>
 
-      <!-- Banner/carrossel -->
-      <div class="banner" id="bannerBox"></div>
+    <section class="card">
+      <div class="head">
+        <div>Configurações</div>
+        <div class="toolbar">
+          <button id="btnSalvarTudo" class="btn save">Salvar tudo</button>
+        </div>
+      </div>
+      <div class="body">
+        <div class="row-switch">
+          <label><input id="chkAtivo" type="checkbox"> Catálogo ativo</label>
+          <span id="statusSave" class="hint"></span>
+        </div>
+        <p id="hintLimite" class="hint" style="margin-top:12px"></p>
+        <p class="hint" style="margin-top:8px">
+          Suba as <b>imagens direto para o Storage (≤ 400 KB)</b>. Após o upload, salvamos <code>urlImagem(2/3)</code> no Firestore
+          e também <code>imagens[]</code> com os caminhos do bucket.
+        </p>
+      </div>
     </section>
 
-    <!-- Pager Top -->
-    <div id="pagerTop" class="pager">
-      <button class="navbtn btnPrev" onclick="goPrev()" aria-label="Anterior">
-        <svg viewBox="0 0 24 24"><path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
-        Anterior
-      </button>
-      <span class="pageinfo">Página 1 de 1</span>
-      <button class="navbtn btnNext" onclick="goNext()" aria-label="Próximo">
-        Próximo
-        <svg viewBox="0 0 24 24"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
-      </button>
-    </div>
-
-    <section class="grid" id="grid"></section>
-
-    <!-- Pager Bottom -->
-    <div class="pager" style="margin-top:16px">
-      <button class="navbtn btnPrev" onclick="goPrev()" aria-label="Anterior">
-        <svg viewBox="0 0 24 24"><path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
-        Anterior
-      </button>
-      <span class="pageinfo">Página 1 de 1</span>
-      <button class="navbtn btnNext" onclick="goNext()" aria-label="Próximo">
-        Próximo
-        <svg viewBox="0 0 24 24"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
-      </button>
-    </div>
-
-    <p class="muted">
-      Toque numa imagem para ver a galeria. Use as setas do teclado, clique nas setas do popup ou faça swipe no celular. Clique no botão <b>Whatsapp</b> para falar com o vendedor. Se o item tiver link no Mercado Livre, o botão <b>Comprar</b> também aparece.
-    </p>
+    <section class="card">
+      <div class="head">Itens do Catálogo</div>
+      <div class="body">
+        <div id="grid" class="grid"></div>
+      </div>
+    </section>
   </main>
 
-  <!-- FAB WhatsApp -->
-  <a id="waFloat" class="wa-float" href="#" target="_blank" rel="noopener" aria-label="WhatsApp">
-    <svg viewBox="0 0 32 32" role="img" aria-hidden="true"><path d="M19.1 17.1c-.3-.2-1.7-.8-2-.9-.3-.1-.5-.2-.7.2-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.2-1.1-.4-2-1.2-.7-.6-1.2-1.4-1.3-1.6-.1-.3 0-.4.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2.1-.4 0-.6-.1-.2-.7-1.7-.9-2.3-.2-.5-.5-.4-.7-.4h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.7 0 1.6 1.1 3.1 1.2 3.3.1.2 2.2 3.4 5.4 4.7.8.4 1.4.6 1.9.8.8.3 1.6.3 2.2.2.7-.1 2-.8 2.2-1.6.3-.8.3-1.5.2-1.6 0-.1-.2-.1-.4-.2zM16 3C9.9 3 5 7.9 5 14c0 2.4.8 4.6 2.1 6.3L6 29l8-1.9c1.5.4 3.1.7 4.7.7 6.1 0 11-4.9 11-11S22.1 3 16 3z"/></svg>
-  </a>
+  <footer>© <span id="ano"></span> MostreAki</footer>
 
-  <!-- Lightbox -->
-  <div id="lbBg" class="lb-bg" role="dialog" aria-modal="true" aria-label="Imagem ampliada" style="display:none">
-    <div class="lb-card">
-      <button id="lbClose" class="lb-close" aria-label="Fechar">×</button>
-      <button id="lbPrev" class="lb-arrow lb-prev" aria-label="Imagem anterior">‹</button>
-      <button id="lbNext" class="lb-arrow lb-next" aria-label="Próxima imagem">›</button>
-      <img id="lbImg" class="lb-img" alt="">
-      <div id="lbCount" class="lb-count">1 / 1</div>
-    </div>
-  </div>
+  <!-- Firebase v10.14 -->
+  <script type="module">
+    import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+    import { 
+      getAuth, onAuthStateChanged, signOut, signInAnonymously,
+      setPersistence, browserLocalPersistence 
+    } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+    import { 
+      getFirestore, doc, getDoc, setDoc, getDocs, collection, writeBatch, serverTimestamp,
+      updateDoc, deleteField
+    } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+    import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-storage.js";
 
-  <footer>© <span id="ano"></span> MostreAki · Catálogo</footer>
-  <script>document.getElementById('ano').textContent = new Date().getFullYear();</script>
+    // ========= Firebase config =========
+    const cfg = {
+      apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
+      authDomain: "mostreaki-2025.firebaseapp.com",
+      projectId: "mostreaki-2025",
+      storageBucket: "mostreaki-2025.firebasestorage.app", // *** manter .app como você usa ***
+      messagingSenderId: "748712068097",
+      appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
+    };
+    const app = getApps().length ? getApp() : initializeApp(cfg);
+    const auth = getAuth(app);
+    const db   = getFirestore(app);
+    const st   = getStorage(app); // bucket resolve via storageBucket acima
+
+    // Persistência local para manter logado após refresh
+    await setPersistence(auth, browserLocalPersistence);
+
+    const $ = s => document.querySelector(s);
+    document.getElementById('ano').textContent = new Date().getFullYear();
+
+    // Menu
+    (()=>{ const btn=$('#menuBtn'),menu=$('#menu'); if(!btn||!menu) return;
+      const open=()=>{menu.style.display='flex';document.addEventListener('click',onDoc,true);document.addEventListener('keydown',onKey);}
+      const close=()=>{menu.style.display='none';document.removeEventListener('click',onDoc,true);document.removeEventListener('keydown',onKey);}
+      const toggle=()=> menu.style.display==='flex'?close():open();
+      function onDoc(e){ if(!menu.contains(e.target)&&e.target!==btn) close(); }
+      function onKey(e){ if(e.key==='Escape') close(); }
+      btn.addEventListener('click',e=>{e.stopPropagation();toggle();});
+    })();
+
+    // BRL helpers
+    const fmtBRL = c => 'R$ ' + (c/100).toLocaleString('pt-BR',{minimumFractionDigits:2});
+    const parseBRL = s => { const n=parseFloat(String(s).replace(/[^\d,.-]/g,'').replace(/\./g,'').replace(',','.')); return isNaN(n)?0:Math.round(n*100); };
+
+    // Slug
+    function getSlug(){ const u=new URL(location.href); return u.searchParams.get('c') || u.searchParams.get('slug') || ''; }
+    const slug = getSlug(); $('#slugLabel').textContent = slug || '—';
+    function setPublicLink(slug, meta={}){ const a=$('#publicLink'); if(!a||!slug){ if(a) a.href='#'; return; }
+      const custom=(meta.publicPagePath||meta.public_page_path||meta.customPublicPage||'').trim();
+      a.href = custom || `/catalogo-${slug}.html`; }
+
+    // Limite por plano (igual tua lógica)
+    function normalizePlano(p=''){ return p.normalize('NFD').replace(/\p{Diacritic}/gu,'').toLowerCase(); }
+    function maxByPlano(plano){ const p=normalizePlano(plano||''); if(p.includes('avancado'))return 100; if(p.includes('intermedi')||p.includes('essencial'))return 60; return 30; }
+    async function resolveLimiteAssinatura(ownerUid){
+      const s = await getDoc(doc(db,'assinaturas',ownerUid));
+      if(!s.exists()) return { ativo:false, limite:30, plano:'sem-plano' };
+      const d=s.data(); const status=String(d.status||'').toLowerCase(); const plano=d.plano||d.planoAtual?.nome||'basico';
+      return { ativo: status==='ativo', limite: maxByPlano(plano), plano };
+    }
+
+    async function exigirDonoOuEditor(uid, slug){
+      const refCfg = doc(db,'catalogos',slug,'meta','config');
+      const s = await getDoc(refCfg);
+      if(!s.exists()) throw new Error('CONFIG_NOT_FOUND');
+      const data = s.data();
+      const ehDono = data.ownerUid === uid;
+      const ehEditor = Array.isArray(data.editores) && data.editores.includes(uid);
+      if(!(ehDono || ehEditor)) throw new Error('NOT_OWNER');
+      return data;
+    }
+
+    // Avatar simples
+    function renderUserCircle(user){
+      const el = $('#userCircle'); const btn=$('#authBtn');
+      const show = ()=> el.style.display='flex';
+      if(!user){ el.style.display='none'; btn.textContent='Entrar'; btn.onclick=(e)=>{e.preventDefault(); /* redirecione para seu login */}; return; }
+      btn.textContent='Sair'; btn.onclick=async (e)=>{e.preventDefault(); await signOut(auth);};
+      const url = user.photoURL;
+      el.title = user.displayName || user.email || user.uid;
+      el.innerHTML = '';
+      if(url){ const img=new Image(); img.src=url; img.alt='User'; img.style.width='100%'; img.style.height='100%'; img.style.objectFit='cover'; el.appendChild(img); show(); return; }
+      // iniciais
+      const name = (user.displayName || user.email || 'U').trim();
+      const initials = name.split('@')[0].split(/\s+/).slice(0,2).map(s=>s[0]?.toUpperCase()||'U').join('');
+      el.textContent = initials; show();
+    }
+
+    // Compressão até 400 KB
+    async function compressToJPEG(file, maxBytes=400*1024, maxW=1400, maxH=1400){
+      const img = new Image(); img.src = URL.createObjectURL(file); await img.decode();
+      const r = Math.min(maxW/img.width, maxH/img.height, 1), w=Math.round(img.width*r), h=Math.round(img.height*r);
+      const canvas = Object.assign(document.createElement('canvas'), { width:w, height:h });
+      const ctx = canvas.getContext('2d'); ctx.drawImage(img,0,0,w,h);
+      let q=0.9, step=0.08, out;
+      for(let i=0;i<10;i++){ out = await new Promise(res=>canvas.toBlob(res,'image/jpeg',q)); if(out.size<=maxBytes || q<=0.4) break; q-=step; step=Math.max(0.03,step*0.75); }
+      return new File([out], file.name.replace(/\.\w+$/i,'.jpg'), { type:'image/jpeg' });
+    }
+
+    // Monta UI
+    function buildGrid(limite){
+      const grid = $('#grid'); grid.innerHTML='';
+      for(let i=1;i<=limite;i++){
+        const id = String(i).padStart(2,'0');
+        grid.insertAdjacentHTML('beforeend', `
+          <div class="item">
+            <h4>Item ${id}</h4>
+            <div class="row">
+              <div>
+                <label for="nome_${id}">Nome</label>
+                <input type="text" id="nome_${id}" placeholder="Ex.: Produto ${id}">
+              </div>
+              <div>
+                <label for="preco_${id}">Preço</label>
+                <input type="text" id="preco_${id}" placeholder="R$ 0,00">
+              </div>
+              <div class="col-qty">
+                <label for="qtd_${id}">Quantidade</label>
+                <input type="number" id="qtd_${id}" min="0" step="1" placeholder="0">
+              </div>
+            </div>
+
+            <div class="row" style="grid-template-columns:1fr;">
+              <div>
+                <label for="ml_${id}">Link Mercado Livre (opcional)</label>
+                <input type="url" id="ml_${id}" placeholder="https://produto.mercadolivre.com.br/...">
+              </div>
+            </div>
+
+            <div class="uploader">
+              <label>Imagens (Storage, ≤ 400KB)</label>
+              <div class="grid3">
+                <div><label for="f1_${id}">IMG 1</label><input type="file" id="f1_${id}" accept="image/*"></div>
+                <div><label for="f2_${id}">IMG 2</label><input type="file" id="f2_${id}" accept="image/*"></div>
+                <div><label for="f3_${id}">IMG 3</label><input type="file" id="f3_${id}" accept="image/*"></div>
+              </div>
+              <div class="pv" id="pv_${id}">
+                <div class="pv-wrap"><img id="p1_${id}" style="display:none"></div>
+                <div class="pv-wrap"><img id="p2_${id}" style="display:none"></div>
+                <div class="pv-wrap"><img id="p3_${id}" style="display:none"></div>
+              </div>
+              <div class="progress" style="margin:8px 0;display:none" id="pg_${id}"><div class="bar" id="bar_${id}" style="width:0%"></div></div>
+              <div class="toolbar">
+                <button class="btn ok" data-up="${id}">Enviar imagens</button>
+              </div>
+              <div class="hint" id="hint_${id}"></div>
+            </div>
+          </div>`);}
+
+      // prévias locais
+      $('#grid').querySelectorAll('input[type=file]').forEach(inp=>{
+        inp.addEventListener('change', ()=>{
+          const id = inp.id.split('_')[1];
+          const which = inp.id.startsWith('f1_')?1:inp.id.startsWith('f2_')?2:3;
+          const el = document.getElementById(`p${which}_${id}`);
+          if(inp.files && inp.files[0]){ el.src = URL.createObjectURL(inp.files[0]); el.style.display='block'; }
+          else { el.src=''; el.style.display='none'; }
+        });
+      });
+      $('#grid').querySelectorAll('button[data-up]').forEach(b=> b.onclick = ()=> uploadImagensDoItem(b.dataset.up));
+    }
+
+    async function carregarItens(slug, limite){
+      const snap = await getDocs(collection(db,'catalogos',slug,'itens'));
+      const map={}; snap.forEach(d=> map[d.id]=d.data());
+      for(let i=1;i<=limite;i++){
+        const id=String(i).padStart(2,'0'); const d=map[id]; if(!d) continue;
+        const itemRef = doc(db, 'catalogos', slug, 'itens', id);
+        $('#nome_'+id).value  = d.nome || d.titulo || '';
+        $('#qtd_'+id).value   = (typeof d.quantidade==='number')? d.quantidade : (d.qtde||0);
+        const cents = (typeof d.precoCentavos==='number')? d.precoCentavos : (typeof d.preco==='number'? Math.round(d.preco*100):0);
+        $('#preco_'+id).value = fmtBRL(cents);
+        $('#ml_'+id).value    = d.mlUrl || '';
+        const imgs=[d.urlImagem,d.urlImagem2,d.urlImagem3].filter(Boolean);
+        imgs.forEach((u,ix)=>{ 
+          const campo = ix === 0 ? 'urlImagem' : `urlImagem${ix + 1}`;
+          const im=$('#p'+(ix+1)+'_'+id); 
+          if(im){ 
+            im.src=u; 
+            im.style.display='block'; 
+          } 
+        });
+      }
+    }
+
+    async function salvarTudo(slug, limite){
+      const stx = $('#statusSave'); stx.textContent='Salvando...'; stx.className='hint';
+      try{
+        const batch = writeBatch(db);
+        for(let i=1;i<=limite;i++){
+          const id=String(i).padStart(2,'0');
+          const nome=($('#nome_'+id)?.value||'').trim();
+          const qtd =parseInt($('#qtd_'+id)?.value||'0',10);
+          const cents=parseBRL($('#preco_'+id)?.value||'');
+          const ml =($('#ml_'+id)?.value||'').trim();
+          batch.set(doc(db,'catalogos',slug,'itens',id),{
+            ordem:i, nome, quantidade:isNaN(qtd)?0:qtd, precoCentavos:cents, mlUrl:ml, atualizadoEm:serverTimestamp()
+          },{merge:true});
+        }
+        await batch.commit();
+        stx.textContent='Salvo com sucesso.'; stx.className='status-ok';
+        setTimeout(()=>{ stx.textContent=''; stx.className='hint'; },1800);
+      }catch(e){ stx.textContent='Falha ao salvar.'; stx.className='status-err'; console.error(e); }
+    }
+
+    async function carregarMeta(slug){
+      const s=await getDoc(doc(db,'catalogos',slug,'meta','config')); let d={};
+      if(s.exists()){ d=s.data(); $('#chkAtivo').checked=!!d.catalogoAtivo; }
+      setPublicLink(slug,d); return d;
+    }
+
+    async function salvarMeta(slug, ownerUid){
+      await setDoc(doc(db,'catalogos',slug,'meta','config'),{
+        ownerUid, catalogoAtivo: $('#chkAtivo').checked, atualizadoEm: serverTimestamp()
+      },{merge:true});
+    }
+
+    function bloquearUI(msg){ document.querySelector('main.container').innerHTML = `<div class="card"><div class="body status-err">${msg}</div></div>`; }
+
+    // UPLOAD (por item) → Storage + Firestore
+    async function uploadImagensDoItem(id){
+      const hint=$('#hint_'+id), barBox=$('#pg_'+id), bar=$('#bar_'+id);
+      const picks=[ $('#f1_'+id)?.files?.[0], $('#f2_'+id)?.files?.[0], $('#f3_'+id)?.files?.[0] ].filter(Boolean);
+      if(!picks.length){ hint.textContent='Selecione ao menos 1 imagem.'; return; }
+
+      // comprime ≤ 400 KB
+      for(let i=0;i<picks.length;i++){
+        const c = await compressToJPEG(picks[i], 400*1024, 1400, 1400);
+        if(c.size>400*1024){ hint.textContent=`Imagem ${i+1} ainda > 400KB (${Math.round(c.size/1024)}KB). Reduza e tente de novo.`; return; }
+        picks[i]=c;
+      }
+
+      hint.textContent='Enviando...'; barBox.style.display='block'; bar.style.width='0%';
+      const base=`catalogos/${slug}/itens/${id}`;
+      const urls=[], paths=[];
+      let sent=0, total=picks.reduce((a,f)=>a+f.size,0);
+
+      for(let i=0;i<picks.length;i++){
+        const file=picks[i], name=`i${String(i+1).padStart(2,'0')}.jpg`;
+        const path=`${base}/${name}`, r=ref(st, path);
+        await new Promise((resolve,reject)=>{
+          const task=uploadBytesResumable(r,file,{ contentType:'image/jpeg', cacheControl:'public,max-age=31536000,immutable' });
+          task.on('state_changed', snap=>{
+            const p=Math.round(((sent+snap.bytesTransferred)/total)*100); bar.style.width=p+'%';
+          }, reject, async ()=>{
+            const url=await getDownloadURL(r); urls.push(url); paths.push(path); sent+=file.size; resolve();
+          });
+        });
+      }
+
+      const u1=urls[0]||'', u2=urls[1]||'', u3=urls[2]||'';
+      const itemRef = doc(db, 'catalogos', slug, 'itens', id);
+      await setDoc(itemRef,{
+        imagens:paths, urlImagem:u1, urlImagem2:u2, urlImagem3:u3, atualizadoEm:serverTimestamp()
+      },{merge:true});
+
+      [['p1_',u1,'urlImagem'],['p2_',u2,'urlImagem2'],['p3_',u3,'urlImagem3']].forEach(([p,u,campo])=>{ 
+        const im=document.getElementById(p+id); 
+        if(im&&u){ 
+          im.src=u; 
+          im.style.display='block'; 
+        } 
+      });
+      criarBotoesRemover(slug);
+      bar.style.width='100%'; hint.textContent='Imagens enviadas e salvas!'; setTimeout(()=>{ barBox.style.display='none'; },1200);
+    }
+
+    // ===== Remoção de imagem individual (robusta) =====
+    async function removerImagem(slug, id, campo, imgEl) {
+      const hint = document.getElementById('hint_' + id);
+      try {
+        hint.textContent = 'Removendo imagem...';
+
+        // 1) Apagar arquivo no Storage (se for URL do Storage)
+        if (imgEl.src && imgEl.src.startsWith("https://firebasestorage.googleapis.com/")) {
+          try {
+            const url = new URL(imgEl.src);
+            const path = decodeURIComponent(url.pathname.split("/o/")[1].split("?")[0]);
+            await deleteObject(ref(st, path));
+          } catch (e) {
+            // Se der permission-denied, exibimos e seguimos limpando o Firestore
+            console.error('Storage delete falhou:', e);
+          }
+        }
+
+        // 2) Remover campo no Firestore + apagar arrays legados
+        const itemRef = doc(db, "catalogos", slug, "itens", id);
+        await updateDoc(itemRef, {
+          [campo]: deleteField(),
+          imagens: deleteField(),
+          imagensFull: deleteField(),
+          atualizadoEm: serverTimestamp()
+        });
+
+        // 3) Atualizar UI local (some preview e limpa input)
+        const wrap = imgEl.closest('.pv-wrap');
+        imgEl.src = '';
+        imgEl.style.display = 'none';
+        const which = campo === 'urlImagem' ? '1' : (campo === 'urlImagem2' ? '2' : '3');
+        const fileInput = document.getElementById('f' + which + '_' + id);
+        if (fileInput) fileInput.value = '';
+
+        // 4) Feedback
+        hint.textContent = 'Imagem removida.';
+        setTimeout(()=> hint.textContent = '', 1500);
+      } catch (e) {
+        console.error("Erro ao remover imagem:", e);
+        const hint = document.getElementById('hint_' + id);
+        if (hint) {
+          hint.textContent = 'Falha ao remover (verifique regras do Storage/Firestore).';
+          hint.className = 'status-err';
+        }
+      }
+    }
+
+    // ===== Cria botões lixeira vermelha em todas as prévias =====
+    function criarBotoesRemover(slug) {
+      // Ajuste o 100 se seu limite máximo puder ser maior
+      for (let i = 1; i <= 100; i++) {
+        const id = String(i).padStart(2, "0");
+        for (let n = 1; n <= 3; n++) {
+          const imgEl = document.getElementById(`p${n}_${id}`);
+          if (!imgEl || imgEl.style.display === 'none') continue;
+
+          const wrapper = imgEl.parentElement;
+          if (!wrapper) continue;
+
+          // Evitar duplicar botão
+          const existing = wrapper.querySelector('button.remove-btn');
+          if (existing) existing.remove();
+
+          const btn = document.createElement("button");
+          btn.textContent = "🗑️";
+          btn.className = 'remove-btn';
+          Object.assign(btn.style, {
+            position: "absolute",
+            top: "4px",
+            right: "4px",
+            background: "rgba(0,0,0,0.6)",
+            color: "#fff",
+            border: "none",
+            borderRadius: "50%",
+            width: "24px",
+            height: "24px",
+            cursor: "pointer",
+            fontSize: "14px",
+            lineHeight: "22px",
+          });
+
+          btn.onclick = () => {
+            const campo = n === 1 ? "urlImagem" : n === 2 ? "urlImagem2" : "urlImagem3";
+            removerImagem(slug, id, campo, imgEl)
+              .then(()=> btn.remove())
+              .catch(()=> {/* já tratamos erro na função */});
+          };
+
+          wrapper.style.position = "relative";
+          wrapper.appendChild(btn);
+        }
+      }
+    }
+
+    // Auth + carregamento
+    onAuthStateChanged(auth, async user=>{
+      try{
+        if(!user){
+          // se você quiser forçar login “real”, troque por redirecionar ao seu fluxo de login
+          await signInAnonymously(auth);
+        }
+        renderUserCircle(auth.currentUser);
+
+        if(!slug){ bloquearUI('Informe ?c=<slug> para editar.'); return; }
+
+        // Permissão & limite (dono/editores + plano)
+        const cfgMeta = await exigirDonoOuEditor((auth.currentUser||{}).uid, slug);
+        const { ativo, limite, plano } = await resolveLimiteAssinatura(cfgMeta.ownerUid);
+        if(!ativo){ bloquearUI('Assinatura inativa para este catálogo.'); return; }
+        $('#hintLimite').textContent = `Seu plano (${plano}) permite até ${limite} itens.`;
+        $('#planoInfo').textContent = `Plano atual: ${plano}`;
+
+        buildGrid(limite);
+        const meta = await carregarMeta(slug);
+        await carregarItens(slug, limite);
+        criarBotoesRemover(slug);
+
+        $('#btnSalvarTudo').onclick = ()=> salvarTudo(slug, limite);
+        $('#chkAtivo').addEventListener('change', ()=> salvarMeta(slug, cfgMeta.ownerUid));
+        setPublicLink(slug, meta);
+      }catch(e){
+        console.error(e);
+        if(e.message==='NOT_OWNER') bloquearUI('Você não tem permissão para editar este catálogo.');
+        else if(e.message==='CONFIG_NOT_FOUND') bloquearUI('Configuração não encontrada. Crie /catalogos/'+slug+'/meta/config.');
+        else bloquearUI('Erro ao carregar. Verifique as regras do Firestore/Storage.');
+      }
+    });
+  </script>
 </body>
 </html>
