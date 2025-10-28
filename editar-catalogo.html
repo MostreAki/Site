@@ -62,6 +62,35 @@
     .bar{height:8px;background:linear-gradient(90deg,#19c5a7,#12a69f)}
     footer{color:#567;font-size:.88rem;text-align:center;padding:20px 16px}
     .btn.auth{min-width:92px;text-align:center}
+    /* Barra de ações responsiva */
+.toolbar{
+  display:flex; flex-wrap:wrap; gap:10px; align-items:center;
+  margin:12px 0;
+}
+
+/* Botão base */
+.btn{
+  --bg:#0f766e; --fg:#fff; --bd:transparent;
+  display:inline-flex; align-items:center; gap:8px;
+  min-height:44px; padding:10px 14px; border-radius:12px;
+  border:1px solid var(--bd); background:var(--bg); color:var(--fg);
+  font-weight:800; cursor:pointer; box-shadow:0 8px 20px rgba(0,0,0,.12);
+  transition:transform .08s ease, box-shadow .12s ease, background .12s ease;
+  text-decoration:none;
+}
+.btn:active{ transform:translateY(1px); box-shadow:0 4px 12px rgba(0,0,0,.14); }
+
+/* Variações */
+.btn--ghost{ --bg:transparent; --fg:#0f766e; --bd:rgba(15,118,110,.35); }
+.btn--danger{ --bg:#b91c1c; }
+.btn--secondary{ --bg:#0ea5e9; }
+
+/* Versões pequenas/grandes */
+.btn--sm{ padding:8px 12px; min-height:38px; border-radius:10px; }
+.btn--lg{ padding:12px 18px; min-height:48px; border-radius:14px; }
+
+/* Ícones dentro do botão */
+.btn > svg, .btn > img{ width:20px; height:20px; display:block; }
   </style>
 </head>
 <body>
@@ -134,7 +163,7 @@
       getFirestore, doc, getDoc, setDoc, getDocs, collection, writeBatch, serverTimestamp,
       updateDoc, deleteField
     } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
-    import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-storage.js";
+    import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject, updateMetadata } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-storage.js";
 
     // ========= Firebase config =========
     const cfg = {
@@ -225,6 +254,11 @@
       return new File([out], file.name.replace(/\.\w+$/i,'.jpg'), { type:'image/jpeg' });
     }
 
+    // Cache busting
+    function bust(url){
+      return url + (url.includes('?') ? '&' : '?') + 't=' + Date.now();
+    }
+
     // Monta UI
     function buildGrid(limite){
       const grid = $('#grid'); grid.innerHTML='';
@@ -304,7 +338,7 @@
           const campo = ix === 0 ? 'urlImagem' : `urlImagem${ix + 1}`;
           const im=$('#p'+(ix+1)+'_'+id); 
           if(im){ 
-            im.src=u; 
+            im.src = bust(u); 
             im.style.display='block'; 
           } 
         });
@@ -345,6 +379,17 @@
 
     function bloquearUI(msg){ document.querySelector('main.container').innerHTML = `<div class="card"><div class="body status-err">${msg}</div></div>`; }
 
+    function publicUrlFromSlug(slug){
+  // SEU formato pedido:
+  return `https://www.mostreaki.com.br/${slug}.html`;
+  // Se preferir o antigo formato por query:
+  // return `https://www.mostreaki.com.br/catalogo.html?c=${slug}`;
+}
+
+// Assim que você tiver `slug`:
+const btn = document.getElementById('publicLink');
+if (btn) btn.href = publicUrlFromSlug(slug);
+
     // UPLOAD (por item) → Storage + Firestore
     async function uploadImagensDoItem(id){
       const hint=$('#hint_'+id), barBox=$('#pg_'+id), bar=$('#bar_'+id);
@@ -371,7 +416,9 @@
           task.on('state_changed', snap=>{
             const p=Math.round(((sent+snap.bytesTransferred)/total)*100); bar.style.width=p+'%';
           }, reject, async ()=>{
-            const url=await getDownloadURL(r); urls.push(url); paths.push(path); sent+=file.size; resolve();
+            const url=await getDownloadURL(r); urls.push(url); paths.push(path); sent+=file.size; 
+            await updateMetadata(r, { cacheControl: 'public, max-age=60' });
+            resolve();
           });
         });
       }
@@ -385,7 +432,7 @@
       [['p1_',u1,'urlImagem'],['p2_',u2,'urlImagem2'],['p3_',u3,'urlImagem3']].forEach(([p,u,campo])=>{ 
         const im=document.getElementById(p+id); 
         if(im&&u){ 
-          im.src=u; 
+          im.src = bust(u); 
           im.style.display='block'; 
         } 
       });
