@@ -393,61 +393,95 @@
       bar.style.width='100%'; hint.textContent='Imagens enviadas e salvas!'; setTimeout(()=>{ barBox.style.display='none'; },1200);
     }
 
-    // ===== Remoção de imagem individual =====
+    // ===== Remoção de imagem individual (robusta) =====
     async function removerImagem(slug, id, campo, imgEl) {
+      const hint = document.getElementById('hint_' + id);
       try {
-        // apaga arquivo do storage
-        if (imgEl.src && imgEl.src.startsWith("https://")) {
-          const url = new URL(imgEl.src);
-          const path = decodeURIComponent(url.pathname.split("/o/")[1].split("?")[0]);
-          await deleteObject(ref(st, path));
+        hint.textContent = 'Removendo imagem...';
+
+        // 1) Apagar arquivo no Storage (se for URL do Storage)
+        if (imgEl.src && imgEl.src.startsWith("https://firebasestorage.googleapis.com/")) {
+          try {
+            const url = new URL(imgEl.src);
+            const path = decodeURIComponent(url.pathname.split("/o/")[1].split("?")[0]);
+            await deleteObject(ref(st, path));
+          } catch (e) {
+            // Se der permission-denied, exibimos e seguimos limpando o Firestore
+            console.error('Storage delete falhou:', e);
+          }
         }
 
-        // remove o campo do firestore
-        await updateDoc(doc(db, "catalogos", slug, "itens", id), { [campo]: deleteField() });
+        // 2) Remover campo no Firestore + apagar arrays legados
+        const itemRef = doc(db, "catalogos", slug, "itens", id);
+        await updateDoc(itemRef, {
+          [campo]: deleteField(),
+          imagens: deleteField(),
+          imagensFull: deleteField(),
+          atualizadoEm: serverTimestamp()
+        });
 
-        imgEl.remove();
-        console.log(`Imagem ${campo} removida`);
+        // 3) Atualizar UI local (some preview e limpa input)
+        const wrap = imgEl.closest('.pv-wrap');
+        imgEl.src = '';
+        imgEl.style.display = 'none';
+        const which = campo === 'urlImagem' ? '1' : (campo === 'urlImagem2' ? '2' : '3');
+        const fileInput = document.getElementById('f' + which + '_' + id);
+        if (fileInput) fileInput.value = '';
+
+        // 4) Feedback
+        hint.textContent = 'Imagem removida.';
+        setTimeout(()=> hint.textContent = '', 1500);
       } catch (e) {
         console.error("Erro ao remover imagem:", e);
+        const hint = document.getElementById('hint_' + id);
+        if (hint) {
+          hint.textContent = 'Falha ao remover (verifique regras do Storage/Firestore).';
+          hint.className = 'status-err';
+        }
       }
     }
 
     // ===== Cria botões lixeira vermelha em todas as prévias =====
     function criarBotoesRemover(slug) {
+      // Ajuste o 100 se seu limite máximo puder ser maior
       for (let i = 1; i <= 100; i++) {
         const id = String(i).padStart(2, "0");
         for (let n = 1; n <= 3; n++) {
           const imgEl = document.getElementById(`p${n}_${id}`);
           if (!imgEl || imgEl.style.display === 'none') continue;
+
           const wrapper = imgEl.parentElement;
-          const existing = wrapper.querySelector('button');
+          if (!wrapper) continue;
+
+          // Evitar duplicar botão
+          const existing = wrapper.querySelector('button.remove-btn');
           if (existing) existing.remove();
+
           const btn = document.createElement("button");
           btn.textContent = "🗑️";
+          btn.className = 'remove-btn';
           Object.assign(btn.style, {
             position: "absolute",
             top: "4px",
             right: "4px",
             background: "rgba(0,0,0,0.6)",
-            color: "var(--danger)",
+            color: "#fff",
             border: "none",
             borderRadius: "50%",
-            width: "22px",
-            height: "22px",
+            width: "24px",
+            height: "24px",
             cursor: "pointer",
-            fontSize: "16px",
-            lineHeight: "18px",
+            fontSize: "14px",
+            lineHeight: "22px",
           });
 
-          // evento de clique
           btn.onclick = () => {
             const campo = n === 1 ? "urlImagem" : n === 2 ? "urlImagem2" : "urlImagem3";
-            removerImagem(slug, id, campo, imgEl);
-            btn.remove();
+            removerImagem(slug, id, campo, imgEl)
+              .then(()=> btn.remove())
+              .catch(()=> {/* já tratamos erro na função */});
           };
 
-          // insere o botão no contêiner da imagem
           wrapper.style.position = "relative";
           wrapper.appendChild(btn);
         }
