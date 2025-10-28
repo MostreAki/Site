@@ -1,9 +1,10 @@
+```html
 <!doctype html>
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Editar Catálogo – MostreAki (Storage  400KB + Firestore)</title>
+  <title>Editar Catálogo – MostreAki (Storage ≤ 400KB + Firestore)</title>
   <style>
     :root{
       --brand:#16b0af; --brandLight:#c4e8de; --ink:#083f3e; --bg:#f6fbfa;
@@ -62,6 +63,35 @@
     .bar{height:8px;background:linear-gradient(90deg,#19c5a7,#12a69f)}
     footer{color:#567;font-size:.88rem;text-align:center;padding:20px 16px}
     .btn.auth{min-width:92px;text-align:center}
+    /* Barra de ações responsiva */
+.toolbar{
+  display:flex; flex-wrap:wrap; gap:10px; align-items:center;
+  margin:12px 0;
+}
+
+/* Botão base */
+.btn{
+  --bg:#0f766e; --fg:#fff; --bd:transparent;
+  display:inline-flex; align-items:center; gap:8px;
+  min-height:44px; padding:10px 14px; border-radius:12px;
+  border:1px solid var(--bd); background:var(--bg); color:var(--fg);
+  font-weight:800; cursor:pointer; box-shadow:0 8px 20px rgba(0,0,0,.12);
+  transition:transform .08s ease, box-shadow .12s ease, background .12s ease;
+  text-decoration:none;
+}
+.btn:active{ transform:translateY(1px); box-shadow:0 4px 12px rgba(0,0,0,.14); }
+
+/* Variações */
+.btn--ghost{ --bg:transparent; --fg:#0f766e; --bd:rgba(15,118,110,.35); }
+.btn--danger{ --bg:#b91c1c; }
+.btn--secondary{ --bg:#0ea5e9; }
+
+/* Versões pequenas/grandes */
+.btn--sm{ padding:8px 12px; min-height:38px; border-radius:10px; }
+.btn--lg{ padding:12px 18px; min-height:48px; border-radius:14px; }
+
+/* Ícones dentro do botão */
+.btn > svg, .btn > img{ width:20px; height:20px; display:block; }
   </style>
 </head>
 <body>
@@ -89,7 +119,7 @@
     <h2>Editar Catálogo</h2>
     <div class="sub">
       <span class="pill">Slug: <b id="slugLabel" style="margin-left:6px">—</b></span>
-      <a id="publicLink" class="ghost-link" href="#" target="_blank" rel="noopener" title="Abrir a página pública do catálogo"> Ver página pública</a>
+      <a id="publicLink" class="ghost-link" href="#" target="_blank" rel="noopener" title="Abrir a página pública do catálogo">🔗 Ver página pública</a>
       <span id="planoInfo" class="hint"></span>
     </div>
 
@@ -107,7 +137,7 @@
         </div>
         <p id="hintLimite" class="hint" style="margin-top:12px"></p>
         <p class="hint" style="margin-top:8px">
-          Suba as <b>imagens direto para o Storage ( 400 KB)</b>. Após o upload, salvamos <code>urlImagem(2/3)</code> no Firestore
+          Suba as <b>imagens direto para o Storage (≤ 400 KB)</b>. Após o upload, salvamos <code>urlImagem(2/3)</code> no Firestore
           e também <code>imagens[]</code> com os caminhos do bucket.
         </p>
       </div>
@@ -134,7 +164,7 @@
       getFirestore, doc, getDoc, setDoc, getDocs, collection, writeBatch, serverTimestamp,
       updateDoc, deleteField
     } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
-    import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-storage.js";
+    import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject, updateMetadata } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-storage.js";
 
     // ========= Firebase config =========
     const cfg = {
@@ -173,9 +203,28 @@
     // Slug
     function getSlug(){ const u=new URL(location.href); return u.searchParams.get('c') || u.searchParams.get('slug') || ''; }
     const slug = getSlug(); $('#slugLabel').textContent = slug || '—';
-    function setPublicLink(slug, meta={}){ const a=$('#publicLink'); if(!a||!slug){ if(a) a.href='#'; return; }
-      const custom=(meta.publicPagePath||meta.public_page_path||meta.customPublicPage||'').trim();
-      a.href = custom || `/catalogo-${slug}.html`; }
+
+    // Função para montar o link público
+    function publicUrlFromSlug(slug) {
+      // caminho final do catálogo: www.mostreaki.com.br/catalogo-<slug>.html
+      return `https://www.mostreaki.com.br/catalogo-${slug}.html`;
+    }
+
+    // Função que atualiza o botão após o slug ser conhecido
+    function setPublicLink(slug, meta = {}) {
+      const a = document.getElementById('publicLink');
+      if (!a) return;
+      if (!slug) {
+        a.removeAttribute('href');
+        a.classList.add('disabled');
+        return;
+      }
+      // se tiver caminho custom no Firestore (meta.publicPagePath), usa ele
+      const custom = (meta.publicPagePath || meta.customPublicPage || '').trim();
+      a.href = custom || publicUrlFromSlug(slug);
+      a.target = '_blank';
+      a.rel = 'noopener';
+    }
 
     // Limite por plano (igual tua lógica)
     function normalizePlano(p=''){ return p.normalize('NFD').replace(/\p{Diacritic}/gu,'').toLowerCase(); }
@@ -200,19 +249,48 @@
 
     // Avatar simples
     function renderUserCircle(user){
-      const el = $('#userCircle'); const btn=$('#authBtn');
-      const show = ()=> el.style.display='flex';
-      if(!user){ el.style.display='none'; btn.textContent='Entrar'; btn.onclick=(e)=>{e.preventDefault(); /* redirecione para seu login */}; return; }
-      btn.textContent='Sair'; btn.onclick=async (e)=>{e.preventDefault(); await signOut(auth);};
-      const url = user.photoURL;
-      el.title = user.displayName || user.email || user.uid;
-      el.innerHTML = '';
-      if(url){ const img=new Image(); img.src=url; img.alt='User'; img.style.width='100%'; img.style.height='100%'; img.style.objectFit='cover'; el.appendChild(img); show(); return; }
-      // iniciais
-      const name = (user.displayName || user.email || 'U').trim();
-      const initials = name.split('@')[0].split(/\s+/).slice(0,2).map(s=>s[0]?.toUpperCase()||'U').join('');
-      el.textContent = initials; show();
-    }
+  const el  = document.getElementById('userCircle');
+  const btn = document.getElementById('authBtn');
+  const show = () => { el.style.display = 'flex'; };
+
+  if (!user) {
+    el.style.display = 'none';
+    el.innerHTML = '';
+    btn.textContent = 'Entrar';
+    btn.classList.add('btn','ghost','auth');
+    btn.removeAttribute('onclick');
+    btn.setAttribute('href', '/minha-conta.html'); // fluxo de login
+    return;
+  }
+
+  btn.textContent = 'Sair';
+  btn.setAttribute('href', '#');
+  btn.onclick = async (e) => {
+    e.preventDefault();
+    await signOut(auth);
+    // após sair, manda para a página pública daquele catálogo
+    const pub = publicUrlFromSlug(slug);
+    location.href = pub; // ex.: https://www.mostreaki.com.br/catalogo-percival-brics.html
+  };
+
+  el.title = user.displayName || user.email || user.uid;
+  el.innerHTML = '';
+  if (user.photoURL) {
+    const img = new Image();
+    img.src = user.photoURL;
+    img.alt = 'User';
+    img.style.width = '100%';
+    img.style.height = '100%';
+    img.style.objectFit = 'cover';
+    el.appendChild(img);
+    show();
+  } else {
+    const name = (user.displayName || user.email || 'U').trim();
+    const initials = name.split('@')[0].split(/\s+/).slice(0,2).map(s=>s[0]?.toUpperCase()||'U').join('');
+    el.textContent = initials;
+    show();
+  }
+}
 
     // Compressão até 400 KB
     async function compressToJPEG(file, maxBytes=400*1024, maxW=1400, maxH=1400){
@@ -223,6 +301,11 @@
       let q=0.9, step=0.08, out;
       for(let i=0;i<10;i++){ out = await new Promise(res=>canvas.toBlob(res,'image/jpeg',q)); if(out.size<=maxBytes || q<=0.4) break; q-=step; step=Math.max(0.03,step*0.75); }
       return new File([out], file.name.replace(/\.\w+$/i,'.jpg'), { type:'image/jpeg' });
+    }
+
+    // Cache busting
+    function bust(url){
+      return url + (url.includes('?') ? '&' : '?') + 't=' + Date.now();
     }
 
     // Monta UI
@@ -256,7 +339,7 @@
             </div>
 
             <div class="uploader">
-              <label>Imagens (Storage,  400KB)</label>
+              <label>Imagens (Storage, ≤ 400KB)</label>
               <div class="grid3">
                 <div><label for="f1_${id}">IMG 1</label><input type="file" id="f1_${id}" accept="image/*"></div>
                 <div><label for="f2_${id}">IMG 2</label><input type="file" id="f2_${id}" accept="image/*"></div>
@@ -304,7 +387,7 @@
           const campo = ix === 0 ? 'urlImagem' : `urlImagem${ix + 1}`;
           const im=$('#p'+(ix+1)+'_'+id); 
           if(im){ 
-            im.src=u; 
+            im.src = bust(u); 
             im.style.display='block'; 
           } 
         });
@@ -334,7 +417,7 @@
     async function carregarMeta(slug){
       const s=await getDoc(doc(db,'catalogos',slug,'meta','config')); let d={};
       if(s.exists()){ d=s.data(); $('#chkAtivo').checked=!!d.catalogoAtivo; }
-      setPublicLink(slug,d); return d;
+      return d;
     }
 
     async function salvarMeta(slug, ownerUid){
@@ -345,13 +428,13 @@
 
     function bloquearUI(msg){ document.querySelector('main.container').innerHTML = `<div class="card"><div class="body status-err">${msg}</div></div>`; }
 
-    // UPLOAD (por item)  Storage + Firestore
+    // UPLOAD (por item) → Storage + Firestore
     async function uploadImagensDoItem(id){
       const hint=$('#hint_'+id), barBox=$('#pg_'+id), bar=$('#bar_'+id);
       const picks=[ $('#f1_'+id)?.files?.[0], $('#f2_'+id)?.files?.[0], $('#f3_'+id)?.files?.[0] ].filter(Boolean);
       if(!picks.length){ hint.textContent='Selecione ao menos 1 imagem.'; return; }
 
-      // comprime  400 KB
+      // comprime ≤ 400 KB
       for(let i=0;i<picks.length;i++){
         const c = await compressToJPEG(picks[i], 400*1024, 1400, 1400);
         if(c.size>400*1024){ hint.textContent=`Imagem ${i+1} ainda > 400KB (${Math.round(c.size/1024)}KB). Reduza e tente de novo.`; return; }
@@ -371,7 +454,9 @@
           task.on('state_changed', snap=>{
             const p=Math.round(((sent+snap.bytesTransferred)/total)*100); bar.style.width=p+'%';
           }, reject, async ()=>{
-            const url=await getDownloadURL(r); urls.push(url); paths.push(path); sent+=file.size; resolve();
+            const url=await getDownloadURL(r); urls.push(url); paths.push(path); sent+=file.size; 
+            await updateMetadata(r, { cacheControl: 'public, max-age=60' });
+            resolve();
           });
         });
       }
@@ -385,7 +470,7 @@
       [['p1_',u1,'urlImagem'],['p2_',u2,'urlImagem2'],['p3_',u3,'urlImagem3']].forEach(([p,u,campo])=>{ 
         const im=document.getElementById(p+id); 
         if(im&&u){ 
-          im.src=u; 
+          im.src = bust(u); 
           im.style.display='block'; 
         } 
       });
@@ -458,7 +543,7 @@
           if (existing) existing.remove();
 
           const btn = document.createElement("button");
-          btn.textContent = "";
+          btn.textContent = "🗑️";
           btn.className = 'remove-btn';
           Object.assign(btn.style, {
             position: "absolute",
@@ -489,38 +574,51 @@
     }
 
     // Auth + carregamento
-    onAuthStateChanged(auth, async user=>{
-      try{
-        if(!user){
-          // se você quiser forçar login “real”, troque por redirecionar ao seu fluxo de login
-          await signInAnonymously(auth);
-        }
-        renderUserCircle(auth.currentUser);
+    onAuthStateChanged(auth, async (user) => {
+  try {
+    // sem login anônimo: se não tiver usuário, mostra UI de login e sai
+    if (!user) {
+      renderUserCircle(null);
+      const main = document.querySelector('main.container');
+      main.innerHTML = `
+        <div class="card"><div class="body status-err">
+          Você não está autenticado. Entre para editar este catálogo.
+          <div class="toolbar" style="margin-top:12px">
+            <a class="btn btn--secondary" href="/minha-conta.html">Entrar</a>
+            <a class="btn btn--ghost" href="/">Voltar à página inicial</a>
+          </div>
+        </div></div>`;
+      return; // <-- para aqui; nada de exigir dono/editor sem login
+    }
 
-        if(!slug){ bloquearUI('Informe ?c=<slug> para editar.'); return; }
+    renderUserCircle(user);
 
-        // Permissão & limite (dono/editores + plano)
-        const cfgMeta = await exigirDonoOuEditor((auth.currentUser||{}).uid, slug);
-        const { ativo, limite, plano } = await resolveLimiteAssinatura(cfgMeta.ownerUid);
-        if(!ativo){ bloquearUI('Assinatura inativa para este catálogo.'); return; }
-        $('#hintLimite').textContent = `Seu plano (${plano}) permite até ${limite} itens.`;
-        $('#planoInfo').textContent = `Plano atual: ${plano}`;
+    if (!slug) { bloquearUI('Informe ?c=<slug> para editar.'); return; }
 
-        buildGrid(limite);
-        const meta = await carregarMeta(slug);
-        await carregarItens(slug, limite);
-        criarBotoesRemover(slug);
+    // Permissão & limite (dono/editores + plano)
+    const cfgMeta = await exigirDonoOuEditor(user.uid, slug);
+    const { ativo, limite, plano } = await resolveLimiteAssinatura(cfgMeta.ownerUid);
+    if (!ativo) { bloquearUI('Assinatura inativa para este catálogo.'); return; }
 
-        $('#btnSalvarTudo').onclick = ()=> salvarTudo(slug, limite);
-        $('#chkAtivo').addEventListener('change', ()=> salvarMeta(slug, cfgMeta.ownerUid));
-        setPublicLink(slug, meta);
-      }catch(e){
-        console.error(e);
-        if(e.message==='NOT_OWNER') bloquearUI('Você não tem permissão para editar este catálogo.');
-        else if(e.message==='CONFIG_NOT_FOUND') bloquearUI('Configuração não encontrada. Crie /catalogos/'+slug+'/meta/config.');
-        else bloquearUI('Erro ao carregar. Verifique as regras do Firestore/Storage.');
-      }
-    });
+    document.getElementById('hintLimite').textContent = `Seu plano (${plano}) permite até ${limite} itens.`;
+    document.getElementById('planoInfo').textContent  = `Plano atual: ${plano}`;
+
+    buildGrid(limite);
+    const meta = await carregarMeta(slug);
+    await carregarItens(slug, limite);
+    criarBotoesRemover(slug);
+
+    document.getElementById('btnSalvarTudo').onclick = () => salvarTudo(slug, limite);
+    document.getElementById('chkAtivo').addEventListener('change', () => salvarMeta(slug, cfgMeta.ownerUid));
+    setPublicLink(slug, meta);
+  } catch (e) {
+    console.error(e);
+    if (e.message === 'NOT_OWNER') bloquearUI('Você não tem permissão para editar este catálogo.');
+    else if (e.message === 'CONFIG_NOT_FOUND') bloquearUI('Configuração não encontrada. Crie /catalogos/'+slug+'/meta/config.');
+    else bloquearUI('Erro ao carregar. Verifique as regras do Firestore/Storage.');
+  }
+});
   </script>
 </body>
 </html>
+```
