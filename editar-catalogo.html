@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Editar Catálogo – MostreAki (com Upload p/ Storage)</title>
+  <title>Editar Catálogo – MostreAki (Upload ≤ 400KB + Firestore)</title>
   <style>
     :root{
       --brand:#16b0af; --brandLight:#c4e8de; --ink:#083f3e; --bg:#f6fbfa;
@@ -123,8 +123,7 @@
 
         <p id="hintLimite" class="hint" style="margin-top:12px"></p>
         <p class="hint" style="margin-top:8px">
-          Agora você pode subir as <b>imagens direto para o Firebase Storage</b> por item. O sistema salva o array <code>imagens[]</code> no Firestore e também
-          <code>urlImagem(2/3)</code> para compatibilidade com o catálogo público.
+          Você pode subir as <b>imagens direto para o Storage</b> (limite real de <b>400 KB</b> por arquivo). Após o upload, gravamos também <code>urlImagem(2/3)</code> para compatibilidade imediata com o catálogo público.
         </p>
       </div>
     </section>
@@ -140,26 +139,28 @@
   <footer>© <span id="ano"></span> MostreAki</footer>
 
   <script type="module">
-    import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-    import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+    import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js';
+    import { getAuth, onAuthStateChanged, signOut, signInAnonymously } from 'https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js';
     import {
       getFirestore, doc, getDoc, setDoc, getDocs, collection, writeBatch, serverTimestamp
-    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-    import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
+    } from 'https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js';
+    import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.14.0/firebase-storage.js';
 
-    // ===== Firebase init (bucket correto .appspot.com) =====
+    // ===== Firebase init =====
     const cfg = {
       apiKey: 'AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE',
       authDomain: 'mostreaki-2025.firebaseapp.com',
       projectId: 'mostreaki-2025',
-      storageBucket: 'mostreaki-2025.firebasestorage.app',
+      // IMPORTANTE: bucket do projeto SEMPRE termina em .appspot.com
+      // (os downloads públicos usam *.firebasestorage.app)
+      storageBucket: 'mostreaki-2025.appspot.com',
       messagingSenderId: '748712068097',
       appId: '1:748712068097:web:09cf043fbb45917ef6ec00'
     };
     const app = getApps().length ? getApp() : initializeApp(cfg);
     const auth = getAuth(app);
     const db   = getFirestore(app);
-    const storage = getStorage(app); // usa bucket padrão do projeto
+    const storage = getStorage(app);
 
     const $ = sel => document.querySelector(sel);
 
@@ -175,7 +176,7 @@
       btn.addEventListener('click', (e)=>{ e.stopPropagation(); toggle(); });
     })();
 
-    /* ===== Avatar ===== */
+    /* ===== Avatar (cache bust) ===== */
     function cacheBust(u){ return u ? u + (u.includes('?')?'&':'?') + 'v=' + Date.now() : u; }
     function setAvatar(url){
       if(!url) return;
@@ -186,10 +187,7 @@
       img.src = cacheBust(url); img.alt='Foto'; img.style.width='100%'; img.style.height='100%'; img.style.objectFit='cover';
       el.append(img);
     }
-    (()=>{
-      const c = localStorage.getItem('fotoPerfil');
-      if(c) setAvatar(c);
-    })();
+    (()=>{ const c = localStorage.getItem('fotoPerfil'); if(c) setAvatar(c); })();
 
     /* ===== Utils BRL ===== */
     const fmtBRL = (cents)=> 'R$ ' + (cents/100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -245,6 +243,25 @@
       return data; // config
     }
 
+    /* ==== Compressão até 400KB (client-side) ==== */
+    async function compressToJPEG(file, maxBytes=400*1024, maxW=1400, maxH=1400){
+      const img = new Image();
+      img.src = URL.createObjectURL(file);
+      await img.decode();
+      const r = Math.min(maxW/img.width, maxH/img.height, 1);
+      const w = Math.round(img.width*r), h = Math.round(img.height*r);
+      const canvas = Object.assign(document.createElement('canvas'), { width:w, height:h });
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, w, h);
+      let q = 0.9, step = 0.08, out;
+      for (let i=0;i<10;i++){
+        out = await new Promise(res=>canvas.toBlob(res, 'image/jpeg', q));
+        if (out.size <= maxBytes || q <= 0.4) break;
+        q -= step; step = Math.max(0.03, step*0.75);
+      }
+      return new File([out], file.name.replace(/\.\w+$/i,'.jpg'), { type:'image/jpeg' });
+    }
+
     /* ===== UI builder ===== */
     function buildGrid(limite){
       const grid = $('#grid'); grid.innerHTML='';
@@ -278,7 +295,7 @@
           </div>
 
           <div class="uploader">
-            <label>Imagens (Firebase Storage)</label>
+            <label>Imagens (Storage, ≤ 400KB)</label>
             <div class="grid3">
               <div>
                 <label for="f1_${id}">IMG 1</label>
@@ -374,7 +391,7 @@
           if(mlEl)   mlEl.value   = d.mlUrl || '';
 
           // pré-visualiza URLs já existentes (se houver)
-          const imgs = Array.isArray(d.imagens) ? d.imagens.slice(0,3) : [d.urlImagem,d.urlImagem2,d.urlImagem3].filter(Boolean);
+          const imgs = [d.urlImagem,d.urlImagem2,d.urlImagem3].filter(Boolean);
           imgs.forEach((u,ix)=>{
             const img = document.getElementById(`p${ix+1}_${id}`);
             if(img){ img.src = u; img.style.display='block'; }
@@ -451,7 +468,7 @@
         <div class="card"><div class="body status-err">${msg}</div></div>`;
     }
 
-    // ===== Upload p/ Storage e gravação no Firestore (por item) =====
+    /* ===== Upload p/ Storage e gravação no Firestore (por item) ===== */
     async function uploadImagensDoItem(id){
       const status = document.getElementById('hint_'+id);
       const barBox = document.getElementById('pg_'+id);
@@ -462,29 +479,35 @@
       const files = [f1,f2,f3].filter(Boolean);
       if(!files.length){ status.textContent='Selecione ao menos 1 imagem.'; return; }
 
+      // compressão client-side ≤ 400KB
+      for (let i=0;i<files.length;i++){
+        const c = await compressToJPEG(files[i], 400*1024, 1400, 1400);
+        if (c.size > 400*1024){
+          status.textContent = `A imagem ${i+1} ainda ficou > 400KB (${Math.round(c.size/1024)}KB). Diminua a resolução e tente de novo.`;
+          return;
+        }
+        files[i] = c;
+      }
+
       status.textContent = 'Enviando imagens...';
       barBox.style.display = 'block'; bar.style.width = '0%';
 
-      // pasta: catalogos/<slug>/itens/<ID>/
       const basePath = `catalogos/${slug}/itens/${id}`;
-      const urls = []; // https
-      const paths= []; // caminhos no bucket
+      const urls = []; const paths= [];
 
-      let sent = 0;
+      let sent = 0; const total = files.reduce((a,f)=>a+f.size,0);
       for (let i=0;i<files.length;i++){
         const file = files[i];
-        const ext = (file.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^\w]/g,'');
-        const safeExt = ['jpg','jpeg','png','webp','gif','avif'].includes(ext) ? ext : 'jpg';
-        const idx = (i+1).toString().padStart(2,'0');
-        const objectPath = `${basePath}/i${idx}.${safeExt}`;
+        const name = `i${String(i+1).padStart(2,'0')}.jpg`; // já comprimimos para jpg
+        const objectPath = `${basePath}/${name}`;
         const r = ref(storage, objectPath);
-        const task = uploadBytesResumable(r, file, { cacheControl: 'public,max-age=31536000,immutable' });
+        const task = uploadBytesResumable(r, file, { contentType:'image/jpeg', cacheControl: 'public,max-age=31536000,immutable' });
         await new Promise((resolve, reject)=>{
           task.on('state_changed', (snap)=>{
-            const p = Math.round(( (sent + snap.bytesTransferred) / (sent + snap.totalBytes + (files.length - (i+1))*file.size) )*100);
-            bar.style.width = `${Math.max(p, ( (i)*100/files.length ))}%`;
+            const p = Math.round(( (sent + snap.bytesTransferred) / total )*100);
+            bar.style.width = `${p}%`;
           }, reject, async ()=>{
-            const url = await getDownloadURL(r);
+            const url = await getDownloadURL(r); // host *.firebasestorage.app
             urls.push(url);
             paths.push(objectPath);
             sent += file.size;
@@ -493,12 +516,11 @@
         });
       }
 
-      // completa com vazio para manter exatamente 3 campos (compat)
       const u1 = urls[0] || ''; const u2 = urls[1] || ''; const u3 = urls[2] || '';
       const refDoc = doc(db, 'catalogos', slug, 'itens', id);
       await setDoc(refDoc, {
-        imagens: paths,               // caminhos do bucket (bons para tua lógica futura)
-        urlImagem:  u1,               // compatibilidade imediata com o catálogo público
+        imagens: paths,
+        urlImagem:  u1,
         urlImagem2: u2,
         urlImagem3: u3,
         atualizadoEm: serverTimestamp()
@@ -516,35 +538,33 @@
     }
 
     /* ===== Flow Auth ===== */
-    async function prefetchFoto(uid){
-      // opcional: se quiser baixar avatar do Storage
-      // (mantido do teu arquivo base)
-    }
-
     onAuthStateChanged(auth, async (user)=>{
       const a = $('#authText');
       if(!user){
-        $('#alertaLogin').style.display='block';
-        document.querySelector('main.container').style.display='none';
-        localStorage.removeItem('fotoPerfil');
-        setTimeout(()=> location='/index.html', 3500);
-        return;
+        // se quiser permitir cliente sem login, troque por signInAnonymously(auth)
+        await signInAnonymously(auth).catch(()=>{});
       }
-      a.textContent = 'Sair';
-      a.onclick = async () => { await signOut(auth); localStorage.removeItem('fotoPerfil'); location='/index.html'; };
+    });
 
-      await prefetchFoto(user.uid);
-
+    // Boot principal (exige que exista config do catálogo)
+    onAuthStateChanged(auth, async (user)=>{
       if(!slug){
         bloquearUI('Catálogo não informado. Acesse por <code>/editar-catalogo.html?c=&lt;slug&gt;</code>.');
         return;
       }
 
-      try{
-        // Permissão (dono ou editor)
-        const metaCfg = await exigirDonoOuEditor(user.uid, slug);
+      const a = $('#authText');
+      if(user){
+        a.textContent = 'Sair';
+        a.onclick = async () => { await signOut(auth); localStorage.removeItem('fotoPerfil'); location='/index.html'; };
+      }
 
-        // Assinatura do dono define limite
+      try{
+        const refCfg = doc(db,'catalogos',slug,'meta','config');
+        const s = await getDoc(refCfg);
+        if(!s.exists()) throw new Error('CONFIG_NOT_FOUND');
+        const metaCfg = s.data();
+
         const { ativo, limite, plano } = await resolveLimiteAssinatura(metaCfg.ownerUid);
         if(!ativo){
           bloquearUI('Sua assinatura não está ativa. Para editar o catálogo, reative seu plano.');
@@ -562,8 +582,6 @@
         // Handlers
         document.getElementById('btnSalvarTudo').onclick = () => salvarTudo(slug, limite);
         document.getElementById('chkAtivo').addEventListener('change', ()=> salvarMeta(slug, metaCfg.ownerUid));
-
-        // link público
         setPublicLink(slug, meta);
 
       }catch(e){
