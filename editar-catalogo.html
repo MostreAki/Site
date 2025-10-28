@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Editar Catálogo – MostreAki (Storage  400KB + Firestore)</title>
+  <title>Editar Catálogo – MostreAki (Storage ≤ 400KB + Firestore)</title>
   <style>
     :root{
       --brand:#16b0af; --brandLight:#c4e8de; --ink:#083f3e; --bg:#f6fbfa;
@@ -17,7 +17,7 @@
     header .logo b{color:#f61f38}
     header .logo img{height:40px}
     .user-wrap{margin-left:auto;display:flex;align-items:center;gap:10px}
-    .user-circle{width:42px;height:42px;border-radius:50%;overflow:hidden;display:none;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.15);background:#0b3e3c;color:#fff;font-weight:800;display:none;align-items:center;justify-content:center}
+    .user-circle{width:42px;height:42px;border-radius:50%;overflow:hidden;display:none;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.15);background:#0b3e3c;color:#fff;font-weight:800;align-items:center;justify-content:center}
     .menu-icon{width:36px;height:26px;position:relative;display:flex;align-items:center;justify-content:center;cursor:pointer}
     .menu-icon span{position:absolute;width:24px;height:3px;background:#1b1b1b;border-radius:3px}
     .menu-icon span:nth-child(1){top:2px}
@@ -89,7 +89,7 @@
     <h2>Editar Catálogo</h2>
     <div class="sub">
       <span class="pill">Slug: <b id="slugLabel" style="margin-left:6px">—</b></span>
-      <a id="publicLink" class="ghost-link" href="#" target="_blank" rel="noopener" title="Abrir a página pública do catálogo"> Ver página pública</a>
+      <a id="publicLink" class="ghost-link" href="#" target="_blank" rel="noopener" title="Abrir a página pública do catálogo">🔗 Ver página pública</a>
       <span id="planoInfo" class="hint"></span>
     </div>
 
@@ -107,8 +107,7 @@
         </div>
         <p id="hintLimite" class="hint" style="margin-top:12px"></p>
         <p class="hint" style="margin-top:8px">
-          Suba as <b>imagens direto para o Storage ( 400 KB)</b>. Após o upload, salvamos <code>urlImagem(2/3)</code> no Firestore
-          e também <code>imagens[]</code> com os caminhos do bucket.
+          Suba as <b>imagens direto para o Storage (≤ 400 KB)</b>. Após o upload, salvamos <code>urlImagem(2/3)</code> no Firestore.
         </p>
       </div>
     </section>
@@ -134,23 +133,23 @@
       getFirestore, doc, getDoc, setDoc, getDocs, collection, writeBatch, serverTimestamp,
       updateDoc, deleteField
     } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
-    import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-storage.js";
+    import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject, updateMetadata } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-storage.js";
 
     // ========= Firebase config =========
     const cfg = {
       apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
       authDomain: "mostreaki-2025.firebaseapp.com",
       projectId: "mostreaki-2025",
-      storageBucket: "mostreaki-2025.firebasestorage.app", // *** manter .app como você usa ***
+      storageBucket: "mostreaki-2025.firebasestorage.app", // .app como você já usa
       messagingSenderId: "748712068097",
       appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
     };
     const app = getApps().length ? getApp() : initializeApp(cfg);
     const auth = getAuth(app);
     const db   = getFirestore(app);
-    const st   = getStorage(app); // bucket resolve via storageBucket acima
+    const st   = getStorage(app);
 
-    // Persistência local para manter logado após refresh
+    // Mantém sessão
     await setPersistence(auth, browserLocalPersistence);
 
     const $ = s => document.querySelector(s);
@@ -166,18 +165,19 @@
       btn.addEventListener('click',e=>{e.stopPropagation();toggle();});
     })();
 
-    // BRL helpers
+    // Helpers
     const fmtBRL = c => 'R$ ' + (c/100).toLocaleString('pt-BR',{minimumFractionDigits:2});
     const parseBRL = s => { const n=parseFloat(String(s).replace(/[^\d,.-]/g,'').replace(/\./g,'').replace(',','.')); return isNaN(n)?0:Math.round(n*100); };
+    const bust = (url)=> url ? (url + (url.includes('?')?'&':'?') + 't=' + Date.now()) : url;
 
-    // Slug
+    // Slug + link público (formato catalogo-<slug>.html)
     function getSlug(){ const u=new URL(location.href); return u.searchParams.get('c') || u.searchParams.get('slug') || ''; }
     const slug = getSlug(); $('#slugLabel').textContent = slug || '—';
     function setPublicLink(slug, meta={}){ const a=$('#publicLink'); if(!a||!slug){ if(a) a.href='#'; return; }
       const custom=(meta.publicPagePath||meta.public_page_path||meta.customPublicPage||'').trim();
       a.href = custom || `/catalogo-${slug}.html`; }
 
-    // Limite por plano (igual tua lógica)
+    // Plano
     function normalizePlano(p=''){ return p.normalize('NFD').replace(/\p{Diacritic}/gu,'').toLowerCase(); }
     function maxByPlano(plano){ const p=normalizePlano(plano||''); if(p.includes('avancado'))return 100; if(p.includes('intermedi')||p.includes('essencial'))return 60; return 30; }
     async function resolveLimiteAssinatura(ownerUid){
@@ -198,23 +198,22 @@
       return data;
     }
 
-    // Avatar simples
+    // Avatar
     function renderUserCircle(user){
       const el = $('#userCircle'); const btn=$('#authBtn');
       const show = ()=> el.style.display='flex';
-      if(!user){ el.style.display='none'; btn.textContent='Entrar'; btn.onclick=(e)=>{e.preventDefault(); /* redirecione para seu login */}; return; }
+      if(!user){ el.style.display='none'; btn.textContent='Entrar'; btn.onclick=(e)=>{e.preventDefault(); /* redirecionar para login real se quiser */}; return; }
       btn.textContent='Sair'; btn.onclick=async (e)=>{e.preventDefault(); await signOut(auth);};
       const url = user.photoURL;
       el.title = user.displayName || user.email || user.uid;
       el.innerHTML = '';
       if(url){ const img=new Image(); img.src=url; img.alt='User'; img.style.width='100%'; img.style.height='100%'; img.style.objectFit='cover'; el.appendChild(img); show(); return; }
-      // iniciais
       const name = (user.displayName || user.email || 'U').trim();
       const initials = name.split('@')[0].split(/\s+/).slice(0,2).map(s=>s[0]?.toUpperCase()||'U').join('');
       el.textContent = initials; show();
     }
 
-    // Compressão até 400 KB
+    // Compressão até 400KB
     async function compressToJPEG(file, maxBytes=400*1024, maxW=1400, maxH=1400){
       const img = new Image(); img.src = URL.createObjectURL(file); await img.decode();
       const r = Math.min(maxW/img.width, maxH/img.height, 1), w=Math.round(img.width*r), h=Math.round(img.height*r);
@@ -225,7 +224,7 @@
       return new File([out], file.name.replace(/\.\w+$/i,'.jpg'), { type:'image/jpeg' });
     }
 
-    // Monta UI
+    // UI dos itens
     function buildGrid(limite){
       const grid = $('#grid'); grid.innerHTML='';
       for(let i=1;i<=limite;i++){
@@ -256,7 +255,7 @@
             </div>
 
             <div class="uploader">
-              <label>Imagens (Storage,  400KB)</label>
+              <label>Imagens (Storage, ≤ 400KB)</label>
               <div class="grid3">
                 <div><label for="f1_${id}">IMG 1</label><input type="file" id="f1_${id}" accept="image/*"></div>
                 <div><label for="f2_${id}">IMG 2</label><input type="file" id="f2_${id}" accept="image/*"></div>
@@ -293,34 +292,30 @@
       const map={}; snap.forEach(d=> map[d.id]=d.data());
       for(let i=1;i<=limite;i++){
         const id=String(i).padStart(2,'0'); const d=map[id]; if(!d) continue;
-        const itemRef = doc(db, 'catalogos', slug, 'itens', id);
         $('#nome_'+id).value  = d.nome || d.titulo || '';
         $('#qtd_'+id).value   = (typeof d.quantidade==='number')? d.quantidade : (d.qtde||0);
         const cents = (typeof d.precoCentavos==='number')? d.precoCentavos : (typeof d.preco==='number'? Math.round(d.preco*100):0);
         $('#preco_'+id).value = fmtBRL(cents);
         $('#ml_'+id).value    = d.mlUrl || '';
-        const imgs=[d.urlImagem,d.urlImagem2,d.urlImagem3].filter(Boolean);
-        imgs.forEach((u,ix)=>{ 
-          const campo = ix === 0 ? 'urlImagem' : `urlImagem${ix + 1}`;
-          const im=$('#p'+(ix+1)+'_'+id); 
-          if(im){ 
-            im.src=u; 
-            im.style.display='block'; 
-          } 
+        // Mantém cada URL no seu slot
+        const urls=[d.urlImagem,d.urlImagem2,d.urlImagem3];
+        urls.forEach((u,ix)=>{ 
+          const im=document.getElementById('p'+(ix+1)+'_'+id); 
+          if(im && u){ im.src=bust(u); im.style.display='block'; }
         });
       }
     }
 
     async function salvarTudo(slug, limite){
-      const stx = $('#statusSave'); stx.textContent='Salvando...'; stx.className='hint';
+      const stx = document.getElementById('statusSave'); stx.textContent='Salvando...'; stx.className='hint';
       try{
         const batch = writeBatch(db);
         for(let i=1;i<=limite;i++){
           const id=String(i).padStart(2,'0');
-          const nome=($('#nome_'+id)?.value||'').trim();
-          const qtd =parseInt($('#qtd_'+id)?.value||'0',10);
-          const cents=parseBRL($('#preco_'+id)?.value||'');
-          const ml =($('#ml_'+id)?.value||'').trim();
+          const nome=(document.getElementById('nome_'+id)?.value||'').trim();
+          const qtd =parseInt(document.getElementById('qtd_'+id)?.value||'0',10);
+          const cents=parseBRL(document.getElementById('preco_'+id)?.value||'');
+          const ml =(document.getElementById('ml_'+id)?.value||'').trim();
           batch.set(doc(db,'catalogos',slug,'itens',id),{
             ordem:i, nome, quantidade:isNaN(qtd)?0:qtd, precoCentavos:cents, mlUrl:ml, atualizadoEm:serverTimestamp()
           },{merge:true});
@@ -333,132 +328,121 @@
 
     async function carregarMeta(slug){
       const s=await getDoc(doc(db,'catalogos',slug,'meta','config')); let d={};
-      if(s.exists()){ d=s.data(); $('#chkAtivo').checked=!!d.catalogoAtivo; }
+      if(s.exists()){ d=s.data(); document.getElementById('chkAtivo').checked=!!d.catalogoAtivo; }
       setPublicLink(slug,d); return d;
     }
 
     async function salvarMeta(slug, ownerUid){
       await setDoc(doc(db,'catalogos',slug,'meta','config'),{
-        ownerUid, catalogoAtivo: $('#chkAtivo').checked, atualizadoEm: serverTimestamp()
+        ownerUid, catalogoAtivo: document.getElementById('chkAtivo').checked, atualizadoEm: serverTimestamp()
       },{merge:true});
     }
 
     function bloquearUI(msg){ document.querySelector('main.container').innerHTML = `<div class="card"><div class="body status-err">${msg}</div></div>`; }
 
-    // UPLOAD (por item)  Storage + Firestore
+    // ========== UPLOAD respeitando slots fixos (1→urlImagem, 2→urlImagem2, 3→urlImagem3) ==========
     async function uploadImagensDoItem(id){
-      const hint=$('#hint_'+id), barBox=$('#pg_'+id), bar=$('#bar_'+id);
-      const picks=[ $('#f1_'+id)?.files?.[0], $('#f2_'+id)?.files?.[0], $('#f3_'+id)?.files?.[0] ].filter(Boolean);
-      if(!picks.length){ hint.textContent='Selecione ao menos 1 imagem.'; return; }
+      const hint=document.getElementById('hint_'+id), barBox=document.getElementById('pg_'+id), bar=document.getElementById('bar_'+id);
+      const f1=document.getElementById('f1_'+id)?.files?.[0]||null;
+      const f2=document.getElementById('f2_'+id)?.files?.[0]||null;
+      const f3=document.getElementById('f3_'+id)?.files?.[0]||null;
+      if(!f1 && !f2 && !f3){ hint.textContent='Selecione pelo menos 1 imagem.'; return; }
 
-      // comprime  400 KB
-      for(let i=0;i<picks.length;i++){
-        const c = await compressToJPEG(picks[i], 400*1024, 1400, 1400);
-        if(c.size>400*1024){ hint.textContent=`Imagem ${i+1} ainda > 400KB (${Math.round(c.size/1024)}KB). Reduza e tente de novo.`; return; }
-        picks[i]=c;
+      const toUpload=[];
+      for(const [slot,file] of [[1,f1],[2,f2],[3,f3]]){
+        if(!file) continue;
+        const c=await compressToJPEG(file, 400*1024, 1400, 1400);
+        if(c.size>400*1024){ hint.textContent=`IMG ${slot} ainda > 400KB (${Math.round(c.size/1024)}KB).`; return; }
+        toUpload.push([slot,c]);
       }
 
       hint.textContent='Enviando...'; barBox.style.display='block'; bar.style.width='0%';
       const base=`catalogos/${slug}/itens/${id}`;
-      const urls=[], paths=[];
-      let sent=0, total=picks.reduce((a,f)=>a+f.size,0);
+      let sent=0, total=toUpload.reduce((a,[_s,f])=>a+f.size,0);
+      const newUrls={}; // {1:url,2:url,3:url}
 
-      for(let i=0;i<picks.length;i++){
-        const file=picks[i], name=`i${String(i+1).padStart(2,'0')}.jpg`;
-        const path=`${base}/${name}`, r=ref(st, path);
+      for(const [slot,file] of toUpload){
+        const name=`i${String(slot).padStart(2,'0')}.jpg`; // NOME FIXO POR SLOT
+        const path=`${base}/${name}`;
+        const r=ref(st, path);
         await new Promise((resolve,reject)=>{
           const task=uploadBytesResumable(r,file,{ contentType:'image/jpeg', cacheControl:'public,max-age=31536000,immutable' });
           task.on('state_changed', snap=>{
             const p=Math.round(((sent+snap.bytesTransferred)/total)*100); bar.style.width=p+'%';
           }, reject, async ()=>{
-            const url=await getDownloadURL(r); urls.push(url); paths.push(path); sent+=file.size; resolve();
+            const url=await getDownloadURL(r);
+            await updateMetadata(r, { cacheControl: 'public, max-age=60' });
+            newUrls[slot]=url;
+            sent+=file.size;
+            resolve();
           });
         });
       }
 
-      const u1=urls[0]||'', u2=urls[1]||'', u3=urls[2]||'';
+      // Atualiza SÓ os campos dos slots enviados (merge não apaga os outros)
       const itemRef = doc(db, 'catalogos', slug, 'itens', id);
-      await setDoc(itemRef,{
-        imagens:paths, urlImagem:u1, urlImagem2:u2, urlImagem3:u3, atualizadoEm:serverTimestamp()
-      },{merge:true});
+      const patch = { atualizadoEm: serverTimestamp() };
+      if(newUrls[1]) patch.urlImagem  = newUrls[1];
+      if(newUrls[2]) patch.urlImagem2 = newUrls[2];
+      if(newUrls[3]) patch.urlImagem3 = newUrls[3];
+      await setDoc(itemRef, patch, { merge:true });
 
-      [['p1_',u1,'urlImagem'],['p2_',u2,'urlImagem2'],['p3_',u3,'urlImagem3']].forEach(([p,u,campo])=>{ 
-        const im=document.getElementById(p+id); 
-        if(im&&u){ 
-          im.src=u; 
-          im.style.display='block'; 
-        } 
-      });
-      criarBotoesRemover(slug);
-      bar.style.width='100%'; hint.textContent='Imagens enviadas e salvas!'; setTimeout(()=>{ barBox.style.display='none'; },1200);
+      // Atualiza prévias apenas dos slots tocados
+      for(const s of [1,2,3]){
+        if(newUrls[s]){
+          const im=document.getElementById(`p${s}_${id}`);
+          if(im){ im.src=bust(newUrls[s]); im.style.display='block'; }
+        }
+      }
+
+      hint.textContent='Imagens enviadas e salvas!';
+      bar.style.width='100%'; setTimeout(()=>{ barBox.style.display='none'; },1200);
     }
 
-    // ===== Remoção de imagem individual (robusta) =====
+    // ===== Remoção individual por slot (não reordena) =====
     async function removerImagem(slug, id, campo, imgEl) {
       const hint = document.getElementById('hint_' + id);
       try {
         hint.textContent = 'Removendo imagem...';
-
-        // 1) Apagar arquivo no Storage (se for URL do Storage)
         if (imgEl.src && imgEl.src.startsWith("https://firebasestorage.googleapis.com/")) {
           try {
             const url = new URL(imgEl.src);
             const path = decodeURIComponent(url.pathname.split("/o/")[1].split("?")[0]);
             await deleteObject(ref(st, path));
           } catch (e) {
-            // Se der permission-denied, exibimos e seguimos limpando o Firestore
-            console.error('Storage delete falhou:', e);
+            console.warn('Falha ao deletar no Storage (seguindo mesmo assim):', e?.code || e);
           }
         }
-
-        // 2) Remover campo no Firestore + apagar arrays legados
         const itemRef = doc(db, "catalogos", slug, "itens", id);
-        await updateDoc(itemRef, {
-          [campo]: deleteField(),
-          imagens: deleteField(),
-          imagensFull: deleteField(),
-          atualizadoEm: serverTimestamp()
-        });
+        await updateDoc(itemRef, { [campo]: deleteField(), atualizadoEm: serverTimestamp() });
 
-        // 3) Atualizar UI local (some preview e limpa input)
-        const wrap = imgEl.closest('.pv-wrap');
-        imgEl.src = '';
-        imgEl.style.display = 'none';
+        imgEl.src=''; imgEl.style.display='none';
         const which = campo === 'urlImagem' ? '1' : (campo === 'urlImagem2' ? '2' : '3');
         const fileInput = document.getElementById('f' + which + '_' + id);
         if (fileInput) fileInput.value = '';
-
-        // 4) Feedback
         hint.textContent = 'Imagem removida.';
         setTimeout(()=> hint.textContent = '', 1500);
       } catch (e) {
         console.error("Erro ao remover imagem:", e);
-        const hint = document.getElementById('hint_' + id);
-        if (hint) {
-          hint.textContent = 'Falha ao remover (verifique regras do Storage/Firestore).';
-          hint.className = 'status-err';
-        }
+        hint.textContent = 'Falha ao remover (regras do Storage/Firestore?).';
+        hint.className = 'status-err';
       }
     }
 
-    // ===== Cria botões lixeira vermelha em todas as prévias =====
+    // Botões de remover por slot
     function criarBotoesRemover(slug) {
-      // Ajuste o 100 se seu limite máximo puder ser maior
       for (let i = 1; i <= 100; i++) {
         const id = String(i).padStart(2, "0");
         for (let n = 1; n <= 3; n++) {
           const imgEl = document.getElementById(`p${n}_${id}`);
-          if (!imgEl || imgEl.style.display === 'none') continue;
-
+          if (!imgEl) continue;
           const wrapper = imgEl.parentElement;
           if (!wrapper) continue;
-
-          // Evitar duplicar botão
           const existing = wrapper.querySelector('button.remove-btn');
           if (existing) existing.remove();
 
           const btn = document.createElement("button");
-          btn.textContent = "";
+          btn.textContent = "🗑️";
           btn.className = 'remove-btn';
           Object.assign(btn.style, {
             position: "absolute",
@@ -477,9 +461,7 @@
 
           btn.onclick = () => {
             const campo = n === 1 ? "urlImagem" : n === 2 ? "urlImagem2" : "urlImagem3";
-            removerImagem(slug, id, campo, imgEl)
-              .then(()=> btn.remove())
-              .catch(()=> {/* já tratamos erro na função */});
+            removerImagem(slug, id, campo, imgEl).then(()=> btn.remove());
           };
 
           wrapper.style.position = "relative";
@@ -488,31 +470,27 @@
       }
     }
 
-    // Auth + carregamento
+    // Auth + carregamento (mantido)
     onAuthStateChanged(auth, async user=>{
       try{
-        if(!user){
-          // se você quiser forçar login “real”, troque por redirecionar ao seu fluxo de login
-          await signInAnonymously(auth);
-        }
+        if(!user){ await signInAnonymously(auth); }
         renderUserCircle(auth.currentUser);
 
         if(!slug){ bloquearUI('Informe ?c=<slug> para editar.'); return; }
 
-        // Permissão & limite (dono/editores + plano)
         const cfgMeta = await exigirDonoOuEditor((auth.currentUser||{}).uid, slug);
         const { ativo, limite, plano } = await resolveLimiteAssinatura(cfgMeta.ownerUid);
         if(!ativo){ bloquearUI('Assinatura inativa para este catálogo.'); return; }
-        $('#hintLimite').textContent = `Seu plano (${plano}) permite até ${limite} itens.`;
-        $('#planoInfo').textContent = `Plano atual: ${plano}`;
+        document.getElementById('hintLimite').textContent = `Seu plano (${plano}) permite até ${limite} itens.`;
+        document.getElementById('planoInfo').textContent = `Plano atual: ${plano}`;
 
         buildGrid(limite);
         const meta = await carregarMeta(slug);
         await carregarItens(slug, limite);
         criarBotoesRemover(slug);
 
-        $('#btnSalvarTudo').onclick = ()=> salvarTudo(slug, limite);
-        $('#chkAtivo').addEventListener('change', ()=> salvarMeta(slug, cfgMeta.ownerUid));
+        document.getElementById('btnSalvarTudo').onclick = ()=> salvarTudo(slug, limite);
+        document.getElementById('chkAtivo').addEventListener('change', ()=> salvarMeta(slug, cfgMeta.ownerUid));
         setPublicLink(slug, meta);
       }catch(e){
         console.error(e);
