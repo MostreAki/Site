@@ -695,52 +695,30 @@
           const qtd = (typeof d.quantidade === 'number') ? d.quantidade
                     : (typeof d.qtde === 'number') ? d.qtde : '—';
 
-          let fotos = [];
+    // helper: aceita só URLs http(s)
+const httpOnly = (arr) =>
+  Array.isArray(arr) ? arr.filter(u => typeof u === 'string' && /^https?:\/\//i.test(u)) : [];
 
-          // Aceita qualquer variante de campo
-          if (Array.isArray(d.imagens) && d.imagens.length) {
-            fotos = d.imagens.filter(Boolean);
-          } else if (Array.isArray(d.imagensFull) && d.imagensFull.length) {
-            fotos = d.imagensFull.filter(Boolean);
-          } else {
-            fotos = [
-              d.imagem,
-              d.imagem2,
-              d.imagem3,
-              d.urlImagem,
-              d.urlImagem2,
-              d.urlImagem3
-            ].filter(u => typeof u === 'string' && /^https?:\/\//i.test(u));
-          }
+let fotos = [];
+// Aceita qualquer variante de campo
+if (Array.isArray(d.imagens) && d.imagens.length) {
+  fotos = httpOnly(d.imagens);
+} else if (Array.isArray(d.imagensFull) && d.imagensFull.length) {
+  fotos = httpOnly(d.imagensFull);
+} else {
+  fotos = [
+    d.imagem,
+    d.imagem2,
+    d.imagem3,
+    d.urlImagem,
+    d.urlImagem2,
+    d.urlImagem3
+  ].filter(u => typeof u === 'string' && /^https?:\/\//i.test(u));
+}
 
-          // Placeholder se nada encontrado
-          const gal = fotos.length ? fotos : [PLACEHOLDER];
-          const thumb = gal[0];
-
-          const msg = `Olá! Tenho interesse no *${nomeItem}* do catálogo ${nome}.`;
-          const zap = waLink(d.whats || whats, msg);
-
-          arr.push({
-            nome: nomeItem,
-            precoBRL,
-            qtd,
-            fotos: gal,
-            thumb,
-            zap,
-            mlUrl: d.mlUrl || null
-          });
-        });
-
-        itens = arr;
-        clampPage();
-        renderPage();
-      });
-
-      window.addEventListener('keydown', (ev)=>{
-        if (ev.key === 'ArrowRight') goNext();
-        else if (ev.key === 'ArrowLeft') goPrev();
-      });
-    }
+// Placeholder se nada encontrado
+const gal = fotos.length ? fotos : [PLACEHOLDER];
+const thumb = gal[0];
 
     (function insertAvisos(){
       const avisos = document.createElement('div');
