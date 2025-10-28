@@ -202,9 +202,28 @@
     // Slug
     function getSlug(){ const u=new URL(location.href); return u.searchParams.get('c') || u.searchParams.get('slug') || ''; }
     const slug = getSlug(); $('#slugLabel').textContent = slug || '—';
-    function setPublicLink(slug, meta={}){ const a=$('#publicLink'); if(!a||!slug){ if(a) a.href='#'; return; }
-      const custom=(meta.publicPagePath||meta.public_page_path||meta.customPublicPage||'').trim();
-      a.href = custom || `/catalogo-${slug}.html`; }
+
+    // Função para montar o link público
+function publicUrlFromSlug(slug) {
+  // caminho final do catálogo: www.mostreaki.com.br/catalogo-<slug>.html
+  return `https://www.mostreaki.com.br/catalogo-${slug}.html`;
+}
+
+// Função que atualiza o botão após o slug ser conhecido
+function setPublicLink(slug, meta = {}) {
+  const a = document.getElementById('publicLink');
+  if (!a) return;
+  if (!slug) {
+    a.removeAttribute('href');
+    a.classList.add('disabled');
+    return;
+  }
+  // se tiver caminho custom no Firestore (meta.publicPagePath), usa ele
+  const custom = (meta.publicPagePath || meta.customPublicPage || '').trim();
+  a.href = custom || publicUrlFromSlug(slug);
+  a.target = '_blank';
+  a.rel = 'noopener';
+}
 
     // Limite por plano (igual tua lógica)
     function normalizePlano(p=''){ return p.normalize('NFD').replace(/\p{Diacritic}/gu,'').toLowerCase(); }
@@ -368,7 +387,7 @@
     async function carregarMeta(slug){
       const s=await getDoc(doc(db,'catalogos',slug,'meta','config')); let d={};
       if(s.exists()){ d=s.data(); $('#chkAtivo').checked=!!d.catalogoAtivo; }
-      setPublicLink(slug,d); return d;
+      return d;
     }
 
     async function salvarMeta(slug, ownerUid){
@@ -378,17 +397,6 @@
     }
 
     function bloquearUI(msg){ document.querySelector('main.container').innerHTML = `<div class="card"><div class="body status-err">${msg}</div></div>`; }
-
-    function publicUrlFromSlug(slug){
-  // SEU formato pedido:
-  return `https://www.mostreaki.com.br/${slug}.html`;
-  // Se preferir o antigo formato por query:
-  // return `https://www.mostreaki.com.br/catalogo.html?c=${slug}`;
-}
-
-// Assim que você tiver `slug`:
-const btn = document.getElementById('publicLink');
-if (btn) btn.href = publicUrlFromSlug(slug);
 
     // UPLOAD (por item) → Storage + Firestore
     async function uploadImagensDoItem(id){
