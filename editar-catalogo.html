@@ -130,9 +130,10 @@
       setPersistence, browserLocalPersistence 
     } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
     import { 
-      getFirestore, doc, getDoc, setDoc, getDocs, collection, writeBatch, serverTimestamp 
+      getFirestore, doc, getDoc, setDoc, getDocs, collection, writeBatch, serverTimestamp,
+      updateDoc, deleteField
     } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
-    import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-storage.js";
+    import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-storage.js";
 
     // ========= Firebase config =========
     const cfg = {
@@ -223,6 +224,36 @@
       return new File([out], file.name.replace(/\.\w+$/i,'.jpg'), { type:'image/jpeg' });
     }
 
+    // Adiciona um X sobre cada preview carregado
+    function criarBotaoRemover(imgEl, campo, itemRef) {
+      const btn = document.createElement('button');
+      btn.textContent = '×';
+      btn.className = 'remove-btn';
+      btn.title = 'Remover imagem';
+      Object.assign(btn.style, {
+        position: 'absolute',
+        top: '4px', right: '4px',
+        width: '24px', height: '24px',
+        borderRadius: '50%', border: '0',
+        background: 'rgba(0,0,0,.5)', color: '#fff', cursor: 'pointer'
+      });
+      btn.onclick = async () => {
+        try {
+          // tenta apagar no Storage
+          if (imgEl.src && imgEl.src.startsWith('https://')) {
+            const path = decodeURIComponent(new URL(imgEl.src).pathname.replace(/^\/v0\/b\//,'').split('/o/')[1]).split('?')[0];
+            await deleteObject(ref(st, path));
+          }
+          // remove campo no Firestore
+          await updateDoc(itemRef, { [campo]: deleteField() });
+          imgEl.parentElement.remove(); // tira da UI
+          console.log(`Imagem ${campo} removida`);
+        } catch (e) { console.error(e); }
+      };
+      imgEl.parentElement.style.position = 'relative';
+      imgEl.parentElement.appendChild(btn);
+    }
+
     // Monta UI
     function buildGrid(limite){
       const grid = $('#grid'); grid.innerHTML='';
@@ -295,13 +326,22 @@
       const map={}; snap.forEach(d=> map[d.id]=d.data());
       for(let i=1;i<=limite;i++){
         const id=String(i).padStart(2,'0'); const d=map[id]; if(!d) continue;
+        const itemRef = doc(db, 'catalogos', slug, 'itens', id);
         $('#nome_'+id).value  = d.nome || d.titulo || '';
         $('#qtd_'+id).value   = (typeof d.quantidade==='number')? d.quantidade : (d.qtde||0);
         const cents = (typeof d.precoCentavos==='number')? d.precoCentavos : (typeof d.preco==='number'? Math.round(d.preco*100):0);
         $('#preco_'+id).value = fmtBRL(cents);
         $('#ml_'+id).value    = d.mlUrl || '';
         const imgs=[d.urlImagem,d.urlImagem2,d.urlImagem3].filter(Boolean);
-        imgs.forEach((u,ix)=>{ const im=$('#p'+(ix+1)+'_'+id); if(im){ im.src=u; im.style.display='block'; } });
+        imgs.forEach((u,ix)=>{ 
+          const campo = ix === 0 ? 'urlImagem' : `urlImagem${ix + 1}`;
+          const im=$('#p'+(ix+1)+'_'+id); 
+          if(im){ 
+            im.src=u; 
+            im.style.display='block'; 
+            criarBotaoRemover(im, campo, itemRef);
+          } 
+        });
       }
     }
 
@@ -371,11 +411,19 @@
       }
 
       const u1=urls[0]||'', u2=urls[1]||'', u3=urls[2]||'';
-      await setDoc(doc(db,'catalogos',slug,'itens',id),{
+      const itemRef = doc(db, 'catalogos', slug, 'itens', id);
+      await setDoc(itemRef,{
         imagens:paths, urlImagem:u1, urlImagem2:u2, urlImagem3:u3, atualizadoEm:serverTimestamp()
       },{merge:true});
 
-      [['p1_',u1],['p2_',u2],['p3_',u3]].forEach(([p,u])=>{ const im=document.getElementById(p+id); if(im&&u){ im.src=u; im.style.display='block'; }});
+      [['p1_',u1,'urlImagem'],['p2_',u2,'urlImagem2'],['p3_',u3,'urlImagem3']].forEach(([p,u,campo])=>{ 
+        const im=document.getElementById(p+id); 
+        if(im&&u){ 
+          im.src=u; 
+          im.style.display='block'; 
+          criarBotaoRemover(im, campo, itemRef);
+        } 
+      });
       bar.style.width='100%'; hint.textContent='Imagens enviadas e salvas!'; setTimeout(()=>{ barBox.style.display='none'; },1200);
     }
 
