@@ -1,3 +1,4 @@
+```html
 <!doctype html>
 <html lang="pt-BR">
 <head>
@@ -224,34 +225,51 @@
       return new File([out], file.name.replace(/\.\w+$/i,'.jpg'), { type:'image/jpeg' });
     }
 
-    // Adiciona um X sobre cada preview carregado
-    function criarBotaoRemover(imgEl, campo, itemRef) {
+    // ===== Remoção de imagem individual =====
+    async function removerImagem(slug, id, campo, imgEl) {
+      try {
+        // apaga arquivo do storage
+        if (imgEl.src && imgEl.src.startsWith("https://")) {
+          const url = new URL(imgEl.src);
+          const path = decodeURIComponent(url.pathname.split("/o/")[1].split("?")[0]);
+          await deleteObject(ref(st, path));
+        }
+
+        // remove o campo do firestore
+        await updateDoc(doc(db, "catalogos", slug, "itens", id), { [campo]: deleteField() });
+
+        imgEl.src = "";
+        imgEl.style.display = "none";
+        console.log(`Imagem ${campo} removida`);
+      } catch (e) {
+        console.error("Erro ao remover imagem:", e);
+      }
+    }
+
+    // Adiciona botão X em uma imagem específica carregada
+    function addRemoveButton(slug, id, imgEl, campo) {
+      // Remove botão existente se houver
+      const existingBtn = imgEl.parentElement.querySelector('button');
+      if (existingBtn) existingBtn.remove();
+
       const btn = document.createElement('button');
       btn.textContent = '×';
-      btn.className = 'remove-btn';
       btn.title = 'Remover imagem';
       Object.assign(btn.style, {
         position: 'absolute',
         top: '4px', right: '4px',
-        width: '24px', height: '24px',
+        width: '22px', height: '22px',
         borderRadius: '50%', border: '0',
-        background: 'rgba(0,0,0,.5)', color: '#fff', cursor: 'pointer'
+        background: 'rgba(0,0,0,0.6)', color: '#fff', cursor: 'pointer',
+        fontSize: '16px', lineHeight: '18px'
       });
       btn.onclick = async () => {
-        try {
-          // tenta apagar no Storage
-          if (imgEl.src && imgEl.src.startsWith('https://')) {
-            const path = decodeURIComponent(new URL(imgEl.src).pathname.replace(/^\/v0\/b\//,'').split('/o/')[1]).split('?')[0];
-            await deleteObject(ref(st, path));
-          }
-          // remove campo no Firestore
-          await updateDoc(itemRef, { [campo]: deleteField() });
-          imgEl.parentElement.remove(); // tira da UI
-          console.log(`Imagem ${campo} removida`);
-        } catch (e) { console.error(e); }
+        await removerImagem(slug, id, campo, imgEl);
+        btn.remove();
       };
-      imgEl.parentElement.style.position = 'relative';
-      imgEl.parentElement.appendChild(btn);
+      const wrapper = imgEl.parentElement;
+      wrapper.style.position = 'relative';
+      wrapper.appendChild(btn);
     }
 
     // Monta UI
@@ -313,10 +331,20 @@
           else { el.src=''; el.style.display='none'; }
         });
       });
-      // botões
-      $('#grid').querySelectorAll('button[data-clear]').forEach(b=> b.onclick = ()=>{
-        const id=b.dataset.clear; ['f1_','f2_','f3_'].forEach(p=>{ const i=document.getElementById(p+id); if(i) i.value=''; });
-        ['p1_','p2_','p3_'].forEach(p=>{ const i=document.getElementById(p+id); if(i){ i.src=''; i.style.display='none'; } });
+      // botões limpar - agora remove do storage/firestore se carregado
+      $('#grid').querySelectorAll('button[data-clear]').forEach(b=> b.onclick = async ()=>{
+        const id=b.dataset.clear; 
+        ['f1_','f2_','f3_'].forEach(p=>{ const i=document.getElementById(p+id); if(i) i.value=''; });
+        for(let n=1; n<=3; n++){
+          const im = document.getElementById(`p${n}_${id}`);
+          if(!im) continue;
+          if(im.src && im.src.startsWith('https://')){
+            const campo = n === 1 ? "urlImagem" : n === 2 ? "urlImagem2" : "urlImagem3";
+            await removerImagem(slug, id, campo, im);
+          } else {
+            im.src=''; im.style.display='none';
+          }
+        }
       });
       $('#grid').querySelectorAll('button[data-up]').forEach(b=> b.onclick = ()=> uploadImagensDoItem(b.dataset.up));
     }
@@ -326,7 +354,6 @@
       const map={}; snap.forEach(d=> map[d.id]=d.data());
       for(let i=1;i<=limite;i++){
         const id=String(i).padStart(2,'0'); const d=map[id]; if(!d) continue;
-        const itemRef = doc(db, 'catalogos', slug, 'itens', id);
         $('#nome_'+id).value  = d.nome || d.titulo || '';
         $('#qtd_'+id).value   = (typeof d.quantidade==='number')? d.quantidade : (d.qtde||0);
         const cents = (typeof d.precoCentavos==='number')? d.precoCentavos : (typeof d.preco==='number'? Math.round(d.preco*100):0);
@@ -339,7 +366,7 @@
           if(im){ 
             im.src=u; 
             im.style.display='block'; 
-            criarBotaoRemover(im, campo, itemRef);
+            addRemoveButton(slug, id, im, campo);
           } 
         });
       }
@@ -421,7 +448,7 @@
         if(im&&u){ 
           im.src=u; 
           im.style.display='block'; 
-          criarBotaoRemover(im, campo, itemRef);
+          addRemoveButton(slug, id, im, campo);
         } 
       });
       bar.style.width='100%'; hint.textContent='Imagens enviadas e salvas!'; setTimeout(()=>{ barBox.style.display='none'; },1200);
@@ -462,3 +489,4 @@
   </script>
 </body>
 </html>
+```
