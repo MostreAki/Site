@@ -85,7 +85,7 @@
     </div>
   </header>
 
-  <main class="container">
+  <main class="container" id="appRoot">
     <h2>Editar Catálogo</h2>
     <div class="sub">
       <span class="pill">Slug: <b id="slugLabel" style="margin-left:6px">—</b></span>
@@ -107,7 +107,8 @@
         </div>
         <p id="hintLimite" class="hint" style="margin-top:12px"></p>
         <p class="hint" style="margin-top:8px">
-          Suba as <b>imagens direto para o Storage (≤ 400 KB)</b>. Após o upload, salvamos <code>urlImagem(2/3)</code> no Firestore.
+          Suba as <b>imagens direto para o Storage (≤ 400 KB)</b>. Após o upload, salvamos <code>urlImagem(2/3)</code> no Firestore
+          e também <code>imagens[]</code> com os caminhos do bucket.
         </p>
       </div>
     </section>
@@ -126,7 +127,7 @@
   <script type="module">
     import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
     import { 
-      getAuth, onAuthStateChanged, signOut, signInAnonymously,
+      getAuth, onAuthStateChanged, signOut,
       setPersistence, browserLocalPersistence 
     } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
     import { 
@@ -140,7 +141,7 @@
       apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
       authDomain: "mostreaki-2025.firebaseapp.com",
       projectId: "mostreaki-2025",
-      storageBucket: "mostreaki-2025.firebasestorage.app", // .app como você já usa
+      storageBucket: "mostreaki-2025.firebasestorage.app",
       messagingSenderId: "748712068097",
       appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
     };
@@ -149,7 +150,7 @@
     const db   = getFirestore(app);
     const st   = getStorage(app);
 
-    // Mantém sessão
+    // Sessão local (mantém logado até clicar "Sair")
     await setPersistence(auth, browserLocalPersistence);
 
     const $ = s => document.querySelector(s);
@@ -165,12 +166,12 @@
       btn.addEventListener('click',e=>{e.stopPropagation();toggle();});
     })();
 
-    // Helpers
+    // Helpers BRL / cache-busting
     const fmtBRL = c => 'R$ ' + (c/100).toLocaleString('pt-BR',{minimumFractionDigits:2});
     const parseBRL = s => { const n=parseFloat(String(s).replace(/[^\d,.-]/g,'').replace(/\./g,'').replace(',','.')); return isNaN(n)?0:Math.round(n*100); };
     const bust = (url)=> url ? (url + (url.includes('?')?'&':'?') + 't=' + Date.now()) : url;
 
-    // Slug + link público (formato catalogo-<slug>.html)
+    // Slug + link público (catalogo-<slug>.html)
     function getSlug(){ const u=new URL(location.href); return u.searchParams.get('c') || u.searchParams.get('slug') || ''; }
     const slug = getSlug(); $('#slugLabel').textContent = slug || '—';
     function setPublicLink(slug, meta={}){ const a=$('#publicLink'); if(!a||!slug){ if(a) a.href='#'; return; }
@@ -187,6 +188,7 @@
       return { ativo: status==='ativo', limite: maxByPlano(plano), plano };
     }
 
+    // Autorização
     async function exigirDonoOuEditor(uid, slug){
       const refCfg = doc(db,'catalogos',slug,'meta','config');
       const s = await getDoc(refCfg);
@@ -202,8 +204,20 @@
     function renderUserCircle(user){
       const el = $('#userCircle'); const btn=$('#authBtn');
       const show = ()=> el.style.display='flex';
-      if(!user){ el.style.display='none'; btn.textContent='Entrar'; btn.onclick=(e)=>{e.preventDefault(); /* redirecionar para login real se quiser */}; return; }
-      btn.textContent='Sair'; btn.onclick=async (e)=>{e.preventDefault(); await signOut(auth);};
+      if(!user){
+        el.style.display='none';
+        btn.textContent='Entrar';
+        btn.onclick=(e)=>{ e.preventDefault(); location.href='/minha-conta.html'; };
+        return;
+      }
+      btn.textContent='Sair';
+      btn.onclick=async (e)=>{
+        e.preventDefault();
+        try { await signOut(auth); } finally {
+          // redireciona sempre que sair
+          location.href = '/index.html';
+        }
+      };
       const url = user.photoURL;
       el.title = user.displayName || user.email || user.uid;
       el.innerHTML = '';
@@ -211,17 +225,6 @@
       const name = (user.displayName || user.email || 'U').trim();
       const initials = name.split('@')[0].split(/\s+/).slice(0,2).map(s=>s[0]?.toUpperCase()||'U').join('');
       el.textContent = initials; show();
-    }
-
-    // Compressão até 400KB
-    async function compressToJPEG(file, maxBytes=400*1024, maxW=1400, maxH=1400){
-      const img = new Image(); img.src = URL.createObjectURL(file); await img.decode();
-      const r = Math.min(maxW/img.width, maxH/img.height, 1), w=Math.round(img.width*r), h=Math.round(img.height*r);
-      const canvas = Object.assign(document.createElement('canvas'), { width:w, height:h });
-      const ctx = canvas.getContext('2d'); ctx.drawImage(img,0,0,w,h);
-      let q=0.9, step=0.08, out;
-      for(let i=0;i<10;i++){ out = await new Promise(res=>canvas.toBlob(res,'image/jpeg',q)); if(out.size<=maxBytes || q<=0.4) break; q-=step; step=Math.max(0.03,step*0.75); }
-      return new File([out], file.name.replace(/\.\w+$/i,'.jpg'), { type:'image/jpeg' });
     }
 
     // UI dos itens
@@ -297,7 +300,6 @@
         const cents = (typeof d.precoCentavos==='number')? d.precoCentavos : (typeof d.preco==='number'? Math.round(d.preco*100):0);
         $('#preco_'+id).value = fmtBRL(cents);
         $('#ml_'+id).value    = d.mlUrl || '';
-        // Mantém cada URL no seu slot
         const urls=[d.urlImagem,d.urlImagem2,d.urlImagem3];
         urls.forEach((u,ix)=>{ 
           const im=document.getElementById('p'+(ix+1)+'_'+id); 
@@ -307,15 +309,15 @@
     }
 
     async function salvarTudo(slug, limite){
-      const stx = document.getElementById('statusSave'); stx.textContent='Salvando...'; stx.className='hint';
+      const stx = $('#statusSave'); stx.textContent='Salvando...'; stx.className='hint';
       try{
         const batch = writeBatch(db);
         for(let i=1;i<=limite;i++){
           const id=String(i).padStart(2,'0');
-          const nome=(document.getElementById('nome_'+id)?.value||'').trim();
-          const qtd =parseInt(document.getElementById('qtd_'+id)?.value||'0',10);
-          const cents=parseBRL(document.getElementById('preco_'+id)?.value||'');
-          const ml =(document.getElementById('ml_'+id)?.value||'').trim();
+          const nome=($('#nome_'+id)?.value||'').trim();
+          const qtd =parseInt($('#qtd_'+id)?.value||'0',10);
+          const cents=parseBRL($('#preco_'+id)?.value||'');
+          const ml =($('#ml_'+id)?.value||'').trim();
           batch.set(doc(db,'catalogos',slug,'itens',id),{
             ordem:i, nome, quantidade:isNaN(qtd)?0:qtd, precoCentavos:cents, mlUrl:ml, atualizadoEm:serverTimestamp()
           },{merge:true});
@@ -328,24 +330,27 @@
 
     async function carregarMeta(slug){
       const s=await getDoc(doc(db,'catalogos',slug,'meta','config')); let d={};
-      if(s.exists()){ d=s.data(); document.getElementById('chkAtivo').checked=!!d.catalogoAtivo; }
+      if(s.exists()){ d=s.data(); $('#chkAtivo').checked=!!d.catalogoAtivo; }
       setPublicLink(slug,d); return d;
     }
 
     async function salvarMeta(slug, ownerUid){
       await setDoc(doc(db,'catalogos',slug,'meta','config'),{
-        ownerUid, catalogoAtivo: document.getElementById('chkAtivo').checked, atualizadoEm: serverTimestamp()
+        ownerUid, catalogoAtivo: $('#chkAtivo').checked, atualizadoEm: serverTimestamp()
       },{merge:true});
     }
 
-    function bloquearUI(msg){ document.querySelector('main.container').innerHTML = `<div class="card"><div class="body status-err">${msg}</div></div>`; }
+    function bloquearUI(msg){
+      const root = document.getElementById('appRoot');
+      root.innerHTML = `<div class="card"><div class="body status-err">${msg}</div></div>`;
+    }
 
-    // ========== UPLOAD respeitando slots fixos (1→urlImagem, 2→urlImagem2, 3→urlImagem3) ==========
+    // ===== Upload por slot fixo (1,2,3) =====
     async function uploadImagensDoItem(id){
-      const hint=document.getElementById('hint_'+id), barBox=document.getElementById('pg_'+id), bar=document.getElementById('bar_'+id);
-      const f1=document.getElementById('f1_'+id)?.files?.[0]||null;
-      const f2=document.getElementById('f2_'+id)?.files?.[0]||null;
-      const f3=document.getElementById('f3_'+id)?.files?.[0]||null;
+      const hint=$('#hint_'+id), barBox=$('#pg_'+id), bar=$('#bar_'+id);
+      const f1=$('#f1_'+id)?.files?.[0]||null;
+      const f2=$('#f2_'+id)?.files?.[0]||null;
+      const f3=$('#f3_'+id)?.files?.[0]||null;
       if(!f1 && !f2 && !f3){ hint.textContent='Selecione pelo menos 1 imagem.'; return; }
 
       const toUpload=[];
@@ -359,10 +364,10 @@
       hint.textContent='Enviando...'; barBox.style.display='block'; bar.style.width='0%';
       const base=`catalogos/${slug}/itens/${id}`;
       let sent=0, total=toUpload.reduce((a,[_s,f])=>a+f.size,0);
-      const newUrls={}; // {1:url,2:url,3:url}
+      const newUrls={};
 
       for(const [slot,file] of toUpload){
-        const name=`i${String(slot).padStart(2,'0')}.jpg`; // NOME FIXO POR SLOT
+        const name=`i${String(slot).padStart(2,'0')}.jpg`;
         const path=`${base}/${name}`;
         const r=ref(st, path);
         await new Promise((resolve,reject)=>{
@@ -379,7 +384,6 @@
         });
       }
 
-      // Atualiza SÓ os campos dos slots enviados (merge não apaga os outros)
       const itemRef = doc(db, 'catalogos', slug, 'itens', id);
       const patch = { atualizadoEm: serverTimestamp() };
       if(newUrls[1]) patch.urlImagem  = newUrls[1];
@@ -387,7 +391,6 @@
       if(newUrls[3]) patch.urlImagem3 = newUrls[3];
       await setDoc(itemRef, patch, { merge:true });
 
-      // Atualiza prévias apenas dos slots tocados
       for(const s of [1,2,3]){
         if(newUrls[s]){
           const im=document.getElementById(`p${s}_${id}`);
@@ -399,7 +402,7 @@
       bar.style.width='100%'; setTimeout(()=>{ barBox.style.display='none'; },1200);
     }
 
-    // ===== Remoção individual por slot (não reordena) =====
+    // ===== Remoção individual (não reordena slots) =====
     async function removerImagem(slug, id, campo, imgEl) {
       const hint = document.getElementById('hint_' + id);
       try {
@@ -415,7 +418,6 @@
         }
         const itemRef = doc(db, "catalogos", slug, "itens", id);
         await updateDoc(itemRef, { [campo]: deleteField(), atualizadoEm: serverTimestamp() });
-
         imgEl.src=''; imgEl.style.display='none';
         const which = campo === 'urlImagem' ? '1' : (campo === 'urlImagem2' ? '2' : '3');
         const fileInput = document.getElementById('f' + which + '_' + id);
@@ -429,7 +431,6 @@
       }
     }
 
-    // Botões de remover por slot
     function criarBotoesRemover(slug) {
       for (let i = 1; i <= 100; i++) {
         const id = String(i).padStart(2, "0");
@@ -470,33 +471,40 @@
       }
     }
 
-    // Auth + carregamento (mantido)
+    // ===== Gate de autenticação =====
+    function redirectHome(){ location.href = '/index.html'; }
+
     onAuthStateChanged(auth, async user=>{
       try{
-        if(!user){ await signInAnonymously(auth); }
-        renderUserCircle(auth.currentUser);
+        if(!user){
+          // sem usuário: volta pra home (área restrita)
+          redirectHome();
+          return;
+        }
+
+        renderUserCircle(user);
 
         if(!slug){ bloquearUI('Informe ?c=<slug> para editar.'); return; }
 
-        const cfgMeta = await exigirDonoOuEditor((auth.currentUser||{}).uid, slug);
+        const cfgMeta = await exigirDonoOuEditor(user.uid, slug);
         const { ativo, limite, plano } = await resolveLimiteAssinatura(cfgMeta.ownerUid);
         if(!ativo){ bloquearUI('Assinatura inativa para este catálogo.'); return; }
-        document.getElementById('hintLimite').textContent = `Seu plano (${plano}) permite até ${limite} itens.`;
-        document.getElementById('planoInfo').textContent = `Plano atual: ${plano}`;
+
+        $('#hintLimite').textContent = `Seu plano (${plano}) permite até ${limite} itens.`;
+        $('#planoInfo').textContent = `Plano atual: ${plano}`;
 
         buildGrid(limite);
         const meta = await carregarMeta(slug);
         await carregarItens(slug, limite);
         criarBotoesRemover(slug);
 
-        document.getElementById('btnSalvarTudo').onclick = ()=> salvarTudo(slug, limite);
-        document.getElementById('chkAtivo').addEventListener('change', ()=> salvarMeta(slug, cfgMeta.ownerUid));
+        $('#btnSalvarTudo').onclick = ()=> salvarTudo(slug, limite);
+        $('#chkAtivo').addEventListener('change', ()=> salvarMeta(slug, cfgMeta.ownerUid));
         setPublicLink(slug, meta);
       }catch(e){
         console.error(e);
-        if(e.message==='NOT_OWNER') bloquearUI('Você não tem permissão para editar este catálogo.');
-        else if(e.message==='CONFIG_NOT_FOUND') bloquearUI('Configuração não encontrada. Crie /catalogos/'+slug+'/meta/config.');
-        else bloquearUI('Erro ao carregar. Verifique as regras do Firestore/Storage.');
+        // se algo falhar por sessão/perm, manda pra home
+        redirectHome();
       }
     });
   </script>
