@@ -270,11 +270,11 @@
               <div class="progress" style="margin:8px 0;display:none" id="pg_${id}"><div class="bar" id="bar_${id}" style="width:0%"></div></div>
               <div class="toolbar">
                 <button class="btn ok" data-up="${id}">Enviar imagens</button>
-                <button class="btn ghost" data-clear="${id}">Limpar seleção</button>
               </div>
               <div class="hint" id="hint_${id}"></div>
             </div>
           </div>`);}
+
       // prévias locais
       $('#grid').querySelectorAll('input[type=file]').forEach(inp=>{
         inp.addEventListener('change', ()=>{
@@ -284,26 +284,6 @@
           if(inp.files && inp.files[0]){ el.src = URL.createObjectURL(inp.files[0]); el.style.display='block'; }
           else { el.src=''; el.style.display='none'; }
         });
-      });
-      // botões limpar
-      $('#grid').querySelectorAll('button[data-clear]').forEach(b=> b.onclick = async ()=>{
-        const id = b.dataset.clear;
-        ['f1_','f2_','f3_'].forEach(p=>{ const i=document.getElementById(p+id); if(i) i.value=''; });
-        for(let n=1; n<=3; n++){
-          const im = document.getElementById(`p${n}_${id}`);
-          if(im){
-            const wrapper = im.parentElement;
-            const btn = wrapper.querySelector('button');
-            if(im.src.startsWith('https://')){
-              const campo = n === 1 ? "urlImagem" : n === 2 ? "urlImagem2" : "urlImagem3";
-              await removerImagem(slug, id, campo, im);
-            } else {
-              im.src='';
-              im.style.display='none';
-            }
-            if(btn) btn.remove();
-          }
-        }
       });
       $('#grid').querySelectorAll('button[data-up]').forEach(b=> b.onclick = ()=> uploadImagensDoItem(b.dataset.up));
     }
