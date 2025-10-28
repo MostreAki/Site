@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Editar Catálogo – MostreAki (Storage ≤ 400KB + Firestore)</title>
+  <title>Editar Catálogo – MostreAki (Storage  400KB + Firestore)</title>
   <style>
     :root{
       --brand:#16b0af; --brandLight:#c4e8de; --ink:#083f3e; --bg:#f6fbfa;
@@ -62,35 +62,6 @@
     .bar{height:8px;background:linear-gradient(90deg,#19c5a7,#12a69f)}
     footer{color:#567;font-size:.88rem;text-align:center;padding:20px 16px}
     .btn.auth{min-width:92px;text-align:center}
-    /* Barra de ações responsiva */
-.toolbar{
-  display:flex; flex-wrap:wrap; gap:10px; align-items:center;
-  margin:12px 0;
-}
-
-/* Botão base */
-.btn{
-  --bg:#0f766e; --fg:#fff; --bd:transparent;
-  display:inline-flex; align-items:center; gap:8px;
-  min-height:44px; padding:10px 14px; border-radius:12px;
-  border:1px solid var(--bd); background:var(--bg); color:var(--fg);
-  font-weight:800; cursor:pointer; box-shadow:0 8px 20px rgba(0,0,0,.12);
-  transition:transform .08s ease, box-shadow .12s ease, background .12s ease;
-  text-decoration:none;
-}
-.btn:active{ transform:translateY(1px); box-shadow:0 4px 12px rgba(0,0,0,.14); }
-
-/* Variações */
-.btn--ghost{ --bg:transparent; --fg:#0f766e; --bd:rgba(15,118,110,.35); }
-.btn--danger{ --bg:#b91c1c; }
-.btn--secondary{ --bg:#0ea5e9; }
-
-/* Versões pequenas/grandes */
-.btn--sm{ padding:8px 12px; min-height:38px; border-radius:10px; }
-.btn--lg{ padding:12px 18px; min-height:48px; border-radius:14px; }
-
-/* Ícones dentro do botão */
-.btn > svg, .btn > img{ width:20px; height:20px; display:block; }
   </style>
 </head>
 <body>
@@ -118,7 +89,7 @@
     <h2>Editar Catálogo</h2>
     <div class="sub">
       <span class="pill">Slug: <b id="slugLabel" style="margin-left:6px">—</b></span>
-      <a id="publicLink" class="ghost-link" href="#" target="_blank" rel="noopener" title="Abrir a página pública do catálogo">🔗 Ver página pública</a>
+      <a id="publicLink" class="ghost-link" href="#" target="_blank" rel="noopener" title="Abrir a página pública do catálogo"> Ver página pública</a>
       <span id="planoInfo" class="hint"></span>
     </div>
 
@@ -136,7 +107,7 @@
         </div>
         <p id="hintLimite" class="hint" style="margin-top:12px"></p>
         <p class="hint" style="margin-top:8px">
-          Suba as <b>imagens direto para o Storage (≤ 400 KB)</b>. Após o upload, salvamos <code>urlImagem(2/3)</code> no Firestore
+          Suba as <b>imagens direto para o Storage ( 400 KB)</b>. Após o upload, salvamos <code>urlImagem(2/3)</code> no Firestore
           e também <code>imagens[]</code> com os caminhos do bucket.
         </p>
       </div>
@@ -163,7 +134,7 @@
       getFirestore, doc, getDoc, setDoc, getDocs, collection, writeBatch, serverTimestamp,
       updateDoc, deleteField
     } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
-    import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject, updateMetadata } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-storage.js";
+    import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-storage.js";
 
     // ========= Firebase config =========
     const cfg = {
@@ -202,28 +173,9 @@
     // Slug
     function getSlug(){ const u=new URL(location.href); return u.searchParams.get('c') || u.searchParams.get('slug') || ''; }
     const slug = getSlug(); $('#slugLabel').textContent = slug || '—';
-
-    // Função para montar o link público
-function publicUrlFromSlug(slug) {
-  // caminho final do catálogo: www.mostreaki.com.br/catalogo-<slug>.html
-  return `https://www.mostreaki.com.br/catalogo-${slug}.html`;
-}
-
-// Função que atualiza o botão após o slug ser conhecido
-function setPublicLink(slug, meta = {}) {
-  const a = document.getElementById('publicLink');
-  if (!a) return;
-  if (!slug) {
-    a.removeAttribute('href');
-    a.classList.add('disabled');
-    return;
-  }
-  // se tiver caminho custom no Firestore (meta.publicPagePath), usa ele
-  const custom = (meta.publicPagePath || meta.customPublicPage || '').trim();
-  a.href = custom || publicUrlFromSlug(slug);
-  a.target = '_blank';
-  a.rel = 'noopener';
-}
+    function setPublicLink(slug, meta={}){ const a=$('#publicLink'); if(!a||!slug){ if(a) a.href='#'; return; }
+      const custom=(meta.publicPagePath||meta.public_page_path||meta.customPublicPage||'').trim();
+      a.href = custom || `/catalogo-${slug}.html`; }
 
     // Limite por plano (igual tua lógica)
     function normalizePlano(p=''){ return p.normalize('NFD').replace(/\p{Diacritic}/gu,'').toLowerCase(); }
@@ -273,11 +225,6 @@ function setPublicLink(slug, meta = {}) {
       return new File([out], file.name.replace(/\.\w+$/i,'.jpg'), { type:'image/jpeg' });
     }
 
-    // Cache busting
-    function bust(url){
-      return url + (url.includes('?') ? '&' : '?') + 't=' + Date.now();
-    }
-
     // Monta UI
     function buildGrid(limite){
       const grid = $('#grid'); grid.innerHTML='';
@@ -309,7 +256,7 @@ function setPublicLink(slug, meta = {}) {
             </div>
 
             <div class="uploader">
-              <label>Imagens (Storage, ≤ 400KB)</label>
+              <label>Imagens (Storage,  400KB)</label>
               <div class="grid3">
                 <div><label for="f1_${id}">IMG 1</label><input type="file" id="f1_${id}" accept="image/*"></div>
                 <div><label for="f2_${id}">IMG 2</label><input type="file" id="f2_${id}" accept="image/*"></div>
@@ -357,7 +304,7 @@ function setPublicLink(slug, meta = {}) {
           const campo = ix === 0 ? 'urlImagem' : `urlImagem${ix + 1}`;
           const im=$('#p'+(ix+1)+'_'+id); 
           if(im){ 
-            im.src = bust(u); 
+            im.src=u; 
             im.style.display='block'; 
           } 
         });
@@ -387,7 +334,7 @@ function setPublicLink(slug, meta = {}) {
     async function carregarMeta(slug){
       const s=await getDoc(doc(db,'catalogos',slug,'meta','config')); let d={};
       if(s.exists()){ d=s.data(); $('#chkAtivo').checked=!!d.catalogoAtivo; }
-      return d;
+      setPublicLink(slug,d); return d;
     }
 
     async function salvarMeta(slug, ownerUid){
@@ -398,13 +345,13 @@ function setPublicLink(slug, meta = {}) {
 
     function bloquearUI(msg){ document.querySelector('main.container').innerHTML = `<div class="card"><div class="body status-err">${msg}</div></div>`; }
 
-    // UPLOAD (por item) → Storage + Firestore
+    // UPLOAD (por item)  Storage + Firestore
     async function uploadImagensDoItem(id){
       const hint=$('#hint_'+id), barBox=$('#pg_'+id), bar=$('#bar_'+id);
       const picks=[ $('#f1_'+id)?.files?.[0], $('#f2_'+id)?.files?.[0], $('#f3_'+id)?.files?.[0] ].filter(Boolean);
       if(!picks.length){ hint.textContent='Selecione ao menos 1 imagem.'; return; }
 
-      // comprime ≤ 400 KB
+      // comprime  400 KB
       for(let i=0;i<picks.length;i++){
         const c = await compressToJPEG(picks[i], 400*1024, 1400, 1400);
         if(c.size>400*1024){ hint.textContent=`Imagem ${i+1} ainda > 400KB (${Math.round(c.size/1024)}KB). Reduza e tente de novo.`; return; }
@@ -424,9 +371,7 @@ function setPublicLink(slug, meta = {}) {
           task.on('state_changed', snap=>{
             const p=Math.round(((sent+snap.bytesTransferred)/total)*100); bar.style.width=p+'%';
           }, reject, async ()=>{
-            const url=await getDownloadURL(r); urls.push(url); paths.push(path); sent+=file.size; 
-            await updateMetadata(r, { cacheControl: 'public, max-age=60' });
-            resolve();
+            const url=await getDownloadURL(r); urls.push(url); paths.push(path); sent+=file.size; resolve();
           });
         });
       }
@@ -440,7 +385,7 @@ function setPublicLink(slug, meta = {}) {
       [['p1_',u1,'urlImagem'],['p2_',u2,'urlImagem2'],['p3_',u3,'urlImagem3']].forEach(([p,u,campo])=>{ 
         const im=document.getElementById(p+id); 
         if(im&&u){ 
-          im.src = bust(u); 
+          im.src=u; 
           im.style.display='block'; 
         } 
       });
@@ -513,7 +458,7 @@ function setPublicLink(slug, meta = {}) {
           if (existing) existing.remove();
 
           const btn = document.createElement("button");
-          btn.textContent = "🗑️";
+          btn.textContent = "";
           btn.className = 'remove-btn';
           Object.assign(btn.style, {
             position: "absolute",
