@@ -56,6 +56,7 @@
     .uploader{margin-top:10px;border-top:1px dashed #e2efec;padding-top:10px}
     .uploader .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
     .pv{margin-top:8px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+    .pv-wrap { position: relative; }
     .pv img{width:100%;height:90px;object-fit:cover;border:1px solid #e3f2ef;border-radius:8px}
     .progress{height:8px;background:#e9f5f1;border-radius:6px;overflow:hidden}
     .bar{height:8px;background:linear-gradient(90deg,#19c5a7,#12a69f)}
@@ -224,53 +225,6 @@
       return new File([out], file.name.replace(/\.\w+$/i,'.jpg'), { type:'image/jpeg' });
     }
 
-    // ===== Remoção de imagem individual =====
-    async function removerImagem(slug, id, campo, imgEl) {
-      try {
-        // apaga arquivo do storage
-        if (imgEl.src && imgEl.src.startsWith("https://")) {
-          const url = new URL(imgEl.src);
-          const path = decodeURIComponent(url.pathname.split("/o/")[1].split("?")[0]);
-          await deleteObject(ref(st, path));
-        }
-
-        // remove o campo do firestore
-        await updateDoc(doc(db, "catalogos", slug, "itens", id), { [campo]: deleteField() });
-
-        imgEl.src = "";
-        imgEl.style.display = "none";
-        console.log(`Imagem ${campo} removida`);
-      } catch (e) {
-        console.error("Erro ao remover imagem:", e);
-      }
-    }
-
-    // Adiciona botão X em uma imagem específica carregada
-    function addRemoveButton(slug, id, imgEl, campo) {
-      // Remove botão existente se houver
-      const existingBtn = imgEl.parentElement.querySelector('button');
-      if (existingBtn) existingBtn.remove();
-
-      const btn = document.createElement('button');
-      btn.textContent = '×';
-      btn.title = 'Remover imagem';
-      Object.assign(btn.style, {
-        position: 'absolute',
-        top: '4px', right: '4px',
-        width: '22px', height: '22px',
-        borderRadius: '50%', border: '0',
-        background: 'rgba(0,0,0,0.6)', color: '#fff', cursor: 'pointer',
-        fontSize: '16px', lineHeight: '18px'
-      });
-      btn.onclick = async () => {
-        await removerImagem(slug, id, campo, imgEl);
-        btn.remove();
-      };
-      const wrapper = imgEl.parentElement;
-      wrapper.style.position = 'relative';
-      wrapper.appendChild(btn);
-    }
-
     // Monta UI
     function buildGrid(limite){
       const grid = $('#grid'); grid.innerHTML='';
@@ -309,7 +263,9 @@
                 <div><label for="f3_${id}">IMG 3</label><input type="file" id="f3_${id}" accept="image/*"></div>
               </div>
               <div class="pv" id="pv_${id}">
-                <img id="p1_${id}" style="display:none"><img id="p2_${id}" style="display:none"><img id="p3_${id}" style="display:none">
+                <div class="pv-wrap"><img id="p1_${id}" style="display:none"></div>
+                <div class="pv-wrap"><img id="p2_${id}" style="display:none"></div>
+                <div class="pv-wrap"><img id="p3_${id}" style="display:none"></div>
               </div>
               <div class="progress" style="margin:8px 0;display:none" id="pg_${id}"><div class="bar" id="bar_${id}" style="width:0%"></div></div>
               <div class="toolbar">
@@ -319,7 +275,6 @@
               <div class="hint" id="hint_${id}"></div>
             </div>
           </div>`);}
-
       // prévias locais
       $('#grid').querySelectorAll('input[type=file]').forEach(inp=>{
         inp.addEventListener('change', ()=>{
@@ -330,18 +285,23 @@
           else { el.src=''; el.style.display='none'; }
         });
       });
-      // botões limpar - agora remove do storage/firestore se carregado
+      // botões limpar
       $('#grid').querySelectorAll('button[data-clear]').forEach(b=> b.onclick = async ()=>{
-        const id=b.dataset.clear; 
+        const id = b.dataset.clear;
         ['f1_','f2_','f3_'].forEach(p=>{ const i=document.getElementById(p+id); if(i) i.value=''; });
         for(let n=1; n<=3; n++){
           const im = document.getElementById(`p${n}_${id}`);
-          if(!im) continue;
-          if(im.src && im.src.startsWith('https://')){
-            const campo = n === 1 ? "urlImagem" : n === 2 ? "urlImagem2" : "urlImagem3";
-            await removerImagem(slug, id, campo, im);
-          } else {
-            im.src=''; im.style.display='none';
+          if(im){
+            const wrapper = im.parentElement;
+            const btn = wrapper.querySelector('button');
+            if(im.src.startsWith('https://')){
+              const campo = n === 1 ? "urlImagem" : n === 2 ? "urlImagem2" : "urlImagem3";
+              await removerImagem(slug, id, campo, im);
+            } else {
+              im.src='';
+              im.style.display='none';
+            }
+            if(btn) btn.remove();
           }
         }
       });
@@ -353,6 +313,7 @@
       const map={}; snap.forEach(d=> map[d.id]=d.data());
       for(let i=1;i<=limite;i++){
         const id=String(i).padStart(2,'0'); const d=map[id]; if(!d) continue;
+        const itemRef = doc(db, 'catalogos', slug, 'itens', id);
         $('#nome_'+id).value  = d.nome || d.titulo || '';
         $('#qtd_'+id).value   = (typeof d.quantidade==='number')? d.quantidade : (d.qtde||0);
         const cents = (typeof d.precoCentavos==='number')? d.precoCentavos : (typeof d.preco==='number'? Math.round(d.preco*100):0);
@@ -365,7 +326,6 @@
           if(im){ 
             im.src=u; 
             im.style.display='block'; 
-            addRemoveButton(slug, id, im, campo);
           } 
         });
       }
@@ -447,10 +407,71 @@
         if(im&&u){ 
           im.src=u; 
           im.style.display='block'; 
-          addRemoveButton(slug, id, im, campo);
         } 
       });
+      criarBotoesRemover(slug);
       bar.style.width='100%'; hint.textContent='Imagens enviadas e salvas!'; setTimeout(()=>{ barBox.style.display='none'; },1200);
+    }
+
+    // ===== Remoção de imagem individual =====
+    async function removerImagem(slug, id, campo, imgEl) {
+      try {
+        // apaga arquivo do storage
+        if (imgEl.src && imgEl.src.startsWith("https://")) {
+          const url = new URL(imgEl.src);
+          const path = decodeURIComponent(url.pathname.split("/o/")[1].split("?")[0]);
+          await deleteObject(ref(st, path));
+        }
+
+        // remove o campo do firestore
+        await updateDoc(doc(db, "catalogos", slug, "itens", id), { [campo]: deleteField() });
+
+        imgEl.remove();
+        console.log(`Imagem ${campo} removida`);
+      } catch (e) {
+        console.error("Erro ao remover imagem:", e);
+      }
+    }
+
+    // ===== Cria botões X em todas as prévias =====
+    function criarBotoesRemover(slug) {
+      for (let i = 1; i <= 100; i++) {
+        const id = String(i).padStart(2, "0");
+        for (let n = 1; n <= 3; n++) {
+          const imgEl = document.getElementById(`p${n}_${id}`);
+          if (!imgEl || imgEl.style.display === 'none') continue;
+          const wrapper = imgEl.parentElement;
+          const existing = wrapper.querySelector('button');
+          if (existing) existing.remove();
+          const btn = document.createElement("button");
+          btn.textContent = "×";
+          Object.assign(btn.style, {
+            position: "absolute",
+            top: "4px",
+            right: "4px",
+            background: "rgba(0,0,0,0.6)",
+            color: "#fff",
+            border: "none",
+            borderRadius: "50%",
+            width: "22px",
+            height: "22px",
+            cursor: "pointer",
+            fontSize: "16px",
+            lineHeight: "18px",
+          });
+
+          // evento de clique
+          btn.onclick = () => {
+            const campo = n === 1 ? "urlImagem" : n === 2 ? "urlImagem2" : "urlImagem3";
+            removerImagem(slug, id, campo, imgEl);
+            btn.remove();
+          };
+
+          // insere o botão no contêiner da imagem
+          wrapper.style.position = "relative";
+          wrapper.appendChild(btn);
+        }
+      }
     }
 
     // Auth + carregamento
@@ -474,6 +495,7 @@
         buildGrid(limite);
         const meta = await carregarMeta(slug);
         await carregarItens(slug, limite);
+        criarBotoesRemover(slug);
 
         $('#btnSalvarTudo').onclick = ()=> salvarTudo(slug, limite);
         $('#chkAtivo').addEventListener('change', ()=> salvarMeta(slug, cfgMeta.ownerUid));
