@@ -696,17 +696,26 @@
                     : (typeof d.qtde === 'number') ? d.qtde : '—';
 
           let fotos = [];
+
+          // Aceita qualquer variante de campo
           if (Array.isArray(d.imagens) && d.imagens.length) {
             fotos = d.imagens.filter(Boolean);
+          } else if (Array.isArray(d.imagensFull) && d.imagensFull.length) {
+            fotos = d.imagensFull.filter(Boolean);
           } else {
-            fotos = [d.urlImagem, d.urlImagem2, d.urlImagem3].filter(Boolean);
+            fotos = [
+              d.imagem,
+              d.imagem2,
+              d.imagem3,
+              d.urlImagem,
+              d.urlImagem2,
+              d.urlImagem3
+            ].filter(u => typeof u === 'string' && /^https?:\/\//i.test(u));
           }
-          let fotosFull = [];
-          if (Array.isArray(d.imagensFull) && d.imagensFull.length) {
-            fotosFull = d.imagensFull.filter(Boolean);
-          }
-          const gal = (fotosFull.length ? fotosFull : fotos);
-          const thumb = gal[0] || fotos[0] || PLACEHOLDER;
+
+          // Placeholder se nada encontrado
+          const gal = fotos.length ? fotos : [PLACEHOLDER];
+          const thumb = gal[0];
 
           const msg = `Olá! Tenho interesse no *${nomeItem}* do catálogo ${nome}.`;
           const zap = waLink(d.whats || whats, msg);
@@ -715,7 +724,7 @@
             nome: nomeItem,
             precoBRL,
             qtd,
-            fotos: gal.length?gal:[PLACEHOLDER],
+            fotos: gal,
             thumb,
             zap,
             mlUrl: d.mlUrl || null
