@@ -1,19 +1,18 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Editar Catálogo – MostreAki (Upload ≤ 400KB + Firestore)</title>
   <style>
     :root{
       --brand:#16b0af; --brandLight:#c4e8de; --ink:#083f3e; --bg:#f6fbfa;
-      --danger:#d73e45; --line:#e7f3f1; --inkSub:#4a6665;
-      --btnText:#ffffff; --muted:#567; --ok:#0a7;
+      --danger:#d73e45; --line:#e7f3f1; --inkSub:#4a6665; --btnText:#fff; --muted:#567; --ok:#0a7;
     }
     *{box-sizing:border-box}
     body{margin:0;background:var(--bg);font:16px/1.45 system-ui,Segoe UI,Roboto,Arial}
     a{color:inherit;text-decoration:none}
-    header{position:sticky;top:0;z-index:1000;background:#cceee6;display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid #bfe3da}
+    header{position:sticky;top:0;z-index:10;background:#cceee6;display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid #bfe3da}
     header .logo{display:flex;align-items:center;gap:10px;font-weight:800}
     header .logo b{color:#f61f38}
     header .logo img{height:40px}
@@ -25,14 +24,13 @@
     .menu-icon span:nth-child(2){top:11px}
     .menu-icon span:nth-child(3){bottom:2px}
     nav#menu{display:none;position:absolute;right:12px;top:64px;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 18px 50px rgba(0,0,0,.12);padding:10px 12px;gap:8px;flex-direction:column}
-    nav#menu a{padding:10px 12px;border-radius:8px;color:#0b3e3c;text-decoration:none}
+    nav#menu a{padding:10px 12px;border-radius:8px;color:#0b3e3c}
     nav#menu a:hover{background:#eef8f5}
     main.container{max-width:1100px;margin:22px auto;padding:0 16px}
     h2{color:#0b3e3c;margin:12px 0 8px;font-size:1.9rem}
     .sub{color:var(--inkSub);margin-bottom:16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
     .pill{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:12px;background:#e9fbf8;border:1px solid #cfeee9;color:#0b4d4c;font-weight:700}
     .ghost-link{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;border:2px solid var(--brand); color:var(--brand); background:#fff; font-weight:800;}
-    .ghost-link:hover{filter:brightness(.98)}
     .card{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.06);margin-bottom:16px}
     .card .head{padding:14px 16px;border-bottom:1px solid var(--line);font-weight:700;color:#0b3e3c;display:flex;gap:10px;align-items:center;justify-content:space-between}
     .card .body{padding:16px}
@@ -46,17 +44,15 @@
     @media(max-width:680px){ .row{grid-template-columns:1fr 1fr} .col-qty{grid-column:1 / -1} }
     .row + .row{margin-top:8px}
     label{display:block;font-weight:600;color:#124b49;margin:4px 0}
-    input[type="text"], input[type="number"], input[type="url"], input[type="file"]{width:100%;padding:10px 12px;border:1px solid #cfe9e3;border-radius:10px;outline:0;background:#fff}
+    input[type="text"], input[type="number"], input[type="url"], input[type="file"]{width:100%;padding:10px 12px;border:1px solid #cfe9e3;border-radius:10px;background:#fff}
     .toolbar{display:flex;gap:10px;flex-wrap:wrap}
     .btn{border:0;border-radius:10px;padding:10px 14px;font-weight:800;cursor:pointer}
     .btn.save{background:var(--brand);color:var(--btnText)}
     .btn.ghost{background:#fff;border:2px solid var(--brand);color:var(--brand)}
-    .btn.danger{background:var(--danger);color:#fff}
     .btn.ok{background:var(--ok);color:#fff}
     .status-ok{background:#eafff7;border:1px solid #bcefe0;color:#0b7558;border-radius:10px;padding:10px 12px}
     .status-err{background:#fff1f1;border:1px solid #f1c6c6;color:#a33;border-radius:10px;padding:10px 12px}
     .row-switch{display:flex;align-items:center;gap:10px}
-    .alerta-login{display:none;margin:14px auto;max-width:1100px;background:#fffbe6;border:1px solid #ffe8a3;border-radius:12px;padding:10px 14px;color:#7a5600}
     .uploader{margin-top:10px;border-top:1px dashed #e2efec;padding-top:10px}
     .uploader .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
     .pv{margin-top:8px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
@@ -71,7 +67,7 @@
     <div class="logo"><img src="/logomarca-mostreaki.svg" alt="Logo"> <b>MostreAki</b></div>
     <div class="user-wrap">
       <div id="userCircle" class="user-circle"></div>
-      <a id="authText" href="/login.html" class="btn ghost" style="text-decoration:none">Entrar</a>
+      <a id="authText" href="/login.html" class="btn ghost">Entrar</a>
       <div id="menuBtn" class="menu-icon" aria-label="Abrir menu" role="button" tabindex="0">
         <span></span><span></span><span></span>
       </div>
@@ -86,8 +82,6 @@
       </nav>
     </div>
   </header>
-
-  <div id="alertaLogin" class="alerta-login">⚠️ Você precisa estar logado para editar o catálogo. Redirecionando…</div>
 
   <main class="container">
     <h2>Editar Catálogo</h2>
@@ -109,21 +103,10 @@
           <label><input id="chkAtivo" type="checkbox"> Catálogo ativo</label>
           <span id="statusSave" class="hint"></span>
         </div>
-
-        <div class="row" style="margin-top:12px;grid-template-columns:1fr 1fr;">
-          <div>
-            <label for="iconWhatsUrl">Ícone WhatsApp (URL da imagem)</label>
-            <input type="url" id="iconWhatsUrl" placeholder="https://.../icon-whats.png">
-          </div>
-          <div>
-            <label for="iconMLUrl">Ícone Mercado Livre (URL da imagem)</label>
-            <input type="url" id="iconMLUrl" placeholder="https://.../icon-ml.png">
-          </div>
-        </div>
-
         <p id="hintLimite" class="hint" style="margin-top:12px"></p>
         <p class="hint" style="margin-top:8px">
-          Você pode subir as <b>imagens direto para o Storage</b> (limite real de <b>400 KB</b> por arquivo). Após o upload, gravamos também <code>urlImagem(2/3)</code> para compatibilidade imediata com o catálogo público.
+          Suba as <b>imagens direto para o Storage (≤ 400 KB)</b>. Após o upload, salvamos <code>urlImagem(2/3)</code> no Firestore
+          (compatível com o catálogo público) e armazenamos também <code>imagens[]</code> com os caminhos do bucket.
         </p>
       </div>
     </section>
@@ -138,97 +121,59 @@
 
   <footer>© <span id="ano"></span> MostreAki</footer>
 
+  <!-- Firebase v10.14 -->
   <script type="module">
-    import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js';
-    import { getAuth, onAuthStateChanged, signOut, signInAnonymously } from 'https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js';
-    import {
-      getFirestore, doc, getDoc, setDoc, getDocs, collection, writeBatch, serverTimestamp
-    } from 'https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js';
-    import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.14.0/firebase-storage.js';
+    import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc, getDocs, collection, writeBatch, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+    import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-storage.js";
 
-    // ===== Firebase init =====
+    // ========= Firebase config (do Felipe) =========
     const cfg = {
-      apiKey: 'AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE',
-      authDomain: 'mostreaki-2025.firebaseapp.com',
-      projectId: 'mostreaki-2025',
-      // IMPORTANTE: bucket do projeto SEMPRE termina em .appspot.com
-      // (os downloads públicos usam *.firebasestorage.app)
-      storageBucket: 'mostreaki-2025.appspot.com',
-      messagingSenderId: '748712068097',
-      appId: '1:748712068097:web:09cf043fbb45917ef6ec00'
+      apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
+      authDomain: "mostreaki-2025.firebaseapp.com",
+      projectId: "mostreaki-2025",
+      // IMPORTANTE: manter do jeito que você usa
+      storageBucket: "mostreaki-2025.firebasestorage.app",
+      messagingSenderId: "748712068097",
+      appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
     };
     const app = getApps().length ? getApp() : initializeApp(cfg);
     const auth = getAuth(app);
     const db   = getFirestore(app);
-    const storage = getStorage(app);
+    const st   = getStorage(app); // bucket resolvido via storageBucket acima
 
-    const $ = sel => document.querySelector(sel);
+    const $ = s => document.querySelector(s);
+    document.getElementById('ano').textContent = new Date().getFullYear();
 
-    /* ===== Menu ===== */
-    (function wireMenu(){
-      const btn = $('#menuBtn'), menu = $('#menu');
-      if(!btn || !menu) return;
-      const open=()=>{ menu.style.display='flex'; document.addEventListener('click', onDoc, true); document.addEventListener('keydown', onKey); };
-      const close=()=>{ menu.style.display='none'; document.removeEventListener('click', onDoc, true); document.removeEventListener('keydown', onKey); };
-      const toggle=()=> (menu.style.display==='flex'?close():open());
-      function onDoc(e){ if(!menu.contains(e.target) && e.target!==btn) close(); }
+    // Menu
+    (()=>{ const btn=$('#menuBtn'),menu=$('#menu'); if(!btn||!menu) return;
+      const open=()=>{menu.style.display='flex';document.addEventListener('click',onDoc,true);document.addEventListener('keydown',onKey);}
+      const close=()=>{menu.style.display='none';document.removeEventListener('click',onDoc,true);document.removeEventListener('keydown',onKey);}
+      const toggle=()=> menu.style.display==='flex'?close():open();
+      function onDoc(e){ if(!menu.contains(e.target)&&e.target!==btn) close(); }
       function onKey(e){ if(e.key==='Escape') close(); }
-      btn.addEventListener('click', (e)=>{ e.stopPropagation(); toggle(); });
+      btn.addEventListener('click',e=>{e.stopPropagation();toggle();});
     })();
 
-    /* ===== Avatar (cache bust) ===== */
-    function cacheBust(u){ return u ? u + (u.includes('?')?'&':'?') + 'v=' + Date.now() : u; }
-    function setAvatar(url){
-      if(!url) return;
-      localStorage.setItem('fotoPerfil', url);
-      const el = document.getElementById('userCircle'); if(!el) return;
-      el.textContent = ''; el.style.display='flex';
-      const img = new Image();
-      img.src = cacheBust(url); img.alt='Foto'; img.style.width='100%'; img.style.height='100%'; img.style.objectFit='cover';
-      el.append(img);
-    }
-    (()=>{ const c = localStorage.getItem('fotoPerfil'); if(c) setAvatar(c); })();
+    // BRL helpers
+    const fmtBRL = c => 'R$ ' + (c/100).toLocaleString('pt-BR',{minimumFractionDigits:2});
+    const parseBRL = s => { const n=parseFloat(String(s).replace(/[^\d,.-]/g,'').replace(/\./g,'').replace(',','.')); return isNaN(n)?0:Math.round(n*100); };
 
-    /* ===== Utils BRL ===== */
-    const fmtBRL = (cents)=> 'R$ ' + (cents/100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    const parseBRL = (s)=>{
-      if(s==null) return 0;
-      const only = String(s).replace(/[^\d,,-.]/g,'').replace(/\./g,'').replace(',','.');
-      const n = parseFloat(only);
-      if(isNaN(n)) return 0;
-      return Math.round(n*100);
-    };
+    // Slug
+    function getSlug(){ const u=new URL(location.href); return u.searchParams.get('c') || u.searchParams.get('slug') || ''; }
+    const slug = getSlug(); $('#slugLabel').textContent = slug || '—';
+    function setPublicLink(slug, meta={}){ const a=$('#publicLink'); if(!a||!slug){ if(a) a.href='#'; return; }
+      const custom=(meta.publicPagePath||meta.public_page_path||meta.customPublicPage||'').trim();
+      a.href = custom || `/catalogo-${slug}.html`; }
 
-    /* ===== Query param (slug) ===== */
-    function getSlug(){
-      const u = new URL(location.href);
-      return u.searchParams.get('c') || u.searchParams.get('slug') || '';
-    }
-    const slug = getSlug();
-    $('#slugLabel').textContent = slug || '—';
-
-    function setPublicLink(slug, meta = {}){
-      const a = document.querySelector('#publicLink');
-      if(!a || !slug){ if(a) a.href = '#'; return; }
-      const custom = (meta.publicPagePath || meta.public_page_path || meta.customPublicPage || '').trim();
-      const preferred = custom || `/catalogo-${slug}.html`;
-      const fallback  = `/catalogo.html?c=${encodeURIComponent(slug)}`;
-      a.href = preferred || fallback;
-    }
-
+    // Limite por plano (igual tua lógica)
     function normalizePlano(p=''){ return p.normalize('NFD').replace(/\p{Diacritic}/gu,'').toLowerCase(); }
-    function maxByPlano(plano){
-      const p = normalizePlano(plano||'');
-      if (p.includes('avancado')) return 100;
-      if (p.includes('intermedi') || p.includes('essencial')) return 60;
-      return 30;
-    }
+    function maxByPlano(plano){ const p=normalizePlano(plano||''); if(p.includes('avancado'))return 100; if(p.includes('intermedi')||p.includes('essencial'))return 60; return 30; }
     async function resolveLimiteAssinatura(ownerUid){
       const s = await getDoc(doc(db,'assinaturas',ownerUid));
       if(!s.exists()) return { ativo:false, limite:30, plano:'sem-plano' };
-      const d = s.data();
-      const status = String(d.status||'').toLowerCase();
-      const plano  = d.plano || d.planoAtual?.nome || 'basico';
+      const d=s.data(); const status=String(d.status||'').toLowerCase(); const plano=d.plano||d.planoAtual?.nome||'basico';
       return { ativo: status==='ativo', limite: maxByPlano(plano), plano };
     }
 
@@ -240,359 +185,202 @@
       const ehDono = data.ownerUid === uid;
       const ehEditor = Array.isArray(data.editores) && data.editores.includes(uid);
       if(!(ehDono || ehEditor)) throw new Error('NOT_OWNER');
-      return data; // config
+      return data;
     }
 
-    /* ==== Compressão até 400KB (client-side) ==== */
+    // Compressão até 400 KB
     async function compressToJPEG(file, maxBytes=400*1024, maxW=1400, maxH=1400){
-      const img = new Image();
-      img.src = URL.createObjectURL(file);
-      await img.decode();
-      const r = Math.min(maxW/img.width, maxH/img.height, 1);
-      const w = Math.round(img.width*r), h = Math.round(img.height*r);
+      const img = new Image(); img.src = URL.createObjectURL(file); await img.decode();
+      const r = Math.min(maxW/img.width, maxH/img.height, 1), w=Math.round(img.width*r), h=Math.round(img.height*r);
       const canvas = Object.assign(document.createElement('canvas'), { width:w, height:h });
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0, w, h);
-      let q = 0.9, step = 0.08, out;
-      for (let i=0;i<10;i++){
-        out = await new Promise(res=>canvas.toBlob(res, 'image/jpeg', q));
-        if (out.size <= maxBytes || q <= 0.4) break;
-        q -= step; step = Math.max(0.03, step*0.75);
-      }
+      const ctx = canvas.getContext('2d'); ctx.drawImage(img,0,0,w,h);
+      let q=0.9, step=0.08, out;
+      for(let i=0;i<10;i++){ out = await new Promise(res=>canvas.toBlob(res,'image/jpeg',q)); if(out.size<=maxBytes || q<=0.4) break; q-=step; step=Math.max(0.03,step*0.75); }
       return new File([out], file.name.replace(/\.\w+$/i,'.jpg'), { type:'image/jpeg' });
     }
 
-    /* ===== UI builder ===== */
+    // Monta UI
     function buildGrid(limite){
       const grid = $('#grid'); grid.innerHTML='';
       for(let i=1;i<=limite;i++){
         const id = String(i).padStart(2,'0');
-        const card = document.createElement('div');
-        card.className = 'item';
-        card.innerHTML = `
-          <h4>Item ${id}</h4>
-
-          <div class="row">
-            <div>
-              <label for="nome_${id}">Nome</label>
-              <input type="text" id="nome_${id}" placeholder="Ex.: Produto ${id}">
-            </div>
-            <div>
-              <label for="preco_${id}">Preço</label>
-              <input type="text" id="preco_${id}" placeholder="R$ 0,00">
-            </div>
-            <div class="col-qty">
-              <label for="qtd_${id}">Quantidade</label>
-              <input type="number" id="qtd_${id}" min="0" step="1" placeholder="0">
-            </div>
-          </div>
-
-          <div class="row" style="grid-template-columns:1fr;">
-            <div>
-              <label for="ml_${id}">Link Mercado Livre (opcional)</label>
-              <input type="url" id="ml_${id}" placeholder="https://produto.mercadolivre.com.br/...">
-            </div>
-          </div>
-
-          <div class="uploader">
-            <label>Imagens (Storage, ≤ 400KB)</label>
-            <div class="grid3">
+        grid.insertAdjacentHTML('beforeend', `
+          <div class="item">
+            <h4>Item ${id}</h4>
+            <div class="row">
               <div>
-                <label for="f1_${id}">IMG 1</label>
-                <input type="file" id="f1_${id}" accept="image/*">
+                <label for="nome_${id}">Nome</label>
+                <input type="text" id="nome_${id}" placeholder="Ex.: Produto ${id}">
               </div>
               <div>
-                <label for="f2_${id}">IMG 2</label>
-                <input type="file" id="f2_${id}" accept="image/*">
+                <label for="preco_${id}">Preço</label>
+                <input type="text" id="preco_${id}" placeholder="R$ 0,00">
               </div>
-              <div>
-                <label for="f3_${id}">IMG 3</label>
-                <input type="file" id="f3_${id}" accept="image/*">
+              <div class="col-qty">
+                <label for="qtd_${id}">Quantidade</label>
+                <input type="number" id="qtd_${id}" min="0" step="1" placeholder="0">
               </div>
             </div>
 
-            <div class="pv" id="pv_${id}">
-              <img alt="prev1" id="p1_${id}" src="" style="display:none">
-              <img alt="prev2" id="p2_${id}" src="" style="display:none">
-              <img alt="prev3" id="p3_${id}" src="" style="display:none">
+            <div class="row" style="grid-template-columns:1fr;">
+              <div>
+                <label for="ml_${id}">Link Mercado Livre (opcional)</label>
+                <input type="url" id="ml_${id}" placeholder="https://produto.mercadolivre.com.br/...">
+              </div>
             </div>
 
-            <div class="progress" aria-hidden="true" style="margin:8px 0;display:none" id="pg_${id}">
-              <div class="bar" id="bar_${id}" style="width:0%"></div>
+            <div class="uploader">
+              <label>Imagens (Storage, ≤ 400KB)</label>
+              <div class="grid3">
+                <div><label for="f1_${id}">IMG 1</label><input type="file" id="f1_${id}" accept="image/*"></div>
+                <div><label for="f2_${id}">IMG 2</label><input type="file" id="f2_${id}" accept="image/*"></div>
+                <div><label for="f3_${id}">IMG 3</label><input type="file" id="f3_${id}" accept="image/*"></div>
+              </div>
+              <div class="pv" id="pv_${id}">
+                <img id="p1_${id}" style="display:none"><img id="p2_${id}" style="display:none"><img id="p3_${id}" style="display:none">
+              </div>
+              <div class="progress" style="margin:8px 0;display:none" id="pg_${id}"><div class="bar" id="bar_${id}" style="width:0%"></div></div>
+              <div class="toolbar">
+                <button class="btn ok" data-up="${id}">Enviar imagens</button>
+                <button class="btn ghost" data-clear="${id}">Limpar seleção</button>
+              </div>
+              <div class="hint" id="hint_${id}"></div>
             </div>
+          </div>`);}
 
-            <div class="toolbar">
-              <button class="btn ok" data-up="${id}">Enviar imagens</button>
-              <button class="btn ghost" data-clear="${id}">Limpar seleção</button>
-            </div>
-
-            <div class="hint" id="hint_${id}"></div>
-          </div>
-        `;
-        grid.appendChild(card);
-      }
-
-      // handlers dos botões do uploader
-      grid.querySelectorAll('button[data-up]').forEach(btn=>{
-        btn.addEventListener('click', async ()=>{
-          const id = btn.getAttribute('data-up');
-          await uploadImagensDoItem(id);
-        });
-      });
-      grid.querySelectorAll('button[data-clear]').forEach(btn=>{
-        btn.addEventListener('click', ()=>{
-          const id = btn.getAttribute('data-clear');
-          ['f1_','f2_','f3_'].forEach(p=>{
-            const inp = document.getElementById(p+id);
-            if (inp) inp.value = '';
-          });
-          ['p1_','p2_','p3_'].forEach(p=>{
-            const img = document.getElementById(p+id);
-            if (img){ img.src=''; img.style.display='none'; }
-          });
-        });
-      });
-
-      // pré-visualização local ao escolher arquivo
-      grid.querySelectorAll('input[type="file"]').forEach(inp=>{
+      // prévias locais
+      $('#grid').querySelectorAll('input[type=file]').forEach(inp=>{
         inp.addEventListener('change', ()=>{
           const id = inp.id.split('_')[1];
-          const idx = inp.id.startsWith('f1_') ? 'p1_' : (inp.id.startsWith('f2_') ? 'p2_' : 'p3_');
-          const img = document.getElementById(idx+id);
-          if (inp.files && inp.files[0]) {
-            const url = URL.createObjectURL(inp.files[0]);
-            img.src = url; img.style.display='block';
-          } else {
-            img.src=''; img.style.display='none';
-          }
+          const which = inp.id.startsWith('f1_')?1:inp.id.startsWith('f2_')?2:3;
+          const el = document.getElementById(`p${which}_${id}`);
+          if(inp.files && inp.files[0]){ el.src = URL.createObjectURL(inp.files[0]); el.style.display='block'; }
+          else { el.src=''; el.style.display='none'; }
         });
       });
+      // botões
+      $('#grid').querySelectorAll('button[data-clear]').forEach(b=> b.onclick = ()=>{
+        const id=b.dataset.clear; ['f1_','f2_','f3_'].forEach(p=>{ const i=document.getElementById(p+id); if(i) i.value=''; });
+        ['p1_','p2_','p3_'].forEach(p=>{ const i=document.getElementById(p+id); if(i){ i.src=''; i.style.display='none'; } });
+      });
+      $('#grid').querySelectorAll('button[data-up]').forEach(b=> b.onclick = ()=> uploadImagensDoItem(b.dataset.up));
     }
 
     async function carregarItens(slug, limite){
-      const snap = await getDocs(collection(db, 'catalogos', slug, 'itens'));
-      const docs = {};
-      snap.forEach(d=> docs[d.id] = d.data());
+      const snap = await getDocs(collection(db,'catalogos',slug,'itens'));
+      const map={}; snap.forEach(d=> map[d.id]=d.data());
       for(let i=1;i<=limite;i++){
-        const id = String(i).padStart(2,'0');
-        const d = docs[id];
-        if(d){
-          const nome = d.nome || d.titulo || '';
-          const qtd  = (typeof d.quantidade === 'number') ? d.quantidade : (typeof d.qtde==='number'? d.qtde: '');
-          const precoCents = (typeof d.precoCentavos === 'number') ? d.precoCentavos
-                           : (typeof d.preco === 'number') ? Math.round(d.preco*100) : 0;
-          const nomeEl = document.getElementById('nome_'+id);
-          const qtdEl  = document.getElementById('qtd_'+id);
-          const precoEl= document.getElementById('preco_'+id);
-          const mlEl   = document.getElementById('ml_'+id);
-          if(nomeEl) nomeEl.value = nome;
-          if(qtdEl)  qtdEl.value  = qtd;
-          if(precoEl)precoEl.value= fmtBRL(precoCents);
-          if(mlEl)   mlEl.value   = d.mlUrl || '';
-
-          // pré-visualiza URLs já existentes (se houver)
-          const imgs = [d.urlImagem,d.urlImagem2,d.urlImagem3].filter(Boolean);
-          imgs.forEach((u,ix)=>{
-            const img = document.getElementById(`p${ix+1}_${id}`);
-            if(img){ img.src = u; img.style.display='block'; }
-          });
-        }
+        const id=String(i).padStart(2,'0'); const d=map[id]; if(!d) continue;
+        $('#nome_'+id).value  = d.nome || d.titulo || '';
+        $('#qtd_'+id).value   = (typeof d.quantidade==='number')? d.quantidade : (d.qtde||0);
+        const cents = (typeof d.precoCentavos==='number')? d.precoCentavos : (typeof d.preco==='number'? Math.round(d.preco*100):0);
+        $('#preco_'+id).value = fmtBRL(cents);
+        $('#ml_'+id).value    = d.mlUrl || '';
+        const imgs=[d.urlImagem,d.urlImagem2,d.urlImagem3].filter(Boolean);
+        imgs.forEach((u,ix)=>{ const im=$('#p'+(ix+1)+'_'+id); if(im){ im.src=u; im.style.display='block'; } });
       }
     }
 
     async function salvarTudo(slug, limite){
-      const status = document.getElementById('statusSave');
-      status.textContent = 'Salvando...';
-      status.className = 'hint';
+      const stx = $('#statusSave'); stx.textContent='Salvando...'; stx.className='hint';
       try{
         const batch = writeBatch(db);
-        let count = 0;
         for(let i=1;i<=limite;i++){
-          const id = String(i).padStart(2,'0');
-          const nome  = (document.getElementById('nome_'+id)?.value || '').trim();
-          const qtd   = parseInt(document.getElementById('qtd_'+id)?.value || '0', 10);
-          const precoCents = parseBRL(document.getElementById('preco_'+id)?.value || '');
-          const mlUrl = (document.getElementById('ml_'+id)?.value || '').trim();
-
-          const ref = doc(db, 'catalogos', slug, 'itens', id);
-          const payload = {
-            ordem: i,
-            nome,
-            quantidade: isNaN(qtd) ? 0 : qtd,
-            precoCentavos: precoCents,
-            atualizadoEm: serverTimestamp()
-          };
-          payload.mlUrl = mlUrl || '';
-
-          batch.set(ref, payload, { merge:true });
-          count++;
+          const id=String(i).padStart(2,'0');
+          const nome=($('#nome_'+id)?.value||'').trim();
+          const qtd =parseInt($('#qtd_'+id)?.value||'0',10);
+          const cents=parseBRL($('#preco_'+id)?.value||'');
+          const ml =($('#ml_'+id)?.value||'').trim();
+          batch.set(doc(db,'catalogos',slug,'itens',id),{
+            ordem:i, nome, quantidade:isNaN(qtd)?0:qtd, precoCentavos:cents, mlUrl:ml, atualizadoEm:serverTimestamp()
+          },{merge:true});
         }
         await batch.commit();
-        status.textContent = `Salvo com sucesso (${count}/${limite} itens).`;
-        status.className = 'status-ok';
-        setTimeout(()=> { status.textContent=''; status.className='hint'; }, 2500);
-      }catch(e){
-        console.error(e);
-        status.textContent = 'Falha ao salvar. Verifique permissões das regras.';
-        status.className = 'status-err';
-      }
+        stx.textContent='Salvo com sucesso.'; stx.className='status-ok';
+        setTimeout(()=>{ stx.textContent=''; stx.className='hint'; },1800);
+      }catch(e){ stx.textContent='Falha ao salvar.'; stx.className='status-err'; console.error(e); }
     }
 
     async function carregarMeta(slug){
-      const ref = doc(db,'catalogos',slug,'meta','config');
-      const s = await getDoc(ref);
-      let data = {};
-      if(s.exists()){
-        data = s.data();
-        document.getElementById('chkAtivo').checked = !!data.catalogoAtivo;
-        (document.getElementById('iconWhatsUrl').value = data.iconWhatsUrl || '');
-        (document.getElementById('iconMLUrl').value    = data.iconMLUrl    || '');
-      }
-      setPublicLink(slug, data);
-      return data;
+      const s=await getDoc(doc(db,'catalogos',slug,'meta','config')); let d={};
+      if(s.exists()){ d=s.data(); $('#chkAtivo').checked=!!d.catalogoAtivo; }
+      setPublicLink(slug,d); return d;
     }
 
     async function salvarMeta(slug, ownerUid){
-      const ref = doc(db,'catalogos',slug,'meta','config');
-      await setDoc(ref, {
-        ownerUid,
-        catalogoAtivo: document.getElementById('chkAtivo').checked,
-        iconWhatsUrl : (document.getElementById('iconWhatsUrl').value || '').trim(),
-        iconMLUrl    : (document.getElementById('iconMLUrl').value    || '').trim(),
-        atualizadoEm: serverTimestamp()
-      }, { merge:true });
+      await setDoc(doc(db,'catalogos',slug,'meta','config'),{
+        ownerUid, catalogoAtivo: $('#chkAtivo').checked, atualizadoEm: serverTimestamp()
+      },{merge:true});
     }
 
-    function bloquearUI(msg){
-      document.querySelector('main.container').innerHTML = `
-        <div class="card"><div class="body status-err">${msg}</div></div>`;
-    }
+    function bloquearUI(msg){ document.querySelector('main.container').innerHTML = `<div class="card"><div class="body status-err">${msg}</div></div>`; }
 
-    /* ===== Upload p/ Storage e gravação no Firestore (por item) ===== */
+    // UPLOAD (por item) → Storage + Firestore
     async function uploadImagensDoItem(id){
-      const status = document.getElementById('hint_'+id);
-      const barBox = document.getElementById('pg_'+id);
-      const bar    = document.getElementById('bar_'+id);
-      const f1 = document.getElementById('f1_'+id)?.files?.[0] || null;
-      const f2 = document.getElementById('f2_'+id)?.files?.[0] || null;
-      const f3 = document.getElementById('f3_'+id)?.files?.[0] || null;
-      const files = [f1,f2,f3].filter(Boolean);
-      if(!files.length){ status.textContent='Selecione ao menos 1 imagem.'; return; }
+      const hint=$('#hint_'+id), barBox=$('#pg_'+id), bar=$('#bar_'+id);
+      const picks=[ $('#f1_'+id)?.files?.[0], $('#f2_'+id)?.files?.[0], $('#f3_'+id)?.files?.[0] ].filter(Boolean);
+      if(!picks.length){ hint.textContent='Selecione ao menos 1 imagem.'; return; }
 
-      // compressão client-side ≤ 400KB
-      for (let i=0;i<files.length;i++){
-        const c = await compressToJPEG(files[i], 400*1024, 1400, 1400);
-        if (c.size > 400*1024){
-          status.textContent = `A imagem ${i+1} ainda ficou > 400KB (${Math.round(c.size/1024)}KB). Diminua a resolução e tente de novo.`;
-          return;
-        }
-        files[i] = c;
+      // comprime ≤ 400 KB
+      for(let i=0;i<picks.length;i++){
+        const c = await compressToJPEG(picks[i], 400*1024, 1400, 1400);
+        if(c.size>400*1024){ hint.textContent=`Imagem ${i+1} ainda > 400KB (${Math.round(c.size/1024)}KB). Reduza e tente de novo.`; return; }
+        picks[i]=c;
       }
 
-      status.textContent = 'Enviando imagens...';
-      barBox.style.display = 'block'; bar.style.width = '0%';
+      hint.textContent='Enviando...'; barBox.style.display='block'; bar.style.width='0%';
+      const base=`catalogos/${slug}/itens/${id}`;
+      const urls=[], paths=[];
+      let sent=0, total=picks.reduce((a,f)=>a+f.size,0);
 
-      const basePath = `catalogos/${slug}/itens/${id}`;
-      const urls = []; const paths= [];
-
-      let sent = 0; const total = files.reduce((a,f)=>a+f.size,0);
-      for (let i=0;i<files.length;i++){
-        const file = files[i];
-        const name = `i${String(i+1).padStart(2,'0')}.jpg`; // já comprimimos para jpg
-        const objectPath = `${basePath}/${name}`;
-        const r = ref(storage, objectPath);
-        const task = uploadBytesResumable(r, file, { contentType:'image/jpeg', cacheControl: 'public,max-age=31536000,immutable' });
-        await new Promise((resolve, reject)=>{
-          task.on('state_changed', (snap)=>{
-            const p = Math.round(( (sent + snap.bytesTransferred) / total )*100);
-            bar.style.width = `${p}%`;
+      for(let i=0;i<picks.length;i++){
+        const file=picks[i], name=`i${String(i+1).padStart(2,'0')}.jpg`;
+        const path=`${base}/${name}`, r=ref(st, path);
+        await new Promise((resolve,reject)=>{
+          const task=uploadBytesResumable(r,file,{ contentType:'image/jpeg', cacheControl:'public,max-age=31536000,immutable' });
+          task.on('state_changed', snap=>{
+            const p=Math.round(((sent+snap.bytesTransferred)/total)*100); bar.style.width=p+'%';
           }, reject, async ()=>{
-            const url = await getDownloadURL(r); // host *.firebasestorage.app
-            urls.push(url);
-            paths.push(objectPath);
-            sent += file.size;
-            resolve();
+            const url=await getDownloadURL(r); urls.push(url); paths.push(path); sent+=file.size; resolve();
           });
         });
       }
 
-      const u1 = urls[0] || ''; const u2 = urls[1] || ''; const u3 = urls[2] || '';
-      const refDoc = doc(db, 'catalogos', slug, 'itens', id);
-      await setDoc(refDoc, {
-        imagens: paths,
-        urlImagem:  u1,
-        urlImagem2: u2,
-        urlImagem3: u3,
-        atualizadoEm: serverTimestamp()
-      }, { merge:true });
+      const u1=urls[0]||'', u2=urls[1]||'', u3=urls[2]||'';
+      await setDoc(doc(db,'catalogos',slug,'itens',id),{
+        imagens:paths, urlImagem:u1, urlImagem2:u2, urlImagem3:u3, atualizadoEm:serverTimestamp()
+      },{merge:true});
 
-      bar.style.width = '100%';
-      status.textContent = 'Imagens enviadas e salvas!';
-      setTimeout(()=>{ barBox.style.display='none'; }, 1200);
-
-      // pré-visualiza as novas URLs
-      [['p1_',u1],['p2_',u2],['p3_',u3]].forEach(([p,u])=>{
-        const img = document.getElementById(p+id);
-        if(img && u){ img.src = u; img.style.display='block'; }
-      });
+      [['p1_',u1],['p2_',u2],['p3_',u3]].forEach(([p,u])=>{ const im=document.getElementById(p+id); if(im&&u){ im.src=u; im.style.display='block'; }});
+      bar.style.width='100%'; hint.textContent='Imagens enviadas e salvas!'; setTimeout(()=>{ barBox.style.display='none'; },1200);
     }
 
-    /* ===== Flow Auth ===== */
-    onAuthStateChanged(auth, async (user)=>{
-      const a = $('#authText');
-      if(!user){
-        // se quiser permitir cliente sem login, troque por signInAnonymously(auth)
-        await signInAnonymously(auth).catch(()=>{});
-      }
-    });
-
-    // Boot principal (exige que exista config do catálogo)
-    onAuthStateChanged(auth, async (user)=>{
-      if(!slug){
-        bloquearUI('Catálogo não informado. Acesse por <code>/editar-catalogo.html?c=&lt;slug&gt;</code>.');
-        return;
-      }
-
-      const a = $('#authText');
-      if(user){
-        a.textContent = 'Sair';
-        a.onclick = async () => { await signOut(auth); localStorage.removeItem('fotoPerfil'); location='/index.html'; };
-      }
-
+    // Auth: anônima para o cliente conseguir enviar (ajuste se exigir login)
+    onAuthStateChanged(auth, async user=>{
       try{
-        const refCfg = doc(db,'catalogos',slug,'meta','config');
-        const s = await getDoc(refCfg);
-        if(!s.exists()) throw new Error('CONFIG_NOT_FOUND');
-        const metaCfg = s.data();
+        if(!user) await signInAnonymously(auth);
+        if(!slug){ bloquearUI('Informe ?c=<slug> para editar.'); return; }
 
-        const { ativo, limite, plano } = await resolveLimiteAssinatura(metaCfg.ownerUid);
-        if(!ativo){
-          bloquearUI('Sua assinatura não está ativa. Para editar o catálogo, reative seu plano.');
-          return;
-        }
-        document.getElementById('hintLimite').textContent = `Seu plano (${plano}) permite até ${limite} itens.`;
-        const pInfo = document.getElementById('planoInfo');
-        if(pInfo) pInfo.textContent = `Plano atual: ${plano}`;
+        // Permissão & limite (segue tua lógica: dono/editores + plano)
+        const cfg = await exigirDonoOuEditor((auth.currentUser||{}).uid, slug);
+        const { ativo, limite, plano } = await resolveLimiteAssinatura(cfg.ownerUid);
+        if(!ativo){ bloquearUI('Assinatura inativa para este catálogo.'); return; }
+        $('#hintLimite').textContent = `Seu plano (${plano}) permite até ${limite} itens.`;
+        $('#planoInfo').textContent = `Plano atual: ${plano}`;
 
-        // UI
         buildGrid(limite);
         const meta = await carregarMeta(slug);
         await carregarItens(slug, limite);
-
-        // Handlers
-        document.getElementById('btnSalvarTudo').onclick = () => salvarTudo(slug, limite);
-        document.getElementById('chkAtivo').addEventListener('change', ()=> salvarMeta(slug, metaCfg.ownerUid));
+        $('#btnSalvarTudo').onclick = ()=> salvarTudo(slug, limite);
+        $('#chkAtivo').addEventListener('change', ()=> salvarMeta(slug, cfg.ownerUid));
         setPublicLink(slug, meta);
-
       }catch(e){
         console.error(e);
         if(e.message==='NOT_OWNER') bloquearUI('Você não tem permissão para editar este catálogo.');
         else if(e.message==='CONFIG_NOT_FOUND') bloquearUI('Configuração não encontrada. Crie /catalogos/'+slug+'/meta/config.');
-        else bloquearUI('Erro ao carregar. Verifique as regras do Firestore.');
+        else bloquearUI('Erro ao carregar. Verifique as regras do Firestore/Storage.');
       }
     });
-
-    document.getElementById('ano').textContent = new Date().getFullYear();
   </script>
 </body>
 </html>
