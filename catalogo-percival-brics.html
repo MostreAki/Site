@@ -695,7 +695,7 @@
           const qtd = (typeof d.quantidade === 'number') ? d.quantidade
                     : (typeof d.qtde === 'number') ? d.qtde : '—';
 
-       // helper: aceita só URLs http(s)
+      // helper: aceita só URLs http(s)
 const httpOnly = (arr) =>
   Array.isArray(arr)
     ? arr.filter(u => typeof u === 'string' && /^https?:\/\//i.test(u))
@@ -717,11 +717,10 @@ if (Array.isArray(d.imagens) && d.imagens.length) {
     d.urlImagem, d.urlImagem2, d.urlImagem3
   ].filter(u => typeof u === 'string' && /^https?:\/\//i.test(u));
 }
-          
-          const gal = (fotosFull.length ? fotosFull : fotos);
-          
-          
-          const thumb = gal[0] || fotos[0] || PLACEHOLDER;
+
+// placeholder se nada encontrado
+const gal   = fotos.length ? fotos : [PLACEHOLDER];
+const thumb = gal[0];
 
           const msg = `Olá! Tenho interesse no *${nomeItem}* do catálogo ${nome}.`;
           const zap = waLink(d.whats || whats, msg);
