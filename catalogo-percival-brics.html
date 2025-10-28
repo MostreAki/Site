@@ -3,523 +3,222 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Editar Catálogo – MostreAki (Storage ≤ 400KB + Firestore)</title>
+  <title>Catálogo – MostreAki</title>
   <style>
     :root{
-      --brand:#16b0af; --brandLight:#c4e8de; --ink:#083f3e; --bg:#f6fbfa;
-      --danger:#d73e45; --line:#e7f3f1; --inkSub:#4a6665; --btnText:#fff; --muted:#567; --ok:#0a7;
+      --brand:#16b0af; --ink:#083f3e; --bg:#f6fbfa; --line:#e7f3f1;
+      --muted:#5b6b6a; --ok:#0a7; --card:#ffffff;
     }
     *{box-sizing:border-box}
-    body{margin:0;background:var(--bg);font:16px/1.45 system-ui,Segoe UI,Roboto,Arial}
-    a{color:inherit;text-decoration:none}
+    body{margin:0;background:var(--bg);font:16px/1.45 system-ui,Segoe UI,Roboto,Arial;color:var(--ink)}
     header{position:sticky;top:0;z-index:10;background:#cceee6;display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid #bfe3da}
     header .logo{display:flex;align-items:center;gap:10px;font-weight:800}
-    header .logo b{color:#f61f38}
     header .logo img{height:40px}
-    .user-wrap{margin-left:auto;display:flex;align-items:center;gap:10px}
-    .user-circle{width:42px;height:42px;border-radius:50%;overflow:hidden;display:none;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.15);background:#0b3e3c;color:#fff;font-weight:800;display:none;align-items:center;justify-content:center}
-    .menu-icon{width:36px;height:26px;position:relative;display:flex;align-items:center;justify-content:center;cursor:pointer}
-    .menu-icon span{position:absolute;width:24px;height:3px;background:#1b1b1b;border-radius:3px}
-    .menu-icon span:nth-child(1){top:2px}
-    .menu-icon span:nth-child(2){top:11px}
-    .menu-icon span:nth-child(3){bottom:2px}
-    nav#menu{display:none;position:absolute;right:12px;top:64px;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 18px 50px rgba(0,0,0,.12);padding:10px 12px;gap:8px;flex-direction:column}
-    nav#menu a{padding:10px 12px;border-radius:8px;color:#0b3e3c}
-    nav#menu a:hover{background:#eef8f5}
-    main.container{max-width:1100px;margin:22px auto;padding:0 16px}
-    h2{color:#0b3e3c;margin:12px 0 8px;font-size:1.9rem}
-    .sub{color:var(--inkSub);margin-bottom:16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-    .pill{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:12px;background:#e9fbf8;border:1px solid #cfeee9;color:#0b4d4c;font-weight:700}
-    .ghost-link{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;border:2px solid var(--brand); color:var(--brand); background:#fff; font-weight:800;}
-    .card{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.06);margin-bottom:16px}
-    .card .head{padding:14px 16px;border-bottom:1px solid var(--line);font-weight:700;color:#0b3e3c;display:flex;gap:10px;align-items:center;justify-content:space-between}
-    .card .body{padding:16px}
-    .hint{font-size:.95rem;color:var(--muted)}
-    .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+    main{max-width:1100px;margin:22px auto;padding:0 16px}
+    .sub{display:flex;gap:10px;align-items:center;flex-wrap:wrap;color:var(--muted)}
+    .pill{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:12px;background:#e9fbf8;border:1px solid #cfeee9;color:#0b4d4c;font-weight:700}
+    .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:16px}
     @media(max-width:980px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
     @media(max-width:640px){.grid{grid-template-columns:1fr}}
-    .item{border:1px solid var(--line);border-radius:12px;padding:12px;background:#fff}
-    .item h4{margin:0 0 10px;color:#0b3e3c;font-size:1.05rem}
-    .row{display:grid;grid-template-columns:1fr 130px 120px;gap:8px}
-    @media(max-width:680px){ .row{grid-template-columns:1fr 1fr} .col-qty{grid-column:1 / -1} }
-    .row + .row{margin-top:8px}
-    label{display:block;font-weight:600;color:#124b49;margin:4px 0}
-    input[type="text"], input[type="number"], input[type="url"], input[type="file"]{width:100%;padding:10px 12px;border:1px solid #cfe9e3;border-radius:10px;background:#fff}
-    .toolbar{display:flex;gap:10px;flex-wrap:wrap}
-    .btn{border:0;border-radius:10px;padding:10px 14px;font-weight:800;cursor:pointer}
-    .btn.save{background:var(--brand);color:var(--btnText)}
-    .btn.ghost{background:#fff;border:2px solid var(--brand);color:var(--brand)}
-    .btn.ok{background:var(--ok);color:#fff}
-    .status-ok{background:#eafff7;border:1px solid #bcefe0;color:#0b7558;border-radius:10px;padding:10px 12px}
-    .status-err{background:#fff1f1;border:1px solid #f1c6c6;color:#a33;border-radius:10px;padding:10px 12px}
-    .row-switch{display:flex;align-items:center;gap:10px}
-    .uploader{margin-top:10px;border-top:1px dashed #e2efec;padding-top:10px}
-    .uploader .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
-    .pv{margin-top:8px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
-    .pv-wrap { position: relative; }
-    .pv img{width:100%;height:90px;object-fit:cover;border:1px solid #e3f2ef;border-radius:8px}
-    .progress{height:8px;background:#e9f5f1;border-radius:6px;overflow:hidden}
-    .bar{height:8px;background:linear-gradient(90deg,#19c5a7,#12a69f)}
-    footer{color:#567;font-size:.88rem;text-align:center;padding:20px 16px}
-    .btn.auth{min-width:92px;text-align:center}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.06);overflow:hidden;display:flex;flex-direction:column}
+    .media{position:relative;background:#f2fbf8}
+    .media img{width:100%;height:220px;object-fit:cover;display:block}
+    .thumbs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:8px;background:#f7fcfb;border-top:1px solid var(--line)}
+    .thumbs img{width:100%;height:68px;object-fit:cover;border:1px solid #e3f2ef;border-radius:8px;cursor:pointer}
+    .body{padding:12px}
+    .title{margin:0 0 6px;font-weight:800}
+    .meta{display:flex;gap:10px;align-items:center;flex-wrap:wrap;color:var(--muted);font-size:.95rem}
+    .price{font-weight:900;color:#0b4d4c}
+    .qty{font-weight:700}
+    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    .btn{--bg:#0f766e;--fg:#fff;--bd:transparent;display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;border:1px solid var(--bd);background:var(--bg);color:var(--fg);font-weight:800;text-decoration:none}
+    .btn--ghost{--bg:#fff;--fg:#0f766e;--bd:rgba(15,118,110,.35)}
+    .banner{margin:12px 0; border-radius:14px; overflow:hidden; border:1px solid var(--line)}
+    .banner img{width:100%; display:block; max-height:280px; object-fit:cover}
+    /* Lightbox simples */
+    .lightbox{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.7);z-index:50}
+    .lightbox img{max-width:94vw;max-height:90vh;display:block;border-radius:10px;box-shadow:0 10px 40px rgba(0,0,0,.5)}
+    .lightbox.on{display:flex}
+    footer{color:#567;font-size:.9rem;text-align:center;padding:24px 16px}
   </style>
 </head>
 <body>
   <header>
-    <div class="logo"><img src="/logomarca-mostreaki.svg" alt="Logo"> <b>MostreAki</b></div>
-    <div class="user-wrap">
-      <div id="userCircle" class="user-circle" title="Usuário"></div>
-      <a id="authBtn" href="#" class="btn ghost auth">Entrar</a>
-      <div id="menuBtn" class="menu-icon" aria-label="Abrir menu" role="button" tabindex="0">
-        <span></span><span></span><span></span>
-      </div>
-      <nav id="menu">
-        <a href="/index.html">Página Inicial</a>
-        <a href="/sobre.html">Sobre</a>
-        <a href="/parceiros.html">Parceiros</a>
-        <a href="/servicos-adicionais.html">Serviços Adicionais</a>
-        <a href="/redes-sociais.html">Redes Sociais</a>
-        <a href="/contatos.html">Contatos</a>
-        <a href="/minha-conta.html">Minha Conta</a>
-      </nav>
-    </div>
+    <div class="logo"><img src="/logomarca-mostreaki.svg" alt="Logo MostreAki"><b>MostreAki</b></div>
   </header>
 
-  <main class="container">
-    <h2>Editar Catálogo</h2>
+  <main>
+    <h2 id="catTitle">Catálogo</h2>
     <div class="sub">
-      <span class="pill">Slug: <b id="slugLabel" style="margin-left:6px">—</b></span>
-      <a id="publicLink" class="ghost-link" href="#" target="_blank" rel="noopener" title="Abrir a página pública do catálogo">🔗 Ver página pública</a>
-      <span id="planoInfo" class="hint"></span>
+      <span class="pill">Slug: <b id="slugLabel">—</b></span>
+      <span id="status" class="pill" style="display:none"></span>
     </div>
 
-    <section class="card">
-      <div class="head">
-        <div>Configurações</div>
-        <div class="toolbar">
-          <button id="btnSalvarTudo" class="btn save">Salvar tudo</button>
-        </div>
-      </div>
-      <div class="body">
-        <div class="row-switch">
-          <label><input id="chkAtivo" type="checkbox"> Catálogo ativo</label>
-          <span id="statusSave" class="hint"></span>
-        </div>
-        <p id="hintLimite" class="hint" style="margin-top:12px"></p>
-        <p class="hint" style="margin-top:8px">
-          Suba as <b>imagens direto para o Storage (≤ 400 KB)</b>. Após o upload, salvamos <code>urlImagem(2/3)</code> no Firestore
-          e também <code>imagens[]</code> com os caminhos do bucket.
-        </p>
-      </div>
-    </section>
+    <div id="topBanner" class="banner" style="display:none">
+      <img id="bannerImg" alt="Banner do catálogo">
+    </div>
 
-    <section class="card">
-      <div class="head">Itens do Catálogo</div>
-      <div class="body">
-        <div id="grid" class="grid"></div>
-      </div>
-    </section>
+    <section id="grid" class="grid"></section>
   </main>
+
+  <div id="lb" class="lightbox" aria-hidden="true">
+    <img id="lbImg" alt="Visualização ampliada">
+  </div>
 
   <footer>© <span id="ano"></span> MostreAki</footer>
 
-  <!-- Firebase v10.14 -->
+  <!-- Firebase v10.14 (mesma config do editor) -->
   <script type="module">
     import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
-    import { 
-      getAuth, onAuthStateChanged, signOut, signInAnonymously,
-      setPersistence, browserLocalPersistence 
-    } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
-    import { 
-      getFirestore, doc, getDoc, setDoc, getDocs, collection, writeBatch, serverTimestamp,
-      updateDoc, deleteField
-    } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
-    import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-storage.js";
+    import { getFirestore, doc, getDoc, getDocs, collection } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
 
-    // ========= Firebase config =========
+    // ===== Config (igual ao editor) =====
     const cfg = {
       apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
       authDomain: "mostreaki-2025.firebaseapp.com",
       projectId: "mostreaki-2025",
-      storageBucket: "mostreaki-2025.firebasestorage.app", // *** manter .app como você usa ***
+      storageBucket: "mostreaki-2025.firebasestorage.app",
       messagingSenderId: "748712068097",
       appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
     };
     const app = getApps().length ? getApp() : initializeApp(cfg);
-    const auth = getAuth(app);
-    const db   = getFirestore(app);
-    const st   = getStorage(app); // bucket resolve via storageBucket acima
-
-    // Persistência local para manter logado após refresh
-    await setPersistence(auth, browserLocalPersistence);
+    const db  = getFirestore(app);
 
     const $ = s => document.querySelector(s);
-    document.getElementById('ano').textContent = new Date().getFullYear();
+    $('#ano').textContent = new Date().getFullYear();
 
-    // Menu
-    (()=>{ const btn=$('#menuBtn'),menu=$('#menu'); if(!btn||!menu) return;
-      const open=()=>{menu.style.display='flex';document.addEventListener('click',onDoc,true);document.addEventListener('keydown',onKey);}
-      const close=()=>{menu.style.display='none';document.removeEventListener('click',onDoc,true);document.removeEventListener('keydown',onKey);}
-      const toggle=()=> menu.style.display==='flex'?close():open();
-      function onDoc(e){ if(!menu.contains(e.target)&&e.target!==btn) close(); }
-      function onKey(e){ if(e.key==='Escape') close(); }
-      btn.addEventListener('click',e=>{e.stopPropagation();toggle();});
-    })();
-
-    // BRL helpers
-    const fmtBRL = c => 'R$ ' + (c/100).toLocaleString('pt-BR',{minimumFractionDigits:2});
-    const parseBRL = s => { const n=parseFloat(String(s).replace(/[^\d,.-]/g,'').replace(/\./g,'').replace(',','.')); return isNaN(n)?0:Math.round(n*100); };
-
-    // Slug
-    function getSlug(){ const u=new URL(location.href); return u.searchParams.get('c') || u.searchParams.get('slug') || ''; }
-    const slug = getSlug(); $('#slugLabel').textContent = slug || '—';
-    function setPublicLink(slug, meta={}){ const a=$('#publicLink'); if(!a||!slug){ if(a) a.href='#'; return; }
-      const custom=(meta.publicPagePath||meta.public_page_path||meta.customPublicPage||'').trim();
-      a.href = custom || `/catalogo-${slug}.html`; }
-
-    // Limite por plano (igual tua lógica)
-    function normalizePlano(p=''){ return p.normalize('NFD').replace(/\p{Diacritic}/gu,'').toLowerCase(); }
-    function maxByPlano(plano){ const p=normalizePlano(plano||''); if(p.includes('avancado'))return 100; if(p.includes('intermedi')||p.includes('essencial'))return 60; return 30; }
-    async function resolveLimiteAssinatura(ownerUid){
-      const s = await getDoc(doc(db,'assinaturas',ownerUid));
-      if(!s.exists()) return { ativo:false, limite:30, plano:'sem-plano' };
-      const d=s.data(); const status=String(d.status||'').toLowerCase(); const plano=d.plano||d.planoAtual?.nome||'basico';
-      return { ativo: status==='ativo', limite: maxByPlano(plano), plano };
+    // ===== Utils =====
+    function bust(url){ return url ? url + (url.includes('?')?'&':'?') + 't=' + Date.now() : url; }
+    function fmtBRLcent(c){ return 'R$ ' + (c/100).toLocaleString('pt-BR',{minimumFractionDigits:2}); }
+    function getSlug(){
+      const u = new URL(location.href);
+      const byQuery = u.searchParams.get('c') || u.searchParams.get('slug');
+      if (byQuery) return byQuery;
+      // Suporta /catalogo-<slug>.html
+      const m = location.pathname.match(/catalogo-([a-z0-9-]+)\.html$/i);
+      return m ? m[1] : '';
     }
 
-    async function exigirDonoOuEditor(uid, slug){
-      const refCfg = doc(db,'catalogos',slug,'meta','config');
-      const s = await getDoc(refCfg);
-      if(!s.exists()) throw new Error('CONFIG_NOT_FOUND');
-      const data = s.data();
-      const ehDono = data.ownerUid === uid;
-      const ehEditor = Array.isArray(data.editores) && data.editores.includes(uid);
-      if(!(ehDono || ehEditor)) throw new Error('NOT_OWNER');
-      return data;
-    }
+    const slug = getSlug();
+    $('#slugLabel').textContent = slug || '—';
 
-    // Avatar simples
-    function renderUserCircle(user){
-      const el = $('#userCircle'); const btn=$('#authBtn');
-      const show = ()=> el.style.display='flex';
-      if(!user){ el.style.display='none'; btn.textContent='Entrar'; btn.onclick=(e)=>{e.preventDefault(); /* redirecione para seu login */}; return; }
-      btn.textContent='Sair'; btn.onclick=async (e)=>{e.preventDefault(); await signOut(auth);};
-      const url = user.photoURL;
-      el.title = user.displayName || user.email || user.uid;
-      el.innerHTML = '';
-      if(url){ const img=new Image(); img.src=url; img.alt='User'; img.style.width='100%'; img.style.height='100%'; img.style.objectFit='cover'; el.appendChild(img); show(); return; }
-      // iniciais
-      const name = (user.displayName || user.email || 'U').trim();
-      const initials = name.split('@')[0].split(/\s+/).slice(0,2).map(s=>s[0]?.toUpperCase()||'U').join('');
-      el.textContent = initials; show();
-    }
+    // ===== Lightbox simples =====
+    const lb = $('#lb'), lbImg = $('#lbImg');
+    function openLB(src){ lbImg.src = src; lb.classList.add('on'); lb.setAttribute('aria-hidden','false'); }
+    function closeLB(){ lb.classList.remove('on'); lb.setAttribute('aria-hidden','true'); lbImg.src=''; }
+    lb.addEventListener('click', closeLB);
+    window.addEventListener('keydown', e=>{ if(e.key==='Escape') closeLB(); });
 
-    // Compressão até 400 KB
-    async function compressToJPEG(file, maxBytes=400*1024, maxW=1400, maxH=1400){
-      const img = new Image(); img.src = URL.createObjectURL(file); await img.decode();
-      const r = Math.min(maxW/img.width, maxH/img.height, 1), w=Math.round(img.width*r), h=Math.round(img.height*r);
-      const canvas = Object.assign(document.createElement('canvas'), { width:w, height:h });
-      const ctx = canvas.getContext('2d'); ctx.drawImage(img,0,0,w,h);
-      let q=0.9, step=0.08, out;
-      for(let i=0;i<10;i++){ out = await new Promise(res=>canvas.toBlob(res,'image/jpeg',q)); if(out.size<=maxBytes || q<=0.4) break; q-=step; step=Math.max(0.03,step*0.75); }
-      return new File([out], file.name.replace(/\.\w+$/i,'.jpg'), { type:'image/jpeg' });
-    }
+    // ===== Render =====
+    function renderItem(id, d){
+      const nome  = d.nome || d.titulo || `Item ${id}`;
+      const qtd   = typeof d.quantidade==='number' ? d.quantidade : (d.qtde||0);
+      const cents = typeof d.precoCentavos==='number' ? d.precoCentavos : (typeof d.preco==='number' ? Math.round(d.preco*100) : 0);
+      const ml    = d.mlUrl || '';
 
-    // Monta UI
-    function buildGrid(limite){
-      const grid = $('#grid'); grid.innerHTML='';
-      for(let i=1;i<=limite;i++){
-        const id = String(i).padStart(2,'0');
-        grid.insertAdjacentHTML('beforeend', `
-          <div class="item">
-            <h4>Item ${id}</h4>
-            <div class="row">
-              <div>
-                <label for="nome_${id}">Nome</label>
-                <input type="text" id="nome_${id}" placeholder="Ex.: Produto ${id}">
-              </div>
-              <div>
-                <label for="preco_${id}">Preço</label>
-                <input type="text" id="preco_${id}" placeholder="R$ 0,00">
-              </div>
-              <div class="col-qty">
-                <label for="qtd_${id}">Quantidade</label>
-                <input type="number" id="qtd_${id}" min="0" step="1" placeholder="0">
-              </div>
-            </div>
+      // Imagens por slot fixo (sem arrays)
+      const i1 = d.urlImagem  || '';
+      const i2 = d.urlImagem2 || '';
+      const i3 = d.urlImagem3 || '';
+      const gal = [i1,i2,i3].filter(Boolean);
+      const thumb = gal[0] || '';
 
-            <div class="row" style="grid-template-columns:1fr;">
-              <div>
-                <label for="ml_${id}">Link Mercado Livre (opcional)</label>
-                <input type="url" id="ml_${id}" placeholder="https://produto.mercadolivre.com.br/...">
-              </div>
-            </div>
+      const el = document.createElement('article');
+      el.className = 'card';
+      el.innerHTML = `
+        <div class="media">
+          ${thumb ? `<img class="hero" src="${bust(thumb)}" alt="${nome}">` : `<img class="hero" src="https://via.placeholder.com/800x480?text=Sem+imagem" alt="${nome}">`}
+        </div>
+        <div class="thumbs">
+          ${[i1,i2,i3].map((u,ix)=> u ? `<img data-ix="${ix+1}" data-src="${bust(u)}" alt="Imagem ${ix+1} de ${nome}">` : `<span></span>`).join('')}
+        </div>
+        <div class="body">
+          <h3 class="title">${nome}</h3>
+          <div class="meta">
+            <span class="price">${fmtBRLcent(cents)}</span>
+            <span class="qty">Qtd: ${qtd}</span>
+          </div>
+          <div class="actions">
+            ${ml ? `<a class="btn" href="${ml}" target="_blank" rel="noopener">Comprar no Mercado Livre</a>` : ``}
+          </div>
+        </div>
+      `;
 
-            <div class="uploader">
-              <label>Imagens (Storage, ≤ 400KB)</label>
-              <div class="grid3">
-                <div><label for="f1_${id}">IMG 1</label><input type="file" id="f1_${id}" accept="image/*"></div>
-                <div><label for="f2_${id}">IMG 2</label><input type="file" id="f2_${id}" accept="image/*"></div>
-                <div><label for="f3_${id}">IMG 3</label><input type="file" id="f3_${id}" accept="image/*"></div>
-              </div>
-              <div class="pv" id="pv_${id}">
-                <div class="pv-wrap"><img id="p1_${id}" style="display:none"></div>
-                <div class="pv-wrap"><img id="p2_${id}" style="display:none"></div>
-                <div class="pv-wrap"><img id="p3_${id}" style="display:none"></div>
-              </div>
-              <div class="progress" style="margin:8px 0;display:none" id="pg_${id}"><div class="bar" id="bar_${id}" style="width:0%"></div></div>
-              <div class="toolbar">
-                <button class="btn ok" data-up="${id}">Enviar imagens</button>
-              </div>
-              <div class="hint" id="hint_${id}"></div>
-            </div>
-          </div>`);}
-
-      // prévias locais
-      $('#grid').querySelectorAll('input[type=file]').forEach(inp=>{
-        inp.addEventListener('change', ()=>{
-          const id = inp.id.split('_')[1];
-          const which = inp.id.startsWith('f1_')?1:inp.id.startsWith('f2_')?2:3;
-          const el = document.getElementById(`p${which}_${id}`);
-          if(inp.files && inp.files[0]){ el.src = URL.createObjectURL(inp.files[0]); el.style.display='block'; }
-          else { el.src=''; el.style.display='none'; }
+      // troca hero ao clicar em thumb
+      el.querySelectorAll('.thumbs img').forEach(img=>{
+        img.addEventListener('click', ()=>{
+          const hero = el.querySelector('.hero');
+          hero.src = img.getAttribute('data-src');
+        });
+        img.addEventListener('dblclick', ()=>{
+          openLB(img.getAttribute('data-src'));
         });
       });
-      $('#grid').querySelectorAll('button[data-up]').forEach(b=> b.onclick = ()=> uploadImagensDoItem(b.dataset.up));
+      // hero abre lightbox
+      el.querySelector('.hero').addEventListener('click', e=>{
+        const src = e.currentTarget.getAttribute('src');
+        openLB(src);
+      });
+
+      return el;
     }
 
-    async function carregarItens(slug, limite){
+    async function load(){
+      if(!slug){
+        $('#status').style.display='inline-flex';
+        $('#status').textContent = 'Informe ?c=<slug> ou use catalogo-<slug>.html';
+        return;
+      }
+
+      // meta/config
+      const m = await getDoc(doc(db,'catalogos',slug,'meta','config'));
+      if (m.exists()){
+        const meta = m.data();
+        $('#catTitle').textContent = meta.titulo || meta.nome || `Catálogo – ${slug}`;
+        // banner opcional
+        const banner = meta.bannerUrl || meta.banner || '';
+        if (banner){
+          $('#bannerImg').src = bust(banner);
+          $('#topBanner').style.display = 'block';
+        }
+        // se houver flag de ativo
+        if (meta.catalogoAtivo === false){
+          $('#status').style.display='inline-flex';
+          $('#status').textContent = 'Catálogo inativo';
+        }
+      }
+
+      // itens
       const snap = await getDocs(collection(db,'catalogos',slug,'itens'));
-      const map={}; snap.forEach(d=> map[d.id]=d.data());
-      for(let i=1;i<=limite;i++){
-        const id=String(i).padStart(2,'0'); const d=map[id]; if(!d) continue;
-        const itemRef = doc(db, 'catalogos', slug, 'itens', id);
-        $('#nome_'+id).value  = d.nome || d.titulo || '';
-        $('#qtd_'+id).value   = (typeof d.quantidade==='number')? d.quantidade : (d.qtde||0);
-        const cents = (typeof d.precoCentavos==='number')? d.precoCentavos : (typeof d.preco==='number'? Math.round(d.preco*100):0);
-        $('#preco_'+id).value = fmtBRL(cents);
-        $('#ml_'+id).value    = d.mlUrl || '';
-        const imgs=[d.urlImagem,d.urlImagem2,d.urlImagem3].filter(Boolean);
-        imgs.forEach((u,ix)=>{ 
-          const campo = ix === 0 ? 'urlImagem' : `urlImagem${ix + 1}`;
-          const im=$('#p'+(ix+1)+'_'+id); 
-          if(im){ 
-            im.src=u; 
-            im.style.display='block'; 
-          } 
-        });
-      }
-    }
-
-    async function salvarTudo(slug, limite){
-      const stx = $('#statusSave'); stx.textContent='Salvando...'; stx.className='hint';
-      try{
-        const batch = writeBatch(db);
-        for(let i=1;i<=limite;i++){
-          const id=String(i).padStart(2,'0');
-          const nome=($('#nome_'+id)?.value||'').trim();
-          const qtd =parseInt($('#qtd_'+id)?.value||'0',10);
-          const cents=parseBRL($('#preco_'+id)?.value||'');
-          const ml =($('#ml_'+id)?.value||'').trim();
-          batch.set(doc(db,'catalogos',slug,'itens',id),{
-            ordem:i, nome, quantidade:isNaN(qtd)?0:qtd, precoCentavos:cents, mlUrl:ml, atualizadoEm:serverTimestamp()
-          },{merge:true});
-        }
-        await batch.commit();
-        stx.textContent='Salvo com sucesso.'; stx.className='status-ok';
-        setTimeout(()=>{ stx.textContent=''; stx.className='hint'; },1800);
-      }catch(e){ stx.textContent='Falha ao salvar.'; stx.className='status-err'; console.error(e); }
-    }
-
-    async function carregarMeta(slug){
-      const s=await getDoc(doc(db,'catalogos',slug,'meta','config')); let d={};
-      if(s.exists()){ d=s.data(); $('#chkAtivo').checked=!!d.catalogoAtivo; }
-      setPublicLink(slug,d); return d;
-    }
-
-    async function salvarMeta(slug, ownerUid){
-      await setDoc(doc(db,'catalogos',slug,'meta','config'),{
-        ownerUid, catalogoAtivo: $('#chkAtivo').checked, atualizadoEm: serverTimestamp()
-      },{merge:true});
-    }
-
-    function bloquearUI(msg){ document.querySelector('main.container').innerHTML = `<div class="card"><div class="body status-err">${msg}</div></div>`; }
-
-    // UPLOAD (por item) → Storage + Firestore
-    async function uploadImagensDoItem(id){
-      const hint=$('#hint_'+id), barBox=$('#pg_'+id), bar=$('#bar_'+id);
-      const picks=[ $('#f1_'+id)?.files?.[0], $('#f2_'+id)?.files?.[0], $('#f3_'+id)?.files?.[0] ].filter(Boolean);
-      if(!picks.length){ hint.textContent='Selecione ao menos 1 imagem.'; return; }
-
-      // comprime ≤ 400 KB
-      for(let i=0;i<picks.length;i++){
-        const c = await compressToJPEG(picks[i], 400*1024, 1400, 1400);
-        if(c.size>400*1024){ hint.textContent=`Imagem ${i+1} ainda > 400KB (${Math.round(c.size/1024)}KB). Reduza e tente de novo.`; return; }
-        picks[i]=c;
-      }
-
-      hint.textContent='Enviando...'; barBox.style.display='block'; bar.style.width='0%';
-      const base=`catalogos/${slug}/itens/${id}`;
-      const urls=[], paths=[];
-      let sent=0, total=picks.reduce((a,f)=>a+f.size,0);
-
-      for(let i=0;i<picks.length;i++){
-        const file=picks[i], name=`i${String(i+1).padStart(2,'0')}.jpg`;
-        const path=`${base}/${name}`, r=ref(st, path);
-        await new Promise((resolve,reject)=>{
-          const task=uploadBytesResumable(r,file,{ contentType:'image/jpeg', cacheControl:'public,max-age=31536000,immutable' });
-          task.on('state_changed', snap=>{
-            const p=Math.round(((sent+snap.bytesTransferred)/total)*100); bar.style.width=p+'%';
-          }, reject, async ()=>{
-            const url=await getDownloadURL(r); urls.push(url); paths.push(path); sent+=file.size; resolve();
-          });
-        });
-      }
-
-      const u1=urls[0]||'', u2=urls[1]||'', u3=urls[2]||'';
-      const itemRef = doc(db, 'catalogos', slug, 'itens', id);
-      await setDoc(itemRef,{
-        imagens:paths, urlImagem:u1, urlImagem2:u2, urlImagem3:u3, atualizadoEm:serverTimestamp()
-      },{merge:true});
-
-      [['p1_',u1,'urlImagem'],['p2_',u2,'urlImagem2'],['p3_',u3,'urlImagem3']].forEach(([p,u,campo])=>{ 
-        const im=document.getElementById(p+id); 
-        if(im&&u){ 
-          im.src=u; 
-          im.style.display='block'; 
-        } 
+      const grid = $('#grid');
+      grid.innerHTML = '';
+      // mapeia por id numérico
+      const items = [];
+      snap.forEach(docu=>{
+        const id = docu.id;
+        const d  = docu.data();
+        items.push({id, d});
       });
-      criarBotoesRemover(slug);
-      bar.style.width='100%'; hint.textContent='Imagens enviadas e salvas!'; setTimeout(()=>{ barBox.style.display='none'; },1200);
-    }
-
-    // ===== Remoção de imagem individual (robusta) =====
-    async function removerImagem(slug, id, campo, imgEl) {
-      const hint = document.getElementById('hint_' + id);
-      try {
-        hint.textContent = 'Removendo imagem...';
-
-        // 1) Apagar arquivo no Storage (se for URL do Storage)
-        if (imgEl.src && imgEl.src.startsWith("https://firebasestorage.googleapis.com/")) {
-          try {
-            const url = new URL(imgEl.src);
-            const path = decodeURIComponent(url.pathname.split("/o/")[1].split("?")[0]);
-            await deleteObject(ref(st, path));
-          } catch (e) {
-            // Se der permission-denied, exibimos e seguimos limpando o Firestore
-            console.error('Storage delete falhou:', e);
-          }
-        }
-
-        // 2) Remover campo no Firestore + apagar arrays legados
-        const itemRef = doc(db, "catalogos", slug, "itens", id);
-        await updateDoc(itemRef, {
-          [campo]: deleteField(),
-          imagens: deleteField(),
-          imagensFull: deleteField(),
-          atualizadoEm: serverTimestamp()
-        });
-
-        // 3) Atualizar UI local (some preview e limpa input)
-        const wrap = imgEl.closest('.pv-wrap');
-        imgEl.src = '';
-        imgEl.style.display = 'none';
-        const which = campo === 'urlImagem' ? '1' : (campo === 'urlImagem2' ? '2' : '3');
-        const fileInput = document.getElementById('f' + which + '_' + id);
-        if (fileInput) fileInput.value = '';
-
-        // 4) Feedback
-        hint.textContent = 'Imagem removida.';
-        setTimeout(()=> hint.textContent = '', 1500);
-      } catch (e) {
-        console.error("Erro ao remover imagem:", e);
-        const hint = document.getElementById('hint_' + id);
-        if (hint) {
-          hint.textContent = 'Falha ao remover (verifique regras do Storage/Firestore).';
-          hint.className = 'status-err';
-        }
+      // ordena por ordem -> id
+      items.sort((a,b)=>{
+        const ao = typeof a.d.ordem==='number'?a.d.ordem:parseInt(a.id,10);
+        const bo = typeof b.d.ordem==='number'?b.d.ordem:parseInt(b.id,10);
+        return (ao||0)-(bo||0);
+      });
+      // render
+      if (!items.length){
+        grid.innerHTML = `<div class="card" style="grid-column:1/-1"><div class="body"><b>Nenhum item encontrado.</b></div></div>`;
+        return;
+      }
+      for (const it of items){
+        grid.appendChild(renderItem(it.id, it.d));
       }
     }
 
-    // ===== Cria botões lixeira vermelha em todas as prévias =====
-    function criarBotoesRemover(slug) {
-      // Ajuste o 100 se seu limite máximo puder ser maior
-      for (let i = 1; i <= 100; i++) {
-        const id = String(i).padStart(2, "0");
-        for (let n = 1; n <= 3; n++) {
-          const imgEl = document.getElementById(`p${n}_${id}`);
-          if (!imgEl || imgEl.style.display === 'none') continue;
-
-          const wrapper = imgEl.parentElement;
-          if (!wrapper) continue;
-
-          // Evitar duplicar botão
-          const existing = wrapper.querySelector('button.remove-btn');
-          if (existing) existing.remove();
-
-          const btn = document.createElement("button");
-          btn.textContent = "🗑️";
-          btn.className = 'remove-btn';
-          Object.assign(btn.style, {
-            position: "absolute",
-            top: "4px",
-            right: "4px",
-            background: "rgba(0,0,0,0.6)",
-            color: "#fff",
-            border: "none",
-            borderRadius: "50%",
-            width: "24px",
-            height: "24px",
-            cursor: "pointer",
-            fontSize: "14px",
-            lineHeight: "22px",
-          });
-
-          btn.onclick = () => {
-            const campo = n === 1 ? "urlImagem" : n === 2 ? "urlImagem2" : "urlImagem3";
-            removerImagem(slug, id, campo, imgEl)
-              .then(()=> btn.remove())
-              .catch(()=> {/* já tratamos erro na função */});
-          };
-
-          wrapper.style.position = "relative";
-          wrapper.appendChild(btn);
-        }
-      }
-    }
-
-    // Auth + carregamento
-    onAuthStateChanged(auth, async user=>{
-      try{
-        if(!user){
-          // se você quiser forçar login “real”, troque por redirecionar ao seu fluxo de login
-          await signInAnonymously(auth);
-        }
-        renderUserCircle(auth.currentUser);
-
-        if(!slug){ bloquearUI('Informe ?c=<slug> para editar.'); return; }
-
-        // Permissão & limite (dono/editores + plano)
-        const cfgMeta = await exigirDonoOuEditor((auth.currentUser||{}).uid, slug);
-        const { ativo, limite, plano } = await resolveLimiteAssinatura(cfgMeta.ownerUid);
-        if(!ativo){ bloquearUI('Assinatura inativa para este catálogo.'); return; }
-        $('#hintLimite').textContent = `Seu plano (${plano}) permite até ${limite} itens.`;
-        $('#planoInfo').textContent = `Plano atual: ${plano}`;
-
-        buildGrid(limite);
-        const meta = await carregarMeta(slug);
-        await carregarItens(slug, limite);
-        criarBotoesRemover(slug);
-
-        $('#btnSalvarTudo').onclick = ()=> salvarTudo(slug, limite);
-        $('#chkAtivo').addEventListener('change', ()=> salvarMeta(slug, cfgMeta.ownerUid));
-        setPublicLink(slug, meta);
-      }catch(e){
-        console.error(e);
-        if(e.message==='NOT_OWNER') bloquearUI('Você não tem permissão para editar este catálogo.');
-        else if(e.message==='CONFIG_NOT_FOUND') bloquearUI('Configuração não encontrada. Crie /catalogos/'+slug+'/meta/config.');
-        else bloquearUI('Erro ao carregar. Verifique as regras do Firestore/Storage.');
-      }
+    load().catch(err=>{
+      console.error(err);
+      const grid = $('#grid');
+      grid.innerHTML = `<div class="card" style="grid-column:1/-1"><div class="body"><b>Erro ao carregar catálogo.</b> Verifique as regras do Firestore e o slug.</div></div>`;
     });
   </script>
 </body>
