@@ -695,27 +695,23 @@
           const qtd = (typeof d.quantidade === 'number') ? d.quantidade
                     : (typeof d.qtde === 'number') ? d.qtde : '—';
 
-      // helper: aceita só URLs http(s)
-const httpOnly = (arr) =>
-  Array.isArray(arr)
-    ? arr.filter(u => typeof u === 'string' && /^https?:\/\//i.test(u))
-    : [];
+// helper: aceita só URLs http(s)
+const httpOnly = arr => Array.isArray(arr)
+  ? arr.filter(u => typeof u === 'string' && /^https?:\/\//i.test(u))
+  : [];
 
-// ===== Compat de imagens (arrays e campos soltos) =====
-let fotos = [];
+// ===== Compat de imagens (prioriza campos soltos; arrays só se precisar) =====
+let fotos = [
+  d.imagem, d.imagem2, d.imagem3,
+  d.urlImagem, d.urlImagem2, d.urlImagem3
+].filter(u => typeof u === 'string' && /^https?:\/\//i.test(u));
 
-if (Array.isArray(d.imagens) && d.imagens.length) {
-  // caso novo: imagens[]
-  fotos = httpOnly(d.imagens);
-} else if (Array.isArray(d.imagensFull) && d.imagensFull.length) {
-  // fallback: imagensFull[]
-  fotos = httpOnly(d.imagensFull);
-} else {
-  // legado: campos soltos
-  fotos = [
-    d.imagem, d.imagem2, d.imagem3,
-    d.urlImagem, d.urlImagem2, d.urlImagem3
-  ].filter(u => typeof u === 'string' && /^https?:\/\//i.test(u));
+if (!fotos.length) {
+  if (Array.isArray(d.imagens) && d.imagens.length) {
+    fotos = httpOnly(d.imagens);
+  } else if (Array.isArray(d.imagensFull) && d.imagensFull.length) {
+    fotos = httpOnly(d.imagensFull);
+  }
 }
 
 // placeholder se nada encontrado
