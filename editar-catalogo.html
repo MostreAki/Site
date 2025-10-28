@@ -30,7 +30,7 @@
     h2{color:#0b3e3c;margin:12px 0 8px;font-size:1.9rem}
     .sub{color:var(--inkSub);margin-bottom:16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
     .pill{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:12px;background:#e9fbf8;border:1px solid #cfeee9;color:#0b4d4c;font-weight:700}
-    .ghost-link{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;border:2px solid var(--brand); color:var(--brand); background:#fff; font-weight:800;}
+    .ghost-link{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border:2px solid var(--brand); color:var(--brand); background:#fff; font-weight:800;}
     .card{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.06);margin-bottom:16px}
     .card .head{padding:14px 16px;border-bottom:1px solid var(--line);font-weight:700;color:#0b3e3c;display:flex;gap:10px;align-items:center;justify-content:space-between}
     .card .body{padding:16px}
@@ -85,7 +85,7 @@
     </div>
   </header>
 
-  <main class="container" id="appRoot">
+  <main class="container">
     <h2>Editar Catálogo</h2>
     <div class="sub">
       <span class="pill">Slug: <b id="slugLabel" style="margin-left:6px">—</b></span>
@@ -107,8 +107,7 @@
         </div>
         <p id="hintLimite" class="hint" style="margin-top:12px"></p>
         <p class="hint" style="margin-top:8px">
-          Suba as <b>imagens direto para o Storage (≤ 400 KB)</b>. Após o upload, salvamos <code>urlImagem(2/3)</code> no Firestore
-          e também <code>imagens[]</code> com os caminhos do bucket.
+          Suba as <b>imagens direto para o Storage (≤ 400 KB)</b>. Após o upload, salvamos <code>urlImagem(2/3)</code> no Firestore.
         </p>
       </div>
     </section>
@@ -127,8 +126,7 @@
   <script type="module">
     import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
     import { 
-      getAuth, onAuthStateChanged, signOut,
-      setPersistence, browserLocalPersistence 
+      getAuth, onAuthStateChanged, signOut, setPersistence, browserLocalPersistence 
     } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
     import { 
       getFirestore, doc, getDoc, setDoc, getDocs, collection, writeBatch, serverTimestamp,
@@ -150,7 +148,7 @@
     const db   = getFirestore(app);
     const st   = getStorage(app);
 
-    // Sessão local (mantém logado até clicar "Sair")
+    // Persistência local para manter logado após refresh
     await setPersistence(auth, browserLocalPersistence);
 
     const $ = s => document.querySelector(s);
@@ -166,12 +164,12 @@
       btn.addEventListener('click',e=>{e.stopPropagation();toggle();});
     })();
 
-    // Helpers BRL / cache-busting
+    // Helpers
     const fmtBRL = c => 'R$ ' + (c/100).toLocaleString('pt-BR',{minimumFractionDigits:2});
     const parseBRL = s => { const n=parseFloat(String(s).replace(/[^\d,.-]/g,'').replace(/\./g,'').replace(',','.')); return isNaN(n)?0:Math.round(n*100); };
     const bust = (url)=> url ? (url + (url.includes('?')?'&':'?') + 't=' + Date.now()) : url;
 
-    // Slug + link público (catalogo-<slug>.html)
+    // Slug + link público (formato catalogo-<slug>.html)
     function getSlug(){ const u=new URL(location.href); return u.searchParams.get('c') || u.searchParams.get('slug') || ''; }
     const slug = getSlug(); $('#slugLabel').textContent = slug || '—';
     function setPublicLink(slug, meta={}){ const a=$('#publicLink'); if(!a||!slug){ if(a) a.href='#'; return; }
@@ -188,7 +186,6 @@
       return { ativo: status==='ativo', limite: maxByPlano(plano), plano };
     }
 
-    // Autorização
     async function exigirDonoOuEditor(uid, slug){
       const refCfg = doc(db,'catalogos',slug,'meta','config');
       const s = await getDoc(refCfg);
@@ -200,23 +197,21 @@
       return data;
     }
 
-    // Avatar
+    // Avatar + botão Sair
     function renderUserCircle(user){
       const el = $('#userCircle'); const btn=$('#authBtn');
       const show = ()=> el.style.display='flex';
       if(!user){
+        // Sem sessão: esconder círculo, trocar botão e sair para página inicial
         el.style.display='none';
         btn.textContent='Entrar';
-        btn.onclick=(e)=>{ e.preventDefault(); location.href='/minha-conta.html'; };
+        btn.onclick=(e)=>{ e.preventDefault(); window.location.href='/index.html'; };
         return;
       }
       btn.textContent='Sair';
       btn.onclick=async (e)=>{
         e.preventDefault();
-        try { await signOut(auth); } finally {
-          // redireciona sempre que sair
-          location.href = '/index.html';
-        }
+        try{ await signOut(auth); } finally { window.location.href='/index.html'; }
       };
       const url = user.photoURL;
       el.title = user.displayName || user.email || user.uid;
@@ -225,6 +220,17 @@
       const name = (user.displayName || user.email || 'U').trim();
       const initials = name.split('@')[0].split(/\s+/).slice(0,2).map(s=>s[0]?.toUpperCase()||'U').join('');
       el.textContent = initials; show();
+    }
+
+    // Compressão até 400KB
+    async function compressToJPEG(file, maxBytes=400*1024, maxW=1400, maxH=1400){
+      const img = new Image(); img.src = URL.createObjectURL(file); await img.decode();
+      const r = Math.min(maxW/img.width, maxH/img.height, 1), w=Math.round(img.width*r), h=Math.round(img.height*r);
+      const canvas = Object.assign(document.createElement('canvas'), { width:w, height:h });
+      const ctx = canvas.getContext('2d'); ctx.drawImage(img,0,0,w,h);
+      let q=0.9, step=0.08, out;
+      for(let i=0;i<10;i++){ out = await new Promise(res=>canvas.toBlob(res,'image/jpeg',q)); if(out.size<=maxBytes || q<=0.4) break; q-=step; step=Math.max(0.03,step*0.75); }
+      return new File([out], file.name.replace(/\.\w+$/i,'.jpg'), { type:'image/jpeg' });
     }
 
     // UI dos itens
@@ -309,15 +315,15 @@
     }
 
     async function salvarTudo(slug, limite){
-      const stx = $('#statusSave'); stx.textContent='Salvando...'; stx.className='hint';
+      const stx = document.getElementById('statusSave'); stx.textContent='Salvando...'; stx.className='hint';
       try{
         const batch = writeBatch(db);
         for(let i=1;i<=limite;i++){
           const id=String(i).padStart(2,'0');
-          const nome=($('#nome_'+id)?.value||'').trim();
-          const qtd =parseInt($('#qtd_'+id)?.value||'0',10);
-          const cents=parseBRL($('#preco_'+id)?.value||'');
-          const ml =($('#ml_'+id)?.value||'').trim();
+          const nome=(document.getElementById('nome_'+id)?.value||'').trim();
+          const qtd =parseInt(document.getElementById('qtd_'+id)?.value||'0',10);
+          const cents=parseBRL(document.getElementById('preco_'+id)?.value||'');
+          const ml =(document.getElementById('ml_'+id)?.value||'').trim();
           batch.set(doc(db,'catalogos',slug,'itens',id),{
             ordem:i, nome, quantidade:isNaN(qtd)?0:qtd, precoCentavos:cents, mlUrl:ml, atualizadoEm:serverTimestamp()
           },{merge:true});
@@ -330,27 +336,24 @@
 
     async function carregarMeta(slug){
       const s=await getDoc(doc(db,'catalogos',slug,'meta','config')); let d={};
-      if(s.exists()){ d=s.data(); $('#chkAtivo').checked=!!d.catalogoAtivo; }
+      if(s.exists()){ d=s.data(); document.getElementById('chkAtivo').checked=!!d.catalogoAtivo; }
       setPublicLink(slug,d); return d;
     }
 
     async function salvarMeta(slug, ownerUid){
       await setDoc(doc(db,'catalogos',slug,'meta','config'),{
-        ownerUid, catalogoAtivo: $('#chkAtivo').checked, atualizadoEm: serverTimestamp()
+        ownerUid, catalogoAtivo: document.getElementById('chkAtivo').checked, atualizadoEm: serverTimestamp()
       },{merge:true});
     }
 
-    function bloquearUI(msg){
-      const root = document.getElementById('appRoot');
-      root.innerHTML = `<div class="card"><div class="body status-err">${msg}</div></div>`;
-    }
+    function bloquearUI(msg){ document.querySelector('main.container').innerHTML = `<div class="card"><div class="body status-err">${msg}</div></div>`; }
 
-    // ===== Upload por slot fixo (1,2,3) =====
+    // ========== UPLOAD respeitando slots fixos (1→urlImagem, 2→urlImagem2, 3→urlImagem3) ==========
     async function uploadImagensDoItem(id){
-      const hint=$('#hint_'+id), barBox=$('#pg_'+id), bar=$('#bar_'+id);
-      const f1=$('#f1_'+id)?.files?.[0]||null;
-      const f2=$('#f2_'+id)?.files?.[0]||null;
-      const f3=$('#f3_'+id)?.files?.[0]||null;
+      const hint=document.getElementById('hint_'+id), barBox=document.getElementById('pg_'+id), bar=document.getElementById('bar_'+id);
+      const f1=document.getElementById('f1_'+id)?.files?.[0]||null;
+      const f2=document.getElementById('f2_'+id)?.files?.[0]||null;
+      const f3=document.getElementById('f3_'+id)?.files?.[0]||null;
       if(!f1 && !f2 && !f3){ hint.textContent='Selecione pelo menos 1 imagem.'; return; }
 
       const toUpload=[];
@@ -364,10 +367,10 @@
       hint.textContent='Enviando...'; barBox.style.display='block'; bar.style.width='0%';
       const base=`catalogos/${slug}/itens/${id}`;
       let sent=0, total=toUpload.reduce((a,[_s,f])=>a+f.size,0);
-      const newUrls={};
+      const newUrls={}; // {1:url,2:url,3:url}
 
       for(const [slot,file] of toUpload){
-        const name=`i${String(slot).padStart(2,'0')}.jpg`;
+        const name=`i${String(slot).padStart(2,'0')}.jpg`; // nome fixo por slot
         const path=`${base}/${name}`;
         const r=ref(st, path);
         await new Promise((resolve,reject)=>{
@@ -384,6 +387,7 @@
         });
       }
 
+      // Atualiza só os campos enviados
       const itemRef = doc(db, 'catalogos', slug, 'itens', id);
       const patch = { atualizadoEm: serverTimestamp() };
       if(newUrls[1]) patch.urlImagem  = newUrls[1];
@@ -391,6 +395,7 @@
       if(newUrls[3]) patch.urlImagem3 = newUrls[3];
       await setDoc(itemRef, patch, { merge:true });
 
+      // Atualiza prévias locais
       for(const s of [1,2,3]){
         if(newUrls[s]){
           const im=document.getElementById(`p${s}_${id}`);
@@ -402,7 +407,7 @@
       bar.style.width='100%'; setTimeout(()=>{ barBox.style.display='none'; },1200);
     }
 
-    // ===== Remoção individual (não reordena slots) =====
+    // ===== Remoção individual (não reordena) =====
     async function removerImagem(slug, id, campo, imgEl) {
       const hint = document.getElementById('hint_' + id);
       try {
@@ -418,6 +423,7 @@
         }
         const itemRef = doc(db, "catalogos", slug, "itens", id);
         await updateDoc(itemRef, { [campo]: deleteField(), atualizadoEm: serverTimestamp() });
+
         imgEl.src=''; imgEl.style.display='none';
         const which = campo === 'urlImagem' ? '1' : (campo === 'urlImagem2' ? '2' : '3');
         const fileInput = document.getElementById('f' + which + '_' + id);
@@ -471,40 +477,37 @@
       }
     }
 
-    // ===== Gate de autenticação =====
-    function redirectHome(){ location.href = '/index.html'; }
-
+    // Auth + carregamento — sem login anônimo, e bloqueia acesso se deslogado
     onAuthStateChanged(auth, async user=>{
       try{
         if(!user){
-          // sem usuário: volta pra home (área restrita)
-          redirectHome();
+          // usuário não autenticado: volta pra página inicial
+          window.location.replace('/index.html');
           return;
         }
-
-        renderUserCircle(user);
+        renderUserCircle(auth.currentUser);
 
         if(!slug){ bloquearUI('Informe ?c=<slug> para editar.'); return; }
 
-        const cfgMeta = await exigirDonoOuEditor(user.uid, slug);
+        const cfgMeta = await exigirDonoOuEditor((auth.currentUser||{}).uid, slug);
         const { ativo, limite, plano } = await resolveLimiteAssinatura(cfgMeta.ownerUid);
         if(!ativo){ bloquearUI('Assinatura inativa para este catálogo.'); return; }
-
-        $('#hintLimite').textContent = `Seu plano (${plano}) permite até ${limite} itens.`;
-        $('#planoInfo').textContent = `Plano atual: ${plano}`;
+        document.getElementById('hintLimite').textContent = `Seu plano (${plano}) permite até ${limite} itens.`;
+        document.getElementById('planoInfo').textContent = `Plano atual: ${plano}`;
 
         buildGrid(limite);
         const meta = await carregarMeta(slug);
         await carregarItens(slug, limite);
         criarBotoesRemover(slug);
 
-        $('#btnSalvarTudo').onclick = ()=> salvarTudo(slug, limite);
-        $('#chkAtivo').addEventListener('change', ()=> salvarMeta(slug, cfgMeta.ownerUid));
+        document.getElementById('btnSalvarTudo').onclick = ()=> salvarTudo(slug, limite);
+        document.getElementById('chkAtivo').addEventListener('change', ()=> salvarMeta(slug, cfgMeta.ownerUid));
         setPublicLink(slug, meta);
       }catch(e){
         console.error(e);
-        // se algo falhar por sessão/perm, manda pra home
-        redirectHome();
+        if(e.message==='NOT_OWNER') bloquearUI('Você não tem permissão para editar este catálogo.');
+        else if(e.message==='CONFIG_NOT_FOUND') bloquearUI('Configuração não encontrada. Crie /catalogos/'+slug+'/meta/config.');
+        else bloquearUI('Erro ao carregar. Verifique as regras do Firestore/Storage.');
       }
     });
   </script>
