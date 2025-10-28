@@ -1,149 +1,79 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Catálogo • MostreAki</title>
-  <meta name="theme-color" content="#0f766e" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Catálogo – MostreAki</title>
   <style>
     :root{
-      --teal-900:#134e4a; --teal-800:#115e59; --teal-700:#0f766e;
-      --teal-600:#0d9488; --teal-100:#ccfbf1;
-      --ink:#0b1324; --muted:#6b7280;
-      --bg:#061a22; --panel:#0a2537; --card:#ffffff;
-      --ring:rgba(13,148,136,.25); --brand:#16b0af;
-      --ok:#25D366;
-      --logo-size: 86%;
-      --banner-fit: cover;
-      --banner-pos: center;
-      --banner-min-h-mobile: 160px;
-      --banner-min-h-desktop: 220px;
+      --brand:#16b0af; --ink:#083f3e; --bg:#f6fbfa; --line:#e7f3f1;
+      --muted:#5b6b6a; --ok:#0a7; --card:#ffffff;
     }
     *{box-sizing:border-box}
-    html,body{margin:0;padding:0;background:linear-gradient(180deg,var(--teal-900),#0a2537 45%, #05202a);color:#ecfeff;font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Arial}
-    a{color:inherit;text-decoration:none}
-
-    header{
-      position:sticky;top:0;z-index:50;
-      background:linear-gradient(90deg,var(--teal-900),var(--teal-700));
-      border-bottom:1px solid rgba(255,255,255,.08);
-    }
-    .bar{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:12px;padding:14px 16px}
-    .brandLogo{
-      width:28px;height:28px;border-radius:999px;object-fit:contain;
-      display:none;background:#fff;box-shadow:0 4px 14px rgba(0,0,0,.18);
-    }
-    .brand{font-weight:800;letter-spacing:.4px;font-size:1.1rem;white-space:nowrap}
-    .spacer{flex:1}
-
-    main{max-width:1100px;margin:0 auto;padding:28px 16px 90px}
-
-    .hero{display:flex;flex-direction:column;align-items:center;gap:18px;margin-top:6px}
-    .logoRing{
-      width:140px;height:140px;border-radius:999px;background:#fff;
-      display:grid;place-items:center;position:relative;box-shadow:0 12px 40px rgba(0,0,0,.35), inset 0 0 0 6px var(--ring)
-    }
-    .logoRing img{width:var(--logo-size);height:var(--logo-size);object-fit:contain;border-radius:999px}
-
-    /* Banner container (carrossel) */
-    .banner{
-      width:100%;max-width:980px;min-height:var(--banner-min-h-mobile);border-radius:18px;
-      background:linear-gradient(180deg,#e0f7f4,#c7f1ec);
-      box-shadow: 0 20px 60px rgba(0,0,0,.25);
-      overflow:hidden;
-      position:relative;
-    }
-    @media (min-width:860px){ .banner{ min-height:var(--banner-min-h-desktop); } }
-
-    /* ✅ Apenas o slide ativo recebe cliques */
-    .banner .slide{
-      position:absolute; inset:0;
-      opacity:0; transition:opacity .6s ease;
-      display:flex;
-      pointer-events:none;
-      z-index:1;
-    }
-    .banner .slide.active{
-      opacity:1;
-      pointer-events:auto;
-      z-index:2;
-    }
-    /* Link ocupa toda a área do slide */
-    .banner .slide a{
-      position:absolute; inset:0;
-      display:block; width:100%; height:100%;
-    }
-    /* Vídeo não captura clique; passa para o <a> */
-    .banner img,.banner video{
-      width:100%;height:100%;object-fit:var(--banner-fit);object-position:var(--banner-pos);display:block;
-      pointer-events:none;
-    }
-
-    h1.title{margin:0;margin-top:8px;font-size:clamp(1.35rem,2.2vw,1.9rem);font-weight:900;letter-spacing:.3px;text-shadow:0 2px 14px rgba(0,0,0,.35)}
-
-    .pager{margin-top:18px;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
-    .navbtn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;border:2px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#d1fae5;font-weight:800;cursor:pointer}
-    .navbtn[disabled]{opacity:.4;cursor:not-allowed}
-    .navbtn svg{width:18px;height:18px;fill:#d1fae5}
-    .pageinfo{font-weight:700;color:#b6e9e2}
-
-    .grid{margin-top:18px;display:grid;gap:16px;grid-template-columns:repeat(2,minmax(0,1fr))}
-    @media (min-width:860px){ .grid{grid-template-columns:repeat(4,minmax(0,1fr));} }
-
-    .card{background:linear-gradient(180deg,#fdfefe,#eef7f6);border:1px solid rgba(3,94,86,.12);border-radius:16px;overflow:hidden;box-shadow:0 12px 30px rgba(0,0,0,.18);transition:transform .15s ease, box-shadow .15s ease}
-    .card:hover{ transform:translateY(-2px); box-shadow:0 18px 44px rgba(0,0,0,.26); }
-    .imgWrap{aspect-ratio:1/1;background:#e6f6f4;display:grid;place-items:center;overflow:hidden;cursor:zoom-in}
-    .imgWrap img{width:100%;height:100%;object-fit:cover}
-
-    .info{display:grid;grid-template-columns: 1fr;row-gap:6px;align-items:start;padding:10px 12px 12px;}
-    .left{min-width:0}
-    .nome{font-weight:700;color:#0c2d2b;margin-bottom:2px;font-size:.98rem}
-    .preco{font-weight:800;color:#0c2d2b;font-size:1rem}
-    .qtde{color:#476f6c;font-size:.86rem;margin-top:2px}
-
-    .thumbs{display:flex; gap:8px; margin:8px 0 6px}
-    .thumbs img{width:40px; height:40px; object-fit:cover; border-radius:8px; opacity:.9; border:1px solid rgba(3,94,86,.22); cursor:pointer; transition:transform .12s ease, opacity .12s ease}
-    .thumbs img:hover{ opacity:1; transform:translateY(-1px) }
-
-    .actions{display:flex; flex-direction:column; gap:8px; margin-top:6px}
-    .cta{display:inline-flex; align-items:center; justify-content:flex-start; gap:10px; width:fit-content; padding:10px 14px; border:0; border-radius:12px; font-weight:800; cursor:pointer; box-shadow:0 10px 24px rgba(0,0,0,.12); text-shadow:0 1px 0 rgba(0,0,0,.06);}
-    .cta img{width:22px; height:22px; display:block}
-    .cta svg{width:22px; height:22px}
-    .cta-wa{background:var(--ok); color:#fff}
-    .cta-ml{background:#FFE600; color:#002E6C}
-    .cta:active{transform:translateY(1px)}
-
-    .zap,.mlbtn{display:none !important}
-
-    .wa-float{position:fixed; right:16px; bottom:16px; z-index:60; width:56px; height:56px; border-radius:999px; background:var(--ok); display:none; align-items:center; justify-content:center; box-shadow:0 12px 32px rgba(37,211,102,.35);}
-    .wa-float:active{ transform:scale(.97) }
-    .wa-float svg{ width:28px; height:28px; fill:#fff }
-    @media (min-width:860px){ .wa-float{ right:24px; bottom:24px; width:64px; height:64px } .wa-float svg{ width:30px; height:30px } }
-
-    .muted{margin:22px auto 0;max-width:780px;color:#b6e9e2;text-align:center;font-size:.95rem}
-    .warn{background:#fee2e2;color:#7f1d1d;border:1px solid #fecaca;padding:12px 14px;border-radius:12px;margin:18px auto;max-width:840px}
-    footer{color:#bbf7d0;font-size:.8rem;text-align:center;padding:32px 16px;border-top:1px solid rgba(255,255,255,.07)}
-
-    .lb-bg{position:fixed; inset:0; z-index:70; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,.7); backdrop-filter:saturate(120%) blur(2px); padding:16px}
-    .lb-card{position:relative; max-width:96vw; max-height:90vh; background:#031d24; border:1px solid rgba(255,255,255,.12); border-radius:16px; box-shadow:0 20px 80px rgba(0,0,0,.55); padding:10px}
-    .lb-img{display:block; max-width:92vw; max-height:82vh; width:auto; height:auto; object-fit:contain; border-radius:10px; background:#0a2a33}
-    .lb-close{position:absolute; top:8px; right:8px; border:0; width:36px; height:36px; border-radius:10px; background:rgba(255,255,255,.12); color:#e8ffff; cursor:pointer; font-size:22px; line-height:36px}
-    .lb-close:active{ transform:scale(.95) }
-    .lb-arrow{position:absolute; top:50%; transform:translateY(-50%); border:0; width:42px; height:42px; border-radius:999px; background:rgba(255,255,255,.16); color:#e8ffff; cursor:pointer; font-size:22px; line-height:42px}
-    .lb-prev{ left:8px } .lb-next{ right:8px }
-    .lb-arrow:active{ transform:translateY(-50%) scale(.96) }
-    .lb-count{position:absolute; bottom:10px; right:12px; background:rgba(0,0,0,.45); color:#e8ffff; font-size:.85rem; padding:6px 10px; border-radius:10px }
+    body{margin:0;background:var(--bg);font:16px/1.45 system-ui,Segoe UI,Roboto,Arial;color:var(--ink)}
+    header{position:sticky;top:0;z-index:10;background:#cceee6;display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid #bfe3da}
+    header .logo{display:flex;align-items:center;gap:10px;font-weight:800}
+    header .logo img{height:40px}
+    main{max-width:1100px;margin:22px auto;padding:0 16px}
+    .sub{display:flex;gap:10px;align-items:center;flex-wrap:wrap;color:var(--muted)}
+    .pill{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:12px;background:#e9fbf8;border:1px solid #cfeee9;color:#0b4d4c;font-weight:700}
+    .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:16px}
+    @media(max-width:980px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:640px){.grid{grid-template-columns:1fr}}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.06);overflow:hidden;display:flex;flex-direction:column}
+    .media{position:relative;background:#f2fbf8}
+    .media img{width:100%;height:220px;object-fit:cover;display:block}
+    .thumbs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:8px;background:#f7fcfb;border-top:1px solid var(--line)}
+    .thumbs img{width:100%;height:68px;object-fit:cover;border:1px solid #e3f2ef;border-radius:8px;cursor:pointer}
+    .body{padding:12px}
+    .title{margin:0 0 6px;font-weight:800}
+    .meta{display:flex;gap:10px;align-items:center;flex-wrap:wrap;color:var(--muted);font-size:.95rem}
+    .price{font-weight:900;color:#0b4d4c}
+    .qty{font-weight:700}
+    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    .btn{--bg:#0f766e;--fg:#fff;--bd:transparent;display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;border:1px solid var(--bd);background:var(--bg);color:var(--fg);font-weight:800;text-decoration:none}
+    .btn--ghost{--bg:#fff;--fg:#0f766e;--bd:rgba(15,118,110,.35)}
+    .banner{margin:12px 0; border-radius:14px; overflow:hidden; border:1px solid var(--line)}
+    .banner img{width:100%; display:block; max-height:280px; object-fit:cover}
+    /* Lightbox simples */
+    .lightbox{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.7);z-index:50}
+    .lightbox img{max-width:94vw;max-height:90vh;display:block;border-radius:10px;box-shadow:0 10px 40px rgba(0,0,0,.5)}
+    .lightbox.on{display:flex}
+    footer{color:#567;font-size:.9rem;text-align:center;padding:24px 16px}
   </style>
+</head>
+<body>
+  <header>
+    <div class="logo"><img src="/logomarca-mostreaki.svg" alt="Logo MostreAki"><b>MostreAki</b></div>
+  </header>
 
-  <!-- Firebase (modular) -->
+  <main>
+    <h2 id="catTitle">Catálogo</h2>
+    <div class="sub">
+      <span class="pill">Slug: <b id="slugLabel">—</b></span>
+      <span id="status" class="pill" style="display:none"></span>
+    </div>
+
+    <div id="topBanner" class="banner" style="display:none">
+      <img id="bannerImg" alt="Banner do catálogo">
+    </div>
+
+    <section id="grid" class="grid"></section>
+  </main>
+
+  <div id="lb" class="lightbox" aria-hidden="true">
+    <img id="lbImg" alt="Visualização ampliada">
+  </div>
+
+  <footer>© <span id="ano"></span> MostreAki</footer>
+
+  <!-- Firebase v10.14 (mesma config do editor) -->
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
-    import { getFirestore, doc, getDoc, collection, query, orderBy, onSnapshot, limit as qLimit } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+    import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+    import { getFirestore, doc, getDoc, getDocs, collection } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
 
-    const firebaseConfig = {
+    // ===== Config (igual ao editor) =====
+    const cfg = {
       apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
       authDomain: "mostreaki-2025.firebaseapp.com",
       projectId: "mostreaki-2025",
@@ -151,678 +81,145 @@
       messagingSenderId: "748712068097",
       appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
     };
-    const app = initializeApp(firebaseConfig);
+    const app = getApps().length ? getApp() : initializeApp(cfg);
     const db  = getFirestore(app);
 
-    function getSlug() {
-      const m = location.pathname.match(/catalogo-([^/.]+)\.html$/);
-      if (m) return m[1];
+    const $ = s => document.querySelector(s);
+    $('#ano').textContent = new Date().getFullYear();
+
+    // ===== Utils =====
+    function bust(url){ return url ? url + (url.includes('?')?'&':'?') + 't=' + Date.now() : url; }
+    function fmtBRLcent(c){ return 'R$ ' + (c/100).toLocaleString('pt-BR',{minimumFractionDigits:2}); }
+    function getSlug(){
       const u = new URL(location.href);
-      return u.searchParams.get('c') || u.searchParams.get('slug') || '';
+      const byQuery = u.searchParams.get('c') || u.searchParams.get('slug');
+      if (byQuery) return byQuery;
+      // Suporta /catalogo-<slug>.html
+      const m = location.pathname.match(/catalogo-([a-z0-9-]+)\.html$/i);
+      return m ? m[1] : '';
     }
+
     const slug = getSlug();
+    $('#slugLabel').textContent = slug || '—';
 
-    const PLACEHOLDER = 'data:image/svg+xml;utf8,' + encodeURIComponent(
-      `<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512">
-        <rect width="100%" height="100%" fill="#e6f6f4"/>
-        <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" fill="#7fb4ad" font-size="28" font-family="Arial">sem imagem</text>
-      </svg>`
-    );
+    // ===== Lightbox simples =====
+    const lb = $('#lb'), lbImg = $('#lbImg');
+    function openLB(src){ lbImg.src = src; lb.classList.add('on'); lb.setAttribute('aria-hidden','false'); }
+    function closeLB(){ lb.classList.remove('on'); lb.setAttribute('aria-hidden','true'); lbImg.src=''; }
+    lb.addEventListener('click', closeLB);
+    window.addEventListener('keydown', e=>{ if(e.key==='Escape') closeLB(); });
 
-    function waLink(phone, text) {
-      if(!phone) return null;
-      let p = String(phone).replace(/\D/g,'');
-      if (p.startsWith('0')) p = p.slice(1);
-      if (p.length <= 11 && !p.startsWith('55')) p = '55' + p;
-      return `https://wa.me/${p}?text=${encodeURIComponent(text)}`;
-    }
+    // ===== Render =====
+    function renderItem(id, d){
+      const nome  = d.nome || d.titulo || `Item ${id}`;
+      const qtd   = typeof d.quantidade==='number' ? d.quantidade : (d.qtde||0);
+      const cents = typeof d.precoCentavos==='number' ? d.precoCentavos : (typeof d.preco==='number' ? Math.round(d.preco*100) : 0);
+      const ml    = d.mlUrl || '';
 
-    const PER_PAGE = 10;
-    let itens = [];
-    let page = 0;
+      // Imagens por slot fixo (sem arrays)
+      const i1 = d.urlImagem  || '';
+      const i2 = d.urlImagem2 || '';
+      const i3 = d.urlImagem3 || '';
+      const gal = [i1,i2,i3].filter(Boolean);
+      const thumb = gal[0] || '';
 
-    function totalPages(){ return Math.max(1, Math.ceil(itens.length / PER_PAGE)); }
-    function clampPage(){ page = Math.min(page, totalPages()-1); if(page<0) page=0; }
+      const el = document.createElement('article');
+      el.className = 'card';
+      el.innerHTML = `
+        <div class="media">
+          ${thumb ? `<img class="hero" src="${bust(thumb)}" alt="${nome}">` : `<img class="hero" src="https://via.placeholder.com/800x480?text=Sem+imagem" alt="${nome}">`}
+        </div>
+        <div class="thumbs">
+          ${[i1,i2,i3].map((u,ix)=> u ? `<img data-ix="${ix+1}" data-src="${bust(u)}" alt="Imagem ${ix+1} de ${nome}">` : `<span></span>`).join('')}
+        </div>
+        <div class="body">
+          <h3 class="title">${nome}</h3>
+          <div class="meta">
+            <span class="price">${fmtBRLcent(cents)}</span>
+            <span class="qty">Qtd: ${qtd}</span>
+          </div>
+          <div class="actions">
+            ${ml ? `<a class="btn" href="${ml}" target="_blank" rel="noopener">Comprar no Mercado Livre</a>` : ``}
+          </div>
+        </div>
+      `;
 
-    let MAX_FOTOS_ITEM = 3;
-
-    // Ícones externos via config (se definidos)
-    let ICON_WA = '';
-    let ICON_ML = '';
-
-    /* ===================== CARROSSEL DE BANNERS (MOBILE vs DESKTOP) ===================== */
-    let BANNER_SLIDES = [];
-    let BANNER_IDX = 0;
-    let BANNER_TIMER = null;
-    const mq = window.matchMedia('(max-width: 720px)');
-    let lastMode = mq.matches ? 'mobile' : 'desktop';
-
-    const norm = v => (v ?? '').toString().trim();
-
-    function arrayFromAliases(obj, keys){
-      const out = [];
-      for (const k of keys){
-        const v = obj[k];
-        if (Array.isArray(v)) out.push(...v);
-        else if (typeof v === 'string' && v) out.push(v);
-      }
-      return out;
-    }
-
-    function collectBannerUrlsByMode(cfg){
-      const isMob = mq.matches;
-
-      // 1) Tenta específicos por dispositivo
-      const mobileList = arrayFromAliases(cfg, [
-        'bannerMobileUrls','mobileBannerUrls',
-        'bannerMobileUrl','bannerMobile1Url','bannerMobile2Url','bannerMobile3Url',
-        'mobileBannerUrl','mobileBanner1Url','mobileBanner2Url','mobileBanner3Url'
-      ]);
-      const desktopList = arrayFromAliases(cfg, [
-        'bannerDesktopUrls','desktopBannerUrls',
-        'bannerDesktopUrl','bannerDesktop1Url','bannerDesktop2Url','bannerDesktop3Url'
-      ]);
-
-      let urls = isMob ? mobileList : desktopList;
-
-      // 2) Fallback para os genéricos já existentes
-      if (!urls.length){
-        urls = arrayFromAliases(cfg, [
-          'bannerUrls','banners',
-          'bannerUrl','banner1Url','banner2Url','banner3Url','bannerUrl1','bannerUrl2','bannerUrl3'
-        ]);
-      }
-      urls = [...new Set(urls.filter(Boolean))].slice(0,3);
-      return urls;
-    }
-
-    /* Links por modo + fallback — preservando índices (sem filtrar) */
-    function collectBannerLinksByMode(cfg){
-      const isMob = mq.matches;
-
-      const mobileLinks = arrayFromAliases(cfg, [
-        'bannerMobileLinks','mobileBannerLinks',
-        'bannerMobileLink','bannerMobileLink1','bannerMobileLink2','bannerMobileLink3',
-        'mobileBannerLink','mobileBannerLink1','mobileBannerLink2','mobileBannerLink3'
-      ]);
-
-      const desktopLinks = arrayFromAliases(cfg, [
-        'bannerDesktopLinks','desktopBannerLinks',
-        'bannerDesktopLink','bannerDesktopLink1','bannerDesktopLink2','bannerDesktopLink3'
-      ]);
-
-      let links = isMob ? mobileLinks : desktopLinks;
-
-      if (!links.length){
-        links = arrayFromAliases(cfg, [
-          'bannerLinks',
-          'bannerLink','bannerLink1','bannerLink2','bannerLink3'
-        ]);
-      }
-
-      // ✅ Mantém 3 posições, mesmo se a primeira estiver vazia
-      const out = ['', '', ''];
-      for (let i = 0; i < 3; i++){
-        const v = links[i];
-        out[i] = (typeof v === 'string') ? v.trim() : '';
-      }
-      return out;
-    }
-
-    function effectiveFit(cfg){
-      const isMob = mq.matches;
-      const v = isMob ? (cfg.bannerFitMobile || cfg.bannerfitMobile)
-                      : (cfg.bannerFitDesktop || cfg.bannerfitDesktop);
-      return (v || cfg.bannerFit || 'cover') === 'contain' ? 'contain' : 'cover';
-    }
-    function effectivePosition(cfg){
-      const isMob = mq.matches;
-      return norm(isMob ? (cfg.bannerPositionMobile || cfg.bannerpositionMobile)
-                        : (cfg.bannerPositionDesktop || cfg.bannerpositionDesktop))
-             || norm(cfg.bannerPosition) || 'center';
-    }
-    function effectiveMinHeight(cfg){
-      const isMob = mq.matches;
-      const px = Number(isMob ? cfg.bannerHeightMobile : cfg.bannerHeightDesktop);
-      return Number.isFinite(px) ? Math.max(80, Math.min(800, px)) : null;
-    }
-
-    function setupBanners(cfg){
-      const box = document.getElementById('bannerBox');
-      if (!box) return;
-      box.innerHTML = '';
-
-      const urls  = collectBannerUrlsByMode(cfg);
-      const links = collectBannerLinksByMode(cfg);
-      if (!urls.length) return;
-
-      // Ajustes visuais por modo
-      box.style.setProperty('--banner-fit', effectiveFit(cfg));
-      box.style.setProperty('--banner-pos', effectivePosition(cfg));
-      const minH = effectiveMinHeight(cfg);
-      if (minH) box.style.minHeight = minH + 'px'; else box.style.minHeight = '';
-
-      BANNER_SLIDES = urls.map((u, i) => {
-        const slide = document.createElement('div');
-        slide.className = 'slide' + (i===0 ? ' active' : '');
-
-        const low = u.toLowerCase();
-        const hasLink = (typeof links[i] === 'string' && links[i].trim().length > 0);
-        const wrap = hasLink ? Object.assign(document.createElement('a'), { href: links[i], target: '_blank', rel: 'noopener', 'aria-label': 'Ver mais' }) : null;
-
-        const node = (low.endsWith('.mp4') || low.endsWith('.webm'))
-          ? (()=>{ const v = document.createElement('video'); v.src = u; v.muted = true; v.playsInline = true; v.preload = 'none'; if (urls.length === 1) v.autoplay = v.loop = true; return v; })()
-          : (()=>{ const img = new Image(); img.src = u; img.alt = 'Banner'; img.loading = 'lazy'; return img; })();
-
-        if (wrap) { wrap.appendChild(node); slide.appendChild(wrap); }
-        else { slide.appendChild(node); }
-
-        box.appendChild(slide);
-        return slide;
-      });
-
-      // inicia o 1º vídeo
-      const firstVid = BANNER_SLIDES[0].querySelector('video');
-      if (firstVid) firstVid.play().catch(()=>{});
-
-      if (BANNER_SLIDES.length > 1){
-        const interval = Number(cfg.bannerIntervalMs) || 7000;
-        clearInterval(BANNER_TIMER);
-        BANNER_TIMER = setInterval(()=>{
-          const cur = BANNER_SLIDES[BANNER_IDX];
-          const nxtIdx = (BANNER_IDX + 1) % BANNER_SLIDES.length;
-          const nxt = BANNER_SLIDES[nxtIdx];
-
-          const curVid = cur.querySelector('video');
-          if (curVid){ curVid.pause(); curVid.currentTime = 0; }
-
-          cur.classList.remove('active');
-          nxt.classList.add('active');
-
-          const nxtVid = nxt.querySelector('video');
-          if (nxtVid){ nxtVid.play().catch(()=>{}); }
-
-          BANNER_IDX = nxtIdx;
-        }, interval);
-
-        document.addEventListener('visibilitychange', ()=>{
-          if (document.hidden){ clearInterval(BANNER_TIMER); BANNER_TIMER = null; }
-          else if (!BANNER_TIMER){
-            const interval = Number(cfg.bannerIntervalMs) || 7000;
-            BANNER_TIMER = setInterval(()=>{ 
-              const cur = BANNER_SLIDES[BANNER_IDX];
-              const nxtIdx = (BANNER_IDX + 1) % BANNER_SLIDES.length;
-              const nxt = BANNER_SLIDES[nxtIdx];
-              const curVid = cur.querySelector('video'); if (curVid){ curVid.pause(); curVid.currentTime = 0; }
-              cur.classList.remove('active'); nxt.classList.add('active');
-              const nxtVid = nxt.querySelector('video'); if (nxtVid){ nxtVid.play().catch(()=>{}); }
-              BANNER_IDX = nxtIdx;
-            }, interval);
-          }
+      // troca hero ao clicar em thumb
+      el.querySelectorAll('.thumbs img').forEach(img=>{
+        img.addEventListener('click', ()=>{
+          const hero = el.querySelector('.hero');
+          hero.src = img.getAttribute('data-src');
         });
-      }
-    }
-
-    // Reconstrói banners se mudar de modo (mobile/desktop)
-    function watchBannerMode(cfg){
-      mq.addEventListener('change', ()=>{
-        const mode = mq.matches ? 'mobile' : 'desktop';
-        if (mode !== lastMode){
-          lastMode = mode;
-          setupBanners(cfg);
-        }
+        img.addEventListener('dblclick', ()=>{
+          openLB(img.getAttribute('data-src'));
+        });
       });
-    }
-
-    // Adiciona suporte a swipe no carrossel de banners
-    function setupBannerSwipe() {
-      const bannerBox = document.getElementById('bannerBox');
-      if (!bannerBox || BANNER_SLIDES.length <= 1) return; // Sem swipe se houver 0 ou 1 banner
-
-      let touchX = null;
-
-      bannerBox.addEventListener('touchstart', e => {
-        touchX = e.changedTouches[0].clientX;
-        // Pausa o temporizador durante o toque
-        if (BANNER_TIMER) {
-          clearInterval(BANNER_TIMER);
-          BANNER_TIMER = null;
-        }
-      }, { passive: true });
-
-      bannerBox.addEventListener('touchend', e => {
-        if (touchX == null) return;
-        const dx = e.changedTouches[0].clientX - touchX;
-        touchX = null;
-
-        if (Math.abs(dx) > 40) { // Limite mínimo de deslocamento
-          const cur = BANNER_SLIDES[BANNER_IDX];
-          const curVid = cur.querySelector('video');
-          if (curVid) { curVid.pause(); curVid.currentTime = 0; }
-
-          if (dx < 0) { // Swipe para esquerda (próximo)
-            BANNER_IDX = (BANNER_IDX + 1) % BANNER_SLIDES.length;
-          } else { // Swipe para direita (anterior)
-            BANNER_IDX = (BANNER_IDX - 1 + BANNER_SLIDES.length) % BANNER_SLIDES.length;
-          }
-
-          cur.classList.remove('active');
-          const nxt = BANNER_SLIDES[BANNER_IDX];
-          nxt.classList.add('active');
-
-          const nxtVid = nxt.querySelector('video');
-          if (nxtVid) { nxtVid.play().catch(() => {}); }
-
-          // Reinicia o temporizador após o swipe
-          const interval = Number(cfg.bannerIntervalMs) || 7000;
-          BANNER_TIMER = setInterval(() => {
-            const cur = BANNER_SLIDES[BANNER_IDX];
-            const nxtIdx = (BANNER_IDX + 1) % BANNER_SLIDES.length;
-            const nxt = BANNER_SLIDES[nxtIdx];
-            const curVid = cur.querySelector('video');
-            if (curVid) { curVid.pause(); curVid.currentTime = 0; }
-            cur.classList.remove('active');
-            nxt.classList.add('active');
-            const nxtVid = nxt.querySelector('video');
-            if (nxtVid) { nxtVid.play().catch(() => {}); }
-            BANNER_IDX = nxtIdx;
-          }, interval);
-        }
-      }, { passive: true });
-    }
-
-    function renderPage(){
-      clampPage();
-      const start = page * PER_PAGE;
-      const slice = itens.slice(start, start + PER_PAGE);
-
-      const gridEl = document.getElementById('grid');
-      if(!gridEl){ return; }
-
-      if(slice.length === 0){
-        gridEl.innerHTML = `<div class="warn" style="grid-column:1/-1">Ainda não há itens publicados neste catálogo.</div>`;
-      } else {
-        gridEl.innerHTML = slice.map(d => {
-          const galAttr = JSON.stringify(d.fotos).replace(/"/g,'&quot;');
-          const thumbs  = d.fotos.slice(0, MAX_FOTOS_ITEM)
-            .map((u,i)=>`<img src="${u}" alt="" data-idx="${i}">`).join('');
-
-          const waSvg = `<svg viewBox="0 0 32 32" aria-hidden="true"><path fill="#fff" d="M19.1 17.1c-.3-.2-1.7-.8-2-.9-.3-.1-.5-.2-.7.2-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.2-1.1-.4-2-1.2-.7-.6-1.2-1.4-1.3-1.6-.1-.3 0-.4.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2.1-.4 0-.6-.1-.2-.7-1.7-.9-2.3-.2-.5-.5-.4-.7-.4h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.7 0 1.6 1.1 3.1 1.2 3.3.1.2 2.2 3.4 5.4 4.7.8.4 1.4.6 1.9.8.8.3 1.6.3 2.2.2.7-.1 2-.8 2.2-1.6.3-.8.3-1.5.2-1.6 0-.1-.2-.1-.4-.2zM16 3C9.9 3 5 7.9 5 14c0 2.4.8 4.6 2.1 6.3L6 29l8-1.9c1.5.4 3.1.7 4.7.7 6.1 0 11-4.9 11-11S22.1 3 16 3z"/></svg>`;
-          const mlSvg = `<svg viewBox="0 0 64 64" aria-hidden="true"><rect x="2" y="8" width="60" height="48" rx="24" fill="#002E6C" opacity=".0"/><path fill="#002E6C" d="M18 28c2-2 5-4 8-4s6 2 8 4c2 2 5 4 8 4s6-2 8-4l2 3c-2 2-6 5-10 5s-8-3-10-5c-2-2-5-4-8-4s-6 2-8 4-8 5-12 5l2-4c3 0 8-3 10-4Z"/></svg>`;
-
-          const waIcon = ICON_WA ? `<img src="${ICON_WA}" alt="WhatsApp">` : waSvg;
-          const mlIcon = ICON_ML ? `<img src="${ICON_ML}" alt="Mercado Livre">` : mlSvg;
-
-          return `
-          <article class="card">
-            <div class="imgWrap" data-gal="${galAttr}">
-              <img loading="lazy" alt="${d.nome}" src="${d.thumb}" onerror="this.src='${PLACEHOLDER}'">
-            </div>
-            <div class="info">
-              <div class="left">
-                <div class="nome">${d.nome}</div>
-                <div class="preco">${d.precoBRL}</div>
-                <div class="qtde">Estoque: ${d.qtd}</div>
-
-                ${thumbs ? `<div class="thumbs" data-gal="${galAttr}">${thumbs}</div>` : ``}
-
-                <div class="actions">
-                  ${d.zap ? `<a class="cta cta-wa" href="${d.zap}" target="_blank" rel="noopener">Whatsapp ${waIcon}</a>` : ``}
-                  ${d.mlUrl ? `<a class="cta cta-ml" href="${d.mlUrl}" target="_blank" rel="noopener">Comprar ${mlIcon}</a>` : ``}
-                </div>
-              </div>
-              ${d.zap ? `<button class="zap" aria-label="WhatsApp" onclick="window.open('${d.zap}','_blank')"></button>` : ``}
-              ${d.mlUrl ? `<button class="mlbtn" aria-label="Mercado Livre" onclick="window.open('${d.mlUrl}','_blank')"></button>` : ``}
-            </div>
-          </article>`;
-        }).join('');
-      }
-
-      document.querySelectorAll('.pageinfo').forEach(el=>{
-        el.textContent = `Página ${Math.min(page+1,totalPages())} de ${totalPages()}`;
+      // hero abre lightbox
+      el.querySelector('.hero').addEventListener('click', e=>{
+        const src = e.currentTarget.getAttribute('src');
+        openLB(src);
       });
-      document.querySelectorAll('.btnPrev').forEach(b=> b.disabled = (page<=0));
-      document.querySelectorAll('.btnNext').forEach(b=> b.disabled = (page>=totalPages()-1));
+
+      return el;
     }
 
-    function goPrev(){ if(page>0){ page--; renderPage(); window.scrollTo({top:0,behavior:'smooth'}); } }
-    function goNext(){ if(page < totalPages()-1){ page++; renderPage(); window.scrollTo({top:0,behavior:'smooth'}); } }
-    window.goPrev = goPrev;
-    window.goNext = goNext;
-
-    /* ================= Lightbox ================= */
-    const lbBg   = document.getElementById('lbBg');
-    const lbImg  = document.getElementById('lbImg');
-    const lbBtn  = document.getElementById('lbClose');
-    const lbPrevBtn = document.getElementById('lbPrev');
-    const lbNextBtn = document.getElementById('lbNext');
-    const lbCount   = document.getElementById('lbCount');
-
-    let LB_GALLERY = [];
-    let LB_IDX = 0;
-
-    function showLbImage(){
-      const src = LB_GALLERY[LB_IDX] || '';
-      lbImg.src = src;
-      if (lbCount) lbCount.textContent = `${LB_IDX+1} / ${LB_GALLERY.length}`;
-    }
-    function openLightboxGallery(gal, idx=0){
-      if(!Array.isArray(gal) || gal.length===0) return;
-      LB_GALLERY = gal; LB_IDX = Math.max(0, Math.min(idx, gal.length-1));
-      lbBg.style.display = 'flex';
-      document.body.style.overflow = 'hidden';
-      showLbImage();
-    }
-    function closeLightbox(){
-      lbBg.style.display = 'none';
-      lbImg.src = '';
-      document.body.style.overflow = '';
-      LB_GALLERY = []; LB_IDX = 0;
-    }
-    function lbPrev(){ if(LB_GALLERY.length>1){ LB_IDX = (LB_IDX - 1 + LB_GALLERY.length) % LB_GALLERY.length; showLbImage(); } }
-    function lbNext(){ if(LB_GALLERY.length>1){ LB_IDX = (LB_IDX + 1) % LB_GALLERY.length; showLbImage(); } }
-
-    lbBtn.addEventListener('click', closeLightbox);
-    lbBg.addEventListener('click', (e)=>{ if(e.target === lbBg) closeLightbox(); });
-    window.addEventListener('keydown', (e)=>{
-      if (lbBg.style.display === 'flex') {
-        if (e.key === 'Escape') closeLightbox();
-        if (e.key === 'ArrowLeft') lbPrev();
-        if (e.key === 'ArrowRight') lbNext();
-      }
-    });
-    if (lbPrevBtn) lbPrevBtn.addEventListener('click', lbPrev);
-    if (lbNextBtn) lbNextBtn.addEventListener('click', lbNext);
-
-    let touchX = null;
-    lbBg.addEventListener('touchstart', e => { touchX = e.changedTouches[0].clientX; }, {passive:true});
-    lbBg.addEventListener('touchend', e => {
-      if (touchX == null) return;
-      const dx = e.changedTouches[0].clientX - touchX;
-      touchX = null;
-      if (Math.abs(dx) > 40) { dx < 0 ? lbNext() : lbPrev(); }
-    }, {passive:true});
-
-    document.addEventListener('click', (e)=>{
-      const wrap = e.target.closest('.imgWrap');
-      if (wrap){
-        try {
-          const gal = JSON.parse(wrap.dataset.gal || '[]');
-          if (gal.length) openLightboxGallery(gal, 0);
-          return;
-        } catch(_) {}
-      }
-      const thumb = e.target.closest('.thumbs img');
-      if (thumb){
-        const cont = thumb.closest('.thumbs');
-        try {
-          const gal = JSON.parse(cont.dataset.gal || '[]');
-          const idx = parseInt(thumb.dataset.idx || '0', 10);
-          if (gal.length) openLightboxGallery(gal, idx);
-        } catch(_) {}
-      }
-    });
-
-    /* ================= Header logo (pequena) ================= */
-    function applyHeaderLogo(cfg) {
-      const qs = new URL(location.href).searchParams;
-      const val = v => (v ?? '').toString().trim();
-      const pick = (...xs) => xs.map(val).find(Boolean);
-
-      const url = pick(
-        qs.get('logo'),
-        cfg.headerLogoUrl, cfg.headerlogoUrl, cfg.header_logo_url, cfg.headerLogoURL, cfg.logoHeaderUrl, cfg.logoUrl
-      );
-      if (!url) return;
-
-      const shape = (pick(qs.get('shape'), cfg.headerLogoShape, cfg.headerlogoShape, cfg.logoHeaderShape, cfg.logoShape) || 'circle').toLowerCase();
-      let size = Number(pick(qs.get('size'), cfg.headerLogoSize, cfg.headerlogoSize, cfg.logoHeaderSize));
-      if (!Number.isFinite(size)) size = 32;
-      size = Math.max(20, Math.min(96, size));
-
-      let img = document.getElementById('brandLogo');
-      if (!img) {
-        const bar = document.querySelector('header .bar') || document.querySelector('header');
-        img = document.createElement('img');
-        img.id = 'brandLogo';
-        img.className = 'brandLogo';
-        if (bar) bar.insertBefore(img, bar.firstChild);
-      }
-
-      Object.assign(img.style, {
-        display: 'inline-block',
-        width:  size + 'px',
-        height: size + 'px',
-        borderRadius: (shape === 'square') ? '8px' : '9999px',
-        objectFit: 'contain',
-        background: '#fff'
-      });
-      img.alt = (cfg.nomeEmpresa || 'Logo');
-      img.decoding = 'async';
-      img.loading  = 'eager';
-      img.referrerPolicy = 'no-referrer';
-      img.src = url;
-
-      img.onerror = () => { img.remove(); };
-    }
-
-    async function carregar(){
-      const avisos = document.getElementById('avisos');
-
+    async function load(){
       if(!slug){
-        avisos.innerHTML = `<div class="warn">Catálogo não encontrado. Informe o slug (?c=slug).</div>`;
+        $('#status').style.display='inline-flex';
+        $('#status').textContent = 'Informe ?c=<slug> ou use catalogo-<slug>.html';
         return;
       }
 
-      const cfgRef = doc(db, `catalogos/${slug}/meta/config`);
-      const cfgSnap = await getDoc(cfgRef);
-      if (!cfgSnap.exists()){
-        avisos.innerHTML = `<div class="warn">Catálogo não encontrado.</div>`;
-        return;
-      }
-      const cfg = cfgSnap.data();
-
-      applyHeaderLogo(cfg);
-
-      ICON_WA = (cfg.iconWhatsUrl || '').trim();
-      ICON_ML = (cfg.iconMLUrl  || '').trim();
-
-      const nome = cfg.nomeEmpresa || cfg.titulo || slug;
-      document.title = `Catálogo • ${nome}`;
-      document.getElementById('empresaBar').textContent = nome;
-      document.getElementById('tituloEmpresa').textContent = nome;
-
-      if (cfg.logoUrl){
-        const el = document.getElementById('logoImg');
-        el.src = cfg.logoUrl; el.style.display = 'block';
-        const ring = document.getElementById('logoRing');
-        const n = Number(cfg.logoScale);
-        if (Number.isFinite(n) && n>20 && n<=100){ ring.style.setProperty('--logo-size', n + '%'); }
-        if (typeof cfg.logoBg === 'string' && cfg.logoBg.trim()){ ring.style.background = cfg.logoBg.trim(); }
-        if (cfg.logoShape === 'square'){ ring.style.borderRadius = '18px'; el.style.borderRadius = '12px'; }
+      // meta/config
+      const m = await getDoc(doc(db,'catalogos',slug,'meta','config'));
+      if (m.exists()){
+        const meta = m.data();
+        $('#catTitle').textContent = meta.titulo || meta.nome || `Catálogo – ${slug}`;
+        // banner opcional
+        const banner = meta.bannerUrl || meta.banner || '';
+        if (banner){
+          $('#bannerImg').src = bust(banner);
+          $('#topBanner').style.display = 'block';
+        }
+        // se houver flag de ativo
+        if (meta.catalogoAtivo === false){
+          $('#status').style.display='inline-flex';
+          $('#status').textContent = 'Catálogo inativo';
+        }
       }
 
-      /* ==== Banners: agora separados por dispositivo + links ==== */
-      setupBanners(cfg);
-      watchBannerMode(cfg);
-      setupBannerSwipe();
-
-      if (cfg.catalogoAtivo !== true){
-        avisos.innerHTML = `<div class="warn">Este catálogo está desativado no momento.</div>`;
-        return;
-      } else {
-        avisos.innerHTML = '';
-      }
-
-      const whats = (cfg.whats || '').toString().trim();
-      const waFab = document.getElementById('waFloat');
-      if (whats) {
-        const msg = `Olá! Tenho interesse no catálogo ${nome}.`;
-        const link = waLink(whats, msg);
-        if (link) { waFab.href = link; waFab.style.display = 'flex'; }
-      } else {
-        waFab.style.display = 'none';
-      }
-
-      const limitePublico = Number.isFinite(cfg.limitePublico) ? cfg.limitePublico : null;
-      if (Number.isFinite(cfg.maxFotosPorItem)) {
-        MAX_FOTOS_ITEM = Math.max(1, Math.min(3, cfg.maxFotosPorItem));
-      }
-
-      const q = query(
-        collection(db, `catalogos/${slug}/itens`),
-        orderBy('ordem','asc'),
-        ...(limitePublico ? [qLimit(limitePublico)] : [])
-      );
-
-      onSnapshot(q, snap=>{
-        const arr = [];
-        let idx = 0;
-        snap.forEach(docSnap=>{
-          const d = docSnap.data(); if (d.ativo === false) return;
-          idx++;
-          const nomeItem = d.nome || `Item ${idx}`;
-
-          let precoBRL = '—';
-          if (typeof d.precoCentavos === 'number') {
-            precoBRL = (d.precoCentavos/100).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-          } else if (typeof d.preco === 'number') {
-            precoBRL = d.preco.toLocaleString('pt-BR',{style:'currency','currency':'BRL'});
-          } else if (typeof d.preco === 'string') {
-            const n = Number(d.preco.replace(',','.')); if (Number.isFinite(n)) precoBRL = n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-          }
-
-          const qtd = (typeof d.quantidade === 'number') ? d.quantidade
-                    : (typeof d.qtde === 'number') ? d.qtde : '—';
-
-// helper: aceita só URLs http(s)
-const httpOnly = arr => Array.isArray(arr)
-  ? arr.filter(u => typeof u === 'string' && /^https?:\/\//i.test(u))
-  : [];
-
-// ===== Compat de imagens (prioriza campos soltos; arrays só se precisar) =====
-let fotos = [
-  d.imagem, d.imagem2, d.imagem3,
-  d.urlImagem, d.urlImagem2, d.urlImagem3
-].filter(u => typeof u === 'string' && /^https?:\/\//i.test(u));
-
-if (!fotos.length) {
-  if (Array.isArray(d.imagens) && d.imagens.length) {
-    fotos = httpOnly(d.imagens);
-  } else if (Array.isArray(d.imagensFull) && d.imagensFull.length) {
-    fotos = httpOnly(d.imagensFull);
-  }
-}
-
-// placeholder se nada encontrado
-const gal   = fotos.length ? fotos : [PLACEHOLDER];
-const thumb = gal[0];
-
-          const msg = `Olá! Tenho interesse no *${nomeItem}* do catálogo ${nome}.`;
-          const zap = waLink(d.whats || whats, msg);
-
-          arr.push({
-            nome: nomeItem,
-            precoBRL,
-            qtd,
-            fotos: gal.length?gal:[PLACEHOLDER],
-            thumb,
-            zap,
-            mlUrl: d.mlUrl || null
-          });
-        });
-
-        itens = arr;
-        clampPage();
-        renderPage();
+      // itens
+      const snap = await getDocs(collection(db,'catalogos',slug,'itens'));
+      const grid = $('#grid');
+      grid.innerHTML = '';
+      // mapeia por id numérico
+      const items = [];
+      snap.forEach(docu=>{
+        const id = docu.id;
+        const d  = docu.data();
+        items.push({id, d});
       });
-
-      window.addEventListener('keydown', (ev)=>{
-        if (ev.key === 'ArrowRight') goNext();
-        else if (ev.key === 'ArrowLeft') goPrev();
+      // ordena por ordem -> id
+      items.sort((a,b)=>{
+        const ao = typeof a.d.ordem==='number'?a.d.ordem:parseInt(a.id,10);
+        const bo = typeof b.d.ordem==='number'?b.d.ordem:parseInt(b.id,10);
+        return (ao||0)-(bo||0);
       });
+      // render
+      if (!items.length){
+        grid.innerHTML = `<div class="card" style="grid-column:1/-1"><div class="body"><b>Nenhum item encontrado.</b></div></div>`;
+        return;
+      }
+      for (const it of items){
+        grid.appendChild(renderItem(it.id, it.d));
+      }
     }
 
-    (function insertAvisos(){
-      const avisos = document.createElement('div');
-      avisos.id = 'avisos';
-      const anchor = document.getElementById('pagerTop');
-      if (anchor && anchor.parentNode) anchor.parentNode.insertBefore(avisos, anchor);
-    })();
-
-    carregar();
+    load().catch(err=>{
+      console.error(err);
+      const grid = $('#grid');
+      grid.innerHTML = `<div class="card" style="grid-column:1/-1"><div class="body"><b>Erro ao carregar catálogo.</b> Verifique as regras do Firestore e o slug.</div></div>`;
+    });
   </script>
-</head>
-<body>
-  <header>
-    <div class="bar">
-      <img id="brandLogo" class="brandLogo" alt="Logo">
-      <div class="brand" id="empresaBar">MostreAki</div>
-      <div class="spacer"></div>
-    </div>
-  </header>
-
-  <main>
-    <section class="hero">
-      <div class="logoRing" id="logoRing">
-        <img id="logoImg" alt="Logo" src="" onerror="this.style.display='none'">
-      </div>
-      <h1 class="title" id="tituloEmpresa">Catálogo</h1>
-
-      <!-- Banner/carrossel -->
-      <div class="banner" id="bannerBox"></div>
-    </section>
-
-    <!-- Pager Top -->
-    <div id="pagerTop" class="pager">
-      <button class="navbtn btnPrev" onclick="goPrev()" aria-label="Anterior">
-        <svg viewBox="0 0 24 24"><path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
-        Anterior
-      </button>
-      <span class="pageinfo">Página 1 de 1</span>
-      <button class="navbtn btnNext" onclick="goNext()" aria-label="Próximo">
-        Próximo
-        <svg viewBox="0 0 24 24"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
-      </button>
-    </div>
-
-    <section class="grid" id="grid"></section>
-
-    <!-- Pager Bottom -->
-    <div class="pager" style="margin-top:16px">
-      <button class="navbtn btnPrev" onclick="goPrev()" aria-label="Anterior">
-        <svg viewBox="0 0 24 24"><path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
-        Anterior
-      </button>
-      <span class="pageinfo">Página 1 de 1</span>
-      <button class="navbtn btnNext" onclick="goNext()" aria-label="Próximo">
-        Próximo
-        <svg viewBox="0 0 24 24"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
-      </button>
-    </div>
-
-    <p class="muted">
-      Toque numa imagem para ver a galeria. Use as setas do teclado, clique nas setas do popup ou faça swipe no celular. Clique no botão <b>Whatsapp</b> para falar com o vendedor. Se o item tiver link no Mercado Livre, o botão <b>Comprar</b> também aparece.
-    </p>
-  </main>
-
-  <!-- FAB WhatsApp -->
-  <a id="waFloat" class="wa-float" href="#" target="_blank" rel="noopener" aria-label="WhatsApp">
-    <svg viewBox="0 0 32 32" role="img" aria-hidden="true"><path d="M19.1 17.1c-.3-.2-1.7-.8-2-.9-.3-.1-.5-.2-.7.2-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.2-1.1-.4-2-1.2-.7-.6-1.2-1.4-1.3-1.6-.1-.3 0-.4.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2.1-.4 0-.6-.1-.2-.7-1.7-.9-2.3-.2-.5-.5-.4-.7-.4h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.7 0 1.6 1.1 3.1 1.2 3.3.1.2 2.2 3.4 5.4 4.7.8.4 1.4.6 1.9.8.8.3 1.6.3 2.2.2.7-.1 2-.8 2.2-1.6.3-.8.3-1.5.2-1.6 0-.1-.2-.1-.4-.2zM16 3C9.9 3 5 7.9 5 14c0 2.4.8 4.6 2.1 6.3L6 29l8-1.9c1.5.4 3.1.7 4.7.7 6.1 0 11-4.9 11-11S22.1 3 16 3z"/></svg>
-  </a>
-
-  <!-- Lightbox -->
-  <div id="lbBg" class="lb-bg" role="dialog" aria-modal="true" aria-label="Imagem ampliada" style="display:none">
-    <div class="lb-card">
-      <button id="lbClose" class="lb-close" aria-label="Fechar">×</button>
-      <button id="lbPrev" class="lb-arrow lb-prev" aria-label="Imagem anterior">‹</button>
-      <button id="lbNext" class="lb-arrow lb-next" aria-label="Próxima imagem">›</button>
-      <img id="lbImg" class="lb-img" alt="">
-      <div id="lbCount" class="lb-count">1 / 1</div>
-    </div>
-  </div>
-
-  <footer>© <span id="ano"></span> MostreAki · Catálogo</footer>
-  <script>document.getElementById('ano').textContent = new Date().getFullYear();</script>
 </body>
 </html>
