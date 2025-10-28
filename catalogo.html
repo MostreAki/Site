@@ -35,7 +35,6 @@
     .btn--ghost{--bg:#fff;--fg:#0f766e;--bd:rgba(15,118,110,.35)}
     .banner{margin:12px 0; border-radius:14px; overflow:hidden; border:1px solid var(--line)}
     .banner img{width:100%; display:block; max-height:280px; object-fit:cover}
-    /* Lightbox simples */
     .lightbox{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.7);z-index:50}
     .lightbox img{max-width:94vw;max-height:90vh;display:block;border-radius:10px;box-shadow:0 10px 40px rgba(0,0,0,.5)}
     .lightbox.on{display:flex}
@@ -67,12 +66,10 @@
 
   <footer>© <span id="ano"></span> MostreAki</footer>
 
-  <!-- Firebase v10.14 (mesma config do editor) -->
   <script type="module">
     import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
     import { getFirestore, doc, getDoc, getDocs, collection } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
 
-    // ===== Config (igual ao editor) =====
     const cfg = {
       apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
       authDomain: "mostreaki-2025.firebaseapp.com",
@@ -87,14 +84,12 @@
     const $ = s => document.querySelector(s);
     $('#ano').textContent = new Date().getFullYear();
 
-    // ===== Utils =====
     function bust(url){ return url ? url + (url.includes('?')?'&':'?') + 't=' + Date.now() : url; }
     function fmtBRLcent(c){ return 'R$ ' + (c/100).toLocaleString('pt-BR',{minimumFractionDigits:2}); }
     function getSlug(){
       const u = new URL(location.href);
       const byQuery = u.searchParams.get('c') || u.searchParams.get('slug');
       if (byQuery) return byQuery;
-      // Suporta /catalogo-<slug>.html
       const m = location.pathname.match(/catalogo-([a-z0-9-]+)\.html$/i);
       return m ? m[1] : '';
     }
@@ -102,21 +97,18 @@
     const slug = getSlug();
     $('#slugLabel').textContent = slug || '—';
 
-    // ===== Lightbox simples =====
     const lb = $('#lb'), lbImg = $('#lbImg');
     function openLB(src){ lbImg.src = src; lb.classList.add('on'); lb.setAttribute('aria-hidden','false'); }
     function closeLB(){ lb.classList.remove('on'); lb.setAttribute('aria-hidden','true'); lbImg.src=''; }
     lb.addEventListener('click', closeLB);
     window.addEventListener('keydown', e=>{ if(e.key==='Escape') closeLB(); });
 
-    // ===== Render =====
     function renderItem(id, d){
       const nome  = d.nome || d.titulo || `Item ${id}`;
       const qtd   = typeof d.quantidade==='number' ? d.quantidade : (d.qtde||0);
       const cents = typeof d.precoCentavos==='number' ? d.precoCentavos : (typeof d.preco==='number' ? Math.round(d.preco*100) : 0);
       const ml    = d.mlUrl || '';
 
-      // Imagens por slot fixo (sem arrays)
       const i1 = d.urlImagem  || '';
       const i2 = d.urlImagem2 || '';
       const i3 = d.urlImagem3 || '';
@@ -130,7 +122,7 @@
           ${thumb ? `<img class="hero" src="${bust(thumb)}" alt="${nome}">` : `<img class="hero" src="https://via.placeholder.com/800x480?text=Sem+imagem" alt="${nome}">`}
         </div>
         <div class="thumbs">
-          ${[i1,i2,i3].map((u,ix)=> u ? `<img data-ix="${ix+1}" data-src="${bust(u)}" alt="Imagem ${ix+1} de ${nome}">` : `<span></span>`).join('')}
+          ${[i1,i2,i3].map((u,ix)=> u ? `<img data-src="${bust(u)}" alt="Imagem ${ix+1} de ${nome}">` : `<span></span>`).join('')}
         </div>
         <div class="body">
           <h3 class="title">${nome}</h3>
@@ -143,8 +135,6 @@
           </div>
         </div>
       `;
-
-      // troca hero ao clicar em thumb
       el.querySelectorAll('.thumbs img').forEach(img=>{
         img.addEventListener('click', ()=>{
           const hero = el.querySelector('.hero');
@@ -154,12 +144,10 @@
           openLB(img.getAttribute('data-src'));
         });
       });
-      // hero abre lightbox
       el.querySelector('.hero').addEventListener('click', e=>{
         const src = e.currentTarget.getAttribute('src');
         openLB(src);
       });
-
       return el;
     }
 
@@ -170,42 +158,35 @@
         return;
       }
 
-      // meta/config
       const m = await getDoc(doc(db,'catalogos',slug,'meta','config'));
       if (m.exists()){
         const meta = m.data();
         $('#catTitle').textContent = meta.titulo || meta.nome || `Catálogo – ${slug}`;
-        // banner opcional
         const banner = meta.bannerUrl || meta.banner || '';
         if (banner){
           $('#bannerImg').src = bust(banner);
           $('#topBanner').style.display = 'block';
         }
-        // se houver flag de ativo
         if (meta.catalogoAtivo === false){
           $('#status').style.display='inline-flex';
           $('#status').textContent = 'Catálogo inativo';
         }
       }
 
-      // itens
       const snap = await getDocs(collection(db,'catalogos',slug,'itens'));
       const grid = $('#grid');
       grid.innerHTML = '';
-      // mapeia por id numérico
       const items = [];
       snap.forEach(docu=>{
         const id = docu.id;
         const d  = docu.data();
         items.push({id, d});
       });
-      // ordena por ordem -> id
       items.sort((a,b)=>{
         const ao = typeof a.d.ordem==='number'?a.d.ordem:parseInt(a.id,10);
         const bo = typeof b.d.ordem==='number'?b.d.ordem:parseInt(b.id,10);
         return (ao||0)-(bo||0);
       });
-      // render
       if (!items.length){
         grid.innerHTML = `<div class="card" style="grid-column:1/-1"><div class="body"><b>Nenhum item encontrado.</b></div></div>`;
         return;
