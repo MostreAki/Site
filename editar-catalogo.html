@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Editar Catálogo – MostreAki (Upload ≤ 400KB + Firestore)</title>
+  <title>Editar Catálogo – MostreAki (Storage ≤ 400KB + Firestore)</title>
   <style>
     :root{
       --brand:#16b0af; --brandLight:#c4e8de; --ink:#083f3e; --bg:#f6fbfa;
@@ -17,7 +17,7 @@
     header .logo b{color:#f61f38}
     header .logo img{height:40px}
     .user-wrap{margin-left:auto;display:flex;align-items:center;gap:10px}
-    .user-circle{width:42px;height:42px;border-radius:50%;overflow:hidden;display:none;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+    .user-circle{width:42px;height:42px;border-radius:50%;overflow:hidden;display:none;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.15);background:#0b3e3c;color:#fff;font-weight:800;display:none;align-items:center;justify-content:center}
     .menu-icon{width:36px;height:26px;position:relative;display:flex;align-items:center;justify-content:center;cursor:pointer}
     .menu-icon span{position:absolute;width:24px;height:3px;background:#1b1b1b;border-radius:3px}
     .menu-icon span:nth-child(1){top:2px}
@@ -60,14 +60,15 @@
     .progress{height:8px;background:#e9f5f1;border-radius:6px;overflow:hidden}
     .bar{height:8px;background:linear-gradient(90deg,#19c5a7,#12a69f)}
     footer{color:#567;font-size:.88rem;text-align:center;padding:20px 16px}
+    .btn.auth{min-width:92px;text-align:center}
   </style>
 </head>
 <body>
   <header>
     <div class="logo"><img src="/logomarca-mostreaki.svg" alt="Logo"> <b>MostreAki</b></div>
     <div class="user-wrap">
-      <div id="userCircle" class="user-circle"></div>
-      <a id="authText" href="/login.html" class="btn ghost">Entrar</a>
+      <div id="userCircle" class="user-circle" title="Usuário"></div>
+      <a id="authBtn" href="#" class="btn ghost auth">Entrar</a>
       <div id="menuBtn" class="menu-icon" aria-label="Abrir menu" role="button" tabindex="0">
         <span></span><span></span><span></span>
       </div>
@@ -106,7 +107,7 @@
         <p id="hintLimite" class="hint" style="margin-top:12px"></p>
         <p class="hint" style="margin-top:8px">
           Suba as <b>imagens direto para o Storage (≤ 400 KB)</b>. Após o upload, salvamos <code>urlImagem(2/3)</code> no Firestore
-          (compatível com o catálogo público) e armazenamos também <code>imagens[]</code> com os caminhos do bucket.
+          e também <code>imagens[]</code> com os caminhos do bucket.
         </p>
       </div>
     </section>
@@ -124,24 +125,31 @@
   <!-- Firebase v10.14 -->
   <script type="module">
     import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc, setDoc, getDocs, collection, writeBatch, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+    import { 
+      getAuth, onAuthStateChanged, signOut, signInAnonymously,
+      setPersistence, browserLocalPersistence 
+    } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+    import { 
+      getFirestore, doc, getDoc, setDoc, getDocs, collection, writeBatch, serverTimestamp 
+    } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
     import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-storage.js";
 
-    // ========= Firebase config (do Felipe) =========
+    // ========= Firebase config =========
     const cfg = {
       apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
       authDomain: "mostreaki-2025.firebaseapp.com",
       projectId: "mostreaki-2025",
-      // IMPORTANTE: manter do jeito que você usa
-      storageBucket: "mostreaki-2025.firebasestorage.app",
+      storageBucket: "mostreaki-2025.firebasestorage.app", // *** manter .app como você usa ***
       messagingSenderId: "748712068097",
       appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
     };
     const app = getApps().length ? getApp() : initializeApp(cfg);
     const auth = getAuth(app);
     const db   = getFirestore(app);
-    const st   = getStorage(app); // bucket resolvido via storageBucket acima
+    const st   = getStorage(app); // bucket resolve via storageBucket acima
+
+    // Persistência local para manter logado após refresh
+    await setPersistence(auth, browserLocalPersistence);
 
     const $ = s => document.querySelector(s);
     document.getElementById('ano').textContent = new Date().getFullYear();
@@ -186,6 +194,22 @@
       const ehEditor = Array.isArray(data.editores) && data.editores.includes(uid);
       if(!(ehDono || ehEditor)) throw new Error('NOT_OWNER');
       return data;
+    }
+
+    // Avatar simples
+    function renderUserCircle(user){
+      const el = $('#userCircle'); const btn=$('#authBtn');
+      const show = ()=> el.style.display='flex';
+      if(!user){ el.style.display='none'; btn.textContent='Entrar'; btn.onclick=(e)=>{e.preventDefault(); /* redirecione para seu login */}; return; }
+      btn.textContent='Sair'; btn.onclick=async (e)=>{e.preventDefault(); await signOut(auth);};
+      const url = user.photoURL;
+      el.title = user.displayName || user.email || user.uid;
+      el.innerHTML = '';
+      if(url){ const img=new Image(); img.src=url; img.alt='User'; img.style.width='100%'; img.style.height='100%'; img.style.objectFit='cover'; el.appendChild(img); show(); return; }
+      // iniciais
+      const name = (user.displayName || user.email || 'U').trim();
+      const initials = name.split('@')[0].split(/\s+/).slice(0,2).map(s=>s[0]?.toUpperCase()||'U').join('');
+      el.textContent = initials; show();
     }
 
     // Compressão até 400 KB
@@ -355,15 +379,20 @@
       bar.style.width='100%'; hint.textContent='Imagens enviadas e salvas!'; setTimeout(()=>{ barBox.style.display='none'; },1200);
     }
 
-    // Auth: anônima para o cliente conseguir enviar (ajuste se exigir login)
+    // Auth + carregamento
     onAuthStateChanged(auth, async user=>{
       try{
-        if(!user) await signInAnonymously(auth);
+        if(!user){
+          // se você quiser forçar login “real”, troque por redirecionar ao seu fluxo de login
+          await signInAnonymously(auth);
+        }
+        renderUserCircle(auth.currentUser);
+
         if(!slug){ bloquearUI('Informe ?c=<slug> para editar.'); return; }
 
-        // Permissão & limite (segue tua lógica: dono/editores + plano)
-        const cfg = await exigirDonoOuEditor((auth.currentUser||{}).uid, slug);
-        const { ativo, limite, plano } = await resolveLimiteAssinatura(cfg.ownerUid);
+        // Permissão & limite (dono/editores + plano)
+        const cfgMeta = await exigirDonoOuEditor((auth.currentUser||{}).uid, slug);
+        const { ativo, limite, plano } = await resolveLimiteAssinatura(cfgMeta.ownerUid);
         if(!ativo){ bloquearUI('Assinatura inativa para este catálogo.'); return; }
         $('#hintLimite').textContent = `Seu plano (${plano}) permite até ${limite} itens.`;
         $('#planoInfo').textContent = `Plano atual: ${plano}`;
@@ -371,8 +400,9 @@
         buildGrid(limite);
         const meta = await carregarMeta(slug);
         await carregarItens(slug, limite);
+
         $('#btnSalvarTudo').onclick = ()=> salvarTudo(slug, limite);
-        $('#chkAtivo').addEventListener('change', ()=> salvarMeta(slug, cfg.ownerUid));
+        $('#chkAtivo').addEventListener('change', ()=> salvarMeta(slug, cfgMeta.ownerUid));
         setPublicLink(slug, meta);
       }catch(e){
         console.error(e);
