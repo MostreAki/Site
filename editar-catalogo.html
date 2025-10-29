@@ -8,8 +8,8 @@
     :root{
       --brand:#16b0af; --brandLight:#c4e8de; --ink:#083f3e; --bg:#cceee6;
       --danger:#d73e45; --line:#e7f3f1; --inkSub:#4a6665; --btnText:#fff; --muted:#567; --ok:#0a7;
-      /* 👉 troque a URL abaixo pela sua arte de fundo dos cards (opcional) */
-      --item-bg:url("card-bg.png");
+      /* troque abaixo pela sua arte de fundo dos cards (opcional) */
+      --item-bg:url("/assets/card-bg-mostreaki.png");
     }
     *{box-sizing:border-box}
     body{margin:0;background:var(--bg);font:16px/1.45 system-ui,Segoe UI,Roboto,Arial}
@@ -45,14 +45,12 @@
       box-shadow:0 8px 28px rgba(0,0,0,.05);
       overflow:hidden; isolation:isolate;
     }
-    /* fundo artístico sutil do card (desligue removendo background-image) */
     .item::before{
       content:""; position:absolute; inset:0; z-index:-1; opacity:.08;
       background-image:var(--item-bg);
       background-size:cover; background-position:center; background-repeat:no-repeat;
       filter:saturate(1.1) contrast(1.05);
     }
-
     .item h4{margin:0 0 10px;color:#0b3e3c;font-size:1.08rem}
     .row{display:grid;grid-template-columns:1fr 160px 140px;gap:10px}
     @media(max-width:820px){ .row{grid-template-columns:1fr 1fr} .col-qty{grid-column:1 / -1} }
@@ -71,27 +69,29 @@
     .status-err{background:#fff1f1;border:1px solid #f1c6c6;color:#a33;border-radius:10px;padding:10px 12px}
     .row-switch{display:flex;align-items:center;gap:10px}
     .uploader{margin-top:12px;border-top:1px dashed #e2efec;padding-top:12px}
-    .uploader .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+    .uploader .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
 
-    /* ===== File input lindão ===== */
-    input[type="file"]{
-      width:100%; border:1px dashed #b7ddd7; background:#f9fefd; color:#0b3e3c;
-      border-radius:12px; padding:8px; cursor:pointer;
+    /* ===== Botão de ARQUIVO custom (com ícone + texto MostreAki) ===== */
+    .filecell{display:flex;flex-direction:column;gap:6px}
+    .visually-hidden{
+      position:absolute!important; width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;
     }
-    input[type="file"]::file-selector-button{
-      margin-right:2px; padding:8px 12px; border:none; border-radius:10px;
-      background:#16807c; color:#fff; font-weight:800; cursor:pointer;
-      box-shadow:0 6px 14px rgba(0,0,0,.12);
+    .file-btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:8px;
+      width:100%; min-height:44px; padding:10px 12px;
+      border:1px dashed #b7ddd7; border-radius:12px;
+      background:#0f766e; color:#fff; font-weight:800; cursor:pointer;
+      box-shadow:0 8px 20px rgba(0,0,0,.12);
       transition:transform .08s ease, box-shadow .12s ease, background .12s ease;
+      text-align:center; user-select:none;
     }
-    input[type="file"]::file-selector-button:active{
-      transform:translateY(1px); box-shadow:0 3px 9px rgba(0,0,0,.16);
-    }
+    .file-btn:active{ transform:translateY(1px); box-shadow:0 4px 12px rgba(0,0,0,.14); }
+    .file-btn svg{width:18px;height:18px;display:block}
 
     .pv{margin-top:10px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
     .pv-wrap { position: relative; }
     .pv img{width:100%;height:104px;object-fit:cover;border:1px solid #e3f2ef;border-radius:10px;background:#FFF}
-    .progress{height:8px;background:#000000;border-radius:6px;overflow:hidden}
+    .progress{height:8px;background:#e9f5f1;border-radius:6px;overflow:hidden}
     .bar{height:8px;background:linear-gradient(90deg,#19c5a7,#12a69f)}
     footer{color:#567;font-size:.88rem;text-align:center;padding:20px 16px}
     .btn.auth{min-width:92px;text-align:center}
@@ -142,7 +142,7 @@
         </div>
         <p id="hintLimite" class="hint" style="margin-top:12px"></p>
         <p class="hint" style="margin-top:8px">
-          Suba as <b>imagens clicando no botão Escolher Imagem.  </b>. As imagens são convertidas ≤ 400 KB mantendo a alta qualidade. 
+          Suba as <b>imagens</b> (convertidas automaticamente ≤ 400 KB) mantendo alta qualidade.
         </p>
       </div>
     </section>
@@ -263,7 +263,15 @@
       return new File([out], file.name.replace(/\.\w+$/i,'.jpg'), { type:'image/jpeg' });
     }
 
-    // UI dos itens
+    // ===== UI dos itens (com botão de arquivo custom) =====
+    function fileButtonHTML(forId){
+      return `
+        <label class="file-btn" for="${forId}">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zm0 2.5L18.5 9H14zM8 13h8v2H8zm0 4h8v2H8zm0-8h4v2H8z"/></svg>
+          <span>MostreAki</span>
+        </label>`;
+    }
+
     function buildGrid(limite){
       const grid = $('#grid'); grid.innerHTML='';
       for(let i=1;i<=limite;i++){
@@ -294,16 +302,28 @@
             </div>
 
             <div class="uploader">
-              <label>Imagens </label>
+              <label>Imagens</label>
               <div class="grid3">
-                <div><label for="f1_${id}">IMG 1</label><input type="file" id="f1_${id}" accept="image/*"></div>
-                <div><label for="f2_${id}">IMG 2</label><input type="file" id="f2_${id}" accept="image/*"></div>
-                <div><label for="f3_${id}">IMG 3</label><input type="file" id="f3_${id}" accept="image/*"></div>
+                <div class="filecell">
+                  <label for="f1_${id}">IMG 1</label>
+                  <input class="visually-hidden" type="file" id="f1_${id}" accept="image/*">
+                  ${fileButtonHTML(`f1_${id}`)}
+                </div>
+                <div class="filecell">
+                  <label for="f2_${id}">IMG 2</label>
+                  <input class="visually-hidden" type="file" id="f2_${id}" accept="image/*">
+                  ${fileButtonHTML(`f2_${id}`)}
+                </div>
+                <div class="filecell">
+                  <label for="f3_${id}">IMG 3</label>
+                  <input class="visually-hidden" type="file" id="f3_${id}" accept="image/*">
+                  ${fileButtonHTML(`f3_${id}`)}
+                </div>
               </div>
               <div class="pv" id="pv_${id}">
-                <div class="pv-wrap"><img id="p1_${id}" style="display:none"></div>
-                <div class="pv-wrap"><img id="p2_${id}" style="display:none"></div>
-                <div class="pv-wrap"><img id="p3_${id}" style="display:none"></div>
+                <div class="pv-wrap"><img id="p1_${id}" style="display:none" alt=""></div>
+                <div class="pv-wrap"><img id="p2_${id}" style="display:none" alt=""></div>
+                <div class="pv-wrap"><img id="p3_${id}" style="display:none" alt=""></div>
               </div>
               <div class="progress" style="margin:8px 0;display:none" id="pg_${id}"><div class="bar" id="bar_${id}" style="width:0%"></div></div>
               <div class="toolbar">
@@ -311,9 +331,10 @@
               </div>
               <div class="hint" id="hint_${id}"></div>
             </div>
-          </div>`);}
+          </div>`);
+      }
 
-      // prévias locais
+      // prévias locais permanecem iguais (ouvem os <input type=file>)
       $('#grid').querySelectorAll('input[type=file]').forEach(inp=>{
         inp.addEventListener('change', ()=>{
           const id = inp.id.split('_')[1];
@@ -509,16 +530,16 @@
         const cfgMeta = await exigirDonoOuEditor((auth.currentUser||{}).uid, slug);
         const { ativo, limite, plano } = await resolveLimiteAssinatura(cfgMeta.ownerUid);
         if(!ativo){ bloquearUI('Assinatura inativa para este catálogo.'); return; }
-        $('#hintLimite').textContent = `Seu plano (${plano}) permite até ${limite} itens.`;
-        $('#planoInfo').textContent = `Plano atual: ${plano}`;
+        document.getElementById('hintLimite').textContent = `Seu plano (${plano}) permite até ${limite} itens.`;
+        document.getElementById('planoInfo').textContent = `Plano atual: ${plano}`;
 
         buildGrid(limite);
         const meta = await carregarMeta(slug);
         await carregarItens(slug, limite);
         criarBotoesRemover(slug);
 
-        $('#btnSalvarTudo').onclick = ()=> salvarTudo(slug, limite);
-        $('#chkAtivo').addEventListener('change', ()=> salvarMeta(slug, cfgMeta.ownerUid));
+        document.getElementById('btnSalvarTudo').onclick = ()=> salvarTudo(slug, limite);
+        document.getElementById('chkAtivo').addEventListener('change', ()=> salvarMeta(slug, cfgMeta.ownerUid));
         setPublicLink(slug, meta);
       }catch(e){
         console.error(e);
