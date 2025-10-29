@@ -8,7 +8,7 @@
     :root{
       --brand:#16b0af; --brandLight:#c4e8de; --ink:#083f3e; --bg:#cceee6;
       --danger:#d73e45; --line:#e7f3f1; --inkSub:#4a6665; --btnText:#fff; --muted:#567; --ok:#0a7;
-      /* troque abaixo pela sua arte de fundo dos cards (opcional) */
+      /* fundo opcional do card do item */
       --item-bg:url("/assets/card-bg-mostreaki.png");
     }
     *{box-sizing:border-box}
@@ -71,13 +71,13 @@
     .uploader{margin-top:12px;border-top:1px dashed #e2efec;padding-top:12px}
     .uploader .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
 
-    /* ===== Botão de ARQUIVO custom (com ícone + texto MostreAki) ===== */
+    /* ===== Botão de ARQUIVO custom sem ícone (texto centralizado “MostreAki”) ===== */
     .filecell{display:flex;flex-direction:column;gap:6px}
     .visually-hidden{
       position:absolute!important; width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;
     }
     .file-btn{
-      display:inline-flex;align-items:center;justify-content:center;gap:8px;
+      display:inline-flex;align-items:center;justify-content:center;
       width:100%; min-height:44px; padding:10px 10px;
       border:1px dashed #b7ddd7; border-radius:12px;
       background:#0f766e; color:#fff; font-weight:800; cursor:pointer;
@@ -86,7 +86,6 @@
       text-align:center; user-select:none;
     }
     .file-btn:active{ transform:translateY(1px); box-shadow:0 4px 12px rgba(0,0,0,.14); }
-    .file-btn svg{width:18px;height:18px;display:block}
 
     .pv{margin-top:10px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
     .pv-wrap { position: relative; }
@@ -95,6 +94,15 @@
     .bar{height:8px;background:linear-gradient(90deg,#19c5a7,#12a69f)}
     footer{color:#567;font-size:.88rem;text-align:center;padding:20px 16px}
     .btn.auth{min-width:92px;text-align:center}
+
+    /* Botão de lixeira aparece só quando a imagem está visível */
+    .remove-btn{
+      position:absolute; top:4px; right:4px;
+      background:rgba(0,0,0,.6); color:#fff; border:none;
+      border-radius:50%; width:24px; height:24px; cursor:pointer;
+      font-size:14px; line-height:22px; display:none;
+    }
+    .pv-wrap.has-image .remove-btn{ display:block; }
   </style>
 </head>
 <body>
@@ -142,7 +150,7 @@
         </div>
         <p id="hintLimite" class="hint" style="margin-top:12px"></p>
         <p class="hint" style="margin-top:8px">
-          Suba as <b>imagens</b> (convertidas automaticamente ≤ 400 KB) mantendo alta qualidade.
+          Envie as <b>imagens</b> (convertidas automaticamente ≤ 400 KB) mantendo alta qualidade.
         </p>
       </div>
     </section>
@@ -263,15 +271,12 @@
       return new File([out], file.name.replace(/\.\w+$/i,'.jpg'), { type:'image/jpeg' });
     }
 
-    // ===== UI dos itens (com botão de arquivo custom) =====
+    /* Botão custom “MostreAki” (sem ícone) */
     function fileButtonHTML(forId){
-      return `
-        <label class="file-btn" for="${forId}">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zm0 2.5L18.5 9H14zM8 13h8v2H8zm0 4h8v2H8zm0-8h4v2H8z"/></svg>
-          <span>MostreAki</span>
-        </label>`;
+      return `<label class="file-btn" for="${forId}"><span>MostreAki</span></label>`;
     }
 
+    // ===== UI dos itens =====
     function buildGrid(limite){
       const grid = $('#grid'); grid.innerHTML='';
       for(let i=1;i<=limite;i++){
@@ -334,14 +339,15 @@
           </div>`);
       }
 
-      // prévias locais permanecem iguais (ouvem os <input type=file>)
+      // prévias locais + atualização de lixeiras
       $('#grid').querySelectorAll('input[type=file]').forEach(inp=>{
         inp.addEventListener('change', ()=>{
           const id = inp.id.split('_')[1];
           const which = inp.id.startsWith('f1_')?1:inp.id.startsWith('f2_')?2:3;
-          const el = document.getElementById(`p${which}_${id}`);
-          if(inp.files && inp.files[0]){ el.src = URL.createObjectURL(inp.files[0]); el.style.display='block'; }
-          else { el.src=''; el.style.display='none'; }
+          const img = document.getElementById(`p${which}_${id}`);
+          if(inp.files && inp.files[0]){ img.src = URL.createObjectURL(inp.files[0]); img.style.display='block'; }
+          else { img.src=''; img.style.display='none'; }
+          updateRemoveButtonsForItem(id);
         });
       });
       $('#grid').querySelectorAll('button[data-up]').forEach(b=> b.onclick = ()=> uploadImagensDoItem(b.dataset.up));
@@ -362,6 +368,7 @@
           const im=document.getElementById('p'+(ix+1)+'_'+id); 
           if(im && u){ im.src=bust(u); im.style.display='block'; }
         });
+        updateRemoveButtonsForItem(id);
       }
     }
 
@@ -449,6 +456,7 @@
           if(im){ im.src=bust(newUrls[s]); im.style.display='block'; }
         }
       }
+      updateRemoveButtonsForItem(id);
 
       hint.textContent='Imagens enviadas e salvas!';
       bar.style.width='100%'; setTimeout(()=>{ barBox.style.display='none'; },1200);
@@ -472,6 +480,7 @@
         const which = campo === 'urlImagem' ? '1' : (campo === 'urlImagem2' ? '2' : '3');
         const fileInput = document.getElementById('f' + which + '_' + id);
         if (fileInput) fileInput.value = '';
+        updateRemoveButtonsForItem(id);
         hint.textContent = 'Imagem removida.'; setTimeout(()=> hint.textContent = '', 1500);
       } catch (e) {
         console.error("Erro ao remover imagem:", e);
@@ -480,42 +489,30 @@
       }
     }
 
-    function criarBotoesRemover(slug) {
-      for (let i = 1; i <= 100; i++) {
-        const id = String(i).padStart(2, "0");
-        for (let n = 1; n <= 3; n++) {
-          const imgEl = document.getElementById(`p${n}_${id}`);
-          if (!imgEl) continue;
-          const wrapper = imgEl.parentElement;
-          if (!wrapper) continue;
-          const existing = wrapper.querySelector('button.remove-btn');
-          if (existing) existing.remove();
-
-          const btn = document.createElement("button");
-          btn.textContent = "🗑️";
+    // Cria/atualiza lixeiras apenas quando a imagem está visível
+    function updateRemoveButtonsForItem(id){
+      for (let n = 1; n <= 3; n++) {
+        const imgEl = document.getElementById(`p${n}_${id}`);
+        if (!imgEl) continue;
+        const wrap = imgEl.parentElement;
+        if (!wrap) continue;
+        // remove botão antigo
+        const old = wrap.querySelector('button.remove-btn');
+        if (old) old.remove();
+        // exibe botão só se a imagem estiver visível
+        if (imgEl.style.display !== 'none' && imgEl.src) {
+          wrap.classList.add('has-image');
+          const btn = document.createElement('button');
+          btn.textContent = '🗑️';
           btn.className = 'remove-btn';
-          Object.assign(btn.style, {
-            position: "absolute",
-            top: "4px",
-            right: "4px",
-            background: "rgba(0,0,0,0.6)",
-            color: "#fff",
-            border: "none",
-            borderRadius: "50%",
-            width: "24px",
-            height: "48px",
-            cursor: "pointer",
-            fontSize: "14px",
-            lineHeight: "22px",
-          });
-
           btn.onclick = () => {
             const campo = n === 1 ? "urlImagem" : n === 2 ? "urlImagem2" : "urlImagem3";
             removerImagem(slug, id, campo, imgEl).then(()=> btn.remove());
           };
-
-          wrapper.style.position = "relative";
-          wrapper.appendChild(btn);
+          wrap.style.position = 'relative';
+          wrap.appendChild(btn);
+        } else {
+          wrap.classList.remove('has-image');
         }
       }
     }
@@ -536,7 +533,6 @@
         buildGrid(limite);
         const meta = await carregarMeta(slug);
         await carregarItens(slug, limite);
-        criarBotoesRemover(slug);
 
         document.getElementById('btnSalvarTudo').onclick = ()=> salvarTudo(slug, limite);
         document.getElementById('chkAtivo').addEventListener('change', ()=> salvarMeta(slug, cfgMeta.ownerUid));
