@@ -131,13 +131,20 @@
     .catalog-card { width: 100%; max-width: 720px; margin: 22px auto 0; background: #fff; border-radius: var(--radius);
       border: 1px solid rgba(92, 62, 66, .12); box-shadow: var(--shadow); padding: 16px; }
     .catalog-title { font-family: "Fraunces", ui-serif, Georgia, serif; font-size: 20px; margin: 0 0 10px; letter-spacing: .2px; color: var(--ink); }
+
+    /* ===== Capa do Catálogo: agora imagem OU vídeo ===== */
     .catalog-cover { position: relative; border-radius: 14px; overflow: hidden; border: 1px solid rgba(92, 62, 66, .12); aspect-ratio: 16/9; background: #eee; }
-    .catalog-cover img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .25s ease; }
+    .catalog-cover .media { width: 100%; height: 100%; }
+    .catalog-cover img,
+    .catalog-cover video { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .25s ease; }
+    .catalog-cover video { background: #000; }
     .catalog-link { display: block; text-decoration: none; }
-    .catalog-link:hover img { transform: scale(1.02); }
+    .catalog-link:hover img,
+    .catalog-link:hover video { transform: scale(1.02); }
     .catalog-badge { position: absolute; right: 10px; bottom: 10px; background: rgba(255, 255, 255, .92); color: var(--rose-700);
       border: 1px solid rgba(92, 62, 66, .16); border-radius: 999px; padding: 6px 10px; font-weight: 700; font-size: 13px;
       box-shadow: 0 6px 16px rgba(92, 62, 66, .18); }
+
     .shorts-card { width: 100%; max-width: 720px; margin: 22px auto 0; background: #fff; border-radius: var(--radius);
       border: 1px solid rgba(92, 62, 66, .12); box-shadow: var(--shadow); padding: 18px 18px 16px; }
     .shorts-header { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
@@ -266,7 +273,8 @@
       <h2 class="catalog-title">Catálogo</h2>
       <a class="catalog-link" id="catalog-link" href="/catalogo-lamaggie.html" aria-label="Abrir catálogo">
         <div class="catalog-cover">
-          <img id="catalog-cover" src="" alt="Imagem de capa do catálogo">
+          <!-- 🔄 Agora dinâmico: imagem OU vídeo -->
+          <div id="catalog-media" class="media"></div>
           <span class="catalog-badge">Abrir catálogo ➜</span>
         </div>
       </a>
@@ -472,14 +480,36 @@
       if (bg.desktop) document.documentElement.style.setProperty("--bg-desktop", `url('${bg.desktop}')`);
       if (bg.mobile) document.documentElement.style.setProperty("--bg-mobile", `url('${bg.mobile}')`);
 
+      /* ✅ AJUSTE: capa do catálogo aceita MP4 raw */
       const coverUrl = page.catalogCover || site.catalogCover || PLACEHOLDER;
-      if (coverUrl && $("#catalog-cover")) {
-        $("#catalog-cover").src = coverUrl;
-        $("#catalog-cover").onerror = () => {
-          console.error("Erro ao carregar capa:", coverUrl);
-          showDiag("Erro: Não foi possível carregar a capa do catálogo.");
-          $("#catalog-cover").src = PLACEHOLDER;
-        };
+      const mediaBox = $("#catalog-media");
+      if (mediaBox && coverUrl) {
+        mediaBox.innerHTML = "";
+        const isMp4 = /\.mp4($|\?)/i.test(coverUrl);
+        if (isMp4) {
+          const v = document.createElement("video");
+          v.src = coverUrl;            // ex.: raw.githubusercontent.com/.../capa.mp4
+          v.muted = true;              // autoplay mobile exige muted
+          v.autoplay = true;
+          v.loop = true;
+          v.playsInline = true;        // iOS não forçar fullscreen
+          v.preload = "metadata";
+          v.onerror = () => {
+            console.error("Erro ao carregar vídeo da capa:", coverUrl);
+            showDiag("Erro: Não foi possível carregar o vídeo da capa do catálogo.");
+          };
+          mediaBox.appendChild(v);
+        } else {
+          const cv = document.createElement("img");
+          cv.src = coverUrl;
+          cv.alt = "Imagem de capa do catálogo";
+          cv.onerror = () => {
+            console.error("Erro ao carregar capa (imagem):", coverUrl);
+            showDiag("Erro: Não foi possível carregar a capa do catálogo.");
+            cv.src = PLACEHOLDER;
+          };
+          mediaBox.appendChild(cv);
+        }
       }
 
       const s = page.social || site.social || {};
