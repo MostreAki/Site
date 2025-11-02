@@ -94,7 +94,7 @@
     .help{font-size:.85rem;color:#567;margin-top:2px}
     .alerta-login{display:none;margin:14px auto;max-width:980px;background:#fffbe6;border:1px solid #ffe8a3;border-radius:12px;padding:10px 14px;color:#7a5600}
     .trial-note{font-size:.9rem;color:#005f99;margin-top:8px}
-    .trial-note a{color:var(--brand);text-decoration:none;font-weight:bold}
+    .trial-note a{color:#15b0af;text-decoration:none;font-weight:bold}
 
     @media(max-width:860px){.grid{grid-template-columns:1fr}}
 
@@ -129,39 +129,20 @@
       margin-top: 20px;
       border-top: 1px solid rgba(250,30,39,.22);
     }
-    .ssl-seal a {
-      text-decoration: none;
-      display: inline-block;
-    }
-    .ssl-seal img {
-      max-width: 100px;
-      height: auto;
-    }
-    .ssl-seal p {
-      font-size: 0.8rem;
-      color: var(--muted);
-      margin: 4px 0 0;
-    }
-    .ssl-seal p:hover {
-      color: var(--brand);
-    }
-    .ssl-seal .fallback-svg {
-      width: 50px;
-      height: 50px;
-      vertical-align: middle;
-    }
+    .ssl-seal a { text-decoration: none; display: inline-block; }
+    .ssl-seal img { max-width: 100px; height: auto; }
+    .ssl-seal p { font-size: 0.8rem; color: var(--muted); margin: 4px 0 0; }
+    .ssl-seal p:hover { color: var(--brand); }
+    .ssl-seal .fallback-svg { width: 50px; height: 50px; vertical-align: middle; }
     @media (max-width: 768px) {
-      .ssl-seal img {
-        max-width: 80px;
-      }
-      .ssl-seal p {
-        font-size: 0.75rem;
-      }
+      .ssl-seal img { max-width: 80px; }
+      .ssl-seal p { font-size: 0.75rem; }
     }
   </style>
 </head>
 <body>
 
+  <!-- Modal Login -->
   <div id="authModal" class="modal-bg" role="dialog" aria-modal="true" aria-labelledby="authTitle">
     <div class="modal-card">
       <div class="modal-head">
@@ -192,6 +173,7 @@
     </div>
   </div>
 
+  <!-- Modal Alterar E-mail -->
   <div id="emailModal" class="modal-bg" role="dialog" aria-modal="true" aria-labelledby="emailTitle">
     <div class="modal-card">
       <div class="modal-head">
@@ -324,19 +306,21 @@
     import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
     import { EmailAuthProvider, reauthenticateWithCredential, verifyBeforeUpdateEmail } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 
+    // >>> CORRIGIDO: bucket e apontamento explícito para o gs:// do projeto <<<
     const cfg = {
       apiKey: 'AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE',
       authDomain: 'mostreaki-2025.firebaseapp.com',
       projectId: 'mostreaki-2025',
-      storageBucket: 'mostreaki-2025.firebasestorage.app',
+      storageBucket: 'mostreaki-2025.appspot.com',
       messagingSenderId: '748712068097',
       appId: '1:748712068097:web:09cf043fbb45917ef6ec00'
     };
     const app = getApps().length ? getApp() : initializeApp(cfg);
     const auth = getAuth(app);
     const db = getFirestore(app);
-    const storage = getStorage(app, 'gs://mostreaki-2025.firebasestorage.app');
+    const storage = getStorage(app, 'gs://mostreaki-2025.appspot.com');
 
+    /* Utils */
     const $ = s => document.querySelector(s);
     const cacheBust = u => u ? u + (u.includes('?')?'&':'?') + 'v=' + Date.now() : u;
 
@@ -360,6 +344,7 @@
       chk.addEventListener('change', apply);
     })();
 
+    /* Login */
     const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
     const emailValido = v => emailRe.test(v);
     async function loginEmailSenha() {
@@ -406,10 +391,10 @@
       btn.addEventListener('click', toggle);
     })();
 
-    /* Avatar */
+    /* ---------- Avatar persistente ---------- */
     function setAvatar(url) {
       if (!url) return;
-      localStorage.setItem('fotoPerfil', url);
+      localStorage.setItem('fotoPerfil', url); // persiste até logout
       const el = $('#userCircle'); if (!el) return;
       el.textContent = ''; el.style.display = 'flex';
       const img = new Image();
@@ -417,14 +402,32 @@
       el.append(img);
       const prev = $('#fotoPreview'); if (prev) prev.src = url;
     }
-    (() => { const c = localStorage.getItem('fotoPerfil'); if (c) setAvatar(c); })();
+
+    // Restaura imediatamente do cache local (antes do Firebase responder)
+    (() => {
+      const cached = localStorage.getItem('fotoPerfil');
+      if (cached) setAvatar(cached);
+    })();
+
+    // Sincroniza entre abas
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'fotoPerfil') {
+        const url = e.newValue;
+        if (url) setAvatar(url); else { const c = $('#userCircle'); if (c) c.style.display = 'none'; }
+      }
+    });
 
     async function prefetchFoto(uid) {
       const tryExt = e => getDownloadURL(ref(storage, `usuarios/${uid}/perfil/avatar.${e}`)).catch(() => null);
       const direct = await tryExt('jpg') || await tryExt('png') || await tryExt('webp') || await tryExt('gif');
-      if (direct) { setAvatar(direct); try { await setDoc(doc(db, 'usuarios', uid), { fotoPerfil: direct }, { merge: true }); } catch {} }
+      if (direct) {
+        setAvatar(direct);
+        try { await setDoc(doc(db, 'usuarios', uid), { fotoPerfil: direct }, { merge: true }); } catch {}
+      }
     }
+
     function extFromType(t) { return (t?.split('/')[1] || 'jpg').replace('jpeg', 'jpg'); }
+
     async function previewImagem(ev, uid) {
       const file = ev.target.files?.[0]; if (!file) return;
       $('#fotoPreview').src = URL.createObjectURL(file);
@@ -433,10 +436,11 @@
       await uploadBytes(storageRef, file, { contentType: file.type });
       const url = await getDownloadURL(storageRef);
       await setDoc(doc(db, 'usuarios', uid), { fotoPerfil: url }, { merge: true });
-      for (const e of ['jpg', 'png', 'webp', 'gif']) if (e !== ext) try { await deleteObject(ref(storage, `usuarios/${uid}/perfil/avatar.${e}`)); } catch {}
+      for (const e of ['jpg', 'png', 'webp', 'gif']) if (e !== ext) { try { await deleteObject(ref(storage, `usuarios/${uid}/perfil/avatar.${e}`)); } catch {} }
       setAvatar(url);
       alert('Foto atualizada com sucesso!');
     }
+
     async function removerFoto(uid) {
       let removed = false;
       for (const e of ['jpg', 'png', 'webp', 'gif']) { try { await deleteObject(ref(storage, `usuarios/${uid}/perfil/avatar.${e}`)); removed = true; } catch {} }
@@ -446,10 +450,26 @@
       alert(removed ? 'Foto removida.' : 'Nenhuma foto encontrada para remover.');
     }
 
-    /* Bloqueio de Username */
-    let ORIGINAL_USERNAME = '';
+    async function ensureAvatarPersistence(uid) {
+      try {
+        const uref = doc(db, 'usuarios', uid);
+        const snap = await getDoc(uref);
+        const url = snap.exists() ? (snap.data().fotoPerfil || '') : '';
+        if (url) setAvatar(url); else await prefetchFoto(uid);
 
-    /* Perfil */
+        // Listener em tempo real: se o campo fotoPerfil mudar, atualiza
+        onSnapshot(uref, s => {
+          const data = s.data() || {};
+          if (data.fotoPerfil) setAvatar(data.fotoPerfil);
+        });
+      } catch {
+        await prefetchFoto(uid);
+      }
+    }
+    /* --------------------------------------- */
+
+    /* Bloqueio de Username / Perfil */
+    let ORIGINAL_USERNAME = '';
     function slugify(v) {
       return v.toLowerCase()
         .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
@@ -458,7 +478,6 @@
     }
     async function salvar(uid) {
       const nomeCompleto = $('#nomeCompleto').value.trim();
-      const username = ORIGINAL_USERNAME;
       const data = {
         nomeCompleto,
         instagram: $('#instagram').value.trim(),
@@ -543,7 +562,6 @@
       if (!r.exists()) {
         const urlParams = new URLSearchParams(location.search);
         const plano = urlParams.get('plano');
-        const status = urlParams.get('status');
         await setDoc(doc(db, 'assinaturas', uid), {
           status: plano === 'trial' ? 'ativo' : 'sem-plano',
           plano: plano === 'trial' ? 'trial' : null,
@@ -577,21 +595,6 @@
         }
       };
     }
-    async function aplicarParametrosURL(uid) {
-      const p = new URLSearchParams(location.search);
-      const status = p.get('status');
-      const plano = p.get('plano');
-      if (!status && !plano) return;
-      const patch = {};
-      if (['pendente', 'ativo', 'cancelado'].includes(status)) patch.status = status;
-      if (['basico', 'essencial', 'avancado', 'light', 'trial'].includes(plano)) {
-        patch.plano = plano;
-        patch.provider = plano === 'trial' ? 'mostreaki' : 'mercado_pago';
-        if (plano === 'trial') patch.expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-      }
-      if (Object.keys(patch).length) await setAssinatura(uid, patch);
-      history.replaceState({}, '', location.pathname);
-    }
 
     /* Catálogo */
     async function wireCatalogo(uid) {
@@ -621,7 +624,7 @@
     }
 
     /* Troca de E-mail */
-    const LOGIN_URL = 'https://mostreaki-2025.web.app/confirmar.html'; // Ajustado para o domínio correto
+    const LOGIN_URL = 'https://mostreaki-2025.web.app/confirmar.html';
     function showMsg(txt, ok=false) {
       const el = $('#msgTrocaEmail');
       if (!el) return;
@@ -649,40 +652,24 @@
         if (busy) return;
         const novoEmail = (novo.value || '').trim();
         const senhaAtual = senha.value;
-
         if (!novoEmail) { showMsg('Digite o novo e-mail.'); return; }
         if (!emailRe.test(novoEmail)) { showMsg('Novo e-mail inválido.'); return; }
         if (!senhaAtual) { showMsg('Informe sua senha atual para confirmar.'); return; }
 
         try {
           busy = true; btn.disabled = true; btn.style.opacity = '.7'; showMsg('Verificando credenciais…');
-
-          // Reautenticação com credenciais
           const cred = EmailAuthProvider.credential(user.email, senhaAtual);
           await reauthenticateWithCredential(user, cred);
-
-          // Inicia a troca de e-mail com handleCodeInApp: true
-          await verifyBeforeUpdateEmail(user, novoEmail, {
-            url: LOGIN_URL,
-            handleCodeInApp: true
-          });
-
+          await verifyBeforeUpdateEmail(user, novoEmail, { url: LOGIN_URL, handleCodeInApp: true });
           showMsg('Enviamos um link de confirmação para o novo e-mail. Abra e confirme para concluir a troca.', true);
           fecharEmailModal();
         } catch (e) {
-          console.error('Erro na troca de e-mail:', e.code, e.message); // Log detalhado para depuração
           const code = e?.code || '';
-          if (code.includes('wrong-password') || code.includes('invalid-credential')) {
-            showMsg('Senha incorreta. Verifique e tente novamente.');
-          } else if (code.includes('requires-recent-login')) {
-            showMsg('Sessão expirada. Faça login novamente e tente de novo.');
-          } else if (code.includes('email-already-in-use')) {
-            showMsg('Este e-mail já está em uso por outra conta.');
-          } else if (code.includes('invalid-continue-uri')) {
-            showMsg('Erro de configuração: verifique o URL de redirecionamento no Firebase Console.');
-          } else {
-            showMsg(`Erro: ${e.code || 'desconhecido'}. Tente novamente ou contate o suporte.`);
-          }
+          if (code.includes('wrong-password') || code.includes('invalid-credential')) showMsg('Senha incorreta. Verifique e tente novamente.');
+          else if (code.includes('requires-recent-login')) showMsg('Sessão expirada. Faça login novamente e tente de novo.');
+          else if (code.includes('email-already-in-use')) showMsg('Este e-mail já está em uso por outra conta.');
+          else if (code.includes('invalid-continue-uri')) showMsg('Erro de configuração: verifique o URL de redirecionamento no Firebase Console.');
+          else showMsg(`Erro: ${e.code || 'desconhecido'}. Tente novamente ou contate o suporte.`);
         } finally {
           busy = false; btn.disabled = false; btn.style.opacity = '1';
         }
@@ -697,30 +684,50 @@
         a.onclick = async (e) => {
           e.preventDefault();
           await signOut(auth);
-          localStorage.removeItem('fotoPerfil');
+          localStorage.removeItem('fotoPerfil'); // limpa persistência
+          const circle = $('#userCircle'); if (circle) circle.style.display = 'none';
           location = '/index.html';
         };
         $('#foto').onchange = ev => previewImagem(ev, user.uid);
         $('#btnSalvar').onclick = () => salvar(user.uid);
         $('#btnExcluirFoto').onclick = () => removerFoto(user.uid);
         $('#btnAlterarEmail').onclick = () => abrirEmailModal();
+
         await ensureAssinaturaDoc(user.uid);
         wireAssinatura(user.uid);
-        await aplicarParametrosURL(user.uid);
         await carregar(user.uid);
-        await prefetchFoto(user.uid);
         await wireCatalogo(user.uid);
-        iniciarTrocaEmail(user); // Ativa a troca de e-mail no modal
+
+        // >>> garante que o avatar fique visível e sincronizado enquanto logado
+        await ensureAvatarPersistence(user.uid);
+
+        await aplicarParametrosURL(user.uid);
+        iniciarTrocaEmail(user);
       } else {
         $('#alertaLogin').style.display = 'block';
-        $('main.container').style.display = 'none';
+        document.querySelector('main.container').style.display = 'none';
         localStorage.removeItem('fotoPerfil');
-        setTimeout(() => location = '/index.html', 4000);
         a.textContent = 'Entrar';
         a.onclick = (e) => { e.preventDefault(); abrirModal(); };
+        setTimeout(() => location = '/index.html', 4000);
       }
-    }); 
-</script>
+    });
+
+    async function aplicarParametrosURL(uid) {
+      const p = new URLSearchParams(location.search);
+      const status = p.get('status');
+      const plano = p.get('plano');
+      if (!status && !plano) return;
+      const patch = {};
+      if (['pendente', 'ativo', 'cancelado'].includes(status)) patch.status = status;
+      if (['basico', 'essencial', 'avancado', 'light', 'trial'].includes(plano)) {
+        patch.plano = plano;
+        patch.provider = plano === 'trial' ? 'mostreaki' : 'mercado_pago';
+        if (plano === 'trial') patch.expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+      }
+      if (Object.keys(patch).length) await setAssinatura(uid, patch);
+      history.replaceState({}, '', location.pathname);
+    }
+  </script>
 </body>
 </html>
-
