@@ -121,7 +121,6 @@
     .showpwd{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:.9rem;color:#444}
     .showpwd input{width:auto}
 
-    /* Selo SSL acima do footer */
     .ssl-seal {
       text-align: center;
       padding: 16px 0;
@@ -251,7 +250,7 @@
     </div>
   </header>
 
-  <div id="alertaLogin" class="alerta-login">⚠️ Você precisa estar logado para acessar a página Minha Conta. Redirecionando…</div>
+  <div id="alertaLogin" class="alerta-login">Você precisa estar logado para acessar a página Minha Conta. Redirecionando…</div>
 
   <main class="container">
     <div class="section-title"><h2>Minha Conta</h2></div>
@@ -265,7 +264,7 @@
 
           <label for="username">Nome de usuário</label>
           <input id="username" type="text" placeholder="ex.: joao-silva" readonly aria-readonly="true" title="Bloqueado para edição. Entre em contato com o suporte para alterar.">
-          <div class="lock-note">🔒 Bloqueado para edição (apenas o suporte poderá fazer a alteração).</div>
+          <div class="lock-note">Bloqueado para edição (apenas o suporte poderá fazer a alteração).</div>
 
           <label for="foto" style="margin-top:12px">Foto de Perfil</label>
           <input id="foto" type="file" accept="image/*">
@@ -279,7 +278,7 @@
           <div class="row-btns">
             <button id="btnSalvar" class="btn save">Salvar alterações</button>
             <button id="btnExcluirFoto" class="btn remove">Remover foto</button>
-            <a id="btnEditarCatalogo" class="btn link" style="display:none" href="#">✏️ Editar catálogo</a>
+            <a id="btnEditarCatalogo" class="btn link" style="display:none" href="#">Editar catálogo</a>
             <button id="btnAlterarEmail" class="btn save" style="margin-top:10px">Alterar E-mail</button>
           </div>
           <div id="catalogoInfo" class="help" style="display:none;margin-top:6px"></div>
@@ -302,7 +301,6 @@
       </section>
     </div>
 
-    <!-- Selo SSL acima do footer -->
     <div class="ssl-seal">
       <a href="https://www.ssllabs.com/ssltest/analyze.html?d=app.mostreaki.com.br&hideResults=on" target="_blank" rel="noopener" title="Verificar Certificado SSL (SSL Labs)">
         <img src="https://seal.ssl2buy.com/images/seal/ssl2buy-seal.gif?v=2" alt="SSL Secured by SSL2BUY" onerror="this.style.display='none';this.nextElementSibling.style.display='inline-block';">
@@ -406,7 +404,105 @@
       btn.addEventListener('click', toggle);
     })();
 
-    /* Avatar */
+    /* === NOVAS HELPERS PARA WEBP ≤ 400KB === */
+    const ACCEPTED = /image\/(jpeg|jpg|png|webp|gif|heic|heif)/i;
+
+    async function decodeToBitmap(file) {
+      try { return await createImageBitmap(file); } catch {}
+      const url = URL.createObjectURL(file);
+      const img = await new Promise((res, rej) => {
+        const i = new Image();
+        i.onload = () => res(i);
+        i.onerror = rej;
+        i.src = url;
+      });
+      URL.revokeObjectURL(url);
+      return img;
+    }
+
+    async function normalizeToWebp(file, maxBytes = 400 * 1024) {
+      if (ACCEPTED.test(file.type) && file.size <= maxBytes) return file;
+
+      let bmp;
+      try { bmp = await decodeToBitmap(file); } catch { return file; }
+      if (!bmp) return file;
+
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d', { alpha: true });
+
+      const MAX_W = 1280, MAX_H = 1280;
+      let { width, height } = bmp;
+      const k = Math.min(1, MAX_W/width, MAX_H/height);
+      canvas.width = Math.round(width * k);
+      canvas.height = Math.round(height * k);
+      ctx.drawImage(bmp, 0, 0, canvas.width, canvas.height);
+
+      let q = 0.92, blob;
+      do {
+        blob = await new Promise(r => canvas.toBlob(r, 'image/webp', q));
+        q -= 0.07;
+      } while (blob && blob.size > maxBytes && q > 0.45);
+
+      return blob ? new File([blob], 'avatar.webp', { type: 'image/webp' }) : file;
+    }
+
+    /* === NOVA FUNÇÃO DE UPLOAD COM CONVERSÃO === */
+    async function previewImagem(ev, uid) {
+      let file = ev.target.files?.[0];
+      if (!file) return;
+
+      // 1) Converte para WEBP ≤ 400KB
+      file = await normalizeToWebp(file, 400 * 1024);
+
+      // 2) Preview
+      const prev = document.querySelector('#fotoPreview');
+      if (prev) prev.src = URL.createObjectURL(file);
+
+      // 3) Extensão final
+      const ext = file.type.includes('webp') ? 'webp'
+                : (file.type.split('/')[1] || 'jpg').replace('jpeg','jpg');
+
+      // 4) Caminho canônico
+      const storageRef = ref(storage, `usuarios/${uid}/perfil/avatar.${ext}`);
+
+      // 5) Upload → URL → Firestore → local
+      await uploadBytes(storageRef, file, { contentType: file.type });
+      const url = await getDownloadURL(storageRef);
+      await setDoc(doc(db, 'usuarios', uid), { fotoPerfil: url }, { merge: true });
+      localStorage.setItem('fotoPerfil', url);
+
+      // 6) Limpa sobras
+      for (const e of ['jpg','png','webp','gif']) if (e !== ext) {
+        try { await deleteObject(ref(storage, `usuarios/${uid}/perfil/avatar.${e}`)); } catch {}
+      }
+
+      // 7) Atualiza círculo do topo
+      const circle = document.querySelector('#userCircle');
+      if (circle) {
+        circle.style.display = 'flex';
+        circle.innerHTML = '';
+        const img = new Image();
+        img.src = url; img.alt = 'Foto'; img.style.width='100%'; img.style.height='100%'; img.style.objectFit='cover';
+        circle.appendChild(img);
+      }
+
+      alert('Foto atualizada com sucesso!');
+    }
+
+    /* === FUNÇÃO DE REMOÇÃO (inalterada) === */
+    async function removerFoto(uid) {
+      let removed = false;
+      for (const e of ['jpg', 'png', 'webp', 'gif']) { 
+        try { await deleteObject(ref(storage, `usuarios/${uid}/perfil/avatar.${e}`)); removed = true; } catch {} 
+      }
+      await setDoc(doc(db, 'usuarios', uid), { fotoPerfil: '' }, { merge: true });
+      localStorage.removeItem('fotoPerfil');
+      $('#fotoPreview').src = ''; 
+      $('#userCircle').style.display = 'none';
+      alert(removed ? 'Foto removida.' : 'Nenhuma foto encontrada para remover.');
+    }
+
+    /* === RESTANTE DO CÓDIGO (inalterado) === */
     function setAvatar(url) {
       if (!url) return;
       localStorage.setItem('fotoPerfil', url);
@@ -424,32 +520,8 @@
       const direct = await tryExt('jpg') || await tryExt('png') || await tryExt('webp') || await tryExt('gif');
       if (direct) { setAvatar(direct); try { await setDoc(doc(db, 'usuarios', uid), { fotoPerfil: direct }, { merge: true }); } catch {} }
     }
-    function extFromType(t) { return (t?.split('/')[1] || 'jpg').replace('jpeg', 'jpg'); }
-    async function previewImagem(ev, uid) {
-      const file = ev.target.files?.[0]; if (!file) return;
-      $('#fotoPreview').src = URL.createObjectURL(file);
-      const ext = extFromType(file.type);
-      const storageRef = ref(storage, `usuarios/${uid}/perfil/avatar.${ext}`);
-      await uploadBytes(storageRef, file, { contentType: file.type });
-      const url = await getDownloadURL(storageRef);
-      await setDoc(doc(db, 'usuarios', uid), { fotoPerfil: url }, { merge: true });
-      for (const e of ['jpg', 'png', 'webp', 'gif']) if (e !== ext) try { await deleteObject(ref(storage, `usuarios/${uid}/perfil/avatar.${e}`)); } catch {}
-      setAvatar(url);
-      alert('Foto atualizada com sucesso!');
-    }
-    async function removerFoto(uid) {
-      let removed = false;
-      for (const e of ['jpg', 'png', 'webp', 'gif']) { try { await deleteObject(ref(storage, `usuarios/${uid}/perfil/avatar.${e}`)); removed = true; } catch {} }
-      await setDoc(doc(db, 'usuarios', uid), { fotoPerfil: '' }, { merge: true });
-      localStorage.removeItem('fotoPerfil');
-      $('#fotoPreview').src = ''; $('#userCircle').style.display = 'none';
-      alert(removed ? 'Foto removida.' : 'Nenhuma foto encontrada para remover.');
-    }
 
-    /* Bloqueio de Username */
     let ORIGINAL_USERNAME = '';
-
-    /* Perfil */
     function slugify(v) {
       return v.toLowerCase()
         .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
@@ -487,21 +559,8 @@
       $('#youtube').value = d.youtube || '';
     }
 
-    /* Assinaturas */
-    const PLANOS = {
-      trial: 'Plano Trial',
-      light: 'Plano Light',
-      basico: 'Plano Básico',
-      essencial: 'Plano Intermediário',
-      avancado: 'Plano Avançado'
-    };
-    const STATUS_LABEL = {
-      'sem-plano': 'Sem plano',
-      'pendente': 'Pendente',
-      'ativo': 'Ativo',
-      'cancelamento_solicitado': 'Cancelamento solicitado',
-      'cancelado': 'Cancelado'
-    };
+    const PLANOS = { trial: 'Plano Trial', light: 'Plano Light', basico: 'Plano Básico', essencial: 'Plano Intermediário', avancado: 'Plano Avançado' };
+    const STATUS_LABEL = { 'sem-plano': 'Sem plano', 'pendente': 'Pendente', 'ativo': 'Ativo', 'cancelamento_solicitado': 'Cancelamento solicitado', 'cancelado': 'Cancelado' };
     function renderAssinatura(data) {
       const status = data?.status || 'sem-plano';
       const plano = data?.plano || null;
@@ -512,7 +571,7 @@
       const meta = [];
       if (data?.createdAt?.toDate) meta.push('Início: ' + data.createdAt.toDate().toLocaleDateString());
       if (data?.updatedAt?.toDate) meta.push('Atualizado: ' + data.updatedAt.toDate().toLocaleString());
-      $('#assinaturaMeta').textContent = meta.join(' · ');
+      $('#assinaturaMeta').textContent ``meta.join(' · ');
       const trialExpiry = $('#trialExpiry');
       if (plano === 'trial' && data?.expiresAt?.toDate) {
         const daysLeft = Math.ceil((data.expiresAt.toDate() - new Date()) / (1000 * 60 * 60 * 24));
@@ -593,7 +652,6 @@
       history.replaceState({}, '', location.pathname);
     }
 
-    /* Catálogo */
     async function wireCatalogo(uid) {
       const btn = $('#btnEditarCatalogo');
       const info = $('#catalogoInfo');
@@ -620,8 +678,7 @@
       } catch {}
     }
 
-    /* Troca de E-mail */
-    const LOGIN_URL = 'https://mostreaki-2025.web.app/confirmar.html'; // Ajustado para o domínio correto
+    const LOGIN_URL = 'https://mostreaki-2025.web.app/confirmar.html';
     function showMsg(txt, ok=false) {
       const el = $('#msgTrocaEmail');
       if (!el) return;
@@ -656,21 +713,13 @@
 
         try {
           busy = true; btn.disabled = true; btn.style.opacity = '.7'; showMsg('Verificando credenciais…');
-
-          // Reautenticação com credenciais
           const cred = EmailAuthProvider.credential(user.email, senhaAtual);
           await reauthenticateWithCredential(user, cred);
-
-          // Inicia a troca de e-mail com handleCodeInApp: true
-          await verifyBeforeUpdateEmail(user, novoEmail, {
-            url: LOGIN_URL,
-            handleCodeInApp: true
-          });
-
+          await verifyBeforeUpdateEmail(user, novoEmail, { url: LOGIN_URL, handleCodeInApp: true });
           showMsg('Enviamos um link de confirmação para o novo e-mail. Abra e confirme para concluir a troca.', true);
           fecharEmailModal();
         } catch (e) {
-          console.error('Erro na troca de e-mail:', e.code, e.message); // Log detalhado para depuração
+          console.error('Erro na troca de e-mail:', e.code, e.message);
           const code = e?.code || '';
           if (code.includes('wrong-password') || code.includes('invalid-credential')) {
             showMsg('Senha incorreta. Verifique e tente novamente.');
@@ -689,7 +738,6 @@
       };
     }
 
-    /* Auth */
     onAuthStateChanged(auth, async (user) => {
       const a = $('#authText');
       if (user) {
@@ -710,7 +758,7 @@
         await carregar(user.uid);
         await prefetchFoto(user.uid);
         await wireCatalogo(user.uid);
-        iniciarTrocaEmail(user); // Ativa a troca de e-mail no modal
+        iniciarTrocaEmail(user);
       } else {
         $('#alertaLogin').style.display = 'block';
         $('main.container').style.display = 'none';
@@ -720,6 +768,6 @@
         a.onclick = (e) => { e.preventDefault(); abrirModal(); };
       }
     }); 
-</script>
+  </script>
 </body>
 </html>
