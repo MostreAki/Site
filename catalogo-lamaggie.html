@@ -613,6 +613,16 @@
           const waIcon = ICON_WA ? `<img src="${ICON_WA}" alt="WhatsApp">` : waSvg;
           const mlIcon = ICON_ML ? `<img src="${ICON_ML}" alt="Mercado Livre">` : mlSvg;
 
+          /* 👇 AQUI está o ajuste que você pediu: além de d.whatsapp e d.zap, agora checa d.botaoWhats */
+          const whatsappHref =
+            d.whatsapp
+              ? `https://wa.me/${String(d.whatsapp).replace(/\D/g,'')}`
+              : d.botaoWhats
+                ? (d.botaoWhats.startsWith('http') ? d.botaoWhats : `https://wa.me/${String(d.botaoWhats).replace(/\D/g,'')}`)
+                : d.zap
+                  ? d.zap
+                  : null;
+
           return `
           <article class="card">
             <div class="imgWrap" data-gal="${galAttr}">
@@ -625,11 +635,11 @@
                 <div class="qtde">Estoque: ${d.qtd}</div>
                 ${thumbs ? `<div class="thumbs" data-gal="${galAttr}">${thumbs}</div>` : ``}
                 <div class="actions">
-                  ${d.zap ? `<a class="cta cta-wa" href="${d.zap}" target="_blank" rel="noopener">Whatsapp ${waIcon}</a>` : ``}
+                  ${whatsappHref ? `<a class="cta cta-wa" href="${whatsappHref}" target="_blank" rel="noopener">Chamar no WhatsApp ${waIcon}</a>` : ``}
                   ${d.mlUrl ? `<a class="cta cta-ml" href="${d.mlUrl}" target="_blank" rel="noopener">Comprar ${mlIcon}</a>` : ``}
                 </div>
               </div>
-              ${d.zap ? `<button class="zap" aria-label="WhatsApp" onclick="window.open('${d.zap}','_blank')"></button>` : ``}
+              ${whatsappHref ? `<button class="zap" aria-label="WhatsApp" onclick="window.open('${whatsappHref}','_blank')"></button>` : ``}
               ${d.mlUrl ? `<button class="mlbtn" aria-label="Mercado Livre" onclick="window.open('${d.mlUrl}','_blank')"></button>` : ``}
             </div>
           </article>`;
@@ -700,26 +710,6 @@
       touchX = null;
       if (Math.abs(dx) > 40) { dx < 0 ? lbNext() : lbPrev(); }
     }, { passive: true });
-
-    document.addEventListener('click', (e) => {
-      const wrap = e.target.closest('.imgWrap');
-      if (wrap) {
-        try {
-          const gal = JSON.parse(wrap.dataset.gal || '[]');
-          if (gal.length) openLightboxGallery(gal, 0);
-          return;
-        } catch (_) {}
-      }
-      const thumb = e.target.closest('.thumbs img');
-      if (thumb) {
-        const cont = thumb.closest('.thumbs');
-        try {
-          const gal = JSON.parse(cont.dataset.gal || '[]');
-          const idx = parseInt(thumb.dataset.idx || '0', 10);
-          if (gal.length) openLightboxGallery(gal, idx);
-        } catch (_) {}
-      }
-    });
 
     function applyHeaderLogo(cfg) {
       const qs = new URL(location.href).searchParams;
@@ -877,7 +867,10 @@
             thumb,
             zap,
             mlUrl: d.mlUrl || null,
-            tags: (Array.isArray(d.tags) ? d.tags.join(' ') : (d.tags || d.palavrasChave || '')).toString().trim()
+            tags: (Array.isArray(d.tags) ? d.tags.join(' ') : (d.tags || d.palavrasChave || '')).toString().trim(),
+            /* 👇 deixam passar pro renderPage: */
+            whatsapp: d.whatsapp || null,
+            botaoWhats: d.botaoWhats || null
           });
         });
 
@@ -942,7 +935,7 @@
       <span class="pageinfo">Página 1 de 1</span>
       <button class="navbtn btnNext" onclick="goNext()" aria-label="Próximo">
         Próximo
-        <svg viewBox="0 0 24 24"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6z"/></svg>
       </button>
     </div>
 
@@ -956,7 +949,7 @@
       <span class="pageinfo">Página 1 de 1</span>
       <button class="navbtn btnNext" onclick="goNext()" aria-label="Próximo">
         Próximo
-        <svg viewBox="0 0 24 24"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6z"/></svg>
       </button>
     </div>
 
