@@ -3,12 +3,11 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Editar Catálogo – MostreAki (Storage ≤ 400KB + Firestore)</title>
+  <title>Editar Catálogo – MostreAki (Firestore apenas)</title>
   <style>
     :root{
       --brand:#16b0af; --brandLight:#c4e8de; --ink:#083f3e; --bg:#ffffff;
       --danger:#d73e45; --line:#e7f3f1; --inkSub:#4a6665; --btnText:#fff; --muted:#567; --ok:#0a7;
-      /* fundo opcional do card do item */
       --item-bg:url("/assets/card-bg-mostreaki.png");
     }
     *{box-sizing:border-box}
@@ -70,32 +69,12 @@
     .row-switch{display:flex;align-items:center;gap:10px}
     .uploader{margin-top:12px;border-top:1px dashed #e2efec;padding-top:12px}
     .uploader .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-
-    /* ===== Botão de ARQUIVO custom sem ícone (texto centralizado “MostreAki”) ===== */
-    .filecell{display:flex;flex-direction:column;gap:6px}
-    .visually-hidden{
-      position:absolute!important; width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;
-    }
-    .file-btn{
-      display:inline-flex;align-items:center;justify-content:center;
-      width:100%; min-height:44px; padding:10px 10px;
-      border:1px dashed #b7ddd7; border-radius:12px;
-      background:#0f766e; color:#fff; font-weight:800; cursor:pointer;
-      box-shadow:0 8px 20px rgba(0,0,0,.12);
-      transition:transform .08s ease, box-shadow .12s ease, background .12s ease;
-      text-align:center; user-select:none;
-    }
-    .file-btn:active{ transform:translateY(1px); box-shadow:0 4px 12px rgba(0,0,0,.14); }
-
     .pv{margin-top:10px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
     .pv-wrap { position: relative; }
     .pv img{width:100%;height:104px;object-fit:cover;border:1px solid #e3f2ef;border-radius:10px;background:#FFF}
-    .progress{height:8px;background:#e9f5f1;border-radius:6px;overflow:hidden}
-    .bar{height:8px;background:linear-gradient(90deg,#19c5a7,#12a69f)}
     footer{color:#567;font-size:.88rem;text-align:center;padding:20px 16px}
     .btn.auth{min-width:92px;text-align:center}
 
-    /* Botão de lixeira aparece só quando a imagem está visível */
     .remove-btn{
       position:absolute; top:4px; right:4px;
       background:rgba(0,0,0,.6); color:#fff; border:none;
@@ -150,8 +129,7 @@
         </div>
         <p id="hintLimite" class="hint" style="margin-top:12px"></p>
         <p class="hint" style="margin-top:8px">
-          Para subir a imagem clique no <b>Botão MostreAki</b>. 
-          Envie as <b>imagens</b> (convertidas automaticamente ≤ 400 KB) mantendo alta qualidade.
+          Aqui você só cola as URLs das imagens (ex.: do GitHub) e salva. O cliente só mexe em preço, quantidade e links.
         </p>
       </div>
     </section>
@@ -166,7 +144,7 @@
 
   <footer>© <span id="ano"></span> MostreAki</footer>
 
-  <!-- Firebase v10.14 -->
+  <!-- Firebase v10.14 → só app, auth e firestore -->
   <script type="module">
     import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
     import { 
@@ -176,28 +154,25 @@
       getFirestore, doc, getDoc, setDoc, getDocs, collection, writeBatch, serverTimestamp,
       updateDoc, deleteField
     } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
-    import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject, updateMetadata } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-storage.js";
 
-    // ========= Firebase config =========
     const cfg = {
       apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
       authDomain: "mostreaki-2025.firebaseapp.com",
       projectId: "mostreaki-2025",
-      storageBucket: "mostreaki-2025.firebasestorage.app",
+      // sem storageBucket porque estamos no Spark sem upload
       messagingSenderId: "748712068097",
       appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
     };
     const app = getApps().length ? getApp() : initializeApp(cfg);
     const auth = getAuth(app);
     const db   = getFirestore(app);
-    const st   = getStorage(app);
 
     await setPersistence(auth, browserLocalPersistence);
 
     const $ = s => document.querySelector(s);
     document.getElementById('ano').textContent = new Date().getFullYear();
 
-    // Menu
+    // menu mobile
     (()=>{ const btn=$('#menuBtn'),menu=$('#menu'); if(!btn||!menu) return;
       const open=()=>{menu.style.display='flex';document.addEventListener('click',onDoc,true);document.addEventListener('keydown',onKey);}
       const close=()=>{menu.style.display='none';document.removeEventListener('click',onDoc,true);document.removeEventListener('keydown',onKey);}
@@ -207,19 +182,16 @@
       btn.addEventListener('click',e=>{e.stopPropagation();toggle();});
     })();
 
-    // Helpers
     const fmtBRL = c => 'R$ ' + (c/100).toLocaleString('pt-BR',{minimumFractionDigits:2});
     const parseBRL = s => { const n=parseFloat(String(s).replace(/[^\d,.-]/g,'').replace(/\./g,'').replace(',','.')); return isNaN(n)?0:Math.round(n*100); };
     const bust = url => url ? (url + (url.includes('?')?'&':'?') + 't=' + Date.now()) : url;
 
-    // Slug + link público
     function getSlug(){ const u=new URL(location.href); return u.searchParams.get('c') || u.searchParams.get('slug') || ''; }
     const slug = getSlug(); $('#slugLabel').textContent = slug || '—';
     function setPublicLink(slug, meta={}){ const a=$('#publicLink'); if(!a||!slug){ if(a) a.href='#'; return; }
       const custom=(meta.publicPagePath||meta.public_page_path||meta.customPublicPage||'').trim();
       a.href = custom || `/catalogo-${slug}.html`; }
 
-    // Plano
     function normalizePlano(p=''){ return p.normalize('NFD').replace(/\p{Diacritic}/gu,'').toLowerCase(); }
     function maxByPlano(plano){ const p=normalizePlano(plano||''); if(p.includes('avancado'))return 100; if(p.includes('intermedi')||p.includes('essencial'))return 60; return 30; }
     async function resolveLimiteAssinatura(ownerUid){
@@ -240,10 +212,8 @@
       return data;
     }
 
-    // Avatar + sair
     function renderUserCircle(user){
       const el = $('#userCircle'); const btn=$('#authBtn');
-      const show = ()=> el.style.display='flex';
       if(!user){
         el.style.display='none';
         btn.textContent='Entrar';
@@ -252,32 +222,14 @@
       }
       btn.textContent='Sair';
       btn.onclick=async (e)=>{ e.preventDefault(); try{ await signOut(auth); } finally{ window.location.href='/index.html'; } };
-      const url = user.photoURL;
-      el.title = user.displayName || user.email || user.uid;
       el.innerHTML = '';
-      if(url){ const img=new Image(); img.src=url; img.alt='User'; img.style.width='100%'; img.style.height='100%'; img.style.objectFit='cover'; el.appendChild(img); show(); return; }
+      el.title = user.displayName || user.email || user.uid;
       const name = (user.displayName || user.email || 'U').trim();
       const initials = name.split('@')[0].split(/\s+/).slice(0,2).map(s=>s[0]?.toUpperCase()||'U').join('');
-      el.textContent = initials; show();
+      el.textContent = initials;
+      el.style.display='flex';
     }
 
-    // Compressão ≤ 400KB
-    async function compressToJPEG(file, maxBytes=400*1024, maxW=1400, maxH=1400){
-      const img = new Image(); img.src = URL.createObjectURL(file); await img.decode();
-      const r = Math.min(maxW/img.width, maxH/img.height, 1), w=Math.round(img.width*r), h=Math.round(img.height*r);
-      const canvas = Object.assign(document.createElement('canvas'), { width:w, height:h });
-      const ctx = canvas.getContext('2d'); ctx.drawImage(img,0,0,w,h);
-      let q=0.9, step=0.08, out;
-      for(let i=0;i<10;i++){ out = await new Promise(res=>canvas.toBlob(res,'image/jpeg',q)); if(out.size<=maxBytes || q<=0.4) break; q-=step; step=Math.max(0.03,step*0.75); }
-      return new File([out], file.name.replace(/\.\w+$/i,'.jpg'), { type:'image/jpeg' });
-    }
-
-    /* Botão custom “MostreAki” (sem ícone) */
-    function fileButtonHTML(forId){
-      return `<label class="file-btn" for="${forId}"><span>MostreAki</span></label>`;
-    }
-
-    // ===== UI dos itens =====
     function buildGrid(limite){
       const grid = $('#grid'); grid.innerHTML='';
       for(let i=1;i<=limite;i++){
@@ -308,22 +260,19 @@
             </div>
 
             <div class="uploader">
-              <label>Imagens</label>
+              <label>URLs das imagens (cole aqui as que você hospedou no GitHub):</label>
               <div class="grid3">
-                <div class="filecell">
-                  <label for="f1_${id}">IMG 1</label>
-                  <input class="visually-hidden" type="file" id="f1_${id}" accept="image/*">
-                  ${fileButtonHTML(`f1_${id}`)}
+                <div>
+                  <label for="url1_${id}">URL 1</label>
+                  <input type="url" id="url1_${id}" placeholder="https://...">
                 </div>
-                <div class="filecell">
-                  <label for="f2_${id}">IMG 2</label>
-                  <input class="visually-hidden" type="file" id="f2_${id}" accept="image/*">
-                  ${fileButtonHTML(`f2_${id}`)}
+                <div>
+                  <label for="url2_${id}">URL 2</label>
+                  <input type="url" id="url2_${id}" placeholder="https://...">
                 </div>
-                <div class="filecell">
-                  <label for="f3_${id}">IMG 3</label>
-                  <input class="visually-hidden" type="file" id="f3_${id}" accept="image/*">
-                  ${fileButtonHTML(`f3_${id}`)}
+                <div>
+                  <label for="url3_${id}">URL 3</label>
+                  <input type="url" id="url3_${id}" placeholder="https://...">
                 </div>
               </div>
               <div class="pv" id="pv_${id}">
@@ -331,27 +280,33 @@
                 <div class="pv-wrap"><img id="p2_${id}" style="display:none" alt=""></div>
                 <div class="pv-wrap"><img id="p3_${id}" style="display:none" alt=""></div>
               </div>
-              <div class="progress" style="margin:8px 0;display:none" id="pg_${id}"><div class="bar" id="bar_${id}" style="width:0%"></div></div>
-              <div class="toolbar">
-                <button class="btn ok" data-up="${id}">Enviar imagens</button>
-              </div>
               <div class="hint" id="hint_${id}"></div>
             </div>
           </div>`);
       }
 
-      // prévias locais + atualização de lixeiras
-      $('#grid').querySelectorAll('input[type=file]').forEach(inp=>{
-        inp.addEventListener('change', ()=>{
-          const id = inp.id.split('_')[1];
-          const which = inp.id.startsWith('f1_')?1:inp.id.startsWith('f2_')?2:3;
-          const img = document.getElementById(`p${which}_${id}`);
-          if(inp.files && inp.files[0]){ img.src = URL.createObjectURL(inp.files[0]); img.style.display='block'; }
-          else { img.src=''; img.style.display='none'; }
-          updateRemoveButtonsForItem(id);
+      // preview automático das URLs
+      for(let i=1;i<=limite;i++){
+        const id = String(i).padStart(2,'0');
+        ['1','2','3'].forEach(n=>{
+          const inp = document.getElementById(`url${n}_${id}`);
+          const img = document.getElementById(`p${n}_${id}`);
+          if(inp && img){
+            inp.addEventListener('input', ()=>{
+              const v = inp.value.trim();
+              if(v){
+                img.src = bust(v);
+                img.style.display='block';
+                updateRemoveButtonsForItem(id);
+              } else {
+                img.src = '';
+                img.style.display='none';
+                updateRemoveButtonsForItem(id);
+              }
+            });
+          }
         });
-      });
-      $('#grid').querySelectorAll('button[data-up]').forEach(b=> b.onclick = ()=> uploadImagensDoItem(b.dataset.up));
+      }
     }
 
     async function carregarItens(slug, limite){
@@ -364,8 +319,14 @@
         const cents = (typeof d.precoCentavos==='number')? d.precoCentavos : (typeof d.preco==='number'? Math.round(d.preco*100):0);
         $('#preco_'+id).value = fmtBRL(cents);
         $('#ml_'+id).value    = d.mlUrl || '';
-        const urls=[d.urlImagem,d.urlImagem2,d.urlImagem3];
-        urls.forEach((u,ix)=>{ 
+
+        // aqui pega as 3 URLs
+        $('#url1_'+id).value  = d.urlImagem  || '';
+        $('#url2_'+id).value  = d.urlImagem2 || '';
+        $('#url3_'+id).value  = d.urlImagem3 || '';
+
+        const imgs=[d.urlImagem,d.urlImagem2,d.urlImagem3];
+        imgs.forEach((u,ix)=>{ 
           const im=document.getElementById('p'+(ix+1)+'_'+id); 
           if(im && u){ im.src=bust(u); im.style.display='block'; }
         });
@@ -379,13 +340,28 @@
         const batch = writeBatch(db);
         for(let i=1;i<=limite;i++){
           const id=String(i).padStart(2,'0');
-          const nome=(document.getElementById('nome_'+id)?.value||'').trim();
-          const qtd =parseInt(document.getElementById('qtd_'+id)?.value||'0',10);
-          const cents=parseBRL(document.getElementById('preco_'+id)?.value||'');
-          const ml =(document.getElementById('ml_'+id)?.value||'').trim();
-          batch.set(doc(db,'catalogos',slug,'itens',id),{
-            ordem:i, nome, quantidade:isNaN(qtd)?0:qtd, precoCentavos:cents, mlUrl:ml, atualizadoEm:serverTimestamp()
-          },{merge:true});
+          const nome=($('#nome_'+id)?.value||'').trim();
+          const qtd =parseInt($('#qtd_'+id)?.value||'0',10);
+          const cents=parseBRL($('#preco_'+id)?.value||'');
+          const ml =($('#ml_'+id)?.value||'').trim();
+
+          const u1 = ($('#url1_'+id)?.value||'').trim();
+          const u2 = ($('#url2_'+id)?.value||'').trim();
+          const u3 = ($('#url3_'+id)?.value||'').trim();
+
+          const patch = {
+            ordem:i,
+            nome,
+            quantidade:isNaN(qtd)?0:qtd,
+            precoCentavos:cents,
+            mlUrl:ml,
+            atualizadoEm:serverTimestamp()
+          };
+          if(u1) patch.urlImagem = u1; else patch.urlImagem = deleteField();
+          if(u2) patch.urlImagem2 = u2; else patch.urlImagem2 = deleteField();
+          if(u3) patch.urlImagem3 = u3; else patch.urlImagem3 = deleteField();
+
+          batch.set(doc(db,'catalogos',slug,'itens',id), patch, {merge:true});
         }
         await batch.commit();
         stx.textContent='Salvo com sucesso.'; stx.className='status-ok';
@@ -407,108 +383,30 @@
 
     function bloquearUI(msg){ document.querySelector('main.container').innerHTML = `<div class="card"><div class="body status-err">${msg}</div></div>`; }
 
-    // Upload por slot fixo (não reordena)
-    async function uploadImagensDoItem(id){
-      const hint=$('#hint_'+id), barBox=$('#pg_'+id), bar=$('#bar_'+id);
-      const f1=$('#f1_'+id)?.files?.[0]||null;
-      const f2=$('#f2_'+id)?.files?.[0]||null;
-      const f3=$('#f3_'+id)?.files?.[0]||null;
-      if(!f1 && !f2 && !f3){ hint.textContent='Selecione pelo menos 1 imagem.'; return; }
-
-      const toUpload=[];
-      for(const [slot,file] of [[1,f1],[2,f2],[3,f3]]){
-        if(!file) continue;
-        const c=await compressToJPEG(file, 400*1024, 1400, 1400);
-        if(c.size>400*1024){ hint.textContent=`IMG ${slot} ainda > 400KB (${Math.round(c.size/1024)}KB).`; return; }
-        toUpload.push([slot,c]);
-      }
-
-      hint.textContent='Enviando...'; barBox.style.display='block'; bar.style.width='0%';
-      const base=`catalogos/${slug}/itens/${id}`;
-      let sent=0, total=toUpload.reduce((a,[_s,f])=>a+f.size,0);
-      const newUrls={};
-
-      for(const [slot,file] of toUpload){
-        const name=`i${String(slot).padStart(2,'0')}.jpg`;
-        const path=`${base}/${name}`;
-        const r=ref(st, path);
-        await new Promise((resolve,reject)=>{
-          const task=uploadBytesResumable(r,file,{ contentType:'image/jpeg', cacheControl:'public,max-age=31536000,immutable' });
-          task.on('state_changed', snap=>{
-            const p=Math.round(((sent+snap.bytesTransferred)/total)*100); bar.style.width=p+'%';
-          }, reject, async ()=>{
-            const url=await getDownloadURL(r);
-            await updateMetadata(r, { cacheControl: 'public, max-age=60' });
-            newUrls[slot]=url; sent+=file.size; resolve();
-          });
-        });
-      }
-
-      const itemRef = doc(db, 'catalogos', slug, 'itens', id);
-      const patch = { atualizadoEm: serverTimestamp() };
-      if(newUrls[1]) patch.urlImagem  = newUrls[1];
-      if(newUrls[2]) patch.urlImagem2 = newUrls[2];
-      if(newUrls[3]) patch.urlImagem3 = newUrls[3];
-      await setDoc(itemRef, patch, { merge:true });
-
-      for(const s of [1,2,3]){
-        if(newUrls[s]){
-          const im=document.getElementById(`p${s}_${id}`);
-          if(im){ im.src=bust(newUrls[s]); im.style.display='block'; }
-        }
-      }
-      updateRemoveButtonsForItem(id);
-
-      hint.textContent='Imagens enviadas e salvas!';
-      bar.style.width='100%'; setTimeout(()=>{ barBox.style.display='none'; },1200);
-    }
-
-    // Remover individual (não reordena)
-    async function removerImagem(slug, id, campo, imgEl) {
-      const hint = document.getElementById('hint_' + id);
-      try {
-        hint.textContent = 'Removendo imagem...';
-        if (imgEl.src && imgEl.src.startsWith("https://firebasestorage.googleapis.com/")) {
-          try {
-            const url = new URL(imgEl.src);
-            const path = decodeURIComponent(url.pathname.split("/o/")[1].split("?")[0]);
-            await deleteObject(ref(st, path));
-          } catch (e) { console.warn('Storage delete falhou, seguindo:', e?.code || e); }
-        }
-        const itemRef = doc(db, "catalogos", slug, "itens", id);
-        await updateDoc(itemRef, { [campo]: deleteField(), atualizadoEm: serverTimestamp() });
-        imgEl.src=''; imgEl.style.display='none';
-        const which = campo === 'urlImagem' ? '1' : (campo === 'urlImagem2' ? '2' : '3');
-        const fileInput = document.getElementById('f' + which + '_' + id);
-        if (fileInput) fileInput.value = '';
-        updateRemoveButtonsForItem(id);
-        hint.textContent = 'Imagem removida.'; setTimeout(()=> hint.textContent = '', 1500);
-      } catch (e) {
-        console.error("Erro ao remover imagem:", e);
-        hint.textContent = 'Falha ao remover (regras do Storage/Firestore?).';
-        hint.className = 'status-err';
-      }
-    }
-
-    // Cria/atualiza lixeiras apenas quando a imagem está visível
     function updateRemoveButtonsForItem(id){
       for (let n = 1; n <= 3; n++) {
         const imgEl = document.getElementById(`p${n}_${id}`);
         if (!imgEl) continue;
         const wrap = imgEl.parentElement;
         if (!wrap) continue;
-        // remove botão antigo
         const old = wrap.querySelector('button.remove-btn');
         if (old) old.remove();
-        // exibe botão só se a imagem estiver visível
         if (imgEl.style.display !== 'none' && imgEl.src) {
           wrap.classList.add('has-image');
           const btn = document.createElement('button');
           btn.textContent = '🗑️';
           btn.className = 'remove-btn';
-          btn.onclick = () => {
+          btn.onclick = async () => {
+            // só limpa o campo no Firestore (sem storage)
             const campo = n === 1 ? "urlImagem" : n === 2 ? "urlImagem2" : "urlImagem3";
-            removerImagem(slug, id, campo, imgEl).then(()=> btn.remove());
+            await updateDoc(doc(db,'catalogos',slug,'itens',id), {
+              [campo]: deleteField(),
+              atualizadoEm: serverTimestamp()
+            });
+            imgEl.src=''; imgEl.style.display='none';
+            const inp = document.getElementById(`url${n}_${id}`);
+            if(inp) inp.value = '';
+            updateRemoveButtonsForItem(id);
           };
           wrap.style.position = 'relative';
           wrap.appendChild(btn);
@@ -518,7 +416,6 @@
       }
     }
 
-    // Auth + carregamento
     onAuthStateChanged(auth, async user=>{
       try{
         if(!user){ window.location.replace('/index.html'); return; }
@@ -528,21 +425,21 @@
         const cfgMeta = await exigirDonoOuEditor((auth.currentUser||{}).uid, slug);
         const { ativo, limite, plano } = await resolveLimiteAssinatura(cfgMeta.ownerUid);
         if(!ativo){ bloquearUI('Assinatura inativa para este catálogo.'); return; }
-        document.getElementById('hintLimite').textContent = `Seu plano (${plano}) permite até ${limite} itens.`;
-        document.getElementById('planoInfo').textContent = `Plano atual: ${plano}`;
+        $('#hintLimite').textContent = `Seu plano (${plano}) permite até ${limite} itens.`;
+        $('#planoInfo').textContent = `Plano atual: ${plano}`;
 
         buildGrid(limite);
         const meta = await carregarMeta(slug);
         await carregarItens(slug, limite);
 
-        document.getElementById('btnSalvarTudo').onclick = ()=> salvarTudo(slug, limite);
-        document.getElementById('chkAtivo').addEventListener('change', ()=> salvarMeta(slug, cfgMeta.ownerUid));
+        $('#btnSalvarTudo').onclick = ()=> salvarTudo(slug, limite);
+        $('#chkAtivo').addEventListener('change', ()=> salvarMeta(slug, cfgMeta.ownerUid));
         setPublicLink(slug, meta);
       }catch(e){
         console.error(e);
         if(e.message==='NOT_OWNER') bloquearUI('Você não tem permissão para editar este catálogo.');
         else if(e.message==='CONFIG_NOT_FOUND') bloquearUI('Configuração não encontrada. Crie /catalogos/'+slug+'/meta/config.');
-        else bloquearUI('Erro ao carregar. Verifique as regras do Firestore/Storage.');
+        else bloquearUI('Erro ao carregar. Verifique as regras do Firestore.');
       }
     });
   </script>
