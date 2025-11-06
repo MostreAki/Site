@@ -65,9 +65,9 @@
     .drawer nav { padding: 10px 12px; display: grid; gap: 6px; }
     .drawer a {
       padding: 12px 14px; border-radius: 12px; text-decoration: none; color: var(--ink); font-weight: 800;
-      border: 1px solid rgba(92,62,66,.12); background: rgba(248,241,235,.5);
+      border: 1px solid rgba(92, 62, 66, .12); background: rgba(248, 241, 235, .5);
     }
-    .drawer a:hover { background: rgba(248,241,235,.75); }
+    .drawer a:hover { background: rgba(248, 241, 235, .75); }
 
     .backdrop {
       position: fixed; inset: 0; background: rgba(0,0,0,.28); z-index: 55; display: none;
@@ -158,6 +158,24 @@
     .short:hover img { transform: scale(1.03); }
     .play { position: absolute; inset: auto 8px 8px auto; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center;
       background: rgba(255, 255, 255, .9); border: 1px solid rgba(92, 62, 66, .15); color: var(--rose-700); box-shadow: 0 4px 10px rgba(92, 62, 66, .15); }
+
+    /* ===== Vídeos manuais da home ===== */
+    .videos-home-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(180px, 1fr));
+      gap: 10px;
+    }
+    @media (max-width: 720px) {
+      .videos-home-grid {
+        grid-template-columns: repeat(2, minmax(150px, 1fr));
+      }
+    }
+    @media (max-width: 520px) {
+      .videos-home-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
     .card { width: 100%; max-width: 560px; margin: 22px auto 0; background: rgba(255, 255, 255, .92);
       backdrop-filter: blur(6px); border-radius: var(--radius); border: 1px solid rgba(92, 62, 66, .16);
       box-shadow: var(--shadow); padding: 20px; }
@@ -269,25 +287,41 @@
       <p class="tagline" id="site-tagline">Artesanato</p>
       <p class="bio" id="site-bio">Bem-vindos ao Portal.</p>
     </section>
+
+    <!-- CATÁLOGO -->
     <section class="catalog-card" id="catalogo" aria-label="Catálogo">
       <h2 class="catalog-title">Catálogo</h2>
       <a class="catalog-link" id="catalog-link" href="/catalogo-lamaggie.html" aria-label="Abrir catálogo">
         <div class="catalog-cover">
-          <!-- 🔄 Agora dinâmico: imagem OU vídeo -->
           <div id="catalog-media" class="media"></div>
           <span class="catalog-badge">Abrir catálogo ➜</span>
         </div>
       </a>
     </section>
+
+    <!-- SEÇÃO DE SHORTS (automática) -->
     <section class="shorts-card" id="videos" aria-label="Vídeos de Artesanato">
       <div class="shorts-header">
         <h2 class="shorts-title">Vídeos de Artesanato</h2>
-        <a class="shorts-more" id="shorts-more" href="videos.html" aria-label="Ver todos os shorts">Ver todos</a>
+        <a class="shorts-more" id="shorts-more" href="videos.html" aria-label="Ver todos os vídeos">Ver todos</a>
       </div>
       <div class="shorts-grid" id="shorts-grid">
-        <!-- Shorts serão preenchidos dinamicamente -->
+        <!-- Preenchido via Firestore -->
       </div>
     </section>
+
+    <!-- SEÇÃO DE VÍDEOS MANUAIS (capas que VOCÊ escolhe) -->
+    <section class="shorts-card" id="videos-home" aria-label="Vídeos La Maggiê">
+      <div class="shorts-header">
+        <h2 class="shorts-title">Destaques em vídeo</h2>
+        <a class="shorts-more" href="/videos" aria-label="Ver todos os vídeos">Ver todos →</a>
+      </div>
+      <div id="videos-home-grid" class="videos-home-grid">
+        <!-- preenchido pelo JS HOME_VIDEOS -->
+      </div>
+    </section>
+
+    <!-- REDES -->
     <section class="card" id="redes" aria-label="Redes oficiais">
       <nav class="links">
         <a class="btn" id="btn-instagram" href="#" target="_blank" rel="noopener"><span class="icon" aria-hidden="true">
@@ -301,12 +335,15 @@
         </span><span class="text">YouTube</span><span class="go" aria-hidden="true">➜</span></a>
       </nav>
     </section>
+
+    <!-- AVALIAÇÕES -->
     <section class="reviews-card" id="avaliacoes" aria-label="Avaliações de clientes">
       <h2 class="reviews-title">Avaliações dos clientes</h2>
       <div class="reviews" id="reviews">
         <!-- Avaliações serão preenchidas dinamicamente -->
       </div>
     </section>
+
     <footer id="contato">©2025 Todos os direitos reservados | Feito com carinho pelo <a href="https://mostreaki.com" target="_blank" rel="noopener">MostreAki</a></footer>
   </main>
 
@@ -376,7 +413,7 @@
       }
     };
 
-    /* ✅ AJUSTE CRÍTICO — Slug correto no domínio */
+    /* ✅ Slug pelo domínio, com fallback pra lamaggie */
     function getSlug() {
       const m = location.pathname.match(/([^/]+)\.html$/);
       if (m) return m[1];
@@ -400,13 +437,10 @@
     );
 
     async function readDocs(slug) {
-      console.log(`Tentando ler documentos para slug: ${slug}`);
       const siteRef = doc(db, "sites", slug, "meta", "config");
       const homeRef = doc(db, "sites", slug, "pages", "home");
       const siteSnap = await getDoc(siteRef);
       const homeSnap = await getDoc(homeRef);
-      console.log(`Site exists: ${siteSnap.exists()} (ID: ${siteRef.path})`);
-      console.log(`Home exists: ${homeSnap.exists()} (ID: ${homeRef.path})`);
       return { site: siteSnap, home: homeSnap };
     }
 
@@ -419,22 +453,17 @@
         if (result.site.exists() || result.home.exists()) {
           return result;
         }
-        console.warn(`Nenhum documento encontrado para slug: ${slug}`);
         throw new Error("Documentos não encontrados");
       } catch (e) {
-        console.error("Erro na leitura:", e);
         if (e?.code === "permission-denied" && !EDIT_MODE) {
-          console.warn("Leitura pública negada, modo editor não ativo. Verifique as regras do Firestore.");
           showDiag("Erro: Leitura negada. Ajuste as regras do Firestore para leitura pública.");
           return { site: null, home: null };
         } else if (e?.code === "permission-denied" && EDIT_MODE) {
-          console.warn("Permissão negada, tentando login anônimo...");
           try {
             await signInAnonymously(auth);
             await new Promise(res => onAuthStateChanged(auth, () => res(), { once: true }));
             return await readDocs(slug);
           } catch (e2) {
-            console.error("Falha no login anônimo:", e2);
             showDiag("Erro: Falha na autenticação anônima. Verifique as configurações.");
             throw e2;
           }
@@ -446,8 +475,6 @@
     function apply(siteData, pageData) {
       const site = siteData?.exists() ? siteData.data() : {};
       const page = pageData?.exists() ? pageData.data() : {};
-      console.log("Dados do site:", site);
-      console.log("Dados da página:", page);
 
       const meta = page.meta || site.meta || {};
       if (meta.title) {
@@ -462,7 +489,6 @@
       if (img && logoUrl) {
         img.src = logoUrl;
         img.onerror = () => {
-          console.error("Erro ao carregar imagem do logo:", logoUrl);
           showDiag("Erro: Não foi possível carregar o logo. Verifique a URL.");
           img.src = PLACEHOLDER;
         };
@@ -471,7 +497,6 @@
       if (brandMini && logoUrl) {
         brandMini.src = logoUrl;
         brandMini.onerror = () => {
-          console.error("Erro ao carregar imagem do brand mini:", logoUrl);
           brandMini.src = PLACEHOLDER;
         };
       }
@@ -480,7 +505,7 @@
       if (bg.desktop) document.documentElement.style.setProperty("--bg-desktop", `url('${bg.desktop}')`);
       if (bg.mobile) document.documentElement.style.setProperty("--bg-mobile", `url('${bg.mobile}')`);
 
-      /* ✅ AJUSTE: capa do catálogo aceita MP4 raw */
+      /* capa do catálogo com imagem ou vídeo */
       const coverUrl = page.catalogCover || site.catalogCover || PLACEHOLDER;
       const mediaBox = $("#catalog-media");
       if (mediaBox && coverUrl) {
@@ -488,23 +513,18 @@
         const isMp4 = /\.mp4($|\?)/i.test(coverUrl);
         if (isMp4) {
           const v = document.createElement("video");
-          v.src = coverUrl;            // ex.: raw.githubusercontent.com/.../capa.mp4
-          v.muted = true;              // autoplay mobile exige muted
+          v.src = coverUrl;
+          v.muted = true;
           v.autoplay = true;
           v.loop = true;
-          v.playsInline = true;        // iOS não forçar fullscreen
+          v.playsInline = true;
           v.preload = "metadata";
-          v.onerror = () => {
-            console.error("Erro ao carregar vídeo da capa:", coverUrl);
-            showDiag("Erro: Não foi possível carregar o vídeo da capa do catálogo.");
-          };
           mediaBox.appendChild(v);
         } else {
           const cv = document.createElement("img");
           cv.src = coverUrl;
           cv.alt = "Imagem de capa do catálogo";
           cv.onerror = () => {
-            console.error("Erro ao carregar capa (imagem):", coverUrl);
             showDiag("Erro: Não foi possível carregar a capa do catálogo.");
             cv.src = PLACEHOLDER;
           };
@@ -515,10 +535,9 @@
       const s = page.social || site.social || {};
       if (s.instagram) { setIf($("#qi-instagram"), "href", s.instagram); setIf($("#btn-instagram"), "href", s.instagram); }
       if (s.whatsapp) { setIf($("#qi-whatsapp"), "href", s.whatsapp); setIf($("#btn-whatsapp"), "href", s.whatsapp); }
-      if (s.youtube) { setIf($("#qi-youtube"), "href", s.youtube); setIf($("#btn-youtube"), "href", s.youtube); }
+      if (s.youtube)  { setIf($("#qi-youtube"), "href", s.youtube);  setIf($("#btn-youtube"), "href", s.youtube); }
 
       const routes = page.routes || site.routes || [];
-      /* ✅ AJUSTE — link do catálogo sem .html */
       let catalogHref = `/catalogo-lamaggie`;
       const cat = routes.find(r => r.path === "/catalogo");
       if (cat) catalogHref = (cat.type === "external" && cat.url) ? cat.url : (cat.path || catalogHref);
@@ -562,21 +581,60 @@
       }
     }
 
+    // vídeos manuais da HOME: troque as thumbs e IDs abaixo
+    const HOME_VIDEOS = [
+      {
+        title: "Apresentação da La Maggiê ✨",
+        thumb: "https://via.placeholder.com/600x900/ffe6ea/5c3e42?text=Video+1",
+        youtubeId: "dQw4w9WgXcQ"
+      },
+      {
+        title: "Novidades do catálogo",
+        thumb: "https://via.placeholder.com/600x900/f8d2d8/5c3e42?text=Video+2",
+        youtubeId: "dQw4w9WgXcQ"
+      },
+      {
+        title: "Bastidores e processo criativo",
+        thumb: "https://via.placeholder.com/600x900/f3c5cc/5c3e42?text=Video+3",
+        youtubeId: "dQw4w9WgXcQ"
+      }
+    ];
+
+    function renderHomeVideos() {
+      const grid = document.getElementById("videos-home-grid");
+      if (!grid) return;
+
+      if (!HOME_VIDEOS.length) {
+        grid.innerHTML = `<p style="color:#87636A;">Em breve novos vídeos.</p>`;
+        return;
+      }
+
+      grid.innerHTML = HOME_VIDEOS.map(v => {
+        const url = `https://www.youtube.com/watch?v=${v.youtubeId}`;
+        return `
+          <article style="background:#fff;border:1px solid rgba(196,104,118,.12);border-radius:14px;overflow:hidden;box-shadow:0 6px 20px rgba(92,62,66,.05);">
+            <a href="${url}" target="_blank" rel="noopener" style="display:block;aspect-ratio:16/9;background:#FDEFF2;">
+              <img src="${v.thumb}" alt="${v.title}" style="width:100%;height:100%;object-fit:cover;display:block;">
+            </a>
+            <div style="padding:8px 10px 10px;">
+              <h3 style="margin:0 0 4px;font-size:.8rem;color:#5C3E42;">${v.title}</h3>
+              <a href="${url}" target="_blank" rel="noopener" style="font-size:.7rem;color:#C46876;font-weight:600;">Assistir no YouTube →</a>
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+
     async function isAuthorized(uid, slug) {
       const site = await getDoc(doc(db, "sites", slug));
-      if (!site.exists()) {
-        console.warn("Site não encontrado:", slug);
-        return false;
-      }
+      if (!site.exists()) return false;
       const { permissions } = site.data();
       const owner = permissions?.ownerUid;
       const editors = permissions?.editors || [];
-      console.log("Verificando autorização - UID:", uid, "Owner:", owner, "Editors:", editors);
       return (uid && (uid === owner || editors.includes(uid)));
     }
 
     async function loadEditor(slug, user) {
-      console.log("Carregando editor para slug:", slug, "User:", user.uid);
       const ok = await isAuthorized(user.uid, slug);
       if (!ok) {
         showDiag("Você entrou, mas não tem permissão para editar este site.");
@@ -588,7 +646,6 @@
       const site = await getDoc(doc(db, "sites", slug, "meta", "config"));
       const pageData = page.exists() ? page.data() : {};
       const siteData = site.exists() ? site.data() : {};
-      console.log("Dados para editor - Page:", pageData, "Site:", siteData);
 
       const meta = pageData.meta || siteData.meta || {};
       $("#f_title").value = meta.title || "";
@@ -624,7 +681,6 @@
           try {
             payload.reviews = JSON.parse(rv);
           } catch (e) {
-            console.error("Erro ao parsear reviews:", e);
             showDiag("Erro: Formato inválido para avaliações (use JSON válido).");
             return;
           }
@@ -635,7 +691,6 @@
           showDiag("Salvo com sucesso! Recarregue para ver as mudanças.");
           apply(await getDoc(doc(db, "sites", slug, "meta", "config")), await getDoc(doc(db, "sites", slug, "pages", "home")));
         } catch (e) {
-          console.error("Erro ao salvar:", e);
           showDiag("Erro ao salvar. Veja o console para detalhes.");
         }
       };
@@ -652,7 +707,6 @@
       show($("#login"), true);
 
       onAuthStateChanged(auth, async (user) => {
-        console.log("Estado de autenticação:", user ? `Logado (UID: ${user.uid})` : "Deslogado");
         if (user) {
           show($("#login"), false);
           await loadEditor(slug, user);
@@ -663,9 +717,7 @@
             const pass = $("#password").value.trim();
             try {
               await signInWithEmailAndPassword(auth, email, pass);
-              console.log("Login bem-sucedido");
             } catch (e) {
-              console.error("Erro no login:", e);
               showDiag("Falha no login. Verifique email/senha ou permissões.");
             }
           };
@@ -673,7 +725,6 @@
       });
     }
 
-    // Integração do menu hamburger
     function initMenu() {
       const btnMenu = $("#btnMenu");
       const btnClose = $("#btnClose");
@@ -705,20 +756,19 @@
       try {
         const { site, home } = await safeRead(slug);
         if (!home?.exists() && !site?.exists()) {
-          console.warn(`Nenhum documento encontrado em sites/${slug}/meta/config ou sites/${slug}/pages/home`);
           showDiag(`Documento não encontrado em sites/${slug}. Verifique o slug, a estrutura ou o projeto no Firebase.`);
           return;
         }
         apply(site, home);
+        renderHomeVideos();     // 👈 nossos vídeos manuais
         const url = new URL(location.href);
         if (url.searchParams.get("usuario")) initAuthFlow();
         initMenu();
       } catch (e) {
-        console.error("Erro geral:", e);
         showDiag(e?.code === "permission-denied"
           ? "Erro: Leitura negada. Ajuste as regras do Firestore para leitura pública ou habilite autenticação anônima."
           : `Erro ao ler Firestore: ${e?.message || e}`);
-        initMenu(); // Inicializa menu mesmo em erro
+        initMenu();
       }
     })();
   </script>
