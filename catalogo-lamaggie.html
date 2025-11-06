@@ -208,7 +208,6 @@
     }
     .cta img{width:22px;height:22px;display:block}
     .cta svg{width:22px;height:22px}
-    .cta-wa{background:var(--ok);color:#fff}
     .cta-ml{background:#FFE600;color:#002E6C}
     .cta:active{transform:translateY(1px)}
 
@@ -258,31 +257,24 @@
       projectId: "mostreaki-2025",
       messagingSenderId: "748712068097",
       appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
-      /* storageBucket removido porque você não quer usar Storage agora */
     };
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // 👇 nova função de slug, mais boazinha
     function getSlug() {
-      const path = location.pathname; // "/catalogo-lamaggie" ou "/" ou "/catalogo-lamaggie.html"
-      // 1) /catalogo-xxx ou /catalogo-xxx.html
+      const path = location.pathname;
       let m = path.match(/\/catalogo-([^\/.]+)(?:\.html)?\/?$/i);
       if (m) return m[1];
 
-      // 2) query string ?c=xxx ou ?slug=xxx
       const u = new URL(location.href);
       const qsSlug = u.searchParams.get('c') || u.searchParams.get('slug');
       if (qsSlug) return qsSlug.trim();
 
-      // 3) tentar adivinhar pelo domínio (ex: lamaggie.com.br -> "lamaggie")
-      const host = location.hostname; // "lamaggie.com.br"
+      const host = location.hostname;
       const first = host.split('.')[0];
       if (first && first !== 'www' && first !== 'mostreaki') {
         return first.toLowerCase();
       }
-
-      // se nada deu certo:
       return '';
     }
     const slug = getSlug();
@@ -311,10 +303,9 @@
     function clampPage() { page = Math.min(page, totalPages() - 1); if (page < 0) page = 0; }
 
     let MAX_FOTOS_ITEM = 3;
-    let ICON_WA = '';
     let ICON_ML = '';
 
-    /* ===== Carrossel banners (modo-aware) ===== */
+    /* ===== Carrossel ===== */
     let BANNER_SLIDES = [];
     let BANNER_IDX = 0;
     let BANNER_TIMER = null;
@@ -536,19 +527,20 @@
       }, { passive: true });
     }
 
-    /* ===== Menu Hamburguer ===== */
+    /* ===== Menu Hamburguer (links fixos) ===== */
     function setupMenu(cfg) {
       const menu = document.getElementById('menu');
       const menuBtn = document.getElementById('menuBtn');
       const menuOverlay = document.getElementById('menuOverlay');
       const menuClose = document.getElementById('menuClose');
 
+      // ALTERADO: trocado "Catálogo" por "Vídeos"
       const menuItems = [
-        { name: 'Página Inicial', href: '#', active: true },
-        { name: 'Vídeos', href: cfg.videoUrl || '#' },
-        { name: 'Redes Sociais', href: cfg.socialUrl || '#' },
-        { name: 'Parceiros', href: cfg.partnersUrl || '#' },
-        { name: 'Avaliações', href: cfg.reviewsUrl || '#' }
+        { name: 'Página Inicial', href: '/' },
+        { name: 'Sobre', href: '/sobre' },
+        { name: 'Vídeos', href: '/videos', active: true },
+        { name: 'Avaliações', href: '/avaliacoes' },
+        { name: 'Contato', href: '/contato' }
       ];
 
       menu.querySelector('ul').innerHTML = menuItems.map(item => `
@@ -623,21 +615,8 @@
           const thumbs = d.fotos.slice(0, MAX_FOTOS_ITEM)
             .map((u, i) => `<img src="${u}" alt="" data-idx="${i}">`).join('');
 
-          const waSvg = `<svg viewBox="0 0 32 32" aria-hidden="true"><path fill="#fff" d="M19.1 17.1c-.3-.2-1.7-.8-2-.9-.3-.1-.5-.2-.7.2-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.2-1.1-.4-2-1.2-.7-.6-1.2-1.4-1.3-1.6-.1-.3 0-.4.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2.1-.4 0-.6-.1-.2-.7-1.7-.9-2.3-.2-.5-.5-.4-.7-.4h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.7 0 1.6 1.1 3.1 1.2 3.3.1.2 2.2 3.4 5.4 4.7.8.4 1.4.6 1.9.8.8.3 1.6.3 2.2.2.7-.1 2-.8 2.2-1.6.3-.8.3-1.5.2-1.6 0-.1-.2-.1-.4-.2zM16 3C9.9 3 5 7.9 5 14c0 2.4.8 4.6 2.1 6.3L6 29l8-1.9c1.5.4 3.1.7 4.7.7 6.1 0 11-4.9 11-11S22.1 3 16 3z"/></svg>`;
-          const mlSvg = `<svg viewBox="0 0 64 64" aria-hidden="true"><rect x="2" y="8" width="60" height="48" rx="24" fill="#002E6C" opacity=".0"/><path fill="#002E6C" d="M18 28c2-2 5-4 8-4s6 2 8 4c2 2 5 4 8 4s6-2 8-4l2 3c-2 2-6 5-10 5s-8-3-10-5c-2-2-5-4-8-4s-6 2-8 4-8 5-12 5l2-4c3 0 8-3 10-4Z"/></svg>`;
-
-          const waIcon = ICON_WA ? `<img src="${ICON_WA}" alt="WhatsApp">` : waSvg;
+          const mlSvg = `<svg viewBox="0 0 64 64" aria-hidden="true"><path fill="#002E6C" d="M18 28c2-2 5-4 8-4s6 2 8 4c2 2 5 4 8 4s6-2 8-4l2 3c-2 2-6 5-10 5s-8-3-10-5c-2-2-5-4-8-4s-6 2-8 4-8 5-12 5l2-4c3 0 8-3 10-4Z" /></svg>`;
           const mlIcon = ICON_ML ? `<img src="${ICON_ML}" alt="Mercado Livre">` : mlSvg;
-
-          // 👇 aqui mantém o suporte a d.botaoWhats
-          const whatsappHref =
-            d.whatsapp
-              ? `https://wa.me/${String(d.whatsapp).replace(/\D/g,'')}`
-              : d.botaoWhats
-                ? (d.botaoWhats.startsWith('http') ? d.botaoWhats : `https://wa.me/${String(d.botaoWhats).replace(/\D/g,'')}`)
-                : d.zap
-                  ? d.zap
-                  : null;
 
           return `
           <article class="card">
@@ -651,12 +630,9 @@
                 <div class="qtde">Estoque: ${d.qtd}</div>
                 ${thumbs ? `<div class="thumbs" data-gal="${galAttr}">${thumbs}</div>` : ``}
                 <div class="actions">
-                  ${whatsappHref ? `<a class="cta cta-wa" href="${whatsappHref}" target="_blank" rel="noopener">Chamar no WhatsApp ${waIcon}</a>` : ``}
                   ${d.mlUrl ? `<a class="cta cta-ml" href="${d.mlUrl}" target="_blank" rel="noopener">Comprar ${mlIcon}</a>` : ``}
                 </div>
               </div>
-              ${whatsappHref ? `<button class="zap" aria-label="WhatsApp" onclick="window.open('${whatsappHref}','_blank')"></button>` : ``}
-              ${d.mlUrl ? `<button class="mlbtn" aria-label="Mercado Livre" onclick="window.open('${d.mlUrl}','_blank')"></button>` : ``}
             </div>
           </article>`;
         }).join('');
@@ -667,6 +643,14 @@
       });
       document.querySelectorAll('.btnPrev').forEach(b => b.disabled = (page <= 0));
       document.querySelectorAll('.btnNext').forEach(b => b.disabled = (page >= totalPages() - 1));
+
+      document.querySelectorAll('.imgWrap, .thumbs').forEach(el => {
+        el.addEventListener('click', e => {
+          const gal = JSON.parse(el.getAttribute('data-gal') || '[]');
+          const idx = e.target.dataset.idx ? Number(e.target.dataset.idx) : 0;
+          openLightboxGallery(gal, idx);
+        });
+      });
     }
 
     function goPrev() { if (page > 0) { page--; renderPage(); window.scrollTo({ top: 0, behavior: 'smooth' }); } }
@@ -674,7 +658,6 @@
     window.goPrev = goPrev;
     window.goNext = goNext;
 
-    /* ===== Lightbox ===== */
     const lbBg = document.getElementById('lbBg');
     const lbImg = document.getElementById('lbImg');
     const lbBtn = document.getElementById('lbClose');
@@ -788,7 +771,6 @@
       applyHeaderLogo(cfg);
       setupMenu(cfg);
 
-      ICON_WA = (cfg.iconWhatsUrl || '').trim();
       ICON_ML = (cfg.iconMLUrl || '').trim();
 
       const nome = cfg.nomeEmpresa || cfg.titulo || 'La Maggie';
@@ -872,20 +854,14 @@
           const gal = (fotosFull.length ? fotosFull : fotos);
           const thumb = gal[0] || fotos[0] || PLACEHOLDER;
 
-          const msg = `Olá! Tenho interesse no *${nomeItem}* do catálogo ${nome}.`;
-          const zap = waLink(d.whats || whats, msg);
-
           arr.push({
             nome: nomeItem,
             precoBRL,
             qtd,
             fotos: gal.length ? gal : [PLACEHOLDER],
             thumb,
-            zap,
             mlUrl: d.mlUrl || null,
             tags: (Array.isArray(d.tags) ? d.tags.join(' ') : (d.tags || d.palavrasChave || '')).toString().trim(),
-            whatsapp: d.whatsapp || null,
-            botaoWhats: d.botaoWhats || null
           });
         });
 
@@ -970,10 +946,11 @@
 
     <p class="muted">
       Toque numa imagem para ver a galeria. Use as setas do teclado, clique nas setas do popup ou faça swipe no celular.
-      Clique no botão <b>Whatsapp</b> para falar com o vendedor. Se o item tiver link no Mercado Livre, o botão <b>Comprar</b> também aparece.
+      Se o item tiver link no Mercado Livre, o botão <b>Comprar</b> aparece.
     </p>
   </main>
 
+  <!-- botão flutuante que você já usa -->
   <a id="waFloat" class="wa-float" href="#" target="_blank" rel="noopener" aria-label="WhatsApp">
     <svg viewBox="0 0 32 32" role="img" aria-hidden="true"><path d="M19.1 17.1c-.3-.2-1.7-.8-2-.9-.3-.1-.5-.2-.7.2-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.2-1.1-.4-2-1.2-.7-.6-1.2-1.4-1.3-1.6-.1-.3 0-.4.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2.1-.4 0-.6-.1-.2-.7-1.7-.9-2.3-.2-.5-.5-.4-.7-.4h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.7 0 1.6 1.1 3.1 1.2 3.3.1.2 2.2 3.4 5.4 4.7.8.4 1.4.6 1.9.8.8.3 1.6.3 2.2.2.7-.1 2-.8 2.2-1.6.3-.8.3-1.5.2-1.6 0-.1-.2-.1-.4-.2zM16 3C9.9 3 5 7.9 5 14c0 2.4.8 4.6 2.1 6.3L6 29l8-1.9c1.5.4 3.1.7 4.7.7 6.1 0 11-4.9 11-11S22.1 3 16 3z"/></svg>
   </a>
