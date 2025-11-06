@@ -256,18 +256,34 @@
       apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
       authDomain: "mostreaki-2025.firebaseapp.com",
       projectId: "mostreaki-2025",
-      storageBucket: "mostreaki-2025.firebasestorage.app",
       messagingSenderId: "748712068097",
       appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
+      /* storageBucket removido porque você não quer usar Storage agora */
     };
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
+    // 👇 nova função de slug, mais boazinha
     function getSlug() {
-      const m = location.pathname.match(/catalogo-([^/.]+)\.html$/);
+      const path = location.pathname; // "/catalogo-lamaggie" ou "/" ou "/catalogo-lamaggie.html"
+      // 1) /catalogo-xxx ou /catalogo-xxx.html
+      let m = path.match(/\/catalogo-([^\/.]+)(?:\.html)?\/?$/i);
       if (m) return m[1];
+
+      // 2) query string ?c=xxx ou ?slug=xxx
       const u = new URL(location.href);
-      return u.searchParams.get('c') || u.searchParams.get('slug') || '';
+      const qsSlug = u.searchParams.get('c') || u.searchParams.get('slug');
+      if (qsSlug) return qsSlug.trim();
+
+      // 3) tentar adivinhar pelo domínio (ex: lamaggie.com.br -> "lamaggie")
+      const host = location.hostname; // "lamaggie.com.br"
+      const first = host.split('.')[0];
+      if (first && first !== 'www' && first !== 'mostreaki') {
+        return first.toLowerCase();
+      }
+
+      // se nada deu certo:
+      return '';
     }
     const slug = getSlug();
 
@@ -613,7 +629,7 @@
           const waIcon = ICON_WA ? `<img src="${ICON_WA}" alt="WhatsApp">` : waSvg;
           const mlIcon = ICON_ML ? `<img src="${ICON_ML}" alt="Mercado Livre">` : mlSvg;
 
-          /* 👇 AQUI está o ajuste que você pediu: além de d.whatsapp e d.zap, agora checa d.botaoWhats */
+          // 👇 aqui mantém o suporte a d.botaoWhats
           const whatsappHref =
             d.whatsapp
               ? `https://wa.me/${String(d.whatsapp).replace(/\D/g,'')}`
@@ -868,7 +884,6 @@
             zap,
             mlUrl: d.mlUrl || null,
             tags: (Array.isArray(d.tags) ? d.tags.join(' ') : (d.tags || d.palavrasChave || '')).toString().trim(),
-            /* 👇 deixam passar pro renderPage: */
             whatsapp: d.whatsapp || null,
             botaoWhats: d.botaoWhats || null
           });
