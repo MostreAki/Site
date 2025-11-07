@@ -132,7 +132,6 @@
       border: 1px solid rgba(92, 62, 66, .12); box-shadow: var(--shadow); padding: 16px; }
     .catalog-title { font-family: "Fraunces", ui-serif, Georgia, serif; font-size: 20px; margin: 0 0 10px; letter-spacing: .2px; color: var(--ink); }
 
-    /* ===== Capa do Catálogo: agora imagem OU vídeo ===== */
     .catalog-cover { position: relative; border-radius: 14px; overflow: hidden; border: 1px solid rgba(92, 62, 66, .12); aspect-ratio: 16/9; background: #eee; }
     .catalog-cover .media { width: 100%; height: 100%; }
     .catalog-cover img,
@@ -159,7 +158,6 @@
     .play { position: absolute; inset: auto 8px 8px auto; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center;
       background: rgba(255, 255, 255, .9); border: 1px solid rgba(92, 62, 66, .15); color: var(--rose-700); box-shadow: 0 4px 10px rgba(92, 62, 66, .15); }
 
-    /* ===== Vídeos manuais da home ===== */
     .videos-home-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(180px, 1fr));
@@ -220,6 +218,18 @@
     .login button { margin-top: 8px; padding: 10px 12px; border-radius: 10px; border: 1px solid #ccc; background: #f9f9f9; cursor: pointer; }
     .badge { position: fixed; top: 10px; right: 10px; background: #dfe7ff; border: 1px solid #b6c7ff; color: #1f3a8a; padding: 6px 10px; border-radius: 999px; font: 12px system-ui; display: none; z-index: 9999 }
     .badge.show { display: inline-block }
+
+    /* ✅ FAB do WhatsApp */
+    .wa-float{
+      position:fixed;right:16px;bottom:16px;z-index:90;width:56px;height:56px;border-radius:999px;
+      background:#25D366;display:none;align-items:center;justify-content:center;
+      box-shadow:0 12px 32px rgba(37,211,102,.35);
+    }
+    .wa-float:active{transform:scale(.97)}
+    .wa-float img{width:100%;height:100%;object-fit:contain}
+    @media (min-width:860px){
+      .wa-float{right:22px;bottom:22px;width:64px;height:64px}
+    }
   </style>
 </head>
 <body>
@@ -257,11 +267,11 @@
       </button>
     </header>
     <nav>
-      <a href="sobre">Sobre</a>
-      <a href="catalogo-lamaggie">Catálogo</a>
-      <a href="videos">Vídeos</a>
-      <a href="avaliacoes">Avaliações</a>
-      <a href="contato">Contato</a>
+      <a href="/sobre">Sobre</a>
+      <a href="/catalogo-lamaggie">Catálogo</a>
+      <a href="/videos">Vídeos</a>
+      <a href="/avaliacoes">Avaliações</a>
+      <a href="/contato">Contato</a>
     </nav>
   </aside>
 
@@ -317,7 +327,7 @@
         <a class="shorts-more" href="/videos" aria-label="Ver todos os vídeos">Ver todos →</a>
       </div>
       <div id="videos-home-grid" class="videos-home-grid">
-        <!-- preenchido pelo JS HOME_VIDEOS -->
+        <!-- preenchido pelo JS usando Firestore -->
       </div>
     </section>
 
@@ -346,6 +356,11 @@
 
     <footer id="contato">©2025 Todos os direitos reservados | Feito com carinho pelo <a href="https://mostreaki.com" target="_blank" rel="noopener">MostreAki</a></footer>
   </main>
+
+  <!-- ✅ botão flutuante do WhatsApp (ícone vem do Firestore) -->
+  <a id="waFloat" class="wa-float" href="#" target="_blank" rel="noopener" aria-label="WhatsApp">
+    <img id="waFloatIcon" src="https://raw.githubusercontent.com/MostreAki/Site/0aba8c195a70a914ee5c53d32cbfb4ac811faf8a/assets/catalogos/lamaggi%C3%AA/zap-lamaggie.svg" alt="WhatsApp">
+  </a>
 
   <div id="diag" class="diag"></div>
   <div id="badge" class="badge">Modo editor</div>
@@ -413,7 +428,7 @@
       }
     };
 
-    /* ✅ Slug pelo domínio, com fallback pra lamaggie */
+    /* slug */
     function getSlug() {
       const m = location.pathname.match(/([^/]+)\.html$/);
       if (m) return m[1];
@@ -472,6 +487,24 @@
       }
     }
 
+    /* ✅ botão flutuante: recebe link e ícone, mostra ou esconde */
+    function setupWhatsFloat(link, iconUrl) {
+      const fab = document.getElementById("waFloat");
+      const img = document.getElementById("waFloatIcon");
+      if (!fab) return;
+
+      if (!link) {
+        fab.style.display = "none";
+        return;
+      }
+
+      fab.href = link;
+      if (iconUrl && img) {
+        img.src = iconUrl;
+      }
+      fab.style.display = "flex";
+    }
+
     function apply(siteData, pageData) {
       const site = siteData?.exists() ? siteData.data() : {};
       const page = pageData?.exists() ? pageData.data() : {};
@@ -505,7 +538,6 @@
       if (bg.desktop) document.documentElement.style.setProperty("--bg-desktop", `url('${bg.desktop}')`);
       if (bg.mobile) document.documentElement.style.setProperty("--bg-mobile", `url('${bg.mobile}')`);
 
-      /* capa do catálogo com imagem ou vídeo */
       const coverUrl = page.catalogCover || site.catalogCover || PLACEHOLDER;
       const mediaBox = $("#catalog-media");
       if (mediaBox && coverUrl) {
@@ -579,45 +611,39 @@
           }).join("");
         }
       }
+
+      /* ✅ finalmente: botão flutuante */
+      const whatsLink = s.whatsapp || "";
+      const whatsIcon = page.whatsIconUrl || site.whatsIconUrl ||
+        "https://raw.githubusercontent.com/MostreAki/Site/0aba8c195a70a914ee5c53d32cbfb4ac811faf8a/assets/catalogos/lamaggi%C3%AA/zap-lamaggie.svg";
+      setupWhatsFloat(whatsLink, whatsIcon);
     }
 
-    // vídeos manuais da HOME: troque as thumbs e IDs abaixo
-    const HOME_VIDEOS = [
+    /* fallback só pra não quebrar se não vier nada do Firestore */
+    const FALLBACK_VIDEOS = [
       {
-        title: "Apresentação da La Maggiê ✨",
-        thumb: "https://via.placeholder.com/600x900/ffe6ea/5c3e42?text=Video+1",
-        youtubeId: "dQw4w9WgXcQ"
-      },
-      {
-        title: "Novidades do catálogo",
-        thumb: "https://via.placeholder.com/600x900/f8d2d8/5c3e42?text=Video+2",
-        youtubeId: "dQw4w9WgXcQ"
-      },
-      {
-        title: "Bastidores e processo criativo",
-        thumb: "https://via.placeholder.com/600x900/f3c5cc/5c3e42?text=Video+3",
-        youtubeId: "dQw4w9WgXcQ"
+        title: "Vídeo da La Maggiê",
+        thumb: "https://via.placeholder.com/600x900/f8d2d8/5c3e42?text=Video",
+        youtubeId: "8YgnbkblJ8Q"
       }
     ];
 
-    function renderHomeVideos() {
+    function renderHomeVideos(list) {
       const grid = document.getElementById("videos-home-grid");
       if (!grid) return;
 
-      if (!HOME_VIDEOS.length) {
-        grid.innerHTML = `<p style="color:#87636A;">Em breve novos vídeos.</p>`;
-        return;
-      }
+      const vids = Array.isArray(list) && list.length ? list : FALLBACK_VIDEOS;
 
-      grid.innerHTML = HOME_VIDEOS.map(v => {
-        const url = `https://www.youtube.com/watch?v=${v.youtubeId}`;
+      grid.innerHTML = vids.map(v => {
+        const url = v.youtubeId ? `https://www.youtube.com/watch?v=${v.youtubeId}` : "#";
+        const img = v.thumb || "https://via.placeholder.com/600x900/f8d2d8/5c3e42?text=Video";
         return `
           <article style="background:#fff;border:1px solid rgba(196,104,118,.12);border-radius:14px;overflow:hidden;box-shadow:0 6px 20px rgba(92,62,66,.05);">
             <a href="${url}" target="_blank" rel="noopener" style="display:block;aspect-ratio:16/9;background:#FDEFF2;">
-              <img src="${v.thumb}" alt="${v.title}" style="width:100%;height:100%;object-fit:cover;display:block;">
+              <img src="${img}" alt="${v.title || ""}" style="width:100%;height:100%;object-fit:cover;display:block;">
             </a>
             <div style="padding:8px 10px 10px;">
-              <h3 style="margin:0 0 4px;font-size:.8rem;color:#5C3E42;">${v.title}</h3>
+              <h3 style="margin:0 0 4px;font-size:.8rem;color:#5C3E42;">${v.title || "Vídeo da La Maggiê"}</h3>
               <a href="${url}" target="_blank" rel="noopener" style="font-size:.7rem;color:#C46876;font-weight:600;">Assistir no YouTube →</a>
             </div>
           </article>
@@ -760,7 +786,15 @@
           return;
         }
         apply(site, home);
-        renderHomeVideos();     // 👈 nossos vídeos manuais
+
+        /* 🔥 pega os vídeos manuais do Firestore */
+        const videosFromHome = home?.data()?.videosHome;
+        const videosFromSite = site?.data()?.videosHome;
+        const videosToShow = Array.isArray(videosFromHome) && videosFromHome.length
+          ? videosFromHome
+          : (Array.isArray(videosFromSite) && videosFromSite.length ? videosFromSite : FALLBACK_VIDEOS);
+        renderHomeVideos(videosToShow);
+
         const url = new URL(location.href);
         if (url.searchParams.get("usuario")) initAuthFlow();
         initMenu();
