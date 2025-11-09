@@ -44,7 +44,24 @@
     }
     .menu-list a:hover{background:#b8313b}
 
-    .banner video{width:100%;height:auto}
+    /* AJUSTE DO BANNER DELICADO */
+    .banner {
+      max-width: 580px;       /* tamanho delicado no desktop */
+      margin: 20px auto;      /* centraliza e dá respiro */
+    }
+    .banner video{
+      width:100%;
+      height:auto;
+      display:block;
+      border-radius:12px;     /* opcional pra ficar fofinho */
+    }
+    @media (max-width: 767px) {
+      .banner {
+        width: 90%;           /* não ocupa 100%, mas quase */
+        max-width: 420px;     /* controla pra não ficar gigante */
+        margin: 16px auto;
+      }
+    }
 
     .section{
       background:#fff;margin:40px auto;padding:20px;width:80%;border-radius:10px;
