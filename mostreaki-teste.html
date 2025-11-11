@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MostreAki</title>
+
+  <style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap');
+
+  :root {
+    --bg: #aabcbb;
+    --bordo: #7d2f59;
+    --texto: #003735;
+    --grad1: #e1cee5;
+    --grad2: #9f9f9f;
+  }
+
+  body {
+    margin: 0;
+    background: url("fundo.svg") center/cover fixed, var(--bg);
+    font-family: 'Poppins', sans-serif;
+    color: var(--texto);
+  }
+
+  header {
+    height: 60px;
+    background: linear-gradient(90deg, rgba(170,188,187,0.6), rgba(170,188,187,0));
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.5rem;
+  }
+  header img { height: 34px; }
+
+  /* ÁREA DOS HEXÁGONOS */
+  .menu-opcoes {
+    width: min(1100px, 96vw);
+    margin: 2.3rem auto 3rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.8rem;
+  }
+
+  .hex-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .55rem;
+    width: calc(25% - 1.4rem); /* 4 por linha no desktop */
+    transition: .3s;
+  }
+
+  /* ziguizague desktop */
+  .hex-group:nth-child(2),
+  .hex-group:nth-child(4),
+  .hex-group:nth-child(6),
+  .hex-group:nth-child(8) {
+    margin-top: 2.2rem;
+  }
+
+  /* hex regular simétrico */
+  .hex {
+    width: 150px;
+    height: calc(150px * 0.866); /* proporção do hexágono perfeito */
+    border: 3px solid var(--bordo);
+    clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+    overflow: hidden;
+    transition: all .3s ease;
+    background: rgba(255,255,255,0.03);
+    backdrop-filter: blur(4px);
+  }
+
+  .hex img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: .5;
+    transition: all .3s ease;
+  }
+
+  .hex-btn {
+    background: linear-gradient(180deg, var(--grad1), var(--grad2));
+    border: 3px solid var(--bordo);
+    border-radius: 12px;
+    padding: .35rem .8rem;
+    font-weight: 700;
+    font-size: .8rem;
+    text-align: center;
+    color: var(--texto);
+    cursor: pointer;
+    opacity: .5;
+    backdrop-filter: blur(5px);
+    transition: all .3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    width: 150px;
+  }
+
+  /* hover sincronizado */
+  .hex-group:hover .hex,
+  .hex-group:hover .hex img,
+  .hex-group:hover .hex-btn {
+    opacity: 1;
+    transform: scale(1.02);
+    filter: brightness(1.04);
+    backdrop-filter: blur(9px);
+  }
+
+  /* MOBILE */
+  @media (max-width: 768px) {
+    .menu-opcoes {
+      justify-content: center;
+      gap: 1.4rem 1.4rem;
+    }
+
+    .hex-group {
+      width: calc(50% - 1rem); /* 2 por linha */
+      align-items: center;
+    }
+
+    .hex {
+      width: 130px;
+      height: calc(130px * 0.866);
+    }
+
+    .hex-btn {
+      width: 130px;
+      font-size: .77rem;
+    }
+
+    /* ziguizague mobile: só os pares descem um pouco */
+    .hex-group:nth-child(even) {
+      margin-top: 1.4rem;
+    }
+  }
+
+  </style>
+</head>
+<body>
+  <header>
+    <img src="logomarca.svg" alt="MostreAki">
+  </header>
+
+  <section class="menu-opcoes">
+    <div class="hex-group">
+      <div class="hex">
+        <img src="planos.jpg" alt="Como Funciona">
+      </div>
+      <div class="hex-btn">Como Funciona?</div>
+    </div>
+
+    <div class="hex-group">
+      <div class="hex">
+        <img src="planos.jpg" alt="Instruções">
+      </div>
+      <div class="hex-btn">Instruções</div>
+    </div>
+
+    <div class="hex-group">
+      <div class="hex">
+        <img src="planos.jpg" alt="Serviços Adicionais">
+      </div>
+      <div class="hex-btn">Serviços Adicionais</div>
+    </div>
+
+    <div class="hex-group">
+      <div class="hex">
+        <img src="planos.jpg" alt="Parceiros">
+      </div>
+      <div class="hex-btn">Parceiros</div>
+    </div>
+
+    <div class="hex-group">
+      <div class="hex">
+        <img src="planos.jpg" alt="Redes Sociais">
+      </div>
+      <div class="hex-btn">Redes Sociais</div>
+    </div>
+
+    <div class="hex-group">
+      <div class="hex">
+        <img src="planos.jpg" alt="Planos">
+      </div>
+      <div class="hex-btn">Planos</div>
+    </div>
+
+    <div class="hex-group">
+      <div class="hex">
+        <img src="planos.jpg" alt="Contato">
+      </div>
+      <div class="hex-btn">Contato</div>
+    </div>
+
+    <div class="hex-group">
+      <div class="hex">
+        <img src="planos.jpg" alt="Ajuda">
+      </div>
+      <div class="hex-btn">Ajuda</div>
+    </div>
+  </section>
+</body>
+</html>
