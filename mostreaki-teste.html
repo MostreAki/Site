@@ -33,7 +33,7 @@
   }
   header img { height: 34px; }
 
-  /* faixa principal */
+  /* CONTAINER DESKTOP */
   .menu-opcoes {
     width: min(1100px, 96vw);
     margin: 2.3rem auto 3rem;
@@ -53,7 +53,7 @@
     transition: .3s;
   }
 
-  /* ziguezague desktop */
+  /* ziguezague horizontal desktop */
   .hex-group:nth-child(2),
   .hex-group:nth-child(4) {
     transform: translateY(-40px);
@@ -61,7 +61,7 @@
 
   .hex {
     width: 150px;
-    height: calc(150px * 0.866);
+    height: calc(150px * 0.866); /* hex perfeito */
     border: 3px solid var(--bordo);
     clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
     overflow: hidden;
@@ -104,6 +104,7 @@
   .hex-group:nth-child(4) .hex-btn { top: -12px; }
   .hex-group:nth-child(5) .hex-btn { bottom: -12px; }
 
+  /* hover conjunto */
   .hex-group:hover .hex,
   .hex-group:hover .hex img,
   .hex-group:hover .hex-btn {
@@ -115,16 +116,18 @@
     transform: scale(1.03);
   }
 
-  /* --- MOBILE --- */
+  /* ========= MOBILE ========= */
   @media (max-width: 768px) {
+    /* vira GRID de 2 colunas */
     .menu-opcoes {
-      flex-direction: column;
-      align-items: center;
-      gap: 2rem;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(140px, 1fr));
+      gap: 1.6rem 1rem; /* vertical maior, horizontal menor */
+      justify-items: center;
     }
 
     .hex-group {
-      width: 160px;
+      width: 150px;
       height: 210px;
     }
 
@@ -134,17 +137,24 @@
     }
 
     .hex-btn {
-      min-width: 120px;
+      position: static;         /* botão volta a ficar logo abaixo */
+      transform: none;
+      margin-top: .5rem;
+      min-width: 100%;
       font-size: .7rem;
-      padding: .25rem .6rem;
+      text-align: center;
     }
 
-    /* ziguezague vertical */
-    .hex-group:nth-child(1) { transform: translateX(-25px); }
-    .hex-group:nth-child(2) { transform: translateX(25px); }
-    .hex-group:nth-child(3) { transform: translateX(-25px); }
-    .hex-group:nth-child(4) { transform: translateX(25px); }
-    .hex-group:nth-child(5) { transform: translateX(-25px); }
+    /* ziguezague vertical: pares descem um pouco */
+    .hex-group:nth-child(2),
+    .hex-group:nth-child(4) {
+      transform: translateY(18px);
+    }
+    .hex-group:nth-child(1),
+    .hex-group:nth-child(3),
+    .hex-group:nth-child(5) {
+      transform: translateY(0);
+    }
   }
   </style>
 </head>
