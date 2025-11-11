@@ -33,36 +33,35 @@
   }
   header img { height: 34px; }
 
-  /* faixa dos hexágonos */
+  /* faixa principal */
   .menu-opcoes {
     width: min(1100px, 96vw);
     margin: 2.3rem auto 3rem;
     display: flex;
     justify-content: space-between;
     gap: 1.4rem;
+    flex-wrap: nowrap;
   }
 
-  /* cada bloco */
   .hex-group {
     position: relative;
     width: 180px;
-    height: 240px; /* sobra pra botao acima/abaixo */
+    height: 240px;
     display: flex;
     justify-content: center;
     align-items: center;
     transition: .3s;
   }
 
-  /* zigue-zague no desktop */
+  /* ziguezague desktop */
   .hex-group:nth-child(2),
   .hex-group:nth-child(4) {
     transform: translateY(-40px);
   }
 
-  /* HEX simétrico */
   .hex {
     width: 150px;
-    height: calc(150px * 0.866); /* proporção do hex regular */
+    height: calc(150px * 0.866);
     border: 3px solid var(--bordo);
     clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
     overflow: hidden;
@@ -79,7 +78,6 @@
     transition: .3s;
   }
 
-  /* botão */
   .hex-btn {
     position: absolute;
     left: 50%;
@@ -100,14 +98,12 @@
     min-width: 150px;
   }
 
-  /* alternância EXATA */
   .hex-group:nth-child(1) .hex-btn { bottom: -12px; }
   .hex-group:nth-child(2) .hex-btn { top: -12px; }
   .hex-group:nth-child(3) .hex-btn { bottom: -12px; }
   .hex-group:nth-child(4) .hex-btn { top: -12px; }
   .hex-group:nth-child(5) .hex-btn { bottom: -12px; }
 
-  /* hover sincronizado */
   .hex-group:hover .hex,
   .hex-group:hover .hex img,
   .hex-group:hover .hex-btn {
@@ -119,27 +115,36 @@
     transform: scale(1.03);
   }
 
-  /* MOBILE */
+  /* --- MOBILE --- */
   @media (max-width: 768px) {
     .menu-opcoes {
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 1.8rem;
+      flex-direction: column;
+      align-items: center;
+      gap: 2rem;
     }
+
     .hex-group {
-      width: 48%;
-      height: auto;
-      transform: none !important; /* tira zigue-zague no mobile */
+      width: 160px;
+      height: 210px;
     }
+
+    .hex {
+      width: 130px;
+      height: calc(130px * 0.866);
+    }
+
     .hex-btn {
-      position: static;
-      transform: none;
-      margin-top: .6rem;
-      opacity: .5;
+      min-width: 120px;
+      font-size: .7rem;
+      padding: .25rem .6rem;
     }
-    .hex-group:hover .hex-btn {
-      opacity: 1;
-    }
+
+    /* ziguezague vertical */
+    .hex-group:nth-child(1) { transform: translateX(-25px); }
+    .hex-group:nth-child(2) { transform: translateX(25px); }
+    .hex-group:nth-child(3) { transform: translateX(-25px); }
+    .hex-group:nth-child(4) { transform: translateX(25px); }
+    .hex-group:nth-child(5) { transform: translateX(-25px); }
   }
   </style>
 </head>
