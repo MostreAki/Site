@@ -5,14 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MostreAki</title>
 
-  <!-- fonte do botão -->
   <style>
   @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap');
 
   :root {
     --bg: #aabcbb;
-    --dark: #0f3a3a;
-    --pink: #c01273;
+    --bordo: #7d2f59;
+    --texto: #003735;
+    --grad1: #e1cee5;
+    --grad2: #9f9f9f;
   }
 
   * { box-sizing: border-box; }
@@ -35,8 +36,8 @@
     justify-content: space-between;
     padding: 0 1.5rem;
   }
-  .logo img { height: 34px; display: block; }
-  .menu-icon { font-size: 1.5rem; color: #0f3a3a; cursor: pointer; }
+  header img { height: 34px; display: block; }
+  .menu-icon { font-size: 1.5rem; color: #073c3c; cursor: pointer; }
 
   /* HERO */
   .hero {
@@ -69,7 +70,7 @@
   }
   .hero-btn:hover { filter: brightness(1.03); }
 
-  /* CARROSSEL DE VÍDEOS */
+  /* CARROSSEL */
   .banner-wrapper {
     width: min(1100px, 94vw);
     margin: 1.3rem auto 0;
@@ -88,7 +89,6 @@
   .banner-slide {
     min-width: 100%;
     background: #000;
-    display: flex;
   }
   .banner-slide video {
     width: 100%;
@@ -117,7 +117,7 @@
     border-color: #c01273;
   }
 
-  /* ====== SEÇÃO DOS HEXÁGONOS ====== */
+  /* ====== MENU HEXAGONAL ====== */
   .menu-opcoes {
     width: min(1180px, 96vw);
     margin: 2rem auto 2.7rem;
@@ -127,50 +127,66 @@
     flex-wrap: wrap;
   }
 
-  /* seu hex novo */
+  .hex-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .45rem;
+    /* estado padrão: tudo 50% */
+    opacity: 1;
+  }
+
+  /* o hex em si */
   .hex {
     width: 150px;
     aspect-ratio: 1;
-    background: rgba(255,255,255,0.25);
-    border: 3px solid #7d2f59;
+    background: rgba(255,255,255,0.5);
+    border: 3px solid var(--bordo);
     border-radius: 20px;
     clip-path: polygon(25% 2%, 75% 2%, 100% 50%, 75% 98%, 25% 98%, 0 50%);
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    transition: .2s;
-    backdrop-filter: blur(2px);
+    backdrop-filter: blur(4px);
+    transition: all .3s ease;
   }
+
   .hex img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    opacity: .7;
-    transition: .3s ease;
+    opacity: .5;
+    transition: all .3s ease;
   }
-  .hex:hover img { opacity: 1; transform: scale(1.02); }
 
-  /* botão de baixo do hex */
+  /* botão do hex */
   .hex-btn {
-    margin-top: .4rem;
-    background: linear-gradient(180deg, #e1cee5, #9f9f9f);
-    border: 3px solid #7d2f59;
+    background: linear-gradient(180deg, var(--grad1), var(--grad2));
+    border: 3px solid var(--bordo);
     border-radius: 12px;
-    padding: .35rem .9rem;
+    padding: .4rem 1rem;
     font-family: 'Poppins', sans-serif;
     font-weight: 700;
-    color: #003735;
+    color: var(--texto);
     text-align: center;
     font-size: .8rem;
-    transition: .25s;
-    backdrop-filter: blur(3px);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
     cursor: pointer;
+    opacity: .5;
+    backdrop-filter: blur(5px);
+    transition: all .3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    min-width: 145px;
   }
-  .hex-btn:hover {
-    transform: scale(1.05);
-    filter: brightness(1.08);
+
+  /* quando passar em QUALQUER ponto do grupo, os dois acendem */
+  .hex-group:hover .hex,
+  .hex-group:hover .hex img,
+  .hex-group:hover .hex-btn {
+    opacity: 1;
+    backdrop-filter: blur(10px);
+    transform: scale(1.02);
+    filter: brightness(1.03);
   }
 
   footer {
@@ -197,9 +213,7 @@
 
   <!-- HEADER -->
   <header>
-    <div class="logo">
-      <img src="logomarca.svg" alt="MostreAki">
-    </div>
+    <img src="logomarca.svg" alt="MostreAki">
     <div class="menu-icon">≡</div>
   </header>
 
@@ -251,35 +265,35 @@
   <!-- MENU HEXAGONAL -->
   <section class="menu-opcoes">
 
-    <div style="display:flex;flex-direction:column;align-items:center;">
+    <div class="hex-group">
       <div class="hex">
         <img src="planos.jpg" alt="Como Funciona">
       </div>
       <div class="hex-btn">Como Funciona?</div>
     </div>
 
-    <div style="display:flex;flex-direction:column;align-items:center;">
+    <div class="hex-group">
       <div class="hex">
         <img src="planos.jpg" alt="Instruções">
       </div>
       <div class="hex-btn">Instruções</div>
     </div>
 
-    <div style="display:flex;flex-direction:column;align-items:center;">
+    <div class="hex-group">
       <div class="hex">
         <img src="planos.jpg" alt="Serviços Adicionais">
       </div>
       <div class="hex-btn">Serviços Adicionais</div>
     </div>
 
-    <div style="display:flex;flex-direction:column;align-items:center;">
+    <div class="hex-group">
       <div class="hex">
         <img src="planos.jpg" alt="Parceiros">
       </div>
       <div class="hex-btn">Parceiros</div>
     </div>
 
-    <div style="display:flex;flex-direction:column;align-items:center;">
+    <div class="hex-group">
       <div class="hex">
         <img src="planos.jpg" alt="Redes Sociais">
       </div>
@@ -299,7 +313,7 @@
     const slider = document.getElementById("bannerSlider");
 
     let current = 0;
-    const total = 3; // só 3 posições lógicas
+    const total = 3;
     let startX = 0;
     let dragging = false;
 
@@ -312,40 +326,36 @@
     }
 
     dots.forEach(d => {
-      d.addEventListener("click", () => {
-        const idx = Number(d.dataset.index);
-        setSlide(idx);
-      });
+      d.addEventListener("click", () => setSlide(Number(d.dataset.index)));
     });
 
     // touch
-    slider.addEventListener("touchstart", (e) => {
+    slider.addEventListener("touchstart", e => {
       dragging = true;
       startX = e.touches[0].clientX;
     });
-    slider.addEventListener("touchend", (e) => {
-      if(!dragging) return;
+    slider.addEventListener("touchend", e => {
+      if (!dragging) return;
       dragging = false;
-      const endX = e.changedTouches[0].clientX;
-      const diff = endX - startX;
+      const diff = e.changedTouches[0].clientX - startX;
       const threshold = 40;
-      if(diff > threshold && current > 0) setSlide(current - 1);
-      else if(diff < -threshold && current < total - 1) setSlide(current + 1);
+      if (diff > threshold && current > 0) setSlide(current - 1);
+      else if (diff < -threshold && current < total - 1) setSlide(current + 1);
       else setSlide(current);
     });
 
     // mouse
-    slider.addEventListener("mousedown", (e) => {
+    slider.addEventListener("mousedown", e => {
       dragging = true;
       startX = e.clientX;
     });
-    slider.addEventListener("mouseup", (e) => {
-      if(!dragging) return;
+    slider.addEventListener("mouseup", e => {
+      if (!dragging) return;
       dragging = false;
       const diff = e.clientX - startX;
       const threshold = 40;
-      if(diff > threshold && current > 0) setSlide(current - 1);
-      else if(diff < -threshold && current < total - 1) setSlide(current + 1);
+      if (diff > threshold && current > 0) setSlide(current - 1);
+      else if (diff < -threshold && current < total - 1) setSlide(current + 1);
       else setSlide(current);
     });
     slider.addEventListener("mouseleave", () => dragging = false);
