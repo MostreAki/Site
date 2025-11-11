@@ -62,19 +62,20 @@
       background: #003735;
     }
 
+    /* CONTAINER PRINCIPAL */
     main {
       flex: 1;
     }
 
-    /* BANNER DE IMAGEM */
+    /* ÁREA DO BANNER DE IMAGEM */
     .hero {
       width: min(1000px, 94vw);
       margin: 1.4rem auto 0;
       border-radius: 16px;
       overflow: hidden;
     }
-    .hero img,
-    .hero video {
+    .hero video,
+    .hero img {
       width: 100%;
       display: block;
     }
@@ -179,29 +180,29 @@
       display: flex;
       flex-direction: column;
       gap: .55rem;
-      padding: 1rem .6rem 1.5rem;
+      padding: 1rem;
       box-sizing: border-box;
-      align-items: center; /* centralizar botões */
     }
 
     .menu-overlay.show {
       transform: translateX(0);
     }
 
-    /* botões ENXUTOS do menu */
+    /* botão do menu - agora mais estreito, mas ainda confortável */
     .menu-link {
-      width: 220px;                 /* largura enxuta pra caber "Serviços Adicionais" */
+      width: 210px;                   /* <- largura pensada no "Serviços Adicionais" */
+      max-width: 92vw;
       background: linear-gradient(180deg, #d9d9d9, #af91a1);
       border: 3px solid #7d2f59;
       border-radius: 12px;
       color: #003735;
       text-decoration: none;
       font-weight: 700;
-      padding: .42rem .4rem;
+      padding: .4rem .4rem;           /* altura boa, sem ficar um tijolo */
       text-align: center;
-      display: block;
       transition: .2s;
-      font-size: .77rem;
+      align-self: center;
+      white-space: nowrap;            /* não quebra o texto */
     }
     .menu-link:hover {
       filter: brightness(1.04);
@@ -264,12 +265,11 @@
       .menu-overlay {
         width: 100%;
         max-width: 100%;
-        right: 0;
-        left: 0;
       }
 
       .menu-link {
-        width: 230px;   /* um tiquinho maior pra mobile */
+        width: 210px;     /* mantém o mesmo look no mobile */
+        max-width: 100%;
       }
 
       header {
@@ -290,7 +290,7 @@
 
   <!-- overlay do menu -->
   <nav class="menu-overlay" id="menu-overlay">
-    <!-- página inicial não aparece pq estamos nela -->
+    <!-- página inicial não aparece porque estamos nela -->
     <a href="/sobre.html" class="menu-link">Sobre</a>
     <a href="/minha-conta.html" class="menu-link">Minha Conta</a>
     <a href="/planos.html" class="menu-link">Planos</a>
@@ -301,12 +301,10 @@
   </nav>
 
   <main>
-    <!-- banner -->
     <div class="hero">
       <img src="banner-desktop-index.jpg" alt="Banner MostreAki">
     </div>
 
-    <!-- hexágonos -->
     <section class="menu-opcoes">
       <div class="hex-group">
         <div class="hex"><img src="planos.jpg" alt="Como Funciona"></div>
