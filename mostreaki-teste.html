@@ -6,193 +6,346 @@
   <title>MostreAki</title>
 
   <style>
-  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap');
 
-  :root {
-    --bg: #aabcbb;
-    --bordo: #7d2f59;
-    --texto: #003735;
-    --grad1: #e1cee5;
-    --grad2: #9f9f9f;
-  }
+    :root {
+      --bg: #aabcbb;
+      --header-footer: #cde0e0;
+      --bordo: #7d2f59;
+      --texto: #003735;
+      --grad1: #e1cee5;
+      --grad2: #9f9f9f;
+    }
 
-  body {
-    margin: 0;
-    background: url("fundo.svg") center/cover fixed, var(--bg);
-    font-family: 'Poppins', sans-serif;
-    color: var(--texto);
-  }
-
-  header {
-    height: 60px;
-    background: linear-gradient(90deg, rgba(170,188,187,0.6), rgba(170,188,187,0));
-    display: flex;
-    align-items: center;
-    padding: 0 1.5rem;
-  }
-
-  header img {
-    height: 34px;
-  }
-
-  /* ====== DESKTOP ====== */
-  .menu-opcoes {
-    width: min(1100px, 96vw);
-    margin: 2.3rem auto 3rem;
-    display: flex;
-    justify-content: space-between;
-    gap: 1.4rem;
-  }
-
-  .hex-group {
-    position: relative;
-    width: 180px;
-    height: 240px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: .3s;
-  }
-
-  /* ziguezague desktop */
-  .hex-group:nth-child(2),
-  .hex-group:nth-child(4) {
-    transform: translateY(-40px);
-  }
-
-  /* hexágono */
-  .hex {
-    width: 150px;
-    height: 130px;
-    border: 3px solid var(--bordo);
-    clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
-    overflow: hidden;
-    background: rgba(255,255,255,0.03);
-    backdrop-filter: blur(4px);
-    transition: .3s;
-  }
-
-  .hex img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    opacity: .5;
-    transition: .3s;
-  }
-
-  /* botão */
-  .hex-btn {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    background: linear-gradient(180deg, var(--grad1), var(--grad2));
-    border: 3px solid var(--bordo);
-    border-radius: 12px;
-    padding: .35rem .8rem;
-    font-weight: 700;
-    font-size: .78rem;
-    text-align: center;
-    color: var(--texto);
-    cursor: pointer;
-    opacity: .5;
-    backdrop-filter: blur(5px);
-    transition: .3s;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
-    min-width: 150px;
-  }
-
-  /* alternância de posição dos botões */
-  .hex-group:nth-child(1) .hex-btn { bottom: -12px; }
-  .hex-group:nth-child(2) .hex-btn { top: -12px; }
-  .hex-group:nth-child(3) .hex-btn { bottom: -12px; }
-  .hex-group:nth-child(4) .hex-btn { top: -12px; }
-  .hex-group:nth-child(5) .hex-btn { bottom: -12px; }
-
-  /* hover conjunto */
-  .hex-group:hover .hex,
-  .hex-group:hover .hex img,
-  .hex-group:hover .hex-btn {
-    opacity: 1;
-    filter: brightness(1.04);
-    backdrop-filter: blur(9px);
-  }
-
-  .hex-group:hover .hex {
-    transform: scale(1.03);
-  }
-
-  /* ====== MOBILE ====== */
-  @media (max-width: 768px) {
-    .menu-opcoes {
+    body {
+      margin: 0;
+      background: url("fundo.svg") center/cover fixed, var(--bg);
+      font-family: 'Poppins', sans-serif;
+      color: var(--texto);
+      min-height: 100vh;
       display: flex;
-      flex-wrap: wrap;
-      gap: 1.1rem;
-      justify-content: center;
+      flex-direction: column;
+    }
+
+    /* CABEÇALHO */
+    header {
+      height: 60px;
+      background: var(--header-footer);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.5rem;
+      box-sizing: border-box;
+    }
+
+    header img {
+      height: 36px;
+      display: block;
+    }
+
+    /* HAMBURGUER */
+    .hamburger {
+      width: 42px;
+      height: 32px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 4px 0;
+    }
+    .hamburger span {
+      display: block;
+      height: 4px;
+      border-radius: 20px;
+      background: #003735;
+    }
+
+    /* CONTAINER PRINCIPAL */
+    main {
+      flex: 1;
+    }
+
+    /* ÁREA DO BANNER DE IMAGEM (seu vídeo/mp4 vai aqui) */
+    .hero {
+      width: min(1000px, 94vw);
+      margin: 1.4rem auto 0;
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    .hero video,
+    .hero img {
+      width: 100%;
+      display: block;
+    }
+
+    /* ====== DESKTOP HEXAGONOS ====== */
+    .menu-opcoes {
+      width: min(1100px, 96vw);
+      margin: 2.8rem auto 3rem;
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
     }
 
     .hex-group {
-      width: 47%;
-      height: auto;
-      transform: none !important;
+      position: relative;
+      width: 180px;
+      height: 240px;
       display: flex;
-      flex-direction: column;
+      justify-content: center;
       align-items: center;
-      gap: .3rem;
+      transition: .3s;
+    }
+
+    /* ziguezague desktop */
+    .hex-group:nth-child(2),
+    .hex-group:nth-child(4) {
+      transform: translateY(-40px);
     }
 
     .hex {
-      width: 125px;
-      height: 108px;
+      width: 150px;
+      height: 130px;
+      border: 3px solid var(--bordo);
+      clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+      overflow: hidden;
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(4px);
+      transition: .3s;
+    }
+
+    .hex img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: .5;
+      transition: .3s;
     }
 
     .hex-btn {
-      position: static;
-      transform: none;
-      width: 85%;           /* botão mais estreito */
-      font-size: .62rem;
-      padding: .25rem .6rem;
-      border-width: 2px;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(180deg, #d9d9d9, #af91a1);
+      border: 3px solid var(--bordo);
+      border-radius: 12px;
+      padding: .35rem .8rem;
+      font-weight: 700;
+      font-size: .78rem;
+      text-align: center;
+      color: var(--texto);
+      cursor: pointer;
       opacity: .5;
-      border-radius: 10px;
+      backdrop-filter: blur(5px);
+      transition: .3s;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+      min-width: 150px;
     }
 
-    .hex-group:nth-child(2),
-    .hex-group:nth-child(4) {
-      margin-top: 1.4rem;
+    /* alternância de posição dos botões */
+    .hex-group:nth-child(1) .hex-btn { bottom: -12px; }
+    .hex-group:nth-child(2) .hex-btn { top: -12px; }
+    .hex-group:nth-child(3) .hex-btn { bottom: -12px; }
+    .hex-group:nth-child(4) .hex-btn { top: -12px; }
+    .hex-group:nth-child(5) .hex-btn { bottom: -12px; }
+
+    /* hover conjunto */
+    .hex-group:hover .hex,
+    .hex-group:hover .hex img,
+    .hex-group:hover .hex-btn {
+      opacity: 1;
+      filter: brightness(1.04);
+      backdrop-filter: blur(9px);
     }
-  }
+
+    .hex-group:hover .hex {
+      transform: scale(1.03);
+    }
+
+    /* ====== MENU OVERLAY ====== */
+    .menu-overlay {
+      position: fixed;
+      top: 60px; /* abaixo do header */
+      right: 0;
+      width: 280px;
+      max-width: 90vw;
+      background: #92a9a6;
+      box-shadow: -4px 0 12px rgba(0,0,0,.09);
+      height: calc(100vh - 60px);
+      transform: translateX(100%);
+      transition: transform .25s ease;
+      z-index: 999;
+      display: flex;
+      flex-direction: column;
+      gap: .6rem;
+      padding: 1rem;
+      box-sizing: border-box;
+    }
+
+    .menu-overlay.show {
+      transform: translateX(0);
+    }
+
+    .menu-link {
+      background: linear-gradient(180deg, #d9d9d9, #af91a1);
+      border: 3px solid #7d2f59;
+      border-radius: 12px;
+      color: #003735;
+      text-decoration: none;
+      font-weight: 700;
+      padding: .45rem .7rem;
+      text-align: center;
+      display: block;
+      transition: .2s;
+    }
+    .menu-link:hover {
+      filter: brightness(1.04);
+    }
+
+    /* RODAPÉ */
+    footer {
+      background: var(--header-footer);
+      text-align: center;
+      padding: 1rem 0 1.4rem;
+      font-size: .85rem;
+    }
+
+    /* ====== MOBILE ====== */
+    @media (max-width: 768px) {
+      .hero {
+        width: 100%;
+        border-radius: 0;
+      }
+
+      .menu-opcoes {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.1rem;
+        justify-content: center;
+        margin-top: 2.3rem;
+      }
+
+      .hex-group {
+        width: 47%;
+        height: auto;
+        transform: none !important;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: .3rem;
+      }
+
+      .hex {
+        width: 125px;
+        height: 108px;
+      }
+
+      .hex-btn {
+        position: static;
+        transform: none;
+        width: 75%;
+        font-size: .62rem;
+        padding: .25rem .6rem;
+        border-width: 2px;
+        opacity: .5;
+        border-radius: 10px;
+      }
+
+      .hex-group:nth-child(2),
+      .hex-group:nth-child(4) {
+        margin-top: 1.4rem;
+      }
+
+      .menu-overlay {
+        width: 100%;
+        max-width: 100%;
+      }
+
+      header {
+        padding: 0 .9rem;
+      }
+    }
   </style>
 </head>
 <body>
   <header>
-    <img src="logomarca.svg" alt="MostreAki">
+    <!-- logo vem da pasta assets -->
+    <img src="assets/logomarca.svg" alt="MostreAki">
+    <button class="hamburger" id="btn-menu" aria-label="Abrir menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
   </header>
 
-  <section class="menu-opcoes">
-    <div class="hex-group">
-      <div class="hex"><img src="planos.jpg" alt="Como Funciona"></div>
-      <div class="hex-btn">Como Funciona?</div>
+  <!-- overlay do menu -->
+  <nav class="menu-overlay" id="menu-overlay">
+    <!-- página inicial NÃO aparece pq estamos nela -->
+    <a href="/sobre.html" class="menu-link">Sobre</a>
+    <a href="/minha-conta.html" class="menu-link">Minha Conta</a>
+    <a href="/planos.html" class="menu-link">Planos</a>
+    <a href="/parceiros.html" class="menu-link">Parceiros</a>
+    <a href="/servicos-adicionais.html" class="menu-link">Serviços Adicionais</a>
+    <a href="/redes-sociais.html" class="menu-link">Redes Sociais</a>
+    <a href="/contato.html" class="menu-link">Contato</a>
+  </nav>
+
+  <main>
+    <!-- seu banner de imagem / vídeo -->
+    <div class="hero">
+      <!-- você troca esse img por <video ...> se quiser -->
+      <img src="banner-desktop-index.jpg" alt="Banner MostreAki">
     </div>
 
-    <div class="hex-group">
-      <div class="hex"><img src="planos.jpg" alt="Instruções"></div>
-      <div class="hex-btn">Instruções</div>
-    </div>
+    <!-- hexágonos -->
+    <section class="menu-opcoes">
+      <div class="hex-group">
+        <div class="hex"><img src="planos.jpg" alt="Como Funciona"></div>
+        <div class="hex-btn">Como Funciona?</div>
+      </div>
 
-    <div class="hex-group">
-      <div class="hex"><img src="planos.jpg" alt="Serviços Adicionais"></div>
-      <div class="hex-btn">Serviços Adicionais</div>
-    </div>
+      <div class="hex-group">
+        <div class="hex"><img src="planos.jpg" alt="Instruções"></div>
+        <div class="hex-btn">Instruções</div>
+      </div>
 
-    <div class="hex-group">
-      <div class="hex"><img src="planos.jpg" alt="Parceiros"></div>
-      <div class="hex-btn">Parceiros</div>
-    </div>
+      <div class="hex-group">
+        <div class="hex"><img src="planos.jpg" alt="Serviços Adicionais"></div>
+        <div class="hex-btn">Serviços Adicionais</div>
+      </div>
 
-    <div class="hex-group">
-      <div class="hex"><img src="planos.jpg" alt="Redes Sociais"></div>
-      <div class="hex-btn">Redes Sociais</div>
-    </div>
-  </section>
+      <div class="hex-group">
+        <div class="hex"><img src="planos.jpg" alt="Parceiros"></div>
+        <div class="hex-btn">Parceiros</div>
+      </div>
+
+      <div class="hex-group">
+        <div class="hex"><img src="planos.jpg" alt="Redes Sociais"></div>
+        <div class="hex-btn">Redes Sociais</div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    © 2025 MostreAki - Todos os direitos reservados.
+  </footer>
+
+  <script>
+    const btnMenu = document.getElementById('btn-menu');
+    const overlay = document.getElementById('menu-overlay');
+
+    btnMenu.addEventListener('click', () => {
+      overlay.classList.toggle('show');
+    });
+
+    // fecha ao clicar em um link
+    overlay.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        overlay.classList.remove('show');
+      });
+    });
+  </script>
 </body>
 </html>
