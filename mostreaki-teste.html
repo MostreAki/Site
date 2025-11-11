@@ -152,7 +152,7 @@
     .hex-group:nth-child(4) .hex-btn { top: -12px; }
     .hex-group:nth-child(5) .hex-btn { bottom: -12px; }
 
-    /* hover conjunto */
+    /* hover conjunto (DESKTOP) */
     .hex-group:hover .hex,
     .hex-group:hover .hex img,
     .hex-group:hover .hex-btn {
@@ -244,11 +244,19 @@
         flex-direction: column;
         align-items: center;
         gap: .3rem;
+        /* touch feedback */
       }
 
+      /* mobile: hex mais sólido e imagem 100% */
       .hex {
         width: 125px;
         height: 108px;
+        background: rgba(255,255,255,0.9); /* ~90% */
+        backdrop-filter: blur(2px);
+      }
+
+      .hex img {
+        opacity: 1; /* mostra tudo no mobile */
       }
 
       .hex-btn {
@@ -258,7 +266,7 @@
         font-size: .62rem;
         padding: .25rem .6rem;
         border-width: 2px;
-        opacity: .5;
+        opacity: 1;           /* botão 100% no mobile */
         border-radius: 10px;
       }
 
@@ -267,7 +275,13 @@
         margin-top: 1.4rem;
       }
 
-      /* mobile AGORA também painel lateral, não tela inteira */
+      /* glow ao tocar no mobile */
+      .hex-group:active .hex,
+      .hex-group:active .hex-btn {
+        box-shadow: 0 0 12px 2px rgba(125, 47, 89, 0.75);
+      }
+
+      /* menu lateral também lateral no mobile */
       .menu-overlay {
         width: 280px;
         max-width: 85vw;
