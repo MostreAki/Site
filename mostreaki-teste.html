@@ -33,42 +33,34 @@
   }
   header img { height: 34px; }
 
-  /* ÁREA DOS HEXÁGONOS */
+  /* área dos itens */
   .menu-opcoes {
     width: min(1100px, 96vw);
     margin: 2.3rem auto 3rem;
     display: flex;
-    flex-wrap: wrap;
-    gap: 1.8rem;
+    justify-content: space-between;
+    gap: 1.4rem;
   }
 
   .hex-group {
+    position: relative;
+    width: 180px;      /* largura do bloco todo */
+    height: 240px;     /* altura total pra caber botão em cima/baixo */
     display: flex;
-    flex-direction: column;
+    justify-content: center;
     align-items: center;
-    gap: .55rem;
-    width: calc(25% - 1.4rem); /* 4 por linha no desktop */
-    transition: .3s;
   }
 
-  /* ziguizague desktop */
-  .hex-group:nth-child(2),
-  .hex-group:nth-child(4),
-  .hex-group:nth-child(6),
-  .hex-group:nth-child(8) {
-    margin-top: 2.2rem;
-  }
-
-  /* hex regular simétrico */
+  /* hexágono simétrico */
   .hex {
     width: 150px;
-    height: calc(150px * 0.866); /* proporção do hexágono perfeito */
+    height: calc(150px * 0.866);
     border: 3px solid var(--bordo);
     clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
     overflow: hidden;
-    transition: all .3s ease;
     background: rgba(255,255,255,0.03);
     backdrop-filter: blur(4px);
+    transition: .3s;
   }
 
   .hex img {
@@ -76,64 +68,72 @@
     height: 100%;
     object-fit: cover;
     opacity: .5;
-    transition: all .3s ease;
+    transition: .3s;
   }
 
+  /* botão que pertence ao hex */
   .hex-btn {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
     background: linear-gradient(180deg, var(--grad1), var(--grad2));
     border: 3px solid var(--bordo);
     border-radius: 12px;
     padding: .35rem .8rem;
     font-weight: 700;
-    font-size: .8rem;
+    font-size: .78rem;
     text-align: center;
-    color: var(--texto);
+    color: #003735;
     cursor: pointer;
     opacity: .5;
     backdrop-filter: blur(5px);
-    transition: all .3s ease;
+    transition: .3s;
     box-shadow: 0 2px 4px rgba(0,0,0,0.15);
-    width: 150px;
+    min-width: 150px;
   }
+
+  /* alternância igual ao print */
+  .hex-group:nth-child(1) .hex-btn { bottom: -12px; }
+  .hex-group:nth-child(2) .hex-btn { top: -12px; }
+  .hex-group:nth-child(3) .hex-btn { bottom: -12px; }
+  .hex-group:nth-child(4) .hex-btn { top: -12px; }
+  .hex-group:nth-child(5) .hex-btn { bottom: -12px; }
 
   /* hover sincronizado */
   .hex-group:hover .hex,
   .hex-group:hover .hex img,
   .hex-group:hover .hex-btn {
     opacity: 1;
-    transform: scale(1.02);
     filter: brightness(1.04);
     backdrop-filter: blur(9px);
+    transform: translateX(-50%) scale(1.0); /* pra não quebrar o alinhamento do botão */
+  }
+  /* o hex precisa do scale separado */
+  .hex-group:hover .hex {
+    transform: scale(1.03);
   }
 
   /* MOBILE */
   @media (max-width: 768px) {
     .menu-opcoes {
+      flex-wrap: wrap;
       justify-content: center;
-      gap: 1.4rem 1.4rem;
     }
-
     .hex-group {
-      width: calc(50% - 1rem); /* 2 por linha */
-      align-items: center;
+      width: 48%;
+      height: auto;
+      margin-bottom: 2.5rem;
     }
-
-    .hex {
-      width: 130px;
-      height: calc(130px * 0.866);
-    }
-
     .hex-btn {
-      width: 130px;
-      font-size: .77rem;
+      position: static;
+      transform: none;
+      margin-top: .6rem;
+      opacity: .5;
     }
-
-    /* ziguizague mobile: só os pares descem um pouco */
-    .hex-group:nth-child(even) {
-      margin-top: 1.4rem;
+    .hex-group:hover .hex-btn {
+      opacity: 1;
     }
   }
-
   </style>
 </head>
 <body>
@@ -175,27 +175,6 @@
         <img src="planos.jpg" alt="Redes Sociais">
       </div>
       <div class="hex-btn">Redes Sociais</div>
-    </div>
-
-    <div class="hex-group">
-      <div class="hex">
-        <img src="planos.jpg" alt="Planos">
-      </div>
-      <div class="hex-btn">Planos</div>
-    </div>
-
-    <div class="hex-group">
-      <div class="hex">
-        <img src="planos.jpg" alt="Contato">
-      </div>
-      <div class="hex-btn">Contato</div>
-    </div>
-
-    <div class="hex-group">
-      <div class="hex">
-        <img src="planos.jpg" alt="Ajuda">
-      </div>
-      <div class="hex-btn">Ajuda</div>
     </div>
   </section>
 </body>
