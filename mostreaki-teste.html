@@ -39,25 +39,26 @@
     }
 
     header img {
-      height: 36px;
+      height: 47px; /* Aumentado em 30% */
       display: block;
     }
 
     /* HAMBURGUER */
     .hamburger {
-      width: 42px;
-      height: 32px;
+      width: 29px; /* Reduzido em 30% */
+      height: 22px; /* Reduzido em 30% */
       background: transparent;
       border: none;
       cursor: pointer;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 4px 0;
+      padding: 2px 0;
     }
+
     .hamburger span {
       display: block;
-      height: 4px;
+      height: 3px;
       border-radius: 20px;
       background: #003735;
     }
@@ -74,6 +75,7 @@
       border-radius: 16px;
       overflow: hidden;
     }
+
     .hero video,
     .hero img {
       width: 100%;
@@ -188,9 +190,9 @@
       transform: translateX(0);
     }
 
-    /* botão do menu - agora mais estreito, mas ainda confortável */
+    /* botão do menu */
     .menu-link {
-      width: 210px;                   /* <- largura pensada no "Serviços Adicionais" */
+      width: 210px;
       max-width: 92vw;
       background: linear-gradient(180deg, #d9d9d9, #af91a1);
       border: 3px solid #7d2f59;
@@ -198,12 +200,13 @@
       color: #003735;
       text-decoration: none;
       font-weight: 700;
-      padding: .4rem .4rem;           /* altura boa, sem ficar um tijolo */
+      padding: .4rem .4rem;
       text-align: center;
       transition: .2s;
       align-self: center;
-      white-space: nowrap;            /* não quebra o texto */
+      white-space: nowrap;
     }
+
     .menu-link:hover {
       filter: brightness(1.04);
     }
@@ -268,7 +271,7 @@
       }
 
       .menu-link {
-        width: 210px;     /* mantém o mesmo look no mobile */
+        width: 210px;
         max-width: 100%;
       }
 
@@ -288,9 +291,7 @@
     </button>
   </header>
 
-  <!-- overlay do menu -->
   <nav class="menu-overlay" id="menu-overlay">
-    <!-- página inicial não aparece porque estamos nela -->
     <a href="/sobre.html" class="menu-link">Sobre</a>
     <a href="/minha-conta.html" class="menu-link">Minha Conta</a>
     <a href="/planos.html" class="menu-link">Planos</a>
