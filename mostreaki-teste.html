@@ -33,7 +33,7 @@
   }
   header img { height: 34px; }
 
-  /* área dos itens */
+  /* faixa dos hexágonos */
   .menu-opcoes {
     width: min(1100px, 96vw);
     margin: 2.3rem auto 3rem;
@@ -42,19 +42,27 @@
     gap: 1.4rem;
   }
 
+  /* cada bloco */
   .hex-group {
     position: relative;
-    width: 180px;      /* largura do bloco todo */
-    height: 240px;     /* altura total pra caber botão em cima/baixo */
+    width: 180px;
+    height: 240px; /* sobra pra botao acima/abaixo */
     display: flex;
     justify-content: center;
     align-items: center;
+    transition: .3s;
   }
 
-  /* hexágono simétrico */
+  /* zigue-zague no desktop */
+  .hex-group:nth-child(2),
+  .hex-group:nth-child(4) {
+    transform: translateY(-40px);
+  }
+
+  /* HEX simétrico */
   .hex {
     width: 150px;
-    height: calc(150px * 0.866);
+    height: calc(150px * 0.866); /* proporção do hex regular */
     border: 3px solid var(--bordo);
     clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
     overflow: hidden;
@@ -71,7 +79,7 @@
     transition: .3s;
   }
 
-  /* botão que pertence ao hex */
+  /* botão */
   .hex-btn {
     position: absolute;
     left: 50%;
@@ -92,7 +100,7 @@
     min-width: 150px;
   }
 
-  /* alternância igual ao print */
+  /* alternância EXATA */
   .hex-group:nth-child(1) .hex-btn { bottom: -12px; }
   .hex-group:nth-child(2) .hex-btn { top: -12px; }
   .hex-group:nth-child(3) .hex-btn { bottom: -12px; }
@@ -106,9 +114,7 @@
     opacity: 1;
     filter: brightness(1.04);
     backdrop-filter: blur(9px);
-    transform: translateX(-50%) scale(1.0); /* pra não quebrar o alinhamento do botão */
   }
-  /* o hex precisa do scale separado */
   .hex-group:hover .hex {
     transform: scale(1.03);
   }
@@ -118,11 +124,12 @@
     .menu-opcoes {
       flex-wrap: wrap;
       justify-content: center;
+      gap: 1.8rem;
     }
     .hex-group {
       width: 48%;
       height: auto;
-      margin-bottom: 2.5rem;
+      transform: none !important; /* tira zigue-zague no mobile */
     }
     .hex-btn {
       position: static;
