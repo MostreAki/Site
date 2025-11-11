@@ -14,12 +14,15 @@
       --hex-border: rgba(192,18,115,0.6);
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: url("bg-circuito.svg") center/cover fixed, var(--bg);
+      /* agora usando o seu fundo.svg na raiz */
+      background: url("fundo.svg") center/cover fixed, var(--bg);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -38,18 +41,20 @@
       display: flex;
       align-items: center;
       gap: .6rem;
-      font-weight: 700;
-      font-size: 1.35rem;
     }
-    .logo-arrow {
-      width: 26px;
-      height: 26px;
-      background: var(--dark);
-      clip-path: polygon(50% 0, 100% 50%, 70% 50%, 70% 100%, 30% 100%, 30% 50%, 0 50%);
-    }
-    .logo span:first-child { color: var(--dark); }
-    .logo span:last-child { color: var(--pink); }
 
+    .logo img {
+      height: 34px;
+      display: block;
+    }
+
+    .menu-icon {
+      font-size: 1.5rem;
+      color: #0f3a3a;
+      cursor: pointer;
+    }
+
+    /* hero glassmorphism */
     .hero {
       width: min(1100px, 94vw);
       margin: 1.5rem auto 0;
@@ -61,11 +66,23 @@
       padding: 1.5rem 2rem;
       backdrop-filter: blur(4px);
     }
-    .hero-lado {
+
+    .hero-left {
       display: flex;
       align-items: center;
-      gap: 1.3rem;
+      gap: 1rem;
     }
+
+    .hero-title {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #0f3a3a;
+    }
+
+    .hero-title span {
+      color: #c01273;
+    }
+
     .hero-btn {
       margin-left: auto;
       background: #f0c6da;
@@ -80,9 +97,12 @@
       cursor: pointer;
       transition: .2s;
     }
-    .hero-btn:hover { filter: brightness(1.03); }
 
-    /* grade de botões/hexágonos */
+    .hero-btn:hover {
+      filter: brightness(1.03);
+    }
+
+    /* grade de hexágonos/botões */
     .menu-opcoes {
       width: min(1180px, 96vw);
       margin: 2rem auto;
@@ -91,6 +111,7 @@
       justify-content: center;
       flex-wrap: wrap;
     }
+
     .hex {
       width: 150px;
       aspect-ratio: 1;
@@ -108,13 +129,15 @@
       overflow: hidden;
       position: relative;
     }
+
     .hex img {
       width: 100%;
       height: 55%;
       object-fit: cover;
-      opacity: .55;
+      opacity: .55;       /* 50% “transclear” */
       transition: .2s;
     }
+
     .hex span {
       background: rgba(255,255,255,0.6);
       border: 2px solid rgba(192,18,115,0.6);
@@ -127,12 +150,20 @@
       opacity: .7;
       transition: .2s;
     }
+
+    /* efeito hover 50% -> 100% */
     .hex:hover {
-      background: rgba(255,255,255,0.9);
+      background: rgba(255,255,255,0.95);
       border-color: rgba(192,18,115,1);
     }
-    .hex:hover img { opacity: 1; }
-    .hex:hover span { opacity: 1; }
+
+    .hex:hover img {
+      opacity: 1;
+    }
+
+    .hex:hover span {
+      opacity: 1;
+    }
 
     footer {
       margin-top: auto;
@@ -144,29 +175,33 @@
     }
 
     @media(max-width: 720px) {
-      .hero { flex-wrap: wrap; }
-      .hero-btn { margin-left: 0; }
+      .hero {
+        flex-wrap: wrap;
+      }
+      .hero-btn {
+        margin-left: 0;
+      }
     }
   </style>
 </head>
 <body>
   <header>
+    <!-- aqui usamos o seu vetor raiz -->
     <div class="logo">
-      <div class="logo-arrow"></div>
-      <span>Mostre</span><span>Aki</span>
+      <img src="logomarca.svg" alt="MostreAki">
     </div>
-    <div>≡</div>
+    <div class="menu-icon">≡</div>
   </header>
 
   <section class="hero">
-    <div class="hero-lado">
-      <div class="logo-arrow" style="width:46px;height:46px;"></div>
-      <div style="font-size:1.6rem;font-weight:700;color:#0f3a3a">Mostre<span style="color:#c01273">Aki</span></div>
+    <div class="hero-left">
+      <img src="logomarca.svg" alt="MostreAki" style="height:54px;">
+      <div class="hero-title">Mostre<span>Aki</span></div>
     </div>
-    <div class="hero-btn">
+    <button class="hero-btn">
       <span>Confira os nossos Planos</span>
       <span style="font-size:1.3rem;">📋</span>
-    </div>
+    </button>
   </section>
 
   <section class="menu-opcoes">
