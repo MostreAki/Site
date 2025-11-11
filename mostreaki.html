@@ -2,275 +2,194 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MostreAki</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     :root {
       --bg: #aabcbb;
-      --bg-top: rgba(255,255,255,0.25);
-      --green-dark: #134645;
-      --pink: #c62573;
-      --card: rgba(237, 241, 241, 0.55);
-      --hex-border: #c62573;
+      --bg2: rgba(170,188,187,0.3);
+      --dark: #0f3a3a;
+      --pink: #c01273;
+      --hex-bg: rgba(255,255,255,0.25);
+      --hex-border: rgba(192,18,115,0.6);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * { box-sizing: border-box; }
 
     body {
-      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-      background: var(--bg);
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: url("bg-circuito.svg") center/cover fixed, var(--bg);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
 
-    /* fundo com efeito leve */
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      background-image:
-        linear-gradient(120deg, rgba(255,255,255,0.04) 1px, transparent 1px),
-        linear-gradient(210deg, rgba(255,255,255,0.04) 1px, transparent 1px);
-      background-size: 180px 180px, 160px 160px;
-      opacity: 0.6;
-      pointer-events: none;
-      z-index: -1;
-    }
-
     header {
-      width: 100%;
-      background: linear-gradient(90deg, rgba(255,255,255,0.1), rgba(255,255,255,0));
-      padding: 14px min(4vw, 48px);
+      height: 60px;
+      background: linear-gradient(90deg, rgba(170,188,187,0.6), rgba(170,188,187,0));
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 1rem;
+      padding: 0 1.5rem;
     }
 
     .logo {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: .6rem;
       font-weight: 700;
-      font-size: clamp(1.3rem, 2vw, 1.55rem);
-      color: #113a3a;
+      font-size: 1.35rem;
     }
-
-    .logo-icon {
-      width: 30px;
-      height: 30px;
-      background: #113a3a;
-      clip-path: polygon(50% 0, 100% 40%, 70% 40%, 70% 100%, 30% 100%, 30% 40%, 0 40%);
+    .logo-arrow {
+      width: 26px;
+      height: 26px;
+      background: var(--dark);
+      clip-path: polygon(50% 0, 100% 50%, 70% 50%, 70% 100%, 30% 100%, 30% 50%, 0 50%);
     }
-
+    .logo span:first-child { color: var(--dark); }
     .logo span:last-child { color: var(--pink); }
 
-    .menu-btn {
-      width: 34px; height: 24px;
-      border: none; background: transparent;
-      display: flex; flex-direction: column;
-      justify-content: space-between; cursor: pointer;
-    }
-    .menu-btn span {
-      height: 3px; background: #083030; border-radius: 99px;
-    }
-
     .hero {
-      width: min(1200px, 100%);
-      margin: 20px auto 0;
-      padding: 0 min(4vw, 48px);
-    }
-
-    .hero-card {
-      background: radial-gradient(circle at top, rgba(255,255,255,0.6), rgba(255,255,255,0));
-      background-color: rgba(247, 251, 251, 0.35);
-      border-radius: 20px;
-      border: 1.5px solid rgba(255,255,255,0.35);
-      backdrop-filter: blur(5px);
-      min-height: 140px;
+      width: min(1100px, 94vw);
+      margin: 1.5rem auto 0;
+      background: rgba(255,255,255,0.35);
+      border-radius: 22px;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: min(4vw, 36px);
-      padding: 18px 26px;
+      gap: 1.5rem;
+      padding: 1.5rem 2rem;
+      backdrop-filter: blur(4px);
     }
-
-    .hero-left {
-      display: flex; align-items: center; gap: 16px;
+    .hero-lado {
+      display: flex;
+      align-items: center;
+      gap: 1.3rem;
     }
-
-    .mascote {
-      width: 75px; height: 90px;
-      background: #aabcbb;
-      border: 3px solid #0c2c2c;
-      border-radius: 14px;
-      display: grid; place-items: center;
-      font-size: .65rem;
-    }
-
-    .hero-title {
-      font-size: clamp(1.4rem, 3vw, 1.9rem);
+    .hero-btn {
+      margin-left: auto;
+      background: #f0c6da;
+      border: 3px solid #9c114a;
+      border-radius: 9999px;
+      padding: .7rem 1.4rem;
+      display: flex;
+      align-items: center;
+      gap: .6rem;
       font-weight: 700;
-      color: #133939;
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      color: #073c3c;
+      cursor: pointer;
+      transition: .2s;
     }
+    .hero-btn:hover { filter: brightness(1.03); }
 
-    .hero-title strong { color: var(--pink); }
-
-    .hero-action {
-      background: linear-gradient(90deg, #e78ed3, #f4d3f0);
-      border-radius: 999px;
-      padding: 12px 26px;
-      display: flex; align-items: center; gap: 12px;
-      color: #042e2c;
-      font-weight: 600;
-      border: 3px solid #cb2d80;
-      white-space: nowrap;
-    }
-
-    .hero-action svg { width: 26px; height: 26px; }
-
-    /* blocos interativos */
-    .hex-wrap {
+    /* grade de botões/hexágonos */
+    .menu-opcoes {
+      width: min(1180px, 96vw);
+      margin: 2rem auto;
       display: flex;
-      gap: 1.8rem;
+      gap: 1.3rem;
       justify-content: center;
       flex-wrap: wrap;
-      margin-top: 28px;
     }
-
-    .hex-block {
+    .hex {
+      width: 150px;
+      aspect-ratio: 1;
+      background: var(--hex-bg);
+      border: 3px solid rgba(192,18,115,0.4);
+      border-radius: 20px;
+      clip-path: polygon(25% 2%, 75% 2%, 100% 50%, 75% 98%, 25% 98%, 0 50%);
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: .6rem;
-      opacity: .5;
-      transition: opacity .18s ease-out;
-      cursor: pointer;
-    }
-
-    .hex-block:hover, .hex-block:focus-within { opacity: 1; }
-
-    .hexagon {
-      width: 155px;
-      aspect-ratio: 1;
-      clip-path: polygon(25% 3%, 75% 3%, 100% 50%, 75% 97%, 25% 97%, 0 50%);
+      justify-content: center;
+      gap: .4rem;
+      backdrop-filter: blur(2px);
+      transition: .2s;
       overflow: hidden;
-      background: #ffffff12;
-      border: 3px solid rgba(198, 37, 115, 0.55);
-      backdrop-filter: blur(3px);
+      position: relative;
     }
-
-    .hexagon img {
+    .hex img {
       width: 100%;
-      height: 100%;
+      height: 55%;
       object-fit: cover;
+      opacity: .55;
+      transition: .2s;
     }
-
-    .hex-btn {
-      border: 2.5px solid #c62573;
-      border-radius: 999px;
-      padding: 5px 18px 6px;
-      background: rgba(236, 236, 236, 0.45);
-      font-weight: 600;
+    .hex span {
+      background: rgba(255,255,255,0.6);
+      border: 2px solid rgba(192,18,115,0.6);
+      border-radius: 9999px;
+      padding: .25rem .5rem;
       font-size: .7rem;
-      color: #003d3b;
       text-align: center;
-      min-width: 110px;
-      pointer-events: none;
+      color: #0f3a3a;
+      backdrop-filter: blur(1px);
+      opacity: .7;
+      transition: .2s;
     }
+    .hex:hover {
+      background: rgba(255,255,255,0.9);
+      border-color: rgba(192,18,115,1);
+    }
+    .hex:hover img { opacity: 1; }
+    .hex:hover span { opacity: 1; }
 
     footer {
       margin-top: auto;
-      background: linear-gradient(0deg, rgba(255,255,255,0.25), rgba(255,255,255,0));
+      background: linear-gradient(0deg, rgba(170,188,187,1), rgba(170,188,187,0));
       text-align: center;
-      padding: 12px 10px 20px;
-      font-size: .8rem;
-      color: #062726;
+      padding: 1.2rem 0 1.6rem;
+      font-size: .78rem;
+      color: #142323;
     }
 
-    @media (max-width: 720px) {
-      .hero-card {
-        flex-direction: column; align-items: flex-start;
-      }
-      .hero-action { width: 100%; justify-content: center; }
-      .hexagon { width: 140px; }
+    @media(max-width: 720px) {
+      .hero { flex-wrap: wrap; }
+      .hero-btn { margin-left: 0; }
     }
   </style>
 </head>
-
 <body>
   <header>
     <div class="logo">
-      <div class="logo-icon"></div>
+      <div class="logo-arrow"></div>
       <span>Mostre</span><span>Aki</span>
     </div>
-    <button class="menu-btn" aria-label="menu">
-      <span></span><span></span><span></span>
-    </button>
+    <div>≡</div>
   </header>
 
-  <main class="hero">
-    <div class="hero-card">
-      <div class="hero-left">
-        <div class="mascote">masc</div>
-        <div class="hero-title">
-          <span>Mostre</span><strong>Aki</strong>
-        </div>
-      </div>
-      <a class="hero-action" href="#">
-        <span>Confira os nossos Planos</span>
-        <svg viewBox="0 0 24 24" fill="none">
-          <rect x="6" y="5" width="12" height="15" rx="2" stroke="#002b2b" stroke-width="1.6"/>
-          <path d="M9 4.5h6" stroke="#002b2b" stroke-width="1.6" stroke-linecap="round"/>
-          <circle cx="12" cy="5" r="1.2" fill="#002b2b"/>
-        </svg>
-      </a>
+  <section class="hero">
+    <div class="hero-lado">
+      <div class="logo-arrow" style="width:46px;height:46px;"></div>
+      <div style="font-size:1.6rem;font-weight:700;color:#0f3a3a">Mostre<span style="color:#c01273">Aki</span></div>
     </div>
-  </main>
-
-  <section class="hex-wrap">
-    <div class="hex-block">
-      <div class="hexagon">
-        <img src="https://raw.githubusercontent.com/MostreAki/Site/main/assets/planos.jpg" alt="Planos">
-      </div>
-      <div class="hex-btn">Confira os Planos</div>
+    <div class="hero-btn">
+      <span>Confira os nossos Planos</span>
+      <span style="font-size:1.3rem;">📋</span>
     </div>
+  </section>
 
-    <div class="hex-block">
-      <div class="hexagon">
-        <img src="https://raw.githubusercontent.com/MostreAki/Site/main/assets/instrucoes.jpg" alt="Instruções">
-      </div>
-      <div class="hex-btn">Instruções</div>
+  <section class="menu-opcoes">
+    <div class="hex">
+      <img src="planos.jpg" alt="Planos">
+      <span>Confira os Planos</span>
     </div>
-
-    <div class="hex-block">
-      <div class="hexagon">
-        <img src="https://raw.githubusercontent.com/MostreAki/Site/main/assets/redes.jpg" alt="Redes Sociais">
-      </div>
-      <div class="hex-btn">Redes Sociais</div>
+    <div class="hex">
+      <img src="planos.jpg" alt="Serviços">
+      <span>Serviços Adicionais</span>
     </div>
-
-    <div class="hex-block">
-      <div class="hexagon">
-        <img src="https://raw.githubusercontent.com/MostreAki/Site/main/assets/servicos.jpg" alt="Serviços Adicionais">
-      </div>
-      <div class="hex-btn">Serviços Adicionais</div>
+    <div class="hex">
+      <img src="planos.jpg" alt="Instruções">
+      <span>Instruções</span>
     </div>
-
-    <div class="hex-block">
-      <div class="hexagon">
-        <img src="https://raw.githubusercontent.com/MostreAki/Site/main/assets/como-funciona.jpg" alt="Como Funciona">
-      </div>
-      <div class="hex-btn">Como Funciona?</div>
+    <div class="hex">
+      <img src="planos.jpg" alt="Redes">
+      <span>Redes Sociais</span>
     </div>
   </section>
 
   <footer>
-    © 2025 MostreAki – Todos os direitos reservados.
+    © 2025 MostreAki - Todos os direitos reservados.
   </footer>
 </body>
 </html>
