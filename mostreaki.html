@@ -43,47 +43,16 @@
     height: 36px;
   }
   .menu-icon {
-    font-size: 1.6rem;
+    font-size: 2.2rem;   /* maiorzinho agora */
+    line-height: 1;
     color: var(--texto);
     cursor: pointer;
   }
 
-  /* HERO */
-  .hero {
-    width: min(1100px, 94vw);
-    margin: 1.6rem auto 0;
-    background: rgba(255,255,255,0.35);
-    border-radius: 22px;
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-    padding: 1.5rem 2rem;
-    backdrop-filter: blur(4px);
-  }
-  .hero-left { display: flex; align-items: center; gap: 1rem; }
-  .hero-title { font-size: 1.6rem; font-weight: 700; color: #0f3a3a; }
-  .hero-title span { color: #c01273; }
-
-  .hero-btn {
-    margin-left: auto;
-    background: #f0c6da;
-    border: 3px solid #9c114a;
-    border-radius: 9999px;
-    padding: .7rem 1.4rem;
-    display: flex;
-    align-items: center;
-    gap: .6rem;
-    font-weight: 700;
-    color: #073c3c;
-    cursor: pointer;
-    transition: .2s;
-  }
-  .hero-btn:hover { filter: brightness(1.03); }
-
-  /* CARROSSEL */
+  /* CARROSSEL (único banner agora) */
   .banner-wrapper {
     width: min(1100px, 94vw);
-    margin: 1.3rem auto 2.6rem;
+    margin: 1.6rem auto 2.6rem; /* dei um respiro do header */
     position: relative;
   }
 
@@ -101,7 +70,6 @@
 
   .banner-slide {
     min-width: 100%;
-    background: #000;
   }
 
   .banner-slide video {
@@ -154,6 +122,7 @@
     transition: .3s;
   }
 
+  /* ziguezague desktop */
   .hex-group:nth-child(2),
   .hex-group:nth-child(4) {
     transform: translateY(-40px);
@@ -198,6 +167,7 @@
     min-width: 150px;
   }
 
+  /* alternância de posição dos botões */
   .hex-group:nth-child(1) .hex-btn { bottom: -12px; }
   .hex-group:nth-child(2) .hex-btn { top: -12px; }
   .hex-group:nth-child(3) .hex-btn { bottom: -12px; }
@@ -227,8 +197,6 @@
 
   /* MOBILE */
   @media (max-width: 768px) {
-    .hero { flex-wrap: wrap; gap: 1rem; }
-    .hero-btn { margin-left: 0; }
 
     .banner-desktop { display: none; }
     .banner-mobile { display: block; }
@@ -288,20 +256,11 @@
     <div class="menu-icon">≡</div>
   </header>
 
-  <section class="hero">
-    <div class="hero-left">
-      <img src="logomarca.svg" alt="MostreAki" style="height:54px;">
-      <div class="hero-title">Mostre<span>Aki</span></div>
-    </div>
-    <button class="hero-btn">
-      <span>Confira os nossos Planos</span>
-      <span style="font-size:1.3rem;">📋</span>
-    </button>
-  </section>
-
+  <!-- banner de vídeo -->
   <section class="banner-wrapper">
     <div class="banner-slider" id="bannerSlider">
       <div class="banner-track" id="bannerTrack">
+        <!-- mobile -->
         <div class="banner-slide banner-mobile">
           <video src="planos-mobile-mostreaki.mp4" autoplay muted loop playsinline></video>
         </div>
@@ -311,6 +270,7 @@
         <div class="banner-slide banner-mobile">
           <video src="servicos-adicionais-mobile-mostreaki.mp4" autoplay muted loop playsinline></video>
         </div>
+        <!-- desktop -->
         <div class="banner-slide banner-desktop">
           <video src="planos-desktop-mostreaki.mp4" autoplay muted loop></video>
         </div>
@@ -329,6 +289,7 @@
     </div>
   </section>
 
+  <!-- hexágonos -->
   <section class="menu-opcoes">
     <div class="hex-group">
       <div class="hex"><img src="planos.jpg" alt="Como Funciona"></div>
@@ -361,12 +322,13 @@
   </footer>
 
   <script>
+    // carrossel simples
     const track = document.getElementById("bannerTrack");
     const dots = document.querySelectorAll(".banner-dot");
     const slider = document.getElementById("bannerSlider");
 
     let current = 0;
-    const total = 3;
+    const total = 3; // só mostramos 3 dots, um por grupo de conteúdo
     let startX = 0;
     let dragging = false;
 
@@ -380,6 +342,7 @@
 
     dots.forEach(d => d.addEventListener("click", () => setSlide(Number(d.dataset.index))));
 
+    // toque
     slider.addEventListener("touchstart", e => { dragging = true; startX = e.touches[0].clientX; });
     slider.addEventListener("touchend", e => {
       if (!dragging) return;
@@ -389,6 +352,7 @@
       else if (diff < -40 && current < total - 1) setSlide(current + 1);
     });
 
+    // mouse
     slider.addEventListener("mousedown", e => { dragging = true; startX = e.clientX; });
     slider.addEventListener("mouseup", e => {
       if (!dragging) return;
