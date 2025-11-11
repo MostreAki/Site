@@ -7,27 +7,23 @@
   <style>
     :root {
       --bg: #aabcbb;
-      --bg2: rgba(170,188,187,0.3);
       --dark: #0f3a3a;
       --pink: #c01273;
       --hex-bg: rgba(255,255,255,0.25);
-      --hex-border: rgba(192,18,115,0.6);
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      /* agora usando o seu fundo.svg na raiz */
       background: url("fundo.svg") center/cover fixed, var(--bg);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
 
+    /* -------- HEADER -------- */
     header {
       height: 60px;
       background: linear-gradient(90deg, rgba(170,188,187,0.6), rgba(170,188,187,0));
@@ -36,25 +32,11 @@
       justify-content: space-between;
       padding: 0 1.5rem;
     }
+    .logo { display: flex; align-items: center; gap: .6rem; }
+    .logo img { height: 34px; display: block; }
+    .menu-icon { font-size: 1.5rem; color: #0f3a3a; cursor: pointer; }
 
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: .6rem;
-    }
-
-    .logo img {
-      height: 34px;
-      display: block;
-    }
-
-    .menu-icon {
-      font-size: 1.5rem;
-      color: #0f3a3a;
-      cursor: pointer;
-    }
-
-    /* hero glassmorphism */
+    /* -------- HERO -------- */
     .hero {
       width: min(1100px, 94vw);
       margin: 1.5rem auto 0;
@@ -66,23 +48,9 @@
       padding: 1.5rem 2rem;
       backdrop-filter: blur(4px);
     }
-
-    .hero-left {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    .hero-title {
-      font-size: 1.6rem;
-      font-weight: 700;
-      color: #0f3a3a;
-    }
-
-    .hero-title span {
-      color: #c01273;
-    }
-
+    .hero-left { display: flex; align-items: center; gap: 1rem; }
+    .hero-title { font-size: 1.6rem; font-weight: 700; color: #0f3a3a; }
+    .hero-title span { color: #c01273; }
     .hero-btn {
       margin-left: auto;
       background: #f0c6da;
@@ -97,12 +65,59 @@
       cursor: pointer;
       transition: .2s;
     }
+    .hero-btn:hover { filter: brightness(1.03); }
 
-    .hero-btn:hover {
-      filter: brightness(1.03);
+    /* -------- CARROSSEL DE VÍDEO -------- */
+    .banner-wrapper {
+      width: min(1100px, 94vw);
+      margin: 1.3rem auto 0;
+      position: relative;
+    }
+    .banner-slider {
+      overflow: hidden;
+      border-radius: 18px;
+      background: rgba(0,0,0,.05);
+    }
+    .banner-track {
+      display: flex;
+      transition: transform .35s ease;
+      touch-action: pan-y;
+    }
+    .banner-slide {
+      min-width: 100%;
+      background: #000;
+      display: flex;
+    }
+    .banner-slide video {
+      width: 100%;
+      display: block;
+    }
+    /* mobile vs desktop */
+    .banner-desktop { display: none; }
+    .banner-mobile { display: block; }
+
+    /* bolinhas */
+    .banner-dots {
+      display: flex;
+      gap: .5rem;
+      justify-content: center;
+      margin-top: .7rem;
+    }
+    .banner-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.4);
+      border: 2px solid rgba(0,0,0,.15);
+      cursor: pointer;
+      transition: .2s;
+    }
+    .banner-dot.active {
+      background: #c01273;
+      border-color: #c01273;
     }
 
-    /* grade de hexágonos/botões */
+    /* -------- HEX MENU -------- */
     .menu-opcoes {
       width: min(1180px, 96vw);
       margin: 2rem auto;
@@ -111,11 +126,10 @@
       justify-content: center;
       flex-wrap: wrap;
     }
-
     .hex {
       width: 150px;
       aspect-ratio: 1;
-      background: var(--hex-bg);
+      background: rgba(255,255,255,0.25);
       border: 3px solid rgba(192,18,115,0.4);
       border-radius: 20px;
       clip-path: polygon(25% 2%, 75% 2%, 100% 50%, 75% 98%, 25% 98%, 0 50%);
@@ -127,17 +141,14 @@
       backdrop-filter: blur(2px);
       transition: .2s;
       overflow: hidden;
-      position: relative;
     }
-
     .hex img {
       width: 100%;
       height: 55%;
       object-fit: cover;
-      opacity: .55;       /* 50% “transclear” */
+      opacity: .55;
       transition: .2s;
     }
-
     .hex span {
       background: rgba(255,255,255,0.6);
       border: 2px solid rgba(192,18,115,0.6);
@@ -150,20 +161,12 @@
       opacity: .7;
       transition: .2s;
     }
-
-    /* efeito hover 50% -> 100% */
     .hex:hover {
       background: rgba(255,255,255,0.95);
       border-color: rgba(192,18,115,1);
     }
-
-    .hex:hover img {
-      opacity: 1;
-    }
-
-    .hex:hover span {
-      opacity: 1;
-    }
+    .hex:hover img { opacity: 1; }
+    .hex:hover span { opacity: 1; }
 
     footer {
       margin-top: auto;
@@ -174,19 +177,20 @@
       color: #142323;
     }
 
+    /* -------- RESPONSIVO -------- */
+    @media(min-width: 880px) {
+      .banner-desktop { display: block; }
+      .banner-mobile { display: none; }
+    }
+
     @media(max-width: 720px) {
-      .hero {
-        flex-wrap: wrap;
-      }
-      .hero-btn {
-        margin-left: 0;
-      }
+      .hero { flex-wrap: wrap; }
+      .hero-btn { margin-left: 0; }
     }
   </style>
 </head>
 <body>
   <header>
-    <!-- aqui usamos o seu vetor raiz -->
     <div class="logo">
       <img src="logomarca.svg" alt="MostreAki">
     </div>
@@ -204,6 +208,40 @@
     </button>
   </section>
 
+  <!-- CARROSSEL -->
+  <section class="banner-wrapper">
+    <div class="banner-slider" id="bannerSlider">
+      <div class="banner-track" id="bannerTrack">
+        <!-- MOBILE -->
+        <div class="banner-slide banner-mobile">
+          <video src="planos-mobile-mostreaki.mp4" autoplay muted loop playsinline></video>
+        </div>
+        <div class="banner-slide banner-mobile">
+          <video src="parceiros-mobile-mostreaki.mp4" autoplay muted loop playsinline></video>
+        </div>
+        <div class="banner-slide banner-mobile">
+          <video src="servicos-adicionais-mobile-mostreaki.mp4" autoplay muted loop playsinline></video>
+        </div>
+        <!-- DESKTOP -->
+        <div class="banner-slide banner-desktop">
+          <video src="planos-desktop-mostreaki.mp4" autoplay muted loop></video>
+        </div>
+        <div class="banner-slide banner-desktop">
+          <video src="parceiros-desktop-mostreaki.mp4" autoplay muted loop></video>
+        </div>
+        <div class="banner-slide banner-desktop">
+          <video src="servicos-adicionais-desktop-mostreaki.mp4" autoplay muted loop></video>
+        </div>
+      </div>
+    </div>
+    <div class="banner-dots" id="bannerDots">
+      <div class="banner-dot active" data-index="0"></div>
+      <div class="banner-dot" data-index="1"></div>
+      <div class="banner-dot" data-index="2"></div>
+    </div>
+  </section>
+
+  <!-- HEXS -->
   <section class="menu-opcoes">
     <div class="hex">
       <img src="planos.jpg" alt="Planos">
@@ -226,5 +264,86 @@
   <footer>
     © 2025 MostreAki - Todos os direitos reservados.
   </footer>
+
+  <script>
+    // carrossel simples com swipe
+    const track = document.getElementById("bannerTrack");
+    const dots = document.querySelectorAll(".banner-dot");
+    const slider = document.getElementById("bannerSlider");
+
+    let current = 0;
+    const total = 3; // só 3 posições lógicas (mobile ou desktop)
+    let startX = 0;
+    let currentTranslate = 0;
+    let dragging = false;
+
+    function setSlide(index) {
+      current = index;
+      const width = slider.clientWidth;
+      track.style.transform = `translateX(-${width * index}px)`;
+      dots.forEach(d => d.classList.remove("active"));
+      dots[index].classList.add("active");
+    }
+
+    dots.forEach(d => {
+      d.addEventListener("click", () => {
+        const idx = Number(d.dataset.index);
+        setSlide(idx);
+      });
+    });
+
+    // touch
+    slider.addEventListener("touchstart", (e) => {
+      dragging = true;
+      startX = e.touches[0].clientX;
+    });
+    slider.addEventListener("touchmove", (e) => {
+      if(!dragging) return;
+      const diff = e.touches[0].clientX - startX;
+      // arrasta visualmente (opcional) – vou deixar só o snap final pra ficar limpo
+    });
+    slider.addEventListener("touchend", (e) => {
+      if(!dragging) return;
+      dragging = false;
+      const endX = e.changedTouches[0].clientX;
+      const diff = endX - startX;
+      const threshold = 40;
+      if(diff > threshold && current > 0) {
+        setSlide(current - 1);
+      } else if(diff < -threshold && current < total - 1) {
+        setSlide(current + 1);
+      } else {
+        setSlide(current);
+      }
+    });
+
+    // mouse drag (desktop)
+    slider.addEventListener("mousedown", (e) => {
+      dragging = true;
+      startX = e.clientX;
+    });
+    slider.addEventListener("mouseup", (e) => {
+      if(!dragging) return;
+      dragging = false;
+      const diff = e.clientX - startX;
+      const threshold = 40;
+      if(diff > threshold && current > 0) {
+        setSlide(current - 1);
+      } else if(diff < -threshold && current < total - 1) {
+        setSlide(current + 1);
+      } else {
+        setSlide(current);
+      }
+    });
+    slider.addEventListener("mouseleave", () => {
+      dragging = false;
+    });
+
+    // reajusta ao redimensionar
+    window.addEventListener("resize", () => setSlide(current));
+
+    // posição inicial
+    setSlide(0);
+  </script>
 </body>
 </html>
