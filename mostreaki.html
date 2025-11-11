@@ -74,7 +74,8 @@
   /* CARROSSEL */
   .banner-wrapper {
     width: min(1100px, 94vw);
-    margin: 1rem auto 0;
+    /* AQUI eu aumentei o espaço debaixo do banner */
+    margin: 1.1rem auto 1.8rem;
     position: relative;
   }
   .banner-slider {
@@ -121,25 +122,25 @@
   /* ====== MENU HEXAGONAL (DESKTOP) ====== */
   .menu-opcoes {
     width: min(1180px, 96vw);
-    /* estava 2rem, reduzi pra colar mais no banner */
-    margin: 1.4rem auto 2.7rem;
+    /* antes estava 1.4rem, agora dei mais ar: */
+    margin: 2.1rem auto 2.7rem;
     display: flex;
-    gap: 1rem; /* gap menor pra caber os 5 */
+    gap: 1rem;
     justify-content: center;
     flex-wrap: wrap;
   }
 
   .hex-group {
     position: relative;
-    width: 165px; /* estava 180 */
-    height: 230px; /* um tiquinho menor */
+    width: 165px;
+    height: 230px;
     display: flex;
     justify-content: center;
     align-items: center;
     transition: .3s;
   }
 
-  /* ziguezague desktop: 2 e 4 sobem */
+  /* ziguezague desktop */
   .hex-group:nth-child(2),
   .hex-group:nth-child(4) {
     transform: translateY(-40px);
@@ -256,7 +257,6 @@
       min-width: 0;
     }
 
-    /* ziguezague vertical: 2 e 4 descem um pouco pra dar o efeito */
     .hex-group:nth-child(2),
     .hex-group:nth-child(4) {
       margin-top: 1.4rem;
