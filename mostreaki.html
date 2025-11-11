@@ -1,3 +1,23 @@
+Perfeito, mestre do ziguezague 😎
+
+Juntei o que você chamou de “código novo do hexágono (desktop + mobile)” com o HTML completo que você mandou no anexo — mantendo:
+
+o fundo com fundo.svg
+
+o header com logomarca.svg
+
+o hero com o botão “Confira os nossos planos”
+
+o carrossel com os 3 MP4 mobile + 3 MP4 desktop
+
+e troquei a grade dos hexágonos pela versão ziguezague que a gente acabou de acertar (desktop com botões alternando cima/baixo e mobile com 2 por linha e botão menor) como você pediu. 
+
+
+Tá tudo inline, prontinho pra você colar no GitHub.
+
+
+---
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -25,6 +45,7 @@
     display: flex;
     flex-direction: column;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    color: var(--texto);
   }
 
   /* HEADER */
@@ -117,7 +138,7 @@
     border-color: #c01273;
   }
 
-  /* ====== MENU HEXAGONAL ====== */
+  /* ====== MENU HEXAGONAL (DESKTOP) ====== */
   .menu-opcoes {
     width: min(1180px, 96vw);
     margin: 2rem auto 2.7rem;
@@ -128,28 +149,30 @@
   }
 
   .hex-group {
+    position: relative;
+    width: 180px;
+    height: 240px;
     display: flex;
-    flex-direction: column;
+    justify-content: center;
     align-items: center;
-    gap: .45rem;
-    /* estado padrão: tudo 50% */
-    opacity: 1;
+    transition: .3s;
   }
 
-  /* o hex em si */
+  /* ziguezague desktop: 2 e 4 sobem */
+  .hex-group:nth-child(2),
+  .hex-group:nth-child(4) {
+    transform: translateY(-40px);
+  }
+
   .hex {
     width: 150px;
-    aspect-ratio: 1;
-    background: rgba(255,255,255,0.5);
+    height: 130px;
     border: 3px solid var(--bordo);
-    border-radius: 20px;
-    clip-path: polygon(25% 2%, 75% 2%, 100% 50%, 75% 98%, 25% 98%, 0 50%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
     overflow: hidden;
+    background: rgba(255,255,255,0.03);
     backdrop-filter: blur(4px);
-    transition: all .3s ease;
+    transition: .3s;
   }
 
   .hex img {
@@ -157,36 +180,46 @@
     height: 100%;
     object-fit: cover;
     opacity: .5;
-    transition: all .3s ease;
+    transition: .3s;
   }
 
-  /* botão do hex */
   .hex-btn {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
     background: linear-gradient(180deg, var(--grad1), var(--grad2));
     border: 3px solid var(--bordo);
     border-radius: 12px;
-    padding: .4rem 1rem;
-    font-family: 'Poppins', sans-serif;
+    padding: .35rem .8rem;
     font-weight: 700;
-    color: var(--texto);
+    font-size: .78rem;
     text-align: center;
-    font-size: .8rem;
+    color: var(--texto);
     cursor: pointer;
     opacity: .5;
     backdrop-filter: blur(5px);
-    transition: all .3s ease;
+    transition: .3s;
     box-shadow: 0 2px 4px rgba(0,0,0,0.15);
-    min-width: 145px;
+    min-width: 150px;
   }
 
-  /* quando passar em QUALQUER ponto do grupo, os dois acendem */
+  /* alternância de posição dos botões */
+  .hex-group:nth-child(1) .hex-btn { bottom: -12px; }
+  .hex-group:nth-child(2) .hex-btn { top: -12px; }
+  .hex-group:nth-child(3) .hex-btn { bottom: -12px; }
+  .hex-group:nth-child(4) .hex-btn { top: -12px; }
+  .hex-group:nth-child(5) .hex-btn { bottom: -12px; }
+
+  /* hover conjunto */
   .hex-group:hover .hex,
   .hex-group:hover .hex img,
   .hex-group:hover .hex-btn {
     opacity: 1;
-    backdrop-filter: blur(10px);
-    transform: scale(1.02);
-    filter: brightness(1.03);
+    filter: brightness(1.04);
+    backdrop-filter: blur(9px);
+  }
+  .hex-group:hover .hex {
+    transform: scale(1.03);
   }
 
   footer {
@@ -198,15 +231,62 @@
     color: #142323;
   }
 
-  /* RESPONSIVO */
+  /* ====== MOBILE ====== */
+  @media (max-width: 768px) {
+
+    .hero { flex-wrap: wrap; gap: 1rem; }
+    .hero-btn { margin-left: 0; }
+
+    .banner-desktop { display: none; }
+    .banner-mobile { display: block; }
+
+    .menu-opcoes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.3rem;
+      justify-content: center;
+    }
+
+    .hex-group {
+      width: 47%;
+      height: auto;
+      transform: none !important;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .3rem;
+    }
+
+    .hex {
+      width: 125px;
+      height: 108px;
+    }
+
+    .hex-btn {
+      position: static;
+      transform: none;
+      width: 75%;
+      font-size: .62rem;
+      padding: .25rem .6rem;
+      border-width: 2px;
+      opacity: .5;
+      border-radius: 10px;
+      min-width: 0;
+    }
+
+    /* ziguezague vertical: 2 e 4 descem um pouco pra dar o efeito */
+    .hex-group:nth-child(2),
+    .hex-group:nth-child(4) {
+      margin-top: 1.4rem;
+    }
+  }
+
+  /* desktop: mostrar vídeos desktop */
   @media(min-width: 880px) {
     .banner-desktop { display: block; }
     .banner-mobile { display: none; }
   }
-  @media(max-width: 720px) {
-    .hero { flex-wrap: wrap; }
-    .hero-btn { margin-left: 0; }
-  }
+
   </style>
 </head>
 <body>
@@ -264,42 +344,30 @@
 
   <!-- MENU HEXAGONAL -->
   <section class="menu-opcoes">
-
     <div class="hex-group">
-      <div class="hex">
-        <img src="planos.jpg" alt="Como Funciona">
-      </div>
+      <div class="hex"><img src="planos.jpg" alt="Como Funciona"></div>
       <div class="hex-btn">Como Funciona?</div>
     </div>
 
     <div class="hex-group">
-      <div class="hex">
-        <img src="planos.jpg" alt="Instruções">
-      </div>
+      <div class="hex"><img src="planos.jpg" alt="Instruções"></div>
       <div class="hex-btn">Instruções</div>
     </div>
 
     <div class="hex-group">
-      <div class="hex">
-        <img src="planos.jpg" alt="Serviços Adicionais">
-      </div>
+      <div class="hex"><img src="planos.jpg" alt="Serviços Adicionais"></div>
       <div class="hex-btn">Serviços Adicionais</div>
     </div>
 
     <div class="hex-group">
-      <div class="hex">
-        <img src="planos.jpg" alt="Parceiros">
-      </div>
+      <div class="hex"><img src="planos.jpg" alt="Parceiros"></div>
       <div class="hex-btn">Parceiros</div>
     </div>
 
     <div class="hex-group">
-      <div class="hex">
-        <img src="planos.jpg" alt="Redes Sociais">
-      </div>
+      <div class="hex"><img src="planos.jpg" alt="Redes Sociais"></div>
       <div class="hex-btn">Redes Sociais</div>
     </div>
-
   </section>
 
   <footer>
@@ -366,3 +434,4 @@
 
 </body>
 </html>
+```1
