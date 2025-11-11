@@ -40,10 +40,10 @@
   header img { height: 34px; display: block; }
   .menu-icon { font-size: 1.5rem; color: #073c3c; cursor: pointer; }
 
-  /* HERO */
+  /* HERO (faixa com logo e botão) */
   .hero {
     width: min(1100px, 94vw);
-    margin: 1.5rem auto 0;
+    margin: 1.2rem auto 0;
     background: rgba(255,255,255,0.35);
     border-radius: 22px;
     display: flex;
@@ -74,7 +74,7 @@
   /* CARROSSEL */
   .banner-wrapper {
     width: min(1100px, 94vw);
-    margin: 1.3rem auto 0;
+    margin: 1rem auto 0;
     position: relative;
   }
   .banner-slider {
@@ -102,7 +102,7 @@
     display: flex;
     gap: .5rem;
     justify-content: center;
-    margin-top: .7rem;
+    margin-top: .6rem;
   }
   .banner-dot {
     width: 10px;
@@ -121,17 +121,18 @@
   /* ====== MENU HEXAGONAL (DESKTOP) ====== */
   .menu-opcoes {
     width: min(1180px, 96vw);
-    margin: 2rem auto 2.7rem;
+    /* estava 2rem, reduzi pra colar mais no banner */
+    margin: 1.4rem auto 2.7rem;
     display: flex;
-    gap: 1.3rem;
+    gap: 1rem; /* gap menor pra caber os 5 */
     justify-content: center;
     flex-wrap: wrap;
   }
 
   .hex-group {
     position: relative;
-    width: 180px;
-    height: 240px;
+    width: 165px; /* estava 180 */
+    height: 230px; /* um tiquinho menor */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -225,6 +226,7 @@
       flex-wrap: wrap;
       gap: 1.3rem;
       justify-content: center;
+      margin-top: 1.6rem;
     }
 
     .hex-group {
@@ -414,5 +416,3 @@
 
 </body>
 </html>
-```1
-
