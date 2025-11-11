@@ -39,14 +39,14 @@
     }
 
     header img {
-      height: 47px; /* Aumentado em 30% */
+      height: 47px; /* +30% */
       display: block;
     }
 
     /* HAMBURGUER */
     .hamburger {
-      width: 29px; /* Reduzido em 30% */
-      height: 22px; /* Reduzido em 30% */
+      width: 29px;  /* -30% */
+      height: 22px; /* -30% */
       background: transparent;
       border: none;
       cursor: pointer;
@@ -63,12 +63,11 @@
       background: #003735;
     }
 
-    /* CONTAINER PRINCIPAL */
     main {
       flex: 1;
     }
 
-    /* ÁREA DO BANNER DE IMAGEM */
+    /* BANNER DE IMAGEM */
     .hero {
       width: min(1000px, 94vw);
       margin: 1.4rem auto 0;
@@ -76,13 +75,13 @@
       overflow: hidden;
     }
 
-    .hero video,
-    .hero img {
+    .hero img,
+    .hero video {
       width: 100%;
       display: block;
     }
 
-    /* ====== DESKTOP HEXAGONOS ====== */
+    /* ========= HEXÁGONOS DESKTOP ========= */
     .menu-opcoes {
       width: min(1100px, 96vw);
       margin: 2.8rem auto 3rem;
@@ -166,7 +165,7 @@
       transform: scale(1.03);
     }
 
-    /* ====== MENU OVERLAY ====== */
+    /* ========= MENU LATERAL ========= */
     .menu-overlay {
       position: fixed;
       top: 60px;
@@ -190,7 +189,6 @@
       transform: translateX(0);
     }
 
-    /* botão do menu */
     .menu-link {
       width: 210px;
       max-width: 92vw;
@@ -219,8 +217,12 @@
       font-size: .85rem;
     }
 
-    /* ====== MOBILE ====== */
+    /* ========= MOBILE ========= */
     @media (max-width: 768px) {
+      header {
+        padding: 0 .9rem;
+      }
+
       .hero {
         width: 100%;
         border-radius: 0;
@@ -265,18 +267,15 @@
         margin-top: 1.4rem;
       }
 
+      /* mobile AGORA também painel lateral, não tela inteira */
       .menu-overlay {
-        width: 100%;
-        max-width: 100%;
+        width: 280px;
+        max-width: 85vw;
       }
 
       .menu-link {
         width: 210px;
         max-width: 100%;
-      }
-
-      header {
-        padding: 0 .9rem;
       }
     }
   </style>
