@@ -62,20 +62,19 @@
       background: #003735;
     }
 
-    /* CONTAINER PRINCIPAL */
     main {
       flex: 1;
     }
 
-    /* ÁREA DO BANNER DE IMAGEM (seu vídeo/mp4 vai aqui) */
+    /* BANNER DE IMAGEM */
     .hero {
       width: min(1000px, 94vw);
       margin: 1.4rem auto 0;
       border-radius: 16px;
       overflow: hidden;
     }
-    .hero video,
-    .hero img {
+    .hero img,
+    .hero video {
       width: 100%;
       display: block;
     }
@@ -167,7 +166,7 @@
     /* ====== MENU OVERLAY ====== */
     .menu-overlay {
       position: fixed;
-      top: 60px; /* abaixo do header */
+      top: 60px;
       right: 0;
       width: 280px;
       max-width: 90vw;
@@ -179,26 +178,30 @@
       z-index: 999;
       display: flex;
       flex-direction: column;
-      gap: .6rem;
-      padding: 1rem;
+      gap: .55rem;
+      padding: 1rem .6rem 1.5rem;
       box-sizing: border-box;
+      align-items: center; /* centralizar botões */
     }
 
     .menu-overlay.show {
       transform: translateX(0);
     }
 
+    /* botões ENXUTOS do menu */
     .menu-link {
+      width: 220px;                 /* largura enxuta pra caber "Serviços Adicionais" */
       background: linear-gradient(180deg, #d9d9d9, #af91a1);
       border: 3px solid #7d2f59;
       border-radius: 12px;
       color: #003735;
       text-decoration: none;
       font-weight: 700;
-      padding: .45rem .7rem;
+      padding: .42rem .4rem;
       text-align: center;
       display: block;
       transition: .2s;
+      font-size: .77rem;
     }
     .menu-link:hover {
       filter: brightness(1.04);
@@ -261,6 +264,12 @@
       .menu-overlay {
         width: 100%;
         max-width: 100%;
+        right: 0;
+        left: 0;
+      }
+
+      .menu-link {
+        width: 230px;   /* um tiquinho maior pra mobile */
       }
 
       header {
@@ -271,7 +280,6 @@
 </head>
 <body>
   <header>
-    <!-- logo vem da pasta assets -->
     <img src="assets/logomarca.svg" alt="MostreAki">
     <button class="hamburger" id="btn-menu" aria-label="Abrir menu">
       <span></span>
@@ -282,7 +290,7 @@
 
   <!-- overlay do menu -->
   <nav class="menu-overlay" id="menu-overlay">
-    <!-- página inicial NÃO aparece pq estamos nela -->
+    <!-- página inicial não aparece pq estamos nela -->
     <a href="/sobre.html" class="menu-link">Sobre</a>
     <a href="/minha-conta.html" class="menu-link">Minha Conta</a>
     <a href="/planos.html" class="menu-link">Planos</a>
@@ -293,9 +301,8 @@
   </nav>
 
   <main>
-    <!-- seu banner de imagem / vídeo -->
+    <!-- banner -->
     <div class="hero">
-      <!-- você troca esse img por <video ...> se quiser -->
       <img src="banner-desktop-index.jpg" alt="Banner MostreAki">
     </div>
 
@@ -340,7 +347,6 @@
       overlay.classList.toggle('show');
     });
 
-    // fecha ao clicar em um link
     overlay.querySelectorAll('a').forEach(link => {
       link.addEventListener('click', () => {
         overlay.classList.remove('show');
