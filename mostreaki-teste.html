@@ -28,19 +28,20 @@
     background: linear-gradient(90deg, rgba(170,188,187,0.6), rgba(170,188,187,0));
     display: flex;
     align-items: center;
-    justify-content: space-between;
     padding: 0 1.5rem;
   }
-  header img { height: 34px; }
 
-  /* CONTAINER DESKTOP */
+  header img {
+    height: 34px;
+  }
+
+  /* ====== DESKTOP (padrão) ====== */
   .menu-opcoes {
     width: min(1100px, 96vw);
     margin: 2.3rem auto 3rem;
     display: flex;
     justify-content: space-between;
     gap: 1.4rem;
-    flex-wrap: nowrap;
   }
 
   .hex-group {
@@ -53,15 +54,16 @@
     transition: .3s;
   }
 
-  /* ziguezague horizontal desktop */
+  /* ziguezague desktop */
   .hex-group:nth-child(2),
   .hex-group:nth-child(4) {
     transform: translateY(-40px);
   }
 
+  /* hexágono */
   .hex {
     width: 150px;
-    height: calc(150px * 0.866); /* hex perfeito */
+    height: 130px; /* 150 * 0.866  ≈ 130 */
     border: 3px solid var(--bordo);
     clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
     overflow: hidden;
@@ -78,6 +80,7 @@
     transition: .3s;
   }
 
+  /* botão */
   .hex-btn {
     position: absolute;
     left: 50%;
@@ -89,7 +92,7 @@
     font-weight: 700;
     font-size: .78rem;
     text-align: center;
-    color: #003735;
+    color: var(--texto);
     cursor: pointer;
     opacity: .5;
     backdrop-filter: blur(5px);
@@ -98,6 +101,7 @@
     min-width: 150px;
   }
 
+  /* botões alternando cima/baixo */
   .hex-group:nth-child(1) .hex-btn { bottom: -12px; }
   .hex-group:nth-child(2) .hex-btn { top: -12px; }
   .hex-group:nth-child(3) .hex-btn { bottom: -12px; }
@@ -116,36 +120,35 @@
     transform: scale(1.03);
   }
 
-  /* ========= MOBILE ========= */
+  /* ====== MOBILE ====== */
   @media (max-width: 768px) {
-    /* vira GRID de 2 colunas */
+    /* vira grid de 2 colunas */
     .menu-opcoes {
       display: grid;
       grid-template-columns: repeat(2, minmax(140px, 1fr));
-      gap: 1.6rem 1rem; /* vertical maior, horizontal menor */
+      gap: 1.6rem 1rem; /* espaço vertical maior pra não encostar botão com botão */
       justify-items: center;
     }
 
     .hex-group {
       width: 150px;
-      height: 210px;
+      height: auto;
     }
 
     .hex {
       width: 130px;
-      height: calc(130px * 0.866);
+      height: 113px; /* 130 * 0.866 */
     }
 
     .hex-btn {
-      position: static;         /* botão volta a ficar logo abaixo */
+      position: static;   /* volta pra baixo do hex */
       transform: none;
       margin-top: .5rem;
       min-width: 100%;
       font-size: .7rem;
-      text-align: center;
     }
 
-    /* ziguezague vertical: pares descem um pouco */
+    /* ziguezague vertical: pares descem um pouquinho */
     .hex-group:nth-child(2),
     .hex-group:nth-child(4) {
       transform: translateY(18px);
