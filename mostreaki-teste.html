@@ -63,7 +63,7 @@
   /* hexágono */
   .hex {
     width: 150px;
-    height: 130px; /* 150 * 0.866  ≈ 130 */
+    height: 130px; /* proporção do hex */
     border: 3px solid var(--bordo);
     clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
     overflow: hidden;
@@ -101,7 +101,7 @@
     min-width: 150px;
   }
 
-  /* botões alternando cima/baixo */
+  /* botões alternando cima/baixo no desktop */
   .hex-group:nth-child(1) .hex-btn { bottom: -12px; }
   .hex-group:nth-child(2) .hex-btn { top: -12px; }
   .hex-group:nth-child(3) .hex-btn { bottom: -12px; }
@@ -122,17 +122,22 @@
 
   /* ====== MOBILE ====== */
   @media (max-width: 768px) {
-    /* vira grid de 2 colunas */
+    /* vira 2 colunas, igual seu print */
     .menu-opcoes {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(140px, 1fr));
-      gap: 1.6rem 1rem; /* espaço vertical maior pra não encostar botão com botão */
-      justify-items: center;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.1rem;
+      justify-content: center;
     }
 
     .hex-group {
-      width: 150px;
+      width: 47%;
       height: auto;
+      transform: none !important; /* tira o ziguezague do desktop */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .35rem;
     }
 
     .hex {
@@ -141,22 +146,17 @@
     }
 
     .hex-btn {
-      position: static;   /* volta pra baixo do hex */
+      position: static;
       transform: none;
-      margin-top: .5rem;
       min-width: 100%;
       font-size: .7rem;
+      opacity: .5;
     }
 
-    /* ziguezague vertical: pares descem um pouquinho */
+    /* só pra dar aquele “desnível” leve na vertical */
     .hex-group:nth-child(2),
     .hex-group:nth-child(4) {
-      transform: translateY(18px);
-    }
-    .hex-group:nth-child(1),
-    .hex-group:nth-child(3),
-    .hex-group:nth-child(5) {
-      transform: translateY(0);
+      margin-top: 1.4rem;
     }
   }
   </style>
