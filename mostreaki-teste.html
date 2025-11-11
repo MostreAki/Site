@@ -31,11 +31,9 @@
     padding: 0 1.5rem;
   }
 
-  header img {
-    height: 34px;
-  }
+  header img { height: 34px; }
 
-  /* ====== DESKTOP (padrão) ====== */
+  /* ====== DESKTOP ====== */
   .menu-opcoes {
     width: min(1100px, 96vw);
     margin: 2.3rem auto 3rem;
@@ -54,16 +52,14 @@
     transition: .3s;
   }
 
-  /* ziguezague desktop */
   .hex-group:nth-child(2),
   .hex-group:nth-child(4) {
     transform: translateY(-40px);
   }
 
-  /* hexágono */
   .hex {
     width: 150px;
-    height: 130px; /* proporção do hex */
+    height: 130px;
     border: 3px solid var(--bordo);
     clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
     overflow: hidden;
@@ -80,7 +76,6 @@
     transition: .3s;
   }
 
-  /* botão */
   .hex-btn {
     position: absolute;
     left: 50%;
@@ -101,14 +96,12 @@
     min-width: 150px;
   }
 
-  /* botões alternando cima/baixo no desktop */
   .hex-group:nth-child(1) .hex-btn { bottom: -12px; }
   .hex-group:nth-child(2) .hex-btn { top: -12px; }
   .hex-group:nth-child(3) .hex-btn { bottom: -12px; }
   .hex-group:nth-child(4) .hex-btn { top: -12px; }
   .hex-group:nth-child(5) .hex-btn { bottom: -12px; }
 
-  /* hover conjunto */
   .hex-group:hover .hex,
   .hex-group:hover .hex img,
   .hex-group:hover .hex-btn {
@@ -122,7 +115,6 @@
 
   /* ====== MOBILE ====== */
   @media (max-width: 768px) {
-    /* vira 2 colunas, igual seu print */
     .menu-opcoes {
       display: flex;
       flex-wrap: wrap;
@@ -133,27 +125,28 @@
     .hex-group {
       width: 47%;
       height: auto;
-      transform: none !important; /* tira o ziguezague do desktop */
+      transform: none !important;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: .35rem;
+      gap: .25rem;
     }
 
     .hex {
-      width: 130px;
-      height: 113px; /* 130 * 0.866 */
+      width: 125px;
+      height: 108px;
     }
 
     .hex-btn {
       position: static;
       transform: none;
       min-width: 100%;
-      font-size: .7rem;
+      font-size: .62rem;
+      padding: .25rem .6rem;
+      border-width: 2px;
       opacity: .5;
     }
 
-    /* só pra dar aquele “desnível” leve na vertical */
     .hex-group:nth-child(2),
     .hex-group:nth-child(4) {
       margin-top: 1.4rem;
@@ -168,37 +161,27 @@
 
   <section class="menu-opcoes">
     <div class="hex-group">
-      <div class="hex">
-        <img src="planos.jpg" alt="Como Funciona">
-      </div>
+      <div class="hex"><img src="planos.jpg" alt="Como Funciona"></div>
       <div class="hex-btn">Como Funciona?</div>
     </div>
 
     <div class="hex-group">
-      <div class="hex">
-        <img src="planos.jpg" alt="Instruções">
-      </div>
+      <div class="hex"><img src="planos.jpg" alt="Instruções"></div>
       <div class="hex-btn">Instruções</div>
     </div>
 
     <div class="hex-group">
-      <div class="hex">
-        <img src="planos.jpg" alt="Serviços Adicionais">
-      </div>
+      <div class="hex"><img src="planos.jpg" alt="Serviços Adicionais"></div>
       <div class="hex-btn">Serviços Adicionais</div>
     </div>
 
     <div class="hex-group">
-      <div class="hex">
-        <img src="planos.jpg" alt="Parceiros">
-      </div>
+      <div class="hex"><img src="planos.jpg" alt="Parceiros"></div>
       <div class="hex-btn">Parceiros</div>
     </div>
 
     <div class="hex-group">
-      <div class="hex">
-        <img src="planos.jpg" alt="Redes Sociais">
-      </div>
+      <div class="hex"><img src="planos.jpg" alt="Redes Sociais"></div>
       <div class="hex-btn">Redes Sociais</div>
     </div>
   </section>
