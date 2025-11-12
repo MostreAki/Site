@@ -13,9 +13,11 @@
       --header-footer: #cde0e0;
       --bordo: #7d2f59;
       --texto: #003735;
-      --grad1: #e1cee5;
-      --grad2: #9f9f9f;
+      --grad1: #d9d9d9;
+      --grad2: #af91a1;
     }
+
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -27,7 +29,7 @@
       flex-direction: column;
     }
 
-    /* CABEÇALHO */
+    /* ===== Cabeçalho ===== */
     header {
       height: 60px;
       background: var(--header-footer);
@@ -36,79 +38,90 @@
       justify-content: space-between;
       padding: 0 1.5rem;
       box-sizing: border-box;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
     }
+    header img { height: 47px; display: block; }
 
-    header img {
-      height: 47px; /* +30% */
-      display: block;
-    }
-
-    /* HAMBURGUER */
     .hamburger {
-      width: 29px;  /* -30% */
-      height: 22px; /* -30% */
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+      width: 29px; height: 22px;
+      background: transparent; border: none; cursor: pointer;
+      display: flex; flex-direction: column; justify-content: space-between;
       padding: 2px 0;
     }
-
     .hamburger span {
-      display: block;
-      height: 3px;
-      border-radius: 20px;
-      background: #003735;
+      display: block; height: 3px; border-radius: 20px; background: #003735;
     }
 
-    main {
-      flex: 1;
+    /* ===== Menu lateral ===== */
+    .menu-overlay{
+      position: fixed; top: 60px; right: 0;
+      width: 280px; max-width: 90vw;
+      background: #92a9a6; box-shadow: -4px 0 12px rgba(0,0,0,.09);
+      height: calc(100vh - 60px);
+      transform: translateX(100%); transition: transform .25s ease;
+      z-index: 999; display: flex; flex-direction: column; gap: .55rem; padding: 1rem;
     }
+    .menu-overlay.show { transform: translateX(0); }
+    .menu-link {
+      width: 210px; max-width: 92vw; align-self: center; white-space: nowrap;
+      background: linear-gradient(180deg, var(--grad1), var(--grad2));
+      border: 3px solid var(--bordo); border-radius: 12px;
+      color: var(--texto); text-decoration: none; font-weight: 700;
+      padding: .4rem .4rem; text-align: center; transition: .2s;
+    }
+    .menu-link:hover { filter: brightness(1.04); }
 
-    /* BANNER DE IMAGEM */
-    .hero {
-      width: min(1000px, 94vw);
-      margin: 1.4rem auto 0;
-      border-radius: 16px;
+    main { flex: 1; }
+
+    /* ===== HERO / Carrossel ===== */
+    .banner-wrapper {
+      width: min(1100px, 94vw);
+      margin: 1.6rem auto 1.6rem; /* margem inferior reduzida */
+      position: relative;
+    }
+    .banner-slider {
       overflow: hidden;
+      border-radius: 18px;
+      background: rgba(0,0,0,.05);
     }
-
-    .hero img,
-    .hero video {
-      width: 100%;
-      display: block;
+    .banner-track {
+      display: flex;
+      transition: transform .35s ease;
+      touch-action: pan-y;
     }
+    .banner-slide { min-width: 100%; background:#000; }
+    .banner-slide video,
+    .banner-slide img { width: 100%; display:block; height: auto; }
 
-    /* ========= HEXÁGONOS DESKTOP ========= */
+    .banner-desktop { display: none; }
+    .banner-mobile  { display: block; }
+
+    .banner-dots {
+      display: flex; gap: .5rem; justify-content: center; margin-top: .6rem;
+    }
+    .banner-dot {
+      width: 10px; height: 10px; border-radius: 50%;
+      background: rgba(255,255,255,.4);
+      border: 2px solid rgba(0,0,0,.15);
+      cursor: pointer; transition: .2s;
+    }
+    .banner-dot.active { background: #ffffff; border-color: rgba(0,0,0,.35); }
+
+    /* ===== Hexágonos ===== */
     .menu-opcoes {
       width: min(1100px, 96vw);
-      margin: 2.8rem auto 3rem;
-      display: flex;
-      justify-content: space-between;
-      gap: 1rem;
+      margin: 3.4rem auto 3.2rem; /* abaixado em relação ao banner */
+      display: flex; gap: 1rem; justify-content: space-between; flex-wrap: wrap;
     }
-
     .hex-group {
-      position: relative;
-      width: 180px;
-      height: 240px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      transition: .3s;
+      position: relative; width: 180px; height: 240px;
+      display: flex; justify-content: center; align-items: center; transition:.3s;
     }
-
-    /* ziguezague desktop */
     .hex-group:nth-child(2),
-    .hex-group:nth-child(4) {
-      transform: translateY(-40px);
-    }
+    .hex-group:nth-child(4) { transform: translateY(-40px); }
 
     .hex {
-      width: 150px;
-      height: 130px;
+      width: 150px; height: 130px;
       border: 3px solid var(--bordo);
       clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
       overflow: hidden;
@@ -116,194 +129,86 @@
       backdrop-filter: blur(4px);
       transition: .3s;
     }
-
-    .hex img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: .5;
-      transition: .3s;
-    }
+    .hex img { width: 100%; height: 100%; object-fit: cover; opacity: .5; transition:.3s; }
 
     .hex-btn {
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      background: linear-gradient(180deg, #d9d9d9, #af91a1);
-      border: 3px solid var(--bordo);
-      border-radius: 12px;
-      padding: .35rem .8rem;
-      font-weight: 700;
-      font-size: .78rem;
-      text-align: center;
-      color: var(--texto);
-      cursor: pointer;
-      opacity: .5;
-      backdrop-filter: blur(5px);
-      transition: .3s;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.15);
-      min-width: 150px;
+      position: absolute; left: 50%; transform: translateX(-50%);
+      background: linear-gradient(180deg, var(--grad1), var(--grad2));
+      border: 3px solid var(--bordo); border-radius: 12px;
+      padding: .25rem .8rem; /* altura menor */
+      font-weight: 700; font-size: .78rem;
+      text-align: center; color: var(--texto); cursor: pointer;
+      opacity: .5; backdrop-filter: blur(5px); transition: .3s;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.15); min-width: 150px;
     }
 
-    /* alternância de posição dos botões */
-    .hex-group:nth-child(1) .hex-btn { bottom: -12px; }
-    .hex-group:nth-child(2) .hex-btn { top: -12px; }
-    .hex-group:nth-child(3) .hex-btn { bottom: -12px; }
-    .hex-group:nth-child(4) .hex-btn { top: -12px; }
-    .hex-group:nth-child(5) .hex-btn { bottom: -12px; }
+    /* Ajuste das posições verticais dos botões — mais próximos ao hexágono */
+    .hex-group:nth-child(1) .hex-btn { bottom: -6px; }
+    .hex-group:nth-child(2) .hex-btn { top: -6px; }
+    .hex-group:nth-child(3) .hex-btn { bottom: -6px; }
+    .hex-group:nth-child(4) .hex-btn { top: -6px; }
+    .hex-group:nth-child(5) .hex-btn { bottom: -6px; }
 
-    /* hover conjunto (DESKTOP) */
+    /* hover desktop */
     .hex-group:hover .hex,
     .hex-group:hover .hex img,
     .hex-group:hover .hex-btn {
-      opacity: 1;
-      filter: brightness(1.04);
-      backdrop-filter: blur(9px);
+      opacity: 1; filter: brightness(1.04); backdrop-filter: blur(9px);
     }
+    .hex-group:hover .hex { transform: scale(1.03); }
 
-    .hex-group:hover .hex {
-      transform: scale(1.03);
-    }
-
-    /* ========= MENU LATERAL ========= */
-    .menu-overlay {
-      position: fixed;
-      top: 60px;
-      right: 0;
-      width: 280px;
-      max-width: 90vw;
-      background: #92a9a6;
-      box-shadow: -4px 0 12px rgba(0,0,0,.09);
-      height: calc(100vh - 60px);
-      transform: translateX(100%);
-      transition: transform .25s ease;
-      z-index: 999;
-      display: flex;
-      flex-direction: column;
-      gap: .55rem;
-      padding: 1rem;
-      box-sizing: border-box;
-    }
-
-    .menu-overlay.show {
-      transform: translateX(0);
-    }
-
-    .menu-link {
-      width: 210px;
-      max-width: 92vw;
-      background: linear-gradient(180deg, #d9d9d9, #af91a1);
-      border: 3px solid #7d2f59;
-      border-radius: 12px;
-      color: #003735;
-      text-decoration: none;
-      font-weight: 700;
-      padding: .4rem .4rem;
-      text-align: center;
-      transition: .2s;
-      align-self: center;
-      white-space: nowrap;
-    }
-
-    .menu-link:hover {
-      filter: brightness(1.04);
-    }
-
-    /* RODAPÉ */
+    /* ===== Rodapé ===== */
     footer {
       background: var(--header-footer);
       text-align: center;
-      padding: 1rem 0 1.4rem;
-      font-size: .85rem;
+      padding: 1rem 0 1.4rem; font-size: .85rem;
     }
 
-    /* ========= MOBILE ========= */
+    /* ===== Breakpoints ===== */
     @media (max-width: 768px) {
-      header {
-        padding: 0 .9rem;
-      }
+      header { padding: 0 .9rem; }
 
-      .hero {
-        width: 100%;
-        border-radius: 0;
-      }
+      .menu-overlay { width: 280px; max-width: 85vw; }
+      .menu-link { width: 210px; max-width: 100%; }
+
+      .banner-wrapper { width: 100%; border-radius: 0; margin-top: 1.2rem; }
+      .banner-slider { border-radius: 0; }
 
       .menu-opcoes {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 1.1rem;
-        justify-content: center;
-        margin-top: 2.3rem;
+        display:flex; flex-wrap:wrap; gap:1.1rem; justify-content:center;
+        margin-top:2.3rem;
       }
-
-      .hex-group {
-        width: 47%;
-        height: auto;
-        transform: none !important;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: .3rem;
-        /* touch feedback */
-      }
-
-      /* mobile: hex mais sólido e imagem 100% */
-      .hex {
-        width: 125px;
-        height: 108px;
-        background: rgba(255,255,255,0.9); /* ~90% */
-        backdrop-filter: blur(2px);
-      }
-
-      .hex img {
-        opacity: 1; /* mostra tudo no mobile */
-      }
-
+      .hex-group { width: 47%; height:auto; transform:none!important;
+        display:flex; flex-direction:column; align-items:center; gap:.3rem; }
+      .hex { width:125px; height:108px;
+        background: rgba(255,255,255,0.9); backdrop-filter: blur(2px); }
+      .hex img { opacity: 1; }
       .hex-btn {
-        position: static;
-        transform: none;
-        width: 75%;
-        font-size: .62rem;
-        padding: .25rem .6rem;
-        border-width: 2px;
-        opacity: 1;           /* botão 100% no mobile */
-        border-radius: 10px;
+        position: static; transform:none; width:75%;
+        font-size:.62rem; padding:.25rem .6rem; border-width:2px;
+        opacity:1; border-radius:10px;
       }
+      .hex-group:nth-child(2), .hex-group:nth-child(4) { margin-top:1.4rem; }
+      .hex-group:active .hex, .hex-group:active .hex-btn {
+        box-shadow: 0 0 12px 2px rgba(125,47,89,.75);
+      }
+    }
 
-      .hex-group:nth-child(2),
-      .hex-group:nth-child(4) {
-        margin-top: 1.4rem;
-      }
-
-      /* glow ao tocar no mobile */
-      .hex-group:active .hex,
-      .hex-group:active .hex-btn {
-        box-shadow: 0 0 12px 2px rgba(125, 47, 89, 0.75);
-      }
-
-      /* menu lateral também lateral no mobile */
-      .menu-overlay {
-        width: 280px;
-        max-width: 85vw;
-      }
-
-      .menu-link {
-        width: 210px;
-        max-width: 100%;
-      }
+    @media (min-width: 880px) {
+      .banner-desktop { display: block; }
+      .banner-mobile  { display: none;  }
     }
   </style>
 </head>
 <body>
   <header>
-    <img src="assets/logomarca.svg" alt="MostreAki">
+    <img src="/logomarca.svg" alt="MostreAki">
     <button class="hamburger" id="btn-menu" aria-label="Abrir menu">
-      <span></span>
-      <span></span>
-      <span></span>
+      <span></span><span></span><span></span>
     </button>
   </header>
 
+  <!-- Menu lateral -->
   <nav class="menu-overlay" id="menu-overlay">
     <a href="/sobre.html" class="menu-link">Sobre</a>
     <a href="/minha-conta.html" class="menu-link">Minha Conta</a>
@@ -315,33 +220,58 @@
   </nav>
 
   <main>
-    <div class="hero">
-      <img src="banner-desktop-index.jpg" alt="Banner MostreAki">
-    </div>
+    <!-- ===== Carrossel ===== -->
+    <section class="banner-wrapper">
+      <div class="banner-slider" id="bannerSlider">
+        <div class="banner-track" id="bannerTrack">
+          <div class="banner-slide banner-mobile">
+            <video src="planos-mobile-mostreaki.mp4" autoplay muted loop playsinline></video>
+          </div>
+          <div class="banner-slide banner-mobile">
+            <video src="parceiros-mobile-mostreaki.mp4" autoplay muted loop playsinline></video>
+          </div>
+          <div class="banner-slide banner-mobile">
+            <video src="servicos-adicionais-mobile-mostreaki.mp4" autoplay muted loop playsinline></video>
+          </div>
 
+          <div class="banner-slide banner-desktop">
+            <video src="planos-desktop-mostreaki.mp4" autoplay muted loop></video>
+          </div>
+          <div class="banner-slide banner-desktop">
+            <video src="parceiros-desktop-mostreaki.mp4" autoplay muted loop></video>
+          </div>
+          <div class="banner-slide banner-desktop">
+            <video src="servicos-adicionais-desktop-mostreaki.mp4" autoplay muted loop></video>
+          </div>
+        </div>
+      </div>
+      <div class="banner-dots" id="bannerDots">
+        <div class="banner-dot active" data-index="0"></div>
+        <div class="banner-dot" data-index="1"></div>
+        <div class="banner-dot" data-index="2"></div>
+      </div>
+    </section>
+
+    <!-- ===== Hexágonos ===== -->
     <section class="menu-opcoes">
       <div class="hex-group">
-        <div class="hex"><img src="planos.jpg" alt="Como Funciona"></div>
+        <div class="hex"><img src="como-funciona.png" alt="Como Funciona"></div>
         <div class="hex-btn">Como Funciona?</div>
       </div>
-
       <div class="hex-group">
-        <div class="hex"><img src="planos.jpg" alt="Instruções"></div>
+        <div class="hex"><img src="instrucoes.png" alt="Instruções"></div>
         <div class="hex-btn">Instruções</div>
       </div>
-
       <div class="hex-group">
-        <div class="hex"><img src="planos.jpg" alt="Serviços Adicionais"></div>
+        <div class="hex"><img src="servicos-adicionais.png" alt="Serviços Adicionais"></div>
         <div class="hex-btn">Serviços Adicionais</div>
       </div>
-
       <div class="hex-group">
-        <div class="hex"><img src="planos.jpg" alt="Parceiros"></div>
+        <div class="hex"><img src="parceiros.png" alt="Parceiros"></div>
         <div class="hex-btn">Parceiros</div>
       </div>
-
       <div class="hex-group">
-        <div class="hex"><img src="planos.jpg" alt="Redes Sociais"></div>
+        <div class="hex"><img src="redes-sociais.png" alt="Redes Sociais"></div>
         <div class="hex-btn">Redes Sociais</div>
       </div>
     </section>
@@ -354,16 +284,43 @@
   <script>
     const btnMenu = document.getElementById('btn-menu');
     const overlay = document.getElementById('menu-overlay');
+    btnMenu.addEventListener('click', () => overlay.classList.toggle('show'));
+    overlay.querySelectorAll('a').forEach(a => a.addEventListener('click', () => overlay.classList.remove('show')));
 
-    btnMenu.addEventListener('click', () => {
-      overlay.classList.toggle('show');
+    const track = document.getElementById("bannerTrack");
+    const dots  = document.querySelectorAll(".banner-dot");
+    const slider= document.getElementById("bannerSlider");
+    let current = 0;
+    const total = 3;
+
+    function setSlide(index) {
+      current = Math.max(0, Math.min(total - 1, index));
+      const width = slider.clientWidth;
+      track.style.transform = `translateX(-${width * current}px)`;
+      dots.forEach(d => d.classList.toggle("active", Number(d.dataset.index) === current));
+    }
+
+    dots.forEach(d => d.addEventListener("click", () => setSlide(Number(d.dataset.index))));
+
+    let startX = 0, dragging = false;
+    slider.addEventListener("touchstart", e => { dragging = true; startX = e.touches[0].clientX; }, {passive:true});
+    slider.addEventListener("touchend", e => {
+      if(!dragging) return; dragging = false;
+      const diff = e.changedTouches[0].clientX - startX;
+      if (diff > 40) setSlide(current - 1);
+      else if (diff < -40) setSlide(current + 1);
     });
 
-    overlay.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', () => {
-        overlay.classList.remove('show');
-      });
+    slider.addEventListener("mousedown", e => { dragging = true; startX = e.clientX; });
+    slider.addEventListener("mouseup", e => {
+      if(!dragging) return; dragging = false;
+      const diff = e.clientX - startX;
+      if (diff > 40) setSlide(current - 1);
+      else if (diff < -40) setSlide(current + 1);
     });
+
+    window.addEventListener("resize", () => setSlide(current));
+    setSlide(0);
   </script>
 </body>
 </html>
