@@ -17,24 +17,41 @@
       --grad2: #af91a1;
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     body {
-      margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-        sans-serif;
-      background: radial-gradient(circle at top, #d9e7f2 0, #aabcbb 40%, #5f7574 100%);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
       color: var(--texto);
     }
 
-    /* ===== Cabeçalho (padrão planos) ===== */
+    main {
+      max-width: 1200px;
+      margin: 0 auto 3rem;
+      padding: 1rem;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* ===== Header ===== */
     header {
-      background: var(--header-footer);
-      border-bottom: 3px solid var(--bordo);
-      padding: .4rem .9rem;
+      max-width: 1200px;
+      height: 60px;
+      margin: 0 auto;
+      padding: 0 1.2rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      background: var(--header-footer);
+      border-radius: 0 0 22px 22px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.12);
       position: sticky;
       top: 0;
       z-index: 999;
@@ -42,24 +59,21 @@
 
     header img {
       height: 55px;
-      max-width: 190px;
-      object-fit: contain;
-      display: block;
     }
 
     .hamburger {
-      width: 40px;
-      height: 40px;
+      width: 42px;
+      height: 42px;
       border-radius: 999px;
       border: 2px solid var(--bordo);
-      background: linear-gradient(180deg, var(--grad1), var(--grad2));
+      background: #fff;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-direction: column;
       gap: 4px;
       cursor: pointer;
-      padding: 0;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.18);
     }
 
     .hamburger span {
@@ -91,272 +105,71 @@
       padding: .55rem 1rem;
       text-align: center;
       color: var(--bordo);
-      text-decoration: none;
       font-weight: 600;
-      border: 2px solid rgba(0,0,0,.12);
-      box-shadow: 0 2px 6px rgba(0,0,0,.1);
-      font-size: .95rem;
+      border: 2px solid var(--bordo);
+      box-shadow: 0 2px 6px rgba(0,0,0,.15);
+      font-size: .9rem;
     }
+
     .menu-link:hover {
-      filter: brightness(1.03);
+      filter: brightness(1.05);
       transform: translateY(-1px);
     }
 
-    /* ===== Main com mesmo respiro do planos ===== */
-    main {
-      max-width: 1100px;
-      margin: 1.5rem auto 1.5rem;
-      padding: 0 1rem 2rem;
-    }
-
-    .hero {
-      display: grid;
-      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.2fr);
-      gap: 1.5rem;
-      align-items: center;
-      margin-bottom: 2rem;
-    }
-
-    .hero-text h1 {
-      font-family: "Poppins", system-ui, sans-serif;
-      font-size: clamp(1.9rem, 2.4vw + 1.4rem, 2.6rem);
-      color: var(--texto);
-      margin-top: 0;
-      margin-bottom: .6rem;
-    }
-
-    .hero-text p {
-      margin: 0 0 .75rem;
-      line-height: 1.55;
-      color: #0b221f;
-      font-size: .98rem;
-    }
-
-    .hero-text ul {
-      margin: .4rem 0 1rem 1.1rem;
-      padding: 0;
-      color: #133;
-      font-size: .94rem;
-    }
-
-    .hero-text li {
-      margin-bottom: .3rem;
-    }
-
-    .hero-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: .7rem;
-      margin-top: .8rem;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, var(--bordo), #af6187);
-      color: #fff;
-      border-radius: 999px;
-      border: none;
-      padding: .55rem 1.2rem;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: .95rem;
-      box-shadow: 0 3px 10px rgba(0,0,0,.25);
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: .35rem;
-    }
-    .btn-primary span.icon {
-      font-size: 1.1rem;
-    }
-
-    .btn-secondary {
-      background: transparent;
-      border-radius: 999px;
-      border: 2px solid #0b4d4c;
-      color: #0b4d4c;
-      padding: .5rem 1.1rem;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: .9rem;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: .35rem;
-    }
-
-    .hero-visual {
-      position: relative;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .hero-card {
-      position: relative;
-      width: 100%;
-      max-width: 380px;
-      background: radial-gradient(circle at top, #f3f7fb 0, #cfdce7 40%, #9aafba 100%);
+    /* ===== Banner carrossel ===== */
+    .banner-wrapper {
+      margin: 1.8rem auto 2.4rem;
+      width: min(1100px, 100%);
+      background: linear-gradient(135deg, rgba(255,255,255,.65), rgba(255,255,255,.25));
+      padding: 6px;
       border-radius: 26px;
-      padding: .9rem;
-      box-shadow: 0 18px 40px rgba(0,0,0,.35);
-      border: 2px solid rgba(0,0,0,.15);
+      box-shadow: 0 8px 24px rgba(0,0,0,.18);
+      border: 2px solid var(--bordo);
+    }
+
+    .banner-slider {
+      position: relative;
       overflow: hidden;
-    }
-
-    .hero-card-inner {
-      background: rgba(255,255,255,.75);
-      border-radius: 22px;
-      padding: .7rem .8rem .8rem;
-      display: grid;
-      grid-template-columns: auto minmax(0, 1fr);
-      gap: .7rem;
-      align-items: center;
-    }
-
-    .hero-avatar {
-      width: 75px;
-      height: 75px;
       border-radius: 20px;
-      background: #cfe3f7;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: .3rem;
-      box-shadow: inset 0 0 0 2px rgba(255,255,255,.8);
     }
 
-    .hero-avatar img {
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: contain;
+    .banner-track {
+      display: flex;
+      transition: transform .4s ease;
+    }
+
+    .banner-slide {
+      flex: 0 0 100%;
+    }
+
+    .banner-slide video {
+      width: 100%;
       display: block;
     }
 
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: .35rem;
-      font-size: .78rem;
-      background: rgba(12,76,74,.08);
-      color: #0b4d4c;
-      padding: .25rem .6rem;
-      border-radius: 999px;
-      margin-bottom: .3rem;
-    }
-
-    .hero-badge-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 999px;
-      background: #25d366;
-      box-shadow: 0 0 0 4px rgba(37,211,102,.35);
-    }
-
-    .hero-card h2 {
-      margin: 0 0 .15rem;
-      font-size: 1.05rem;
-      color: #0b221f;
-    }
-
-    .hero-card p {
-      margin: 0;
-      font-size: .82rem;
-      color: #244;
-      line-height: 1.4;
-    }
-
-    .hero-tagline {
-      margin-top: .35rem;
-      font-size: .8rem;
-      color: #fff;
-      text-align: center;
-      text-shadow: 0 1px 3px rgba(0,0,0,.4);
-    }
-
-    /* ===== Sessão "como funciona" ===== */
-    .section {
-      margin-top: 2.2rem;
-    }
-
-    .section h2 {
-      font-family: "Poppins", system-ui, sans-serif;
-      font-size: 1.4rem;
-      margin: 0 0 .5rem;
-      color: #0b221f;
+    .banner-dots {
       display: flex;
-      align-items: center;
-      gap: .4rem;
-    }
-
-    .section h2 span.icon {
-      font-size: 1.2rem;
-    }
-
-    .section p {
-      margin: 0 0 1rem;
-      font-size: .94rem;
-      color: #133;
-      line-height: 1.6;
-    }
-
-    .steps {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 1rem;
-      margin-top: .8rem;
-    }
-
-    .step {
-      background: rgba(255,255,255,.85);
-      border-radius: 16px;
-      padding: .8rem .8rem .9rem;
-      border: 2px solid rgba(0,0,0,.08);
-      box-shadow: 0 4px 12px rgba(0,0,0,.08);
-    }
-
-    .step-title {
-      font-weight: 700;
-      font-size: .95rem;
-      margin-bottom: .3rem;
-      color: #0b221f;
-      display: flex;
-      align-items: center;
-      gap: .3rem;
-    }
-
-    .step-title span.bullet {
-      width: 22px;
-      height: 22px;
-      border-radius: 999px;
-      background: linear-gradient(135deg, var(--bordo), #af6187);
-      display: inline-flex;
-      align-items: center;
       justify-content: center;
-      color: #fff;
-      font-size: .8rem;
+      gap: .4rem;
+      padding: .6rem 0 .2rem;
     }
 
-    .step p {
-      margin: 0;
-      font-size: .86rem;
-      color: #244;
+    .banner-dot {
+      width: 10px; height: 10px; border-radius: 50%;
+      background: rgba(255,255,255,.4);
+      border: 2px solid rgba(0,0,0,.15);
+      cursor: pointer; transition: .2s;
+    }
+    .banner-dot.active {
+      background: var(--bordo);
+      border-color: rgba(0,0,0,.35);
     }
 
     /* ===== Hexágonos ===== */
-    .hex-section {
-      margin-top: 2.5rem;
-    }
-
-    .hex-section p {
-      margin-bottom: .9rem;
-    }
-
-    .hex-grid {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 1.8rem;
-      margin-top: 1.4rem;
+    .menu-opcoes {
+      width: 100%;
+      margin: 2.6rem auto 3.2rem;
+      display: flex; gap: 1rem; justify-content: space-between; flex-wrap: wrap;
     }
     .hex-group {
       position: relative; width: 180px; height: 240px;
@@ -371,212 +184,122 @@
       clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
       overflow: hidden;
       background: rgba(255,255,255,0.03);
-      backdrop-filter: blur(14px);
-      box-shadow: 0 12px 35px rgba(0,0,0,.35);
-      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 8px rgba(0,0,0,.18);
       position: relative;
-    }
-    .hex::before{
-      content:"";
-      position:absolute; inset:0;
-      background: radial-gradient(circle at top, rgba(255,255,255,.55), transparent 55%);
-      opacity:.7;
-    }
-    .hex img {
-      max-width: 100px;
-      max-height: 100px;
-      object-fit: contain;
-      position: relative;
-      z-index: 1;
+      cursor: pointer;
+      transition: transform .25s ease, box-shadow .25s ease, background .25s ease;
     }
 
-    .hex-label {
-      position: absolute;
-      bottom: 4px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(0,0,0,.55);
-      color: #fff;
-      padding: 3px 7px;
-      border-radius: 999px;
-      font-size: .75rem;
+    .hex:hover {
+      transform: translateY(-6px);
+      background: radial-gradient(circle at top, rgba(255,255,255,.4), rgba(255,255,255,0.02));
+      box-shadow: 0 8px 24px rgba(0,0,0,.2);
+    }
+
+    .hex::before {
+      content: "";
+      position: absolute; inset: 0;
+      background: linear-gradient(180deg, var(--grad1), var(--grad2));
+      opacity: 0.12;
+    }
+
+    .hex-content {
+      position: relative; z-index: 1;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      height: 100%;
+      text-align: center;
+      padding: .5rem;
+    }
+
+    .hex-icon {
+      width: 42px; height: 42px; border-radius: 999px;
+      background: #fff; border: 2px solid var(--bordo);
+      display:flex; align-items:center; justify-content:center;
+      margin-bottom: .4rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,.15);
+      font-size: 1.3rem;
+    }
+
+    .hex-title {
+      font-weight: 700;
+      font-size: .9rem;
+      color: var(--bordo);
+      margin-bottom: .15rem;
+    }
+
+    .hex-desc {
+      font-size: .78rem;
+      color: #123;
     }
 
     .hex-btn {
-      margin-top: .5rem;
-      display: inline-flex;
-      padding: .4rem .9rem;
-      border-radius: 999px;
-      background: #0b4d4c;
-      color: #fff;
-      text-decoration: none;
-      font-size: .82rem;
-      font-weight: 600;
-      box-shadow: 0 3px 10px rgba(0,0,0,.3);
-    }
-
-    .hex-group:hover {
-      transform: translateY(-8px);
-    }
-
-    /* ===== Slider ("vitrine") ===== */
-    .slider-section {
-      margin-top: 2.8rem;
-    }
-
-    .slider {
-      margin-top: 1rem;
-      background: rgba(7,32,34,.75);
-      backdrop-filter: blur(14px);
-      border-radius: 22px;
-      padding: 1rem .8rem 1.1rem;
-      box-shadow: 0 16px 35px rgba(0,0,0,.45);
-      border: 2px solid rgba(0,0,0,.25);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .slider-inner {
-      display: flex;
-      transition: transform .45s ease;
-    }
-
-    .slide {
-      min-width: 100%;
-      padding: 0 .3rem;
-      display: grid;
-      grid-template-columns: 1.3fr 1fr;
-      gap: 1rem;
-      align-items: center;
-      color: #f7f9fc;
-    }
-
-    .slide-info h3 {
-      margin: 0 0 .4rem;
-      font-size: 1.1rem;
-      display: flex;
-      align-items: center;
-      gap: .4rem;
-    }
-
-    .slide-info p {
-      margin: 0 0 .5rem;
-      font-size: .9rem;
-      line-height: 1.5;
-    }
-
-    .slide-badges {
-      display: flex;
-      flex-wrap: wrap;
-      gap: .4rem;
-      margin-top: .4rem;
-    }
-
-    .slide-badge {
+      margin-top: .35rem;
       font-size: .78rem;
-      padding: .25rem .6rem;
+      padding: .2rem .6rem;
       border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.7);
-      background: rgba(0,0,0,.25);
-    }
-
-    .slide-device {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .device-mock {
-      width: 200px;
-      max-width: 80%;
-      border-radius: 22px;
-      border: 3px solid rgba(0,0,0,.8);
-      background: radial-gradient(circle at top, #e8f1fb 0, #bfcfe1 45%, #7b8799 100%);
-      padding: 6px;
-      position: relative;
-      box-shadow: 0 12px 35px rgba(0,0,0,.6);
-    }
-
-    .device-screen {
-      background: #111827;
-      border-radius: 16px;
-      padding: 6px;
-      color: #f9fafb;
-      font-size: .7rem;
-      display: grid;
-      grid-template-rows: auto 1fr;
-      gap: .3rem;
-    }
-
-    .device-header {
-      display: flex;
-      justify-content: space-between;
-      font-size: .65rem;
-      opacity: .8;
-    }
-
-    .device-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: .25rem;
-    }
-
-    .device-item {
-      background: #1f2937;
-      border-radius: 8px;
-      padding: .25rem .3rem;
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .device-item span.title {
-      font-size: .65rem;
-      font-weight: 600;
-    }
-
-    .device-item span.price {
-      font-size: .6rem;
-      color: #a5b4fc;
-    }
-
-    .slider-dots {
-      margin-top: .7rem;
-      display: flex;
-      justify-content: center;
-      gap: .3rem;
-    }
-
-    .dot {
-      width: 9px;
-      height: 9px;
-      border-radius: 999px;
-      background: rgba(255,255,255,.35);
+      border: 1px solid var(--bordo);
+      background: rgba(255,255,255,.8);
       cursor: pointer;
     }
 
-    .dot.active {
-      background: #ffffff;
-      box-shadow: 0 0 0 3px rgba(255,255,255,.25);
-    }
-
-    .slider-hint {
-      margin-top: .5rem;
-      font-size: .8rem;
+    /* ===== Texto de destaque ===== */
+    .hero-texto {
+      max-width: 860px;
+      margin: 0 auto 2.4rem;
       text-align: center;
-      color: #e5f0f0;
-      opacity: .9;
+      background: rgba(255,255,255,.7);
+      padding: 1.2rem 1.4rem;
+      border-radius: 18px;
+      border: 1px solid rgba(0,0,0,.06);
+      box-shadow: 0 4px 10px rgba(0,0,0,.12);
+    }
+    .hero-texto h1 {
+      font-family: "Poppins", system-ui, sans-serif;
+      margin-bottom: .5rem;
+      font-size: 1.4rem;
+      color: var(--bordo);
+    }
+    .hero-texto p {
+      font-size: .94rem;
+      line-height: 1.6;
+      color: #123;
     }
 
     /* ===== Rodapé ===== */
     footer {
       background: var(--header-footer);
-      border-top: 3px solid var(--bordo);
-      text-align: center;
-      padding: .7rem .5rem;
-      font-size: .85rem;
+      padding: 1rem 1.2rem;
+      border-radius: 24px 24px 0 0;
+      box-shadow: 0 -2px 6px rgba(0,0,0,0.12);
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    footer .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      font-size: 0.85rem;
       color: #234;
-      margin-top: 1rem;
+    }
+
+    footer .footer-inner a {
+      color: var(--bordo);
+      font-weight: 600;
+    }
+
+    .footer-right {
+      display: flex;
+      gap: .75rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .footer-right span {
+      opacity: .9;
     }
 
     /* ===== Login / avatar ===== */
@@ -770,43 +493,42 @@
       border:1px solid #d7bfd0;
     }
 
-    /* ===== Responsivo ===== */
-    @media (max-width: 880px) {
-      .hero {
-        grid-template-columns: minmax(0,1fr);
-        gap: 1.4rem;
+    /* ===== Breakpoints ===== */
+    @media (max-width: 768px) {
+      header { padding: 0 .9rem; }
+
+      .menu-overlay { width: 280px; max-width: 85vw; }
+      .menu-link { width: 210px; max-width: 100%; }
+
+      .banner-wrapper { width: 100%; border-radius: 0; }
+      .banner-slider { border-radius: 0; }
+
+      .menu-opcoes {
+        display:flex; flex-wrap:wrap; gap:1.1rem;
+        justify-content:center; margin-top:2.3rem;
       }
-      .hero-visual {
-        order: -1;
+
+      .hex-group {
+        height: 210px;
       }
-      .steps {
-        grid-template-columns: minmax(0, 1fr);
-      }
-      .slide {
-        grid-template-columns: minmax(0,1fr);
-      }
-      .device-mock {
-        margin-top: .4rem;
+      .hex-group:nth-child(2),
+      .hex-group:nth-child(4) { transform: translateY(0); }
+
+      footer .footer-inner {
+        flex-direction: column;
+        align-items: flex-start;
       }
     }
 
-    @media (max-width: 640px) {
-      main {
-        margin-top: 1rem;
+    @media (max-width: 480px) {
+      .hero-texto {
+        padding: 1rem 0.9rem;
       }
-      .hero-card {
-        max-width: 320px;
+      .hero-texto h1 {
+        font-size: 1.18rem;
       }
-      .hex-group {
-        width: 160px; height: 230px;
-      }
-      .hex {
-        width: 140px; height: 120px;
-      }
-      .hex-group:nth-child(2),
-      .hex-group:nth-child(4) {
-        transform: translateY(-30px);
-      }
+      header img { height: 48px; }
+      .hex-group { width: 48%; min-width: 150px; }
     }
   </style>
 </head>
@@ -875,333 +597,159 @@
   </div>
 
   <main>
-    <!-- Hero -->
-    <section class="hero">
-      <div class="hero-text">
-        <h1>Sua marca em destaque, do jeito certo.</h1>
-        <p>
-          O <b>MostreAki</b> foi criado para ser a ponte entre a sua identidade e o mundo
-          digital: vitrine, catálogo, links e presença organizada em um só lugar.
-        </p>
-        <ul>
-          <li>Apresente sua marca com um site responsivo e profissional.</li>
-          <li>Mostre seus produtos em um catálogo digital claro e fácil de navegar.</li>
-          <li>Conecte tudo às suas redes sociais e canais de contato.</li>
-        </ul>
-        <div class="hero-actions">
-          <a href="/planos.html" class="btn-primary">
-            <span class="icon">🚀</span>
-            Ver planos e começar
-          </a>
-          <a href="/sobre.html" class="btn-secondary">
-            <span class="icon">📌</span>
-            Entender melhor o MostreAki
-          </a>
+    <!-- ===== Carrossel 6 banners ===== -->
+    <section class="banner-wrapper">
+      <div class="banner-slider" id="bannerSlider">
+        <div class="banner-track" id="bannerTrack">
+          <!-- mobile -->
+          <div class="banner-slide banner-mobile">
+            <video src="planos-mobile-mostreaki.mp4" autoplay muted loop playsinline></video>
+          </div>
+          <div class="banner-slide banner-mobile">
+            <video src="parceiros-mobile-mostreaki.mp4" autoplay muted loop playsinline></video>
+          </div>
+          <div class="banner-slide banner-mobile">
+            <video src="servicos-adicionais-mobile-mostreaki.mp4" autoplay muted loop playsinline></video>
+          </div>
+
+          <!-- desktop -->
+          <div class="banner-slide banner-desktop">
+            <video src="planos-desktop-mostreaki.mp4" autoplay muted loop></video>
+          </div>
+          <div class="banner-slide banner-desktop">
+            <video src="parceiros-desktop-mostreaki.mp4" autoplay muted loop></video>
+          </div>
+          <div class="banner-slide banner-desktop">
+            <video src="servicos-adicionais-desktop-mostreaki.mp4" autoplay muted loop></video>
+          </div>
         </div>
       </div>
-
-      <div class="hero-visual">
-        <div class="hero-card">
-          <div class="hero-card-inner">
-            <div class="hero-avatar">
-              <img src="/guieaki-tablet.png" alt="GuieAki com tablet">
-            </div>
-            <div>
-              <div class="hero-badge">
-                <span class="hero-badge-dot"></span>
-                Acompanhamento MostreAki
-              </div>
-              <h2>GuieAki cuida da vitrine, você cuida do seu negócio.</h2>
-              <p>
-                Enquanto você cria, produz e atende, o MostreAki organiza sua presença digital
-                e mantém sua marca sempre apresentável.
-              </p>
-            </div>
-          </div>
-          <div class="hero-tagline">
-            Vitrine digital + catálogo + marca: tudo trabalhando junto por você.
-          </div>
-        </div>
+      <div class="banner-dots" id="bannerDots">
+        <div class="banner-dot active" data-index="0"></div>
+        <div class="banner-dot" data-index="1"></div>
+        <div class="banner-dot" data-index="2"></div>
       </div>
     </section>
 
-    <!-- Como funciona -->
-    <section class="section">
-      <h2><span class="icon">✨</span>Como o MostreAki funciona na prática?</h2>
+    <!-- Texto de destaque -->
+    <section class="hero-texto">
+      <h1>MostreAki: sua marca em destaque, com catálogo digital integrado</h1>
       <p>
-        Em vez de ter cada coisa espalhada (rede social de um lado, catálogo em outro, link perdido em bio),
-        o MostreAki reúne tudo em um site responsivo pensado para valorizar a sua identidade visual.
+        O MostreAki nasceu para dar visibilidade à sua marca, mostrar seus serviços,
+        conteúdos e catálogo de produtos de forma clara, organizada e acessível,
+        tanto no computador quanto no celular.
       </p>
-
-      <div class="steps">
-        <div class="step">
-          <div class="step-title">
-            <span class="bullet">1</span>
-            Configuração da sua marca
-          </div>
-          <p>
-            Ajustamos cores, logotipo e banner principal para que seu site tenha a cara da sua marca
-            e não pareça “mais um template genérico”.
-          </p>
-        </div>
-        <div class="step">
-          <div class="step-title">
-            <span class="bullet">2</span>
-            Criação da vitrine e catálogo
-          </div>
-          <p>
-            Seu catálogo digital exibe produtos com nome, preço, descrição, links externos (como Mercado Livre,
-            PicPay, PayPal, Pix QR Code) e botão de contato.
-          </p>
-        </div>
-        <div class="step">
-          <div class="step-title">
-            <span class="bullet">3</span>
-            Acompanhamento e ajustes
-          </div>
-          <p>
-            Você pode atualizar seu catálogo e, quando precisar de algo mais elaborado, conta com o suporte do MostreAki
-            para orientar, ajustar textos e trabalhar o fortalecimento da sua marca.
-          </p>
-        </div>
-      </div>
     </section>
 
-    <!-- Hexágonos de atalho -->
-    <section class="section hex-section">
-      <h2><span class="icon">🧭</span>Por onde você quer começar?</h2>
-      <p>
-        Use os atalhos abaixo para navegar pelos principais pontos do MostreAki.
-      </p>
-
-      <div class="hex-grid">
-        <div class="hex-group">
-          <div class="hex">
-            <img src="/icons/planos-icon.svg" alt="Planos">
-            <div class="hex-label">Planos</div>
+    <!-- Hexágonos principais -->
+    <section class="menu-opcoes">
+      <!-- Planos -->
+      <div class="hex-group">
+        <a href="/planos.html" class="hex">
+          <div class="hex-content">
+            <div class="hex-icon">📋</div>
+            <div class="hex-title">Planos</div>
+            <div class="hex-desc">
+              Conheça as opções de assinatura para ter seu site e catálogo digital com a cara da sua marca.
+            </div>
+            <div class="hex-btn">Ver planos</div>
           </div>
-          <a href="/planos.html" class="hex-btn">Ver Planos</a>
-        </div>
-
-        <div class="hex-group">
-          <div class="hex">
-            <img src="/icons/catalogo-icon.svg" alt="Catálogo">
-            <div class="hex-label">Catálogo</div>
-          </div>
-          <a href="/parceiros.html" class="hex-btn">Ver Parceiros</a>
-        </div>
-
-        <div class="hex-group">
-          <div class="hex">
-            <img src="/icons/servicos-icon.svg" alt="Serviços">
-            <div class="hex-label">Serviços</div>
-          </div>
-          <a href="/servicos-adicionais.html" class="hex-btn">Serviços Adicionais</a>
-        </div>
-
-        <div class="hex-group">
-          <div class="hex">
-            <img src="/icons/redes-icon.svg" alt="Redes sociais">
-            <div class="hex-label">Redes</div>
-          </div>
-          <a href="/redes-sociais.html" class="hex-btn">Redes Sociais</a>
-        </div>
+        </a>
       </div>
-    </section>
 
-    <!-- Slider / vitrine demonstrativa -->
-    <section class="section slider-section">
-      <h2><span class="icon">🛒</span>Como fica o catálogo do seu cliente?</h2>
-      <p>
-        Abaixo, uma demonstração de como o catálogo digital pode ser visto em dispositivos móveis:
-        simples, organizado e focado em conversão.
-      </p>
-
-      <div class="slider" id="slider">
-        <div class="slider-inner" id="slider-inner">
-          <!-- Slide 1 -->
-          <div class="slide">
-            <div class="slide-info">
-              <h3>Catálogo para Loja de Roupas 👗</h3>
-              <p>
-                Grade de produtos com fotos claras, preços visíveis e botão de contato
-                direcionando direto para o WhatsApp com a peça desejada.
-              </p>
-              <div class="slide-badges">
-                <span class="slide-badge">Fotos em destaque</span>
-                <span class="slide-badge">Preço e variações</span>
-                <span class="slide-badge">Contato rápido</span>
-              </div>
+      <!-- Parceiros -->
+      <div class="hex-group">
+        <a href="/parceiros.html" class="hex">
+          <div class="hex-content">
+            <div class="hex-icon">🤝</div>
+            <div class="hex-title">Parceiros</div>
+            <div class="hex-desc">
+              Veja quem já fortalece sua marca com a vitrine digital do MostreAki.
             </div>
-            <div class="slide-device">
-              <div class="device-mock">
-                <div class="device-screen">
-                  <div class="device-header">
-                    <span>@loja_exemplo</span>
-                    <span>Catálogo</span>
-                  </div>
-                  <div class="device-grid">
-                    <div class="device-item">
-                      <span class="title">Vestido Azul</span>
-                      <span class="price">R$ 149,90</span>
-                    </div>
-                    <div class="device-item">
-                      <span class="title">Camisa Social</span>
-                      <span class="price">R$ 89,90</span>
-                    </div>
-                    <div class="device-item">
-                      <span class="title">Calça Jeans</span>
-                      <span class="price">R$ 129,90</span>
-                    </div>
-                    <div class="device-item">
-                      <span class="title">Jaqueta Bomber</span>
-                      <span class="price">R$ 199,90</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <div class="hex-btn">Ver parceiros</div>
           </div>
+        </a>
+      </div>
 
-          <!-- Slide 2 -->
-          <div class="slide">
-            <div class="slide-info">
-              <h3>Catálogo para Serviços 💇‍♀️</h3>
-              <p>
-                No lugar de produtos físicos, você pode exibir serviços com descrição, valor
-                e link direto para agendamento ou pagamento.
-              </p>
-              <div class="slide-badges">
-                <span class="slide-badge">Descrição detalhada</span>
-                <span class="slide-badge">Link para agenda</span>
-                <span class="slide-badge">Indicado para salões, clínicas, consultorias</span>
-              </div>
+      <!-- Serviços adicionais -->
+      <div class="hex-group">
+        <a href="/servicos-adicionais.html" class="hex">
+          <div class="hex-content">
+            <div class="hex-icon">🎨</div>
+            <div class="hex-title">Serviços Adicionais</div>
+            <div class="hex-desc">
+              Artes personalizadas, ajustes e apoio extra para destacar o visual da sua marca.
             </div>
-            <div class="slide-device">
-              <div class="device-mock">
-                <div class="device-screen">
-                  <div class="device-header">
-                    <span>@studio_exemplo</span>
-                    <span>Serviços</span>
-                  </div>
-                  <div class="device-grid">
-                    <div class="device-item">
-                      <span class="title">Corte Feminino</span>
-                      <span class="price">R$ 79,90</span>
-                    </div>
-                    <div class="device-item">
-                      <span class="title">Coloração</span>
-                      <span class="price">R$ 189,90</span>
-                    </div>
-                    <div class="device-item">
-                      <span class="title">Escova Modelada</span>
-                      <span class="price">R$ 69,90</span>
-                    </div>
-                    <div class="device-item">
-                      <span class="title">Hidratação Profunda</span>
-                      <span class="price">R$ 99,90</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <div class="hex-btn">Ver serviços</div>
           </div>
+        </a>
+      </div>
 
-          <!-- Slide 3 -->
-          <div class="slide">
-            <div class="slide-info">
-              <h3>Catálogo para Infoprodutos 📚</h3>
-              <p>
-                Exiba e-books, cursos ou consultorias com botão levando direto para a página
-                de pagamento ou área de membros.
-              </p>
-              <div class="slide-badges">
-                <span class="slide-badge">Link externo (Hotmart, Kiwify...)</span>
-                <span class="slide-badge">Descrição objetiva</span>
-                <span class="slide-badge">Ideal para produtores digitais</span>
-              </div>
+      <!-- Redes sociais -->
+      <div class="hex-group">
+        <a href="/redes-sociais.html" class="hex">
+          <div class="hex-content">
+            <div class="hex-icon">📱</div>
+            <div class="hex-title">Redes Sociais</div>
+            <div class="hex-desc">
+              Conecte sua presença digital com Instagram, YouTube, TikTok e mais.
             </div>
-            <div class="slide-device">
-              <div class="device-mock">
-                <div class="device-screen">
-                  <div class="device-header">
-                    <span>@curso_exemplo</span>
-                    <span>Conteúdos</span>
-                  </div>
-                  <div class="device-grid">
-                    <div class="device-item">
-                      <span class="title">Curso de Marca Pessoal</span>
-                      <span class="price">R$ 297,00</span>
-                    </div>
-                    <div class="device-item">
-                      <span class="title">E-book Catálogo Digital</span>
-                      <span class="price">R$ 49,90</span>
-                    </div>
-                    <div class="device-item">
-                      <span class="title">Mentoria Individual</span>
-                      <span class="price">R$ 597,00</span>
-                    </div>
-                    <div class="device-item">
-                      <span class="title">Pacote Completo</span>
-                      <span class="price">R$ 997,00</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <div class="hex-btn">Ver redes</div>
           </div>
-        </div>
-
-        <div class="slider-dots" id="slider-dots">
-          <div class="dot active" data-slide="0"></div>
-          <div class="dot" data-slide="1"></div>
-          <div class="dot" data-slide="2"></div>
-        </div>
-
-        <div class="slider-hint">Arraste para o lado (ou toque nos pontos) para ver exemplos diferentes.</div>
+        </a>
       </div>
     </section>
   </main>
 
   <footer>
-    © 2025 MostreAki - Todos os direitos reservados.
+    <div class="footer-inner">
+      <div>
+        © <span id="ano"></span> MostreAki — Todos os direitos reservados.
+      </div>
+      <div class="footer-right">
+        <span>Desenvolvido por</span>
+        <a href="https://mostreaki.com.br">MostreAki</a>
+      </div>
+    </div>
   </footer>
 
   <script>
+    // Ano dinâmico
+    document.getElementById("ano").textContent = new Date().getFullYear();
+
     // Menu lateral
     const btnMenu = document.getElementById('btn-menu');
     const overlay = document.getElementById('menu-overlay');
     if (btnMenu && overlay) {
       btnMenu.addEventListener('click', () => overlay.classList.toggle('show'));
+      overlay.querySelectorAll('a').forEach(a =>
+        a.addEventListener('click', () => overlay.classList.remove('show'))
+      );
     }
 
-    // Slider simples
-    const slider = document.getElementById("slider");
-    const sliderInner = document.getElementById("slider-inner");
-    const dots = document.querySelectorAll(".dot");
+    // Carrossel (3 grupos: 0,1,2)
+    const track = document.getElementById("bannerTrack");
+    const dots  = document.querySelectorAll(".banner-dot");
+    const slider= document.getElementById("bannerSlider");
     let current = 0;
-    function setSlide(index) {
-      if (!sliderInner) return;
-      const total = sliderInner.children.length;
-      current = (index + total) % total;
-      sliderInner.style.transform = `translateX(-${current * 100}%)`;
-      dots.forEach((d, i) => d.classList.toggle("active", i === current));
-    }
-    dots.forEach((dot, i) => {
-      dot.addEventListener("click", () => setSlide(i));
-    });
+    const total = 3;
 
-    // Swipe no desktop / mobile
-    let startX = 0;
-    let dragging = false;
+    function setSlide(index) {
+      current = Math.max(0, Math.min(total - 1, index));
+      const width = slider.clientWidth;
+      track.style.transform = `translateX(-${width * current}px)`;
+      dots.forEach(d => d.classList.toggle("active", Number(d.dataset.index) === current));
+    }
+
+    dots.forEach(d => d.addEventListener("click", () => setSlide(Number(d.dataset.index))));
+
+    // Swipe touch
+    let startX = 0, dragging = false;
     slider.addEventListener("touchstart", e => {
       dragging = true;
       startX = e.touches[0].clientX;
-    });
-    slider.addEventListener("touchmove", e => {
-      if(!dragging) return;
-    });
-    slider.addEventListener("touchend", e => {
+    }, {passive:true})
+    slider.addEventListener("touchend",   e => {
       if(!dragging) return;
       dragging = false;
       const diff = e.changedTouches[0].clientX - startX;
@@ -1209,6 +757,7 @@
       else if (diff < -40) setSlide(current + 1);
     });
 
+    // Swipe mouse (desktop)
     slider.addEventListener("mousedown", e => {
       dragging = true;
       startX = e.clientX;
