@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Planos – MostreAki</title>
+  <title>MostreAki</title>
 
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap');
@@ -15,33 +15,31 @@
       --texto: #003735;
       --grad1: #d9d9d9;
       --grad2: #af91a1;
-      --brand: #15b0af;
-      --brandLight: #7ad1cf;
-      --accent: #FA1E39;
-      --ink: var(--texto);
-      --card: #ffffff;
-      --titleAccent: #003735;
     }
 
     * { box-sizing: border-box; }
 
     body {
       margin: 0;
-      background: radial-gradient(circle at top left, #cfe0e0, #92a9a6);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+      background: radial-gradient(circle at top, #d9e7f2 0, #aabcbb 40%, #5f7574 100%);
       color: var(--texto);
     }
 
+    /* ===== Cabeçalho (padrão planos) ===== */
     header {
       background: var(--header-footer);
       border-bottom: 3px solid var(--bordo);
       padding: .4rem .9rem;
-      display: flex; align-items: center; justify-content: space-between;
-      position: sticky; top: 0; z-index: 999;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 999;
     }
+
     header img {
       height: 55px;
       max-width: 190px;
@@ -49,183 +47,9 @@
       display: block;
     }
 
-    /* Bloco de autenticação no cabeçalho */
-    .header-right{
-      display:flex;
-      align-items:center;
-      gap:10px;
-    }
-
-    .header-auth{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      margin-right: .4rem;
-    }
-
-    #btnAbrirLogin{
-      background:#15b0af;
-      color:#ffffff;
-      font-weight:600;
-      border:none;
-      border-radius:999px;
-      padding:6px 12px;
-      font-size:.85rem;
-      cursor:pointer;
-      box-shadow:0 2px 4px rgba(0,0,0,.15);
-    }
-    #btnAbrirLogin:hover{
-      filter:brightness(1.05);
-      transform:translateY(-1px);
-    }
-
-    #authText{
-      cursor:pointer;
-      font-size:.85rem;
-      color:#0b4d4c;
-      font-weight:600;
-      display:none;
-    }
-
-    .user-circle{
-      background:#15b0af;
-      color:#fff;
-      border-radius:50%;
-      width:32px;
-      height:32px;
-      display:none;
-      align-items:center;
-      justify-content:center;
-      font-weight:700;
-      font-size:.85rem;
-      background-size:cover;
-      background-position:center;
-      cursor:pointer;
-    }
-
-    /* Modal de autenticação */
-    .auth-modal{
-      position:fixed;
-      inset:0;
-      display:none;
-      align-items:center;
-      justify-content:center;
-      z-index:1000;
-    }
-    .auth-modal.open{ display:flex; }
-
-    .auth-modal-backdrop{
-      position:absolute;
-      inset:0;
-      background:rgba(0,0,0,.45);
-      backdrop-filter:blur(3px);
-    }
-
-    .auth-modal-dialog{
-      position:relative;
-      z-index:1;
-      background:#ffffff;
-      border-radius:16px;
-      padding:20px 18px 18px;
-      width: min(360px, 90vw);
-      box-shadow:0 10px 30px rgba(0,0,0,.25);
-      border:2px solid var(--bordo);
-    }
-    .auth-modal-dialog h2{
-      margin:0 0 10px;
-      font-size:1.1rem;
-      color:var(--texto);
-    }
-    .auth-modal-dialog p{
-      margin:0 0 14px;
-      font-size:.9rem;
-      color:#345;
-    }
-    .auth-field{
-      display:flex;
-      flex-direction:column;
-      gap:4px;
-      margin-bottom:10px;
-      font-size:.85rem;
-      color:#234;
-    }
-    .auth-field input{
-      border-radius:8px;
-      border:1px solid #c7d7d7;
-      padding:7px 9px;
-      font-size:.9rem;
-    }
-    .auth-actions{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      margin-top:12px;
-      gap:10px;
-    }
-    .auth-actions button[type="submit"]{
-      flex:1;
-      background:var(--brand);
-      border:none;
-      color:#fff;
-      font-weight:600;
-      border-radius:999px;
-      padding:8px 0;
-      cursor:pointer;
-    }
-    .auth-actions button[type="submit"]:hover{
-      filter:brightness(1.05);
-    }
-    .auth-close{
-      position:absolute;
-      top:8px;
-      right:10px;
-      border:none;
-      background:transparent;
-      font-size:1.1rem;
-      cursor:pointer;
-      color:#666;
-    }
-    .auth-extra{
-      margin-top:10px;
-      font-size:.8rem;
-      text-align:right;
-    }
-    .auth-extra a{
-      color:var(--bordo);
-      text-decoration:none;
-      font-weight:600;
-    }
-
-    /* Alertas estilizados */
-    .alert-bar{
-      position:fixed;
-      left:50%;
-      transform:translateX(-50%);
-      top:60px;
-      padding:8px 14px;
-      border-radius:999px;
-      font-size:.85rem;
-      display:none;
-      align-items:center;
-      gap:8px;
-      box-shadow:0 4px 12px rgba(0,0,0,.22);
-      z-index:1100;
-      max-width: min(500px, 92vw);
-      white-space:normal;
-    }
-    .alert-bar--success{
-      background:#e6fff5;
-      color:#064e3b;
-      border:1px solid #34d399;
-    }
-    .alert-bar--error{
-      background:#fef2f2;
-      color:#991b1b;
-      border:1px solid #f87171;
-    }
-
     .hamburger {
-      width: 40px; height: 40px;
+      width: 40px;
+      height: 40px;
       border-radius: 999px;
       border: 2px solid var(--bordo);
       background: linear-gradient(180deg, var(--grad1), var(--grad2));
@@ -237,29 +61,23 @@
       cursor: pointer;
       padding: 0;
     }
+
     .hamburger span {
       display: block;
-      width: 60%; height: 3px;
+      width: 60%;
+      height: 3px;
       border-radius: 999px;
       background: var(--bordo);
     }
 
-    .menu-overlay {
-      position: fixed;
-      top: 60px;
-      right: 0;
-      width: 260px;
-      max-width: 90vw;
-      background: #92a9a6;
-      box-shadow: -4px 0 12px rgba(0,0,0,.09);
+    /* ===== Menu lateral ===== */
+    .menu-overlay{
+      position: fixed; top: 60px; right: 0;
+      width: 280px; max-width: 90vw;
+      background: #92a9a6; box-shadow: -4px 0 12px rgba(0,0,0,.09);
       height: calc(100vh - 60px);
-      transform: translateX(100%);
-      transition: transform .25s ease;
-      z-index: 998;
-      display: flex;
-      flex-direction: column;
-      gap: .55rem;
-      padding: 1rem;
+      transform: translateX(100%); transition: transform .25s ease;
+      z-index: 999; display: flex; flex-direction: column; gap: .55rem; padding: 1rem;
     }
     .menu-overlay.show { transform: translateX(0); }
 
@@ -279,107 +97,728 @@
       box-shadow: 0 2px 6px rgba(0,0,0,.1);
       font-size: .95rem;
     }
+    .menu-link:hover {
+      filter: brightness(1.03);
+      transform: translateY(-1px);
+    }
 
+    /* ===== Main com mesmo respiro do planos ===== */
     main {
-      flex: 1;
-      max-width: min(1100px, 94vw);
-      margin: 2rem auto 2.6rem;
+      max-width: 1100px;
+      margin: 1.5rem auto 1.5rem;
+      padding: 0 1rem 2rem;
     }
 
-    .pricing-head{
-      text-align:center;
-      margin-bottom:1.8rem;
-    }
-    .pricing-head h1{
-      margin:.2rem 0;
-      font-family:"Poppins", system-ui;
-      font-size:1.7rem;
-      color:var(--titleAccent);
-    }
-    .pricing-head p{
-      margin:0;
-      color:#234;
-      font-size:.98rem;
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.2fr);
+      gap: 1.5rem;
+      align-items: center;
+      margin-bottom: 2rem;
     }
 
-    .grid{ display:grid; gap:18px; grid-template-columns:1fr; }
-    @media (min-width:720px){ .grid{grid-template-columns:repeat(2,1fr)} }
-    @media (min-width:1100px){ .grid{grid-template-columns:repeat(3,1fr)} }
-
-    .card{
-      background:var(--card);border:1px solid #e6f3f1;border-radius:14px;
-      box-shadow:0 6px 20px rgba(0,0,0,.06);overflow:hidden;display:flex;flex-direction:column;
-      transition:transform .15s, box-shadow .15s;
-    }
-    .card:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(0,0,0,.10)}
-    .card-head{
-      background:linear-gradient(90deg,var(--brandLight),var(--brand));
-      padding:16px 16px 14px;border-bottom:1px solid #cfeee9;
-      display:flex;align-items:center;gap:10px;justify-content:space-between;
-    }
-    .card-title{font-weight:bold;color:var(--ink);font-size:1.15rem}
-    .selector{display:flex;align-items:center;gap:8px;color:#0b4d4c;font-weight:bold}
-    .selector input{width:18px;height:18px}
-
-    .card-body{padding:18px 16px 10px;flex:1}
-    .feat{list-style:none;color:#273;font-size:1rem}
-    .feat li{
-      position:relative; padding-left:26px; margin:10px 0; line-height:1.55;
-      white-space:normal; word-break:normal; overflow-wrap:anywhere; text-wrap:pretty;
-    }
-    .feat li::before{ content:"✔"; position:absolute; left:0; top:.15em; color:var(--brand); font-weight:bold }
-
-    .note{ margin:12px 0 4px; padding:12px 14px; background:#f3fbfa; border-left:4px solid var(--brand);
-      border-radius:10px; color:#234; font-size:.95rem }
-
-    .price-row{
-      margin-top:10px;display:flex;align-items:center;justify-content:space-between;gap:12px;
-    }
-    .price{font-size:1.4rem;font-weight:bold;color:var(--bordo)}
-    .mp-slot{text-align:right;font-size:.78rem;color:#345}
-    .mp-slot img{height:22px;display:block;margin-left:auto;margin-bottom:3px}
-
-    .assinar{
-      width:100%;margin:14px 0 6px;padding:9px 0;
-      border-radius:999px;border:none;background:var(--bordo);color:#fff;font-weight:600;
-      cursor:pointer;font-size:.98rem;
+    .hero-text h1 {
+      font-family: "Poppins", system-ui, sans-serif;
+      font-size: clamp(1.9rem, 2.4vw + 1.4rem, 2.6rem);
+      color: var(--texto);
+      margin-top: 0;
+      margin-bottom: .6rem;
     }
 
-    .sub{
-      font-size:.88rem;color:#234;margin:0 0 8px;
+    .hero-text p {
+      margin: 0 0 .75rem;
+      line-height: 1.55;
+      color: #0b221f;
+      font-size: .98rem;
     }
 
-    @media (max-width:768px){
-      header{
-        padding:.4rem .7rem;
-      }
-      main{
-        margin:1.3rem auto 2.2rem;
-      }
+    .hero-text ul {
+      margin: .4rem 0 1rem 1.1rem;
+      padding: 0;
+      color: #133;
+      font-size: .94rem;
     }
 
+    .hero-text li {
+      margin-bottom: .3rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .7rem;
+      margin-top: .8rem;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--bordo), #af6187);
+      color: #fff;
+      border-radius: 999px;
+      border: none;
+      padding: .55rem 1.2rem;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: .95rem;
+      box-shadow: 0 3px 10px rgba(0,0,0,.25);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+    }
+    .btn-primary span.icon {
+      font-size: 1.1rem;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border-radius: 999px;
+      border: 2px solid #0b4d4c;
+      color: #0b4d4c;
+      padding: .5rem 1.1rem;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: .9rem;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+    }
+
+    .hero-visual {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .hero-card {
+      position: relative;
+      width: 100%;
+      max-width: 380px;
+      background: radial-gradient(circle at top, #f3f7fb 0, #cfdce7 40%, #9aafba 100%);
+      border-radius: 26px;
+      padding: .9rem;
+      box-shadow: 0 18px 40px rgba(0,0,0,.35);
+      border: 2px solid rgba(0,0,0,.15);
+      overflow: hidden;
+    }
+
+    .hero-card-inner {
+      background: rgba(255,255,255,.75);
+      border-radius: 22px;
+      padding: .7rem .8rem .8rem;
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: .7rem;
+      align-items: center;
+    }
+
+    .hero-avatar {
+      width: 75px;
+      height: 75px;
+      border-radius: 20px;
+      background: #cfe3f7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: .3rem;
+      box-shadow: inset 0 0 0 2px rgba(255,255,255,.8);
+    }
+
+    .hero-avatar img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+      font-size: .78rem;
+      background: rgba(12,76,74,.08);
+      color: #0b4d4c;
+      padding: .25rem .6rem;
+      border-radius: 999px;
+      margin-bottom: .3rem;
+    }
+
+    .hero-badge-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #25d366;
+      box-shadow: 0 0 0 4px rgba(37,211,102,.35);
+    }
+
+    .hero-card h2 {
+      margin: 0 0 .15rem;
+      font-size: 1.05rem;
+      color: #0b221f;
+    }
+
+    .hero-card p {
+      margin: 0;
+      font-size: .82rem;
+      color: #244;
+      line-height: 1.4;
+    }
+
+    .hero-tagline {
+      margin-top: .35rem;
+      font-size: .8rem;
+      color: #fff;
+      text-align: center;
+      text-shadow: 0 1px 3px rgba(0,0,0,.4);
+    }
+
+    /* ===== Sessão "como funciona" ===== */
+    .section {
+      margin-top: 2.2rem;
+    }
+
+    .section h2 {
+      font-family: "Poppins", system-ui, sans-serif;
+      font-size: 1.4rem;
+      margin: 0 0 .5rem;
+      color: #0b221f;
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+    }
+
+    .section h2 span.icon {
+      font-size: 1.2rem;
+    }
+
+    .section p {
+      margin: 0 0 1rem;
+      font-size: .94rem;
+      color: #133;
+      line-height: 1.6;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem;
+      margin-top: .8rem;
+    }
+
+    .step {
+      background: rgba(255,255,255,.85);
+      border-radius: 16px;
+      padding: .8rem .8rem .9rem;
+      border: 2px solid rgba(0,0,0,.08);
+      box-shadow: 0 4px 12px rgba(0,0,0,.08);
+    }
+
+    .step-title {
+      font-weight: 700;
+      font-size: .95rem;
+      margin-bottom: .3rem;
+      color: #0b221f;
+      display: flex;
+      align-items: center;
+      gap: .3rem;
+    }
+
+    .step-title span.bullet {
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--bordo), #af6187);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: .8rem;
+    }
+
+    .step p {
+      margin: 0;
+      font-size: .86rem;
+      color: #244;
+    }
+
+    /* ===== Hexágonos ===== */
+    .hex-section {
+      margin-top: 2.5rem;
+    }
+
+    .hex-section p {
+      margin-bottom: .9rem;
+    }
+
+    .hex-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1.8rem;
+      margin-top: 1.4rem;
+    }
+    .hex-group {
+      position: relative; width: 180px; height: 240px;
+      display: flex; justify-content: center; align-items: center; transition:.3s;
+    }
+    .hex-group:nth-child(2),
+    .hex-group:nth-child(4) { transform: translateY(-40px); }
+
+    .hex {
+      width: 150px; height: 130px;
+      border: 3px solid var(--bordo);
+      clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+      overflow: hidden;
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 12px 35px rgba(0,0,0,.35);
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+    }
+    .hex::before{
+      content:"";
+      position:absolute; inset:0;
+      background: radial-gradient(circle at top, rgba(255,255,255,.55), transparent 55%);
+      opacity:.7;
+    }
+    .hex img {
+      max-width: 100px;
+      max-height: 100px;
+      object-fit: contain;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hex-label {
+      position: absolute;
+      bottom: 4px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,.55);
+      color: #fff;
+      padding: 3px 7px;
+      border-radius: 999px;
+      font-size: .75rem;
+    }
+
+    .hex-btn {
+      margin-top: .5rem;
+      display: inline-flex;
+      padding: .4rem .9rem;
+      border-radius: 999px;
+      background: #0b4d4c;
+      color: #fff;
+      text-decoration: none;
+      font-size: .82rem;
+      font-weight: 600;
+      box-shadow: 0 3px 10px rgba(0,0,0,.3);
+    }
+
+    .hex-group:hover {
+      transform: translateY(-8px);
+    }
+
+    /* ===== Slider ("vitrine") ===== */
+    .slider-section {
+      margin-top: 2.8rem;
+    }
+
+    .slider {
+      margin-top: 1rem;
+      background: rgba(7,32,34,.75);
+      backdrop-filter: blur(14px);
+      border-radius: 22px;
+      padding: 1rem .8rem 1.1rem;
+      box-shadow: 0 16px 35px rgba(0,0,0,.45);
+      border: 2px solid rgba(0,0,0,.25);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .slider-inner {
+      display: flex;
+      transition: transform .45s ease;
+    }
+
+    .slide {
+      min-width: 100%;
+      padding: 0 .3rem;
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      gap: 1rem;
+      align-items: center;
+      color: #f7f9fc;
+    }
+
+    .slide-info h3 {
+      margin: 0 0 .4rem;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+    }
+
+    .slide-info p {
+      margin: 0 0 .5rem;
+      font-size: .9rem;
+      line-height: 1.5;
+    }
+
+    .slide-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .4rem;
+      margin-top: .4rem;
+    }
+
+    .slide-badge {
+      font-size: .78rem;
+      padding: .25rem .6rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.7);
+      background: rgba(0,0,0,.25);
+    }
+
+    .slide-device {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .device-mock {
+      width: 200px;
+      max-width: 80%;
+      border-radius: 22px;
+      border: 3px solid rgba(0,0,0,.8);
+      background: radial-gradient(circle at top, #e8f1fb 0, #bfcfe1 45%, #7b8799 100%);
+      padding: 6px;
+      position: relative;
+      box-shadow: 0 12px 35px rgba(0,0,0,.6);
+    }
+
+    .device-screen {
+      background: #111827;
+      border-radius: 16px;
+      padding: 6px;
+      color: #f9fafb;
+      font-size: .7rem;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: .3rem;
+    }
+
+    .device-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: .65rem;
+      opacity: .8;
+    }
+
+    .device-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: .25rem;
+    }
+
+    .device-item {
+      background: #1f2937;
+      border-radius: 8px;
+      padding: .25rem .3rem;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .device-item span.title {
+      font-size: .65rem;
+      font-weight: 600;
+    }
+
+    .device-item span.price {
+      font-size: .6rem;
+      color: #a5b4fc;
+    }
+
+    .slider-dots {
+      margin-top: .7rem;
+      display: flex;
+      justify-content: center;
+      gap: .3rem;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.35);
+      cursor: pointer;
+    }
+
+    .dot.active {
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(255,255,255,.25);
+    }
+
+    .slider-hint {
+      margin-top: .5rem;
+      font-size: .8rem;
+      text-align: center;
+      color: #e5f0f0;
+      opacity: .9;
+    }
+
+    /* ===== Rodapé ===== */
     footer {
-      margin-top: auto;
       background: var(--header-footer);
       border-top: 3px solid var(--bordo);
       text-align: center;
-      padding: .7rem 1rem;
-      font-size: .9rem;
-      color: var(--texto);
+      padding: .7rem .5rem;
+      font-size: .85rem;
+      color: #234;
+      margin-top: 1rem;
+    }
+
+    /* ===== Login / avatar ===== */
+    .header-right{
+      display:flex;
+      align-items:center;
+      gap:.75rem;
+    }
+    .header-auth{
+      display:flex;
+      align-items:center;
+      gap:.4rem;
+    }
+    .btn-login,
+    #btnAbrirLogin{
+      background: var(--bordo);
+      color:#ffffff;
+      border:none;
+      border-radius:999px;
+      padding:6px 12px;
+      font-size:.85rem;
+      font-weight:600;
+      cursor:pointer;
+      box-shadow:0 2px 4px rgba(0,0,0,.18);
+    }
+    .btn-login:hover,
+    #btnAbrirLogin:hover{
+      filter:brightness(1.05);
+      transform:translateY(-1px);
+    }
+    .auth-text{
+      font-size:.85rem;
+      color:#0b4d4c;
+      font-weight:600;
+      cursor:pointer;
+    }
+    .user-circle{
+      width:32px;
+      height:32px;
+      border-radius:50%;
+      background:var(--bordo);
+      color:#fff;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      font-weight:700;
+      font-size:.85rem;
+      background-size:cover;
+      background-position:center;
+      cursor:pointer;
+    }
+
+    /* Modal login */
+    .modal-bg{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.45);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:1000;
+    }
+    .modal-box{
+      background:#ffffff;
+      border-radius:18px;
+      padding:1.5rem 1.25rem 1.25rem;
+      width:min(360px, 92vw);
+      box-shadow:0 16px 40px rgba(0,0,0,.22);
+      border:2px solid var(--bordo);
+      position:relative;
+    }
+    .modal-box h2{
+      margin:0 0 .4rem;
+      font-size:1.25rem;
+      color:var(--texto);
+    }
+    .modal-box p{
+      margin:0 0 1rem;
+      font-size:.9rem;
+      color:#345;
+    }
+    .modal-label{
+      display:block;
+      margin:.35rem 0 .2rem;
+      font-size:.85rem;
+      color:#234;
+      font-weight:600;
+    }
+    .modal-input{
+      width:100%;
+      border-radius:10px;
+      border:1px solid #cfe0e0;
+      padding:.45rem .65rem;
+      font-size:.92rem;
+      margin-bottom:.4rem;
+    }
+    .password-row{
+      display:flex;
+      align-items:center;
+      gap:.5rem;
+    }
+    .password-row .modal-input{
+      margin-bottom:0;
+      flex:1;
+    }
+    .show-pass{
+      display:flex;
+      align-items:center;
+      gap:.25rem;
+      font-size:.78rem;
+      color:#345;
+      user-select:none;
+      cursor:pointer;
+    }
+    .show-pass input{
+      width:14px;
+      height:14px;
+    }
+    .modal-close{
+      position:absolute;
+      top:8px;
+      right:10px;
+      border:none;
+      background:transparent;
+      font-size:1.2rem;
+      cursor:pointer;
+      color:#666;
+    }
+    .modal-links{
+      margin-top:.9rem;
+      display:flex;
+      justify-content:space-between;
+      font-size:.8rem;
+    }
+    .modal-links a{
+      color:var(--bordo);
+      text-decoration:none;
+      font-weight:600;
+    }
+
+    /* Alertas */
+    .alert-bg{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.45);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:1100;
+    }
+    .alert-box{
+      background:#ffffff;
+      border-radius:18px;
+      padding:1.4rem 1.3rem 1rem;
+      max-width:380px;
+      width:90%;
+      box-shadow:0 18px 45px rgba(0,0,0,.16);
+      border:2px solid var(--bordo);
+    }
+    .alert-box h3{
+      margin:0 0 .5rem;
+      font-size:1.2rem;
+      color:var(--texto);
+    }
+    .alert-box p{
+      margin:0 0 1rem;
+      font-size:.9rem;
+      color:#333;
+    }
+    .alert-actions{
+      display:flex;
+      justify-content:flex-end;
+      gap:.5rem;
+      flex-wrap:wrap;
+    }
+    .btn-solid,
+    .btn-ghost{
+      border-radius:999px;
+      padding:.45rem 1.1rem;
+      font-size:.85rem;
+      cursor:pointer;
+      border:0;
+    }
+    .btn-solid{
+      background:linear-gradient(135deg,var(--bordo),var(--grad2));
+      color:#ffffff;
+    }
+    .btn-ghost{
+      background:transparent;
+      color:var(--bordo);
+      border:1px solid #d7bfd0;
+    }
+
+    /* ===== Responsivo ===== */
+    @media (max-width: 880px) {
+      .hero {
+        grid-template-columns: minmax(0,1fr);
+        gap: 1.4rem;
+      }
+      .hero-visual {
+        order: -1;
+      }
+      .steps {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .slide {
+        grid-template-columns: minmax(0,1fr);
+      }
+      .device-mock {
+        margin-top: .4rem;
+      }
+    }
+
+    @media (max-width: 640px) {
+      main {
+        margin-top: 1rem;
+      }
+      .hero-card {
+        max-width: 320px;
+      }
+      .hex-group {
+        width: 160px; height: 230px;
+      }
+      .hex {
+        width: 140px; height: 120px;
+      }
+      .hex-group:nth-child(2),
+      .hex-group:nth-child(4) {
+        transform: translateY(-30px);
+      }
     }
   </style>
 </head>
 <body>
   <header>
     <img src="/logomarca.svg" alt="MostreAki">
-
     <div class="header-right">
       <div class="header-auth">
-        <button id="btnAbrirLogin">Entrar</button>
-        <span id="authText">Entrar</span>
-        <div id="userCircle" class="user-circle" title="Minha conta"></div>
+        <button id="btnAbrirLogin" class="btn-login">Entrar</button>
+        <span id="authText" class="auth-text" style="display:none;">Sair</span>
+        <div id="userCircle" class="user-circle" title="Minha conta" style="display:none;"></div>
       </div>
-
       <button class="hamburger" id="btn-menu" aria-label="Abrir menu">
         <span></span><span></span><span></span>
       </button>
@@ -388,204 +827,631 @@
 
   <!-- Menu lateral -->
   <nav class="menu-overlay" id="menu-overlay">
+    <!-- página atual (index) não aparece -->
     <a href="/sobre.html" class="menu-link">Sobre</a>
     <a href="/minha-conta.html" class="menu-link">Minha Conta</a>
-    <a href="/instrucoes.html" class="menu-link">Instruções</a>
+    <a href="/planos.html" class="menu-link">Planos</a>
     <a href="/parceiros.html" class="menu-link">Parceiros</a>
     <a href="/servicos-adicionais.html" class="menu-link">Serviços Adicionais</a>
     <a href="/redes-sociais.html" class="menu-link">Redes Sociais</a>
+    <a href="/contato.html" class="menu-link">Contato</a>
   </nav>
 
-  <!-- Barra de alertas -->
-  <div id="alertBar" class="alert-bar" role="status" aria-live="polite"></div>
+  <!-- Alertas globais -->
+  <div id="alert" class="alert-bg" style="display:none;">
+    <div class="alert-box">
+      <h3 id="alertTitle">Aviso</h3>
+      <p id="alertMsg"></p>
+      <div id="alertActions" class="alert-actions"></div>
+    </div>
+  </div>
 
   <!-- Modal de autenticação -->
-  <div id="authModal" class="auth-modal" aria-hidden="true">
-    <div class="auth-modal-backdrop" data-close-auth></div>
-    <div class="auth-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="authTitle">
-      <button class="auth-close" type="button" data-close-auth>&times;</button>
-      <h2 id="authTitle">Entrar na sua conta</h2>
-      <p>Use seu e-mail e senha cadastrados para acessar o painel e assinar um plano.</p>
+  <div id="authModal" class="modal-bg" style="display:none;">
+    <div class="modal-box">
+      <button class="modal-close" type="button" onclick="fecharModal()">×</button>
+      <h2>Entrar na sua conta</h2>
+      <p>Use seu e-mail e senha cadastrados para acessar sua conta MostreAki.</p>
 
-      <form id="loginForm">
-        <div class="auth-field">
-          <label for="emailLogin">E-mail</label>
-          <input type="email" id="emailLogin" required autocomplete="email" />
-        </div>
-        <div class="auth-field">
-          <label for="senhaLogin">Senha</label>
-          <input type="password" id="senhaLogin" required autocomplete="current-password" />
-        </div>
-        <div class="auth-actions">
-          <button type="submit">Entrar</button>
-        </div>
-      </form>
+      <label for="email" class="modal-label">E-mail</label>
+      <input type="email" id="email" class="modal-input" placeholder="seuemail@exemplo.com">
 
-      <div class="auth-extra">
+      <label for="senha" class="modal-label">Senha</label>
+      <div class="password-row">
+        <input type="password" id="senha" class="modal-input" placeholder="Sua senha">
+        <label class="show-pass">
+          <input type="checkbox" id="chkMostrarSenha">
+          <span>Mostrar</span>
+        </label>
+      </div>
+
+      <button id="btnEntrar" class="btn-solid" type="button">Entrar</button>
+
+      <div class="modal-links">
         <a href="/recuperar-senha.html">Esqueci minha senha</a>
+        <a href="/cadastro.html">Criar conta</a>
       </div>
     </div>
   </div>
 
-<main>
-  <div class="pricing-head">
-    <h1>Planos do MostreAki</h1>
-    <p>Quando estiver logado, marque o plano e clique em <b>AssineAki</b>.</p>
-    <div class="note" style="max-width:860px;margin:12px auto 0">
-    	<li>O cadastro e a atualização de produtos do catálogo é editável pelo próprio cliente
-    		 através do botão <b>Editar Catálogo</b> exclusivo para assinantes.</li>
-    </div>
-  </div>
+  <main>
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-text">
+        <h1>Sua marca em destaque, do jeito certo.</h1>
+        <p>
+          O <b>MostreAki</b> foi criado para ser a ponte entre a sua identidade e o mundo
+          digital: vitrine, catálogo, links e presença organizada em um só lugar.
+        </p>
+        <ul>
+          <li>Apresente sua marca com um site responsivo e profissional.</li>
+          <li>Mostre seus produtos em um catálogo digital claro e fácil de navegar.</li>
+          <li>Conecte tudo às suas redes sociais e canais de contato.</li>
+        </ul>
+        <div class="hero-actions">
+          <a href="/planos.html" class="btn-primary">
+            <span class="icon">🚀</span>
+            Ver planos e começar
+          </a>
+          <a href="/sobre.html" class="btn-secondary">
+            <span class="icon">📌</span>
+            Entender melhor o MostreAki
+          </a>
+        </div>
+      </div>
 
-  <section class="grid" aria-label="Planos de assinatura">
+      <div class="hero-visual">
+        <div class="hero-card">
+          <div class="hero-card-inner">
+            <div class="hero-avatar">
+              <img src="/guieaki-tablet.png" alt="GuieAki com tablet">
+            </div>
+            <div>
+              <div class="hero-badge">
+                <span class="hero-badge-dot"></span>
+                Acompanhamento MostreAki
+              </div>
+              <h2>GuieAki cuida da vitrine, você cuida do seu negócio.</h2>
+              <p>
+                Enquanto você cria, produz e atende, o MostreAki organiza sua presença digital
+                e mantém sua marca sempre apresentável.
+              </p>
+            </div>
+          </div>
+          <div class="hero-tagline">
+            Vitrine digital + catálogo + marca: tudo trabalhando junto por você.
+          </div>
+        </div>
+      </div>
+    </section>
 
-    <!-- Plano Básico -->
-    <!-- ... AQUI FICAM OS CARDS QUE VOCÊ JÁ TINHA (mantive exatamente como estavam) ... -->
+    <!-- Como funciona -->
+    <section class="section">
+      <h2><span class="icon">✨</span>Como o MostreAki funciona na prática?</h2>
+      <p>
+        Em vez de ter cada coisa espalhada (rede social de um lado, catálogo em outro, link perdido em bio),
+        o MostreAki reúne tudo em um site responsivo pensado para valorizar a sua identidade visual.
+      </p>
 
-    <!-- (omiti aqui por brevidade, mas use os cards que já estão no seu arquivo atual;
-         na versão completa que eu gerei, eles continuam idênticos) -->
+      <div class="steps">
+        <div class="step">
+          <div class="step-title">
+            <span class="bullet">1</span>
+            Configuração da sua marca
+          </div>
+          <p>
+            Ajustamos cores, logotipo e banner principal para que seu site tenha a cara da sua marca
+            e não pareça “mais um template genérico”.
+          </p>
+        </div>
+        <div class="step">
+          <div class="step-title">
+            <span class="bullet">2</span>
+            Criação da vitrine e catálogo
+          </div>
+          <p>
+            Seu catálogo digital exibe produtos com nome, preço, descrição, links externos (como Mercado Livre,
+            PicPay, PayPal, Pix QR Code) e botão de contato.
+          </p>
+        </div>
+        <div class="step">
+          <div class="step-title">
+            <span class="bullet">3</span>
+            Acompanhamento e ajustes
+          </div>
+          <p>
+            Você pode atualizar seu catálogo e, quando precisar de algo mais elaborado, conta com o suporte do MostreAki
+            para orientar, ajustar textos e trabalhar o fortalecimento da sua marca.
+          </p>
+        </div>
+      </div>
+    </section>
 
-  </section>
-</main>
+    <!-- Hexágonos de atalho -->
+    <section class="section hex-section">
+      <h2><span class="icon">🧭</span>Por onde você quer começar?</h2>
+      <p>
+        Use os atalhos abaixo para navegar pelos principais pontos do MostreAki.
+      </p>
+
+      <div class="hex-grid">
+        <div class="hex-group">
+          <div class="hex">
+            <img src="/icons/planos-icon.svg" alt="Planos">
+            <div class="hex-label">Planos</div>
+          </div>
+          <a href="/planos.html" class="hex-btn">Ver Planos</a>
+        </div>
+
+        <div class="hex-group">
+          <div class="hex">
+            <img src="/icons/catalogo-icon.svg" alt="Catálogo">
+            <div class="hex-label">Catálogo</div>
+          </div>
+          <a href="/parceiros.html" class="hex-btn">Ver Parceiros</a>
+        </div>
+
+        <div class="hex-group">
+          <div class="hex">
+            <img src="/icons/servicos-icon.svg" alt="Serviços">
+            <div class="hex-label">Serviços</div>
+          </div>
+          <a href="/servicos-adicionais.html" class="hex-btn">Serviços Adicionais</a>
+        </div>
+
+        <div class="hex-group">
+          <div class="hex">
+            <img src="/icons/redes-icon.svg" alt="Redes sociais">
+            <div class="hex-label">Redes</div>
+          </div>
+          <a href="/redes-sociais.html" class="hex-btn">Redes Sociais</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slider / vitrine demonstrativa -->
+    <section class="section slider-section">
+      <h2><span class="icon">🛒</span>Como fica o catálogo do seu cliente?</h2>
+      <p>
+        Abaixo, uma demonstração de como o catálogo digital pode ser visto em dispositivos móveis:
+        simples, organizado e focado em conversão.
+      </p>
+
+      <div class="slider" id="slider">
+        <div class="slider-inner" id="slider-inner">
+          <!-- Slide 1 -->
+          <div class="slide">
+            <div class="slide-info">
+              <h3>Catálogo para Loja de Roupas 👗</h3>
+              <p>
+                Grade de produtos com fotos claras, preços visíveis e botão de contato
+                direcionando direto para o WhatsApp com a peça desejada.
+              </p>
+              <div class="slide-badges">
+                <span class="slide-badge">Fotos em destaque</span>
+                <span class="slide-badge">Preço e variações</span>
+                <span class="slide-badge">Contato rápido</span>
+              </div>
+            </div>
+            <div class="slide-device">
+              <div class="device-mock">
+                <div class="device-screen">
+                  <div class="device-header">
+                    <span>@loja_exemplo</span>
+                    <span>Catálogo</span>
+                  </div>
+                  <div class="device-grid">
+                    <div class="device-item">
+                      <span class="title">Vestido Azul</span>
+                      <span class="price">R$ 149,90</span>
+                    </div>
+                    <div class="device-item">
+                      <span class="title">Camisa Social</span>
+                      <span class="price">R$ 89,90</span>
+                    </div>
+                    <div class="device-item">
+                      <span class="title">Calça Jeans</span>
+                      <span class="price">R$ 129,90</span>
+                    </div>
+                    <div class="device-item">
+                      <span class="title">Jaqueta Bomber</span>
+                      <span class="price">R$ 199,90</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Slide 2 -->
+          <div class="slide">
+            <div class="slide-info">
+              <h3>Catálogo para Serviços 💇‍♀️</h3>
+              <p>
+                No lugar de produtos físicos, você pode exibir serviços com descrição, valor
+                e link direto para agendamento ou pagamento.
+              </p>
+              <div class="slide-badges">
+                <span class="slide-badge">Descrição detalhada</span>
+                <span class="slide-badge">Link para agenda</span>
+                <span class="slide-badge">Indicado para salões, clínicas, consultorias</span>
+              </div>
+            </div>
+            <div class="slide-device">
+              <div class="device-mock">
+                <div class="device-screen">
+                  <div class="device-header">
+                    <span>@studio_exemplo</span>
+                    <span>Serviços</span>
+                  </div>
+                  <div class="device-grid">
+                    <div class="device-item">
+                      <span class="title">Corte Feminino</span>
+                      <span class="price">R$ 79,90</span>
+                    </div>
+                    <div class="device-item">
+                      <span class="title">Coloração</span>
+                      <span class="price">R$ 189,90</span>
+                    </div>
+                    <div class="device-item">
+                      <span class="title">Escova Modelada</span>
+                      <span class="price">R$ 69,90</span>
+                    </div>
+                    <div class="device-item">
+                      <span class="title">Hidratação Profunda</span>
+                      <span class="price">R$ 99,90</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Slide 3 -->
+          <div class="slide">
+            <div class="slide-info">
+              <h3>Catálogo para Infoprodutos 📚</h3>
+              <p>
+                Exiba e-books, cursos ou consultorias com botão levando direto para a página
+                de pagamento ou área de membros.
+              </p>
+              <div class="slide-badges">
+                <span class="slide-badge">Link externo (Hotmart, Kiwify...)</span>
+                <span class="slide-badge">Descrição objetiva</span>
+                <span class="slide-badge">Ideal para produtores digitais</span>
+              </div>
+            </div>
+            <div class="slide-device">
+              <div class="device-mock">
+                <div class="device-screen">
+                  <div class="device-header">
+                    <span>@curso_exemplo</span>
+                    <span>Conteúdos</span>
+                  </div>
+                  <div class="device-grid">
+                    <div class="device-item">
+                      <span class="title">Curso de Marca Pessoal</span>
+                      <span class="price">R$ 297,00</span>
+                    </div>
+                    <div class="device-item">
+                      <span class="title">E-book Catálogo Digital</span>
+                      <span class="price">R$ 49,90</span>
+                    </div>
+                    <div class="device-item">
+                      <span class="title">Mentoria Individual</span>
+                      <span class="price">R$ 597,00</span>
+                    </div>
+                    <div class="device-item">
+                      <span class="title">Pacote Completo</span>
+                      <span class="price">R$ 997,00</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="slider-dots" id="slider-dots">
+          <div class="dot active" data-slide="0"></div>
+          <div class="dot" data-slide="1"></div>
+          <div class="dot" data-slide="2"></div>
+        </div>
+
+        <div class="slider-hint">Arraste para o lado (ou toque nos pontos) para ver exemplos diferentes.</div>
+      </div>
+    </section>
+  </main>
 
   <footer>
     © 2025 MostreAki - Todos os direitos reservados.
   </footer>
 
-  <script type="module">
-    // Firebase Auth + UI de login
-    // IMPORTANTE: preencha seu firebaseConfig com os dados reais do seu projeto.
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
-
-    const firebaseConfig = {
-      // TODO: COLE AQUI SUA CONFIGURAÇÃO DO FIREBASE
-      // apiKey: "...",
-      // authDomain: "...",
-      // projectId: "...",
-      // etc.
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-
-    const btnLogin    = document.getElementById("btnAbrirLogin");
-    const authText    = document.getElementById("authText");
-    const userCircle  = document.getElementById("userCircle");
-    const authModal   = document.getElementById("authModal");
-    const loginForm   = document.getElementById("loginForm");
-    const alertBar    = document.getElementById("alertBar");
-
-    function showAlert(type, message) {
-      if (!alertBar) return;
-      alertBar.textContent = message;
-      alertBar.classList.remove("alert-bar--success", "alert-bar--error");
-      if (type === "success") {
-        alertBar.classList.add("alert-bar--success");
-      } else {
-        alertBar.classList.add("alert-bar--error");
-      }
-      alertBar.style.display = "flex";
-      clearTimeout(alertBar._timer);
-      alertBar._timer = setTimeout(() => {
-        alertBar.style.display = "none";
-      }, 4000);
-    }
-
-    function openAuthModal() {
-      if (!authModal) return;
-      authModal.classList.add("open");
-      authModal.setAttribute("aria-hidden", "false");
-    }
-    function closeAuthModal() {
-      if (!authModal) return;
-      authModal.classList.remove("open");
-      authModal.setAttribute("aria-hidden", "true");
-    }
-
-    // Abre e fecha modal
-    if (btnLogin) {
-      btnLogin.addEventListener("click", () => openAuthModal());
-    }
-    if (authText) {
-      authText.addEventListener("click", () => {
-        if (auth.currentUser) {
-          // se já está logado, aqui é logout
-          signOut(auth)
-            .then(() => showAlert("success", "Você saiu da sua conta."))
-            .catch(err => showAlert("error", "Erro ao sair: " + err.message));
-        } else {
-          openAuthModal();
-        }
-      });
-    }
-    document.querySelectorAll("[data-close-auth]").forEach(el => {
-      el.addEventListener("click", () => closeAuthModal());
-    });
-
-    // Submeter login
-    if (loginForm) {
-      loginForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const email = document.getElementById("emailLogin").value.trim();
-        const senha = document.getElementById("senhaLogin").value;
-
-        try {
-          await signInWithEmailAndPassword(auth, email, senha);
-          showAlert("success", "Login realizado com sucesso!");
-          closeAuthModal();
-          loginForm.reset();
-        } catch (error) {
-          console.error(error);
-          let msg = "Não foi possível entrar. Verifique os dados.";
-          if (error.code === "auth/wrong-password") msg = "Senha incorreta.";
-          if (error.code === "auth/user-not-found") msg = "Usuário não encontrado.";
-          showAlert("error", msg);
-        }
-      });
-    }
-
-    // Clique no círculo → minha conta
-    if (userCircle) {
-      userCircle.addEventListener("click", () => {
-        window.location.href = "/minha-conta.html";
-      });
-    }
-
-    // Estado de autenticação
-    onAuthStateChanged(auth, (user) => {
-      if (!btnLogin || !authText || !userCircle) return;
-
-      if (user) {
-        // logado
-        btnLogin.style.display = "none";
-        authText.style.display = "inline";
-        authText.textContent = "Sair";
-
-        userCircle.style.display = "flex";
-        const name = user.displayName || user.email || "?";
-        userCircle.textContent = (name[0] || "?").toUpperCase();
-      } else {
-        // deslogado
-        btnLogin.style.display = "inline-block";
-        authText.style.display = "none";
-        userCircle.style.display = "none";
-        userCircle.textContent = "";
-      }
-    });
-  </script>
-
   <script>
-    // Menu lateral simples (sem carrossel nesta página)
+    // Menu lateral
     const btnMenu = document.getElementById('btn-menu');
     const overlay = document.getElementById('menu-overlay');
     if (btnMenu && overlay) {
       btnMenu.addEventListener('click', () => overlay.classList.toggle('show'));
-      overlay.querySelectorAll('a').forEach(a =>
-        a.addEventListener('click', () => overlay.classList.remove('show'))
-      );
     }
+
+    // Slider simples
+    const slider = document.getElementById("slider");
+    const sliderInner = document.getElementById("slider-inner");
+    const dots = document.querySelectorAll(".dot");
+    let current = 0;
+    function setSlide(index) {
+      if (!sliderInner) return;
+      const total = sliderInner.children.length;
+      current = (index + total) % total;
+      sliderInner.style.transform = `translateX(-${current * 100}%)`;
+      dots.forEach((d, i) => d.classList.toggle("active", i === current));
+    }
+    dots.forEach((dot, i) => {
+      dot.addEventListener("click", () => setSlide(i));
+    });
+
+    // Swipe no desktop / mobile
+    let startX = 0;
+    let dragging = false;
+    slider.addEventListener("touchstart", e => {
+      dragging = true;
+      startX = e.touches[0].clientX;
+    });
+    slider.addEventListener("touchmove", e => {
+      if(!dragging) return;
+    });
+    slider.addEventListener("touchend", e => {
+      if(!dragging) return;
+      dragging = false;
+      const diff = e.changedTouches[0].clientX - startX;
+      if (diff > 40) setSlide(current - 1);
+      else if (diff < -40) setSlide(current + 1);
+    });
+
+    slider.addEventListener("mousedown", e => {
+      dragging = true;
+      startX = e.clientX;
+    });
+    slider.addEventListener("mouseup",   e => {
+      if(!dragging) return;
+      dragging = false;
+      const diff = e.clientX - startX;
+      if (diff > 40) setSlide(current - 1);
+      else if (diff < -40) setSlide(current + 1);
+    });
+
+    window.addEventListener("resize", () => setSlide(current));
+    setSlide(0);
   </script>
 
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+    import { 
+      getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, sendEmailVerification, updateProfile 
+    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+    import { getStorage } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
+
+    const app = initializeApp({
+      apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
+      authDomain: "mostreaki-2025.firebaseapp.com",
+      projectId: "mostreaki-2025",
+      storageBucket: "mostreaki-2025.firebasestorage.app",
+      messagingSenderId: "748712068097",
+      appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
+    });
+    const auth = getAuth(app);
+    const storage = getStorage(app);
+
+    const $ = (id) => document.getElementById(id);
+    const modal = $("authModal");
+    const btnAbrir = $("btnAbrirLogin");
+    const authText = $("authText");
+    const userCircle = $("userCircle");
+
+    function abrirModal() { 
+      if (!modal) return;
+      modal.style.display = "flex"; 
+      document.body.style.overflow = "hidden"; 
+    }
+    window.fecharModal = function() { 
+      if (!modal) return;
+      modal.style.display = "none"; 
+      document.body.style.overflow = ""; 
+    }
+    if (btnAbrir) btnAbrir.addEventListener("click", abrirModal);
+    if (modal) {
+      modal.addEventListener("click", e => { if (e.target === modal) fecharModal(); });
+    }
+    window.addEventListener("keydown", e => { 
+      if (e.key === "Escape" && modal && modal.style.display === "flex") fecharModal(); 
+    });
+
+    // Alertas
+    const alertBG = $("alert");
+    const alertTitle = $("alertTitle");
+    const alertMsg = $("alertMsg");
+    const alertActions = $("alertActions");
+    function showAlert({ title = "Aviso", html = "", actions = [{ text: "Fechar", kind: "solid" }] }) {
+      if (!alertBG) return;
+      alertTitle.textContent = title;
+      alertMsg.innerHTML = html;
+      alertActions.innerHTML = "";
+      actions.forEach(a => {
+        const b = document.createElement('button');
+        b.className = (a.kind === 'ghost' ? 'btn-ghost' : 'btn-solid');
+        b.textContent = a.text;
+        b.onclick = () => { if (a.onClick) a.onClick(); closeAlert(); };
+        alertActions.appendChild(b);
+      });
+      alertBG.style.display = 'flex';
+    }
+    function closeAlert() {
+      if (!alertBG) return;
+      alertBG.style.display = 'none';
+    }
+
+    // Mostrar senha
+    (function wireShowPassword() {
+      const input = $("senha"), chk = $("chkMostrarSenha");
+      if (!input || !chk) return;
+      const apply = () => { input.type = chk.checked ? 'text' : 'password'; };
+      chk.addEventListener('change', apply);
+    })();
+
+    // Controle de tentativas
+    const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    const emailValido = v => emailRe.test(v);
+    function getState() {
+      const now = Date.now();
+      const s = JSON.parse(sessionStorage.getItem('loginState') || '{}');
+      if (!s.lockUntil) s.lockUntil = 0;
+      if (!s.failCount) s.failCount = 0;
+      if (!s.blockMult) s.blockMult = 1;
+      if (now > s.lockUntil) s.lockUntil = 0;
+      return s;
+    }
+    function setState(s) { sessionStorage.setItem('loginState', JSON.stringify(s)); }
+    function isLocked() {
+      const s = getState();
+      return s.lockUntil && Date.now() < s.lockUntil;
+    }
+    function lockMore() {
+      const s = getState();
+      const base = 30000;
+      s.blockMult = Math.min(s.blockMult * 2, 8);
+      s.lockUntil = Date.now() + base * s.blockMult;
+      setState(s);
+    }
+    function incFail() {
+      const s = getState();
+      s.failCount = (s.failCount || 0) + 1;
+      if (s.failCount >= 5) { s.failCount = 0; lockMore(); }
+      setState(s);
+    }
+    function resetFails() {
+      setState({ failCount: 0, blockMult: 1, lockUntil: 0 });
+    }
+    function showLockMsg() {
+      const s = getState();
+      const secs = Math.ceil((s.lockUntil - Date.now()) / 1000);
+      showAlert({ title: "Muitas tentativas", html: `Aguarde <b>${secs}s</b> para tentar novamente.` });
+    }
+
+    async function loginEmailSenha() {
+      if (isLocked()) return showLockMsg();
+
+      const emailEl = $("email");
+      const senhaEl = $("senha");
+      if (!emailEl || !senhaEl) return;
+
+      const email = emailEl.value.trim();
+      const senha = senhaEl.value;
+
+      if (!email) {
+        incFail();
+        return showAlert({ title: "E-mail vazio", html: "Digite seu e-mail para continuar." });
+      }
+      if (!emailValido(email)) {
+        incFail();
+        return showAlert({ title: "E-mail inválido", html: "Revise o endereço digitado." });
+      }
+      if (!senha) {
+        incFail();
+        return showAlert({ title: "Senha vazia", html: "Digite sua senha para continuar." });
+      }
+
+      try {
+        const cred = await signInWithEmailAndPassword(auth, email, senha);
+
+        if (!cred.user.emailVerified) {
+          await sendEmailVerification(cred.user);
+          showAlert({
+            title: "Confirme seu e-mail",
+            html: `Seu e-mail ainda não foi verificado.<br>Reenviamos o link para <b>${email}</b>. Verifique sua caixa de entrada (ou spam) e tente novamente após confirmar.`
+          });
+          return;
+        }
+
+        resetFails();
+        if (cred.user.photoURL) {
+          try {
+            await updateProfile(cred.user, { photoURL: cred.user.photoURL });
+            localStorage.setItem("fotoPerfil", cred.user.photoURL);
+          } catch(e) {
+            console.error("Erro ao atualizar foto de perfil:", e);
+          }
+        }
+        if (typeof fecharModal === "function") fecharModal();
+        location.href = "/minha-conta.html";
+
+      } catch (e) {
+        incFail();
+        const codes = ["auth/invalid-credential", "auth/wrong-password", "auth/user-not-found"];
+        if (codes.includes(e.code)) {
+          if (isLocked()) return showLockMsg();
+          return showAlert({
+            title: "Não conseguimos entrar",
+            html: "E-mail e/ou senha incorretos. Você pode tentar novamente ou recuperar a senha.",
+            actions: [
+              { text: "Recuperar senha", kind: "ghost", onClick: () => location.href = "/recuperar-senha.html" },
+              { text: "Cadastrar", kind: "ghost", onClick: () => location.href = "/cadastro.html" },
+              { text: "Fechar", kind: "solid" }
+            ]
+          });
+        }
+        if (e.code === "auth/too-many-requests") {
+          lockMore();
+          return showLockMsg();
+        }
+        if (e.code === "auth/invalid-email") {
+          return showAlert({ title: "E-mail inválido", html: "Revise o endereço digitado." });
+        }
+        showAlert({ title: "Erro", html: `Erro inesperado (${e.code}). Tente novamente.` });
+      }
+    }
+
+    const btnEntrar = $("btnEntrar");
+    if (btnEntrar) btnEntrar.addEventListener("click", loginEmailSenha);
+    document.addEventListener('keydown', e => { 
+      if (e.key === 'Enter' && modal && modal.style.display === 'flex') loginEmailSenha(); 
+    });
+
+    // Estado de auth
+    onAuthStateChanged(auth, (user) => {
+      if (!userCircle || !authText || !btnAbrir) return;
+      const fotoURL = localStorage.getItem("fotoPerfil");
+      if (user) {
+        if (fotoURL) {
+          userCircle.style.backgroundImage = `url('${fotoURL}')`;
+          userCircle.textContent = "";
+        } else {
+          const nome = (user.displayName || user.email || "?").trim();
+          userCircle.textContent = nome.charAt(0).toUpperCase();
+          userCircle.style.backgroundImage = "";
+        }
+        userCircle.style.display = "flex";
+        authText.style.display = "inline";
+        btnAbrir.style.display = "none";
+      } else {
+        userCircle.style.display = "none";
+        authText.style.display = "none";
+        btnAbrir.style.display = "inline-block";
+      }
+    });
+
+    // Sair
+    if (authText) {
+      authText.addEventListener("click", async () => {
+        try {
+          await signOut(auth);
+          localStorage.removeItem("fotoPerfil");
+          location.reload();
+        } catch (e) {
+          showAlert({ title: "Sair", html: "Não foi possível sair. Tente de novo." });
+        }
+      });
+    }
+  </script>
 </body>
 </html>
