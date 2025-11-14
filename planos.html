@@ -98,123 +98,12 @@
       transform: translateY(-1px);
     }
 
-    /* Melhor ajuste em telas maiores */
     @media (min-width: 768px) {
       body { font-size: 16px; }
       header img { height: 48px; }
       .hamburger { width: 42px; height: 42px; }
       .menu-overlay { width: 280px; max-width: 85vw; }
       .menu-link { width: 210px; max-width: 100%; }
-    }
-
-    /* ===== HERO / Carrossel (estrutura do anexo, não usada aqui, mas mantida para consistência visual) ===== */
-    .banner-wrapper {
-      width: min(1100px, 94vw);
-      margin: 1.6rem auto 2.4rem;
-      position: relative;
-    }
-    .banner-slider {
-      overflow: hidden;
-      border-radius: 18px;
-      background: rgba(0,0,0,.05);
-    }
-    .banner-track {
-      display: flex;
-      transition: transform .35s ease;
-      touch-action: pan-y;
-    }
-    .banner-slide { min-width: 100%; background:#000; }
-    .banner-slide video,
-    .banner-slide img { width: 100%; display:block; height: auto; }
-
-    .banner-desktop { display: none; }
-    .banner-mobile  { display: block; }
-
-    .banner-dots {
-      display: flex; gap: .5rem; justify-content: center; margin-top: .6rem;
-    }
-    .banner-dot {
-      width: 10px; height: 10px; border-radius: 50%;
-      background: rgba(255,255,255,.4);
-      border: 2px solid rgba(0,0,0,.15);
-      cursor: pointer; transition: .2s;
-    }
-    .banner-dot.active {
-      background: var(--bordo);
-      transform: scale(1.08);
-    }
-
-    @media (min-width: 880px) {
-      .banner-desktop { display: block; }
-      .banner-mobile  { display: none;  }
-    }
-
-    /* ===== Hexágonos / Cards iniciais - mantidos como base de estilo, embora não usados aqui ===== */
-    .menu-opcoes {
-      width: min(1100px, 96vw);
-      margin: 1.2rem auto 2.6rem;
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 1.4rem;
-      justify-items: center;
-    }
-    .hex-group {
-      width: 100%;
-      max-width: 260px;
-      position: relative;
-      display: flex; justify-content: center;
-    }
-    .hex {
-      width: 140px; height: 120px;
-      background: rgba(255,255,255,0.85);
-      clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%);
-      display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 8px 14px rgba(0,0,0,.16);
-      border: 2px solid rgba(125,47,89,0.45);
-      overflow: hidden;
-    }
-    .hex img {
-      max-width: 90%;
-      max-height: 90%;
-      object-fit: contain;
-      opacity: .9;
-    }
-    .hex-btn {
-      position: absolute; bottom: -2.1rem;
-      background: linear-gradient(180deg, var(--grad1), var(--grad2));
-      border-radius: 999px;
-      padding: .38rem 1rem;
-      font-size: .9rem;
-      font-weight: 600;
-      text-align: center;
-      text-decoration: none;
-      color: var(--bordo);
-      border: 2px solid rgba(0,0,0,.16);
-      box-shadow: 0 4px 10px rgba(0,0,0,.18);
-      white-space: nowrap;
-      min-width: 150px;
-    }
-    .hex-btn:hover {
-      filter: brightness(1.03);
-      transform: translateY(-1px);
-    }
-
-    @media (max-width: 720px) {
-      .menu-opcoes {
-        display:flex; flex-wrap:wrap; gap:1.1rem; justify-content:center; margin-top:2.3rem;
-      }
-      .hex-group {
-        width: 47%; height:auto; transform:none!important;
-        display:flex; flex-direction:column; align-items:center; gap:.3rem;
-      }
-      .hex {
-        width:125px; height:108px; background: rgba(255,255,255,0.9); backdrop-filter: blur(2px);
-      }
-      .hex img { opacity: 1; }
-      .hex-btn {
-        position: static; transform:none; width:75%;
-        font-size:.83rem; padding:.25rem .6rem; border-width:2px; opacity:1; border-radius:10px;
-      }
     }
 
     /* ===== Rodapé ===== */
@@ -228,7 +117,7 @@
       color: var(--texto);
     }
 
-    /* Ajuste específico da página de planos */
+    /* ===== Área principal / títulos ===== */
     main {
       flex: 1;
       max-width: min(1100px, 94vw);
@@ -236,7 +125,6 @@
       padding: 0 1.2rem 2.2rem;
     }
 
-    /* ===== Pricing ===== */
     .pricing-head{ text-align:center;margin-bottom:22px; }
     .pricing-head h1{
       color:var(--titleAccent); font-size:1.9rem;margin-bottom:6px;
@@ -244,50 +132,231 @@
     }
     .pricing-head p{ color:var(--titleAccent); font-size:1.05rem; text-shadow:0 1px 0 rgba(0,0,0,.18); }
 
+    .pricing-head .note {
+      list-style: none;
+      margin:12px auto 0;
+      max-width:860px;
+      padding:12px 14px;
+      background:#f3fbfa;
+      border-left:4px solid var(--brand);
+      border-radius:10px;
+      color:#234;
+      font-size:.95rem;
+      text-align:left;
+    }
+
+    /* ===== Grid desktop dos planos ===== */
     .grid{ display:grid; gap:18px; grid-template-columns:1fr; }
     @media (min-width:720px){ .grid{grid-template-columns:repeat(2,1fr)} }
     @media (min-width:1100px){ .grid{grid-template-columns:repeat(3,1fr)} }
 
+    /* ===== Card base ===== */
     .card{
-      background:var(--card);border:1px solid #e6f3f1;border-radius:14px;
-      box-shadow:0 6px 20px rgba(0,0,0,.06);overflow:hidden;display:flex;flex-direction:column;
+      background:var(--card);
+      border:1px solid #e6f3f1;
+      border-radius:16px;
+      box-shadow:0 6px 20px rgba(0,0,0,.06);
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
       transition:transform .15s, box-shadow .15s;
     }
-    .card:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(0,0,0,.10)}
+    .card:hover{
+      transform:translateY(-2px);
+      box-shadow:0 10px 26px rgba(0,0,0,.10)
+    }
+
     .card-head{
       background:linear-gradient(90deg,var(--brandLight),var(--brand));
-      padding:16px 16px 14px;border-bottom:1px solid #cfeee9;
-      display:flex;align-items:center;gap:10px;justify-content:space-between;
+      padding:14px 16px 10px;
+      border-bottom:1px solid #cfeee9;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      justify-content:space-between;
     }
-    .card-title{font-weight:bold;color:var(--ink);font-size:1.15rem}
-    .selector{display:flex;align-items:center;gap:8px;color:#0b4d4c;font-weight:bold}
+    .card-title{
+      font-weight:bold;
+      color:var(--ink);
+      font-size:1.15rem
+    }
+    .selector{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      color:#0b4d4c;
+      font-weight:bold
+    }
     .selector input{width:18px;height:18px}
 
-    .card-body{padding:18px 16px 10px;flex:1}
-    .feat{list-style:none;color:#273;font-size:1rem}
-    .feat li{
-      position:relative; padding-left:26px; margin:10px 0; line-height:1.55;
-      white-space:normal; word-break:normal; overflow-wrap:anywhere; text-wrap:pretty;
+    .card-body{
+      padding:14px 16px 10px;
+      flex:1;
+      display:flex;
+      flex-direction:column;
     }
-    .feat li::before{ content:"✔"; position:absolute; left:0; top:.15em; color:var(--brand); font-weight:bold }
 
-    .note{ margin:12px 0 4px; padding:12px 14px; background:#f3fbfa; border-left:4px solid var(--brand);
-      border-radius:10px; color:#234; font-size:.95rem }
+    .price-destak {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #0e7270;
+      margin: 6px 0 2px;
+    }
+    .price-destak small {
+      font-size: .85rem;
+      font-weight: 500;
+      color: #345;
+    }
 
-    .price-row{ margin-top:12px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap }
-    .price{ font-size:1.6rem;color:#0e7270;font-weight:900;letter-spacing:.3px }
-    .mp-slot{display:flex;align-items:center;gap:8px}
-    .mp-slot img{height:30px;width:auto;display:block;filter:saturate(.95) contrast(1.05)}
+    .feat{
+      list-style:none;
+      color:#273;
+      font-size:1rem;
+      padding-left:0;
+      margin:10px 0 0;
+    }
+    .feat li{
+      position:relative;
+      padding-left:26px;
+      margin:10px 0;
+      line-height:1.55;
+      white-space:normal;
+      word-break:normal;
+      overflow-wrap:anywhere;
+      text-wrap:pretty;
+    }
+    .feat li::before{
+      content:"✔";
+      position:absolute;
+      left:0;
+      top:.15em;
+      color:var(--brand);
+      font-weight:bold
+    }
+
+    .note{
+      margin:12px 0 4px;
+      padding:12px 14px;
+      background:#f3fbfa;
+      border-left:4px solid var(--brand);
+      border-radius:10px;
+      color:#234;
+      font-size:.95rem
+    }
+
+    .price-row{
+      margin-top:12px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap
+    }
+    .price{
+      font-size:1.6rem;
+      color:#0e7270;
+      font-weight:900;
+      letter-spacing:.3px
+    }
+    .mp-slot{
+      display:flex;
+      align-items:center;
+      gap:8px
+    }
+    .mp-slot img{
+      height:30px;
+      width:auto;
+      display:block;
+      filter:saturate(.95) contrast(1.05)
+    }
 
     .assinar{
-      margin:14px 16px 16px;
-      background:var(--brand);color:#fff;border:0;border-radius:10px;padding:12px 14px;
-      font-weight:bold;cursor:pointer;width:90%;font-size:1.05rem
+      margin:10px 0 4px;
+      background:var(--brand);
+      color:#fff;
+      border:0;
+      border-radius:10px;
+      padding:12px 14px;
+      font-weight:bold;
+      cursor:pointer;
+      width:100%;
+      font-size:1.05rem
     }
     .assinar:hover{filter:brightness(.95)}
 
-    .sub{margin-top:10px;color:#566;font-size:.92rem}
+    .sub{
+      margin-top:8px;
+      color:#566;
+      font-size:.92rem
+    }
 
+    /* ===== Botão "Ver benefícios" (mobile) ===== */
+    .toggle-beneficios {
+      margin:8px 0 10px;
+      width:100%;
+      border-radius:999px;
+      border:1px solid var(--bordo);
+      background:linear-gradient(180deg, var(--grad1), var(--grad2));
+      color:var(--bordo);
+      font-weight:600;
+      padding:8px 12px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      cursor:pointer;
+      font-size:.95rem;
+    }
+    .toggle-beneficios span.seta {
+      font-size:1.1rem;
+      transition:transform .2s ease;
+    }
+
+    /* Estado "aberto" da seta */
+    .card[data-open="true"] .toggle-beneficios span.seta {
+      transform: rotate(180deg);
+    }
+
+    /* ===== Comportamento mobile x desktop ===== */
+
+    /* Mobile: cards mais "containerzinho", colapsados por padrão */
+    @media (max-width: 768px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .card {
+        border: 2px solid var(--bordo);
+        background: rgba(255,255,255,0.97);
+      }
+
+      /* Esconde benefícios quando data-open="false" */
+      .card[data-open="false"] .feat,
+      .card[data-open="false"] .note {
+        display: none;
+      }
+
+      /* Deixa price-row mais discreto, já que mostramos preço lá em cima */
+      .price-row {
+        margin-top: 8px;
+        justify-content: flex-start;
+        gap: 6px;
+      }
+      .price-row .price {
+        font-size: 1.1rem;
+      }
+    }
+
+    /* Desktop: tudo aberto, sem colapso, sem botão "ver benefícios" se quiser */
+    @media (min-width: 769px) {
+      .toggle-beneficios {
+        display: none;
+      }
+      /* garante que lista sempre apareça no desktop */
+      .feat,
+      .note {
+        display: block;
+      }
+    }
   </style>
 </head>
 <body>
@@ -308,234 +377,265 @@
     <a href="/redes-sociais.html" class="menu-link">Redes Sociais</a>
   </nav>
 
-<main>
-  <div class="pricing-head">
-    <h1>Planos do MostreAki</h1>
-    <p>Quando estiver logado, marque o plano e clique em <b>AssineAki</b>.</p>
-    <div class="note" style="max-width:860px;margin:12px auto 0">
-    	<li>O cadastro e a atualização de produtos do catálogo</b> é editável pelo próprio cliente através do botão Editar Catálogo <b>exclusivo para assinantes.</b></li>
-    
+  <main>
+    <div class="pricing-head">
+      <h1>Planos do MostreAki</h1>
+      <p>Quando estiver logado, marque o plano e clique em <b>AssineAki</b>.</p>
+      <div class="note">
+        O cadastro e a atualização de produtos do catálogo são editáveis pelo próprio cliente
+        através do botão <b>Editar Catálogo</b>, exclusivo para assinantes.
+      </div>
     </div>
-  </div>
   
-  <section class="grid" aria-label="Planos MostreAki">
-<!-- Básico -->
-<article class="card" data-plan="basico">
-  <div class="card-head">
-    <div class="card-title">Plano Básico</div>
-    <label class="selector" for="sel-basico">
-      <input type="radio" id="sel-basico" name="plano" value="basico">
-      <span>Escolher plano</span>
-    </label>
-  </div>
-  <div class="card-body">
-    <ul class="feat">
-      <li>
-        Site institucional responsivo com layout profissional, pronto para apresentar
-        sua marca, serviços, produtos e contatos.
-      </li>
+    <section class="grid" aria-label="Planos MostreAki">
+      <!-- Básico -->
+      <article class="card" data-plan="basico" data-open="false">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Plano Básico</div>
+            <div class="price-destak">
+              R$ 263,00 <small>/mês</small>
+            </div>
+          </div>
+          <label class="selector" for="sel-basico">
+            <input type="radio" id="sel-basico" name="plano" value="basico">
+            <span>Escolher</span>
+          </label>
+        </div>
+        <div class="card-body">
+          <button class="toggle-beneficios" type="button">
+            <span class="label-text">Ver todos os benefícios</span>
+            <span class="seta">▼</span>
+          </button>
 
-      <li>
-        Até 1 arte de banner web profissional feita pelo MostreAki, configurada na
-        <b>página principal</b> com sua logomarca e cores personalizadas, com direito
-        a 1 rodada de ajuste, caso seja necessário.
-      </li>
+          <ul class="feat">
+            <li>
+              Site institucional responsivo com layout profissional, pronto para apresentar
+              sua marca, serviços, produtos e contatos.
+            </li>
 
-      <li>
-        Catálogo digital com até <b>100 produtos</b>, permitindo ao cliente carregar
-        a foto do anúncio, editar nome, preço, descrição e link externo
-        (ex.: Mercado Livre, PicPay, PayPal, Pix via QR Code) e botão de contato.
-      </li>
+            <li>
+              Até 1 arte de banner web profissional feita pelo MostreAki, configurada na
+              <b>página principal</b> com sua logomarca e cores personalizadas, com direito
+              a 1 rodada de ajuste, caso seja necessário.
+            </li>
 
-      <li>
-        <b>Galeria por item:</b> até <b>3 fotos</b> por produto.
-      </li>
+            <li>
+              Catálogo digital com até <b>100 produtos</b>, permitindo ao cliente carregar
+              a foto do anúncio, editar nome, preço, descrição e link externo
+              (ex.: Mercado Livre, PicPay, PayPal, Pix via QR Code) e botão de contato.
+            </li>
 
-      <li>Até 10 mil visitas/mês.</li>
+            <li>
+              <b>Galeria por item:</b> até <b>3 fotos</b> por produto.
+            </li>
 
-      <li>
-        Botão flutuante de WhatsApp para contato direto e botão fixo para redes sociais
-        (Instagram, YouTube, TikTok...).
-      </li>
+            <li>Até 10 mil visitas/mês.</li>
 
-      <li>
-        <b>Até 3 pedidos de ajustes por mês</b> em textos e imagens institucionais do site
-        (ex.: trocar banner, atualizar botões de seções, trocar cores do site).
-        Para quem deseja que o MostreAki atualize o catálogo por você
-        (produtos, fotos, preços, links), oferecemos pacotes de gestão de catálogo
-        na seção de <a href="servicos-adicionais.html"><b>Serviços Adicionais</b></a>.
-      </li>
+            <li>
+              Botão flutuante de WhatsApp para contato direto e botão fixo para redes sociais
+              (Instagram, YouTube, TikTok...).
+            </li>
 
-      <li>
-        Suporte via WhatsApp em horário comercial, com conversa sobre fortalecimento
-        da marca, ajustes necessários e esclarecimento de dúvidas sobre uso da plataforma.
-      </li>
+            <li>
+              <b>Até 3 pedidos de ajustes por mês</b> em textos e imagens institucionais do site
+              (ex.: trocar banner, atualizar botões de seções, trocar cores do site).
+              Para quem deseja que o MostreAki atualize o catálogo por você
+              (produtos, fotos, preços, links), oferecemos pacotes de gestão de catálogo
+              na seção de <a href="servicos-adicionais.html"><b>Serviços Adicionais</b></a>.
+            </li>
 
-      <li>
-        O MostreAki dará assistência para configurar o domínio (Registro.br) e o e-mail
-        profissional (Zoho Mail), com orientações de uso de painel/contas na seção
-        <a href="instrucoes.html"><b>Instruções</b></a>.
-      </li>
+            <li>
+              Suporte via WhatsApp em horário comercial, com conversa sobre fortalecimento
+              da marca, ajustes necessários e esclarecimento de dúvidas sobre uso da plataforma.
+            </li>
 
-      <li>
-        Até 1 arte por mês para feed no Instagram, com direito a 1 rodada de ajuste,
-        caso seja necessário.
-      </li>
+            <li>
+              O MostreAki dará assistência para configurar o domínio (Registro.br) e o e-mail
+              profissional (Zoho Mail), com orientações de uso de painel/contas na seção
+              <a href="instrucoes.html"><b>Instruções</b></a>.
+            </li>
 
-      <li class="note">
-        <b>Nota:</b> a criação das artes para Instagram segue o briefing enviado pelo cliente.
-      </li>
-    </ul>
+            <li>
+              Até 1 arte por mês para feed no Instagram, com direito a 1 rodada de ajuste,
+              caso seja necessário.
+            </li>
 
-    <div class="price-row" aria-label="Preço e pagamento">
-      <div class="price">R$ 263,00</div>
-      <div class="mp-slot">
-        <img src="mercado-pago-logo.svg" alt="Mercado Pago">
-        <div style="font-size:.85rem;color:#556">Pagamento Seguro ✅️</div>
-      </div>
-    </div>
-    <button class="assinar" type="button">AssineAki</button>
-    <div class="sub">
-      Plano indicado para quem está começando profissionalmente e quer presença
-      digital da sua marca de forma responsiva e organizada.
-    </div>
-  </div>
-</article>
- <!-- Intermediário -->
-<article class="card" data-plan="intermediario">
-  <div class="card-head">
-    <div class="card-title">Plano Intermediário</div>
-    <label class="selector" for="sel-intermediario">
-      <input type="radio" id="sel-intermediario" name="plano" value="intermediario">
-      <span>Escolher plano</span>
-    </label>
-  </div>
-  <div class="card-body">
-    <ul class="feat">
-      <li>Todos os benefícios aplicados do Plano Básico.</li>
+            <li class="note">
+              <b>Nota:</b> a criação das artes para Instagram segue o briefing enviado pelo cliente.
+            </li>
+          </ul>
 
-      <li>
-        Até 2 artes de banner web profissionais feitas pelo MostreAki,
-        configuradas na página principal com sua logomarca e cores personalizadas,
-        com direito a 1 rodada de ajuste, caso seja necessário.
-      </li>
+          <div class="price-row" aria-label="Preço e pagamento">
+            <div class="price">R$ 263,00</div>
+            <div class="mp-slot">
+              <img src="mercado-pago-logo.svg" alt="Mercado Pago">
+              <div style="font-size:.85rem;color:#556">Pagamento Seguro ✅️</div>
+            </div>
+          </div>
+          <button class="assinar" type="button">AssineAki</button>
+          <div class="sub">
+            Plano indicado para quem está começando profissionalmente e quer presença
+            digital da sua marca de forma responsiva e organizada.
+          </div>
+        </div>
+      </article>
 
-      <li>
-        Catálogo digital com até <b>250 produtos</b>, permitindo ao cliente carregar
-        a foto do anúncio, editar nome, preço, descrição e link externo
-        (ex.: Mercado Livre, PicPay, PayPal, Pix via QR Code) e botão de contato.
-      </li>
+      <!-- Intermediário -->
+      <article class="card" data-plan="intermediario" data-open="false">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Plano Intermediário</div>
+            <div class="price-destak">
+              R$ 347,00 <small>/mês</small>
+            </div>
+          </div>
+          <label class="selector" for="sel-intermediario">
+            <input type="radio" id="sel-intermediario" name="plano" value="intermediario">
+            <span>Escolher</span>
+          </label>
+        </div>
+        <div class="card-body">
+          <button class="toggle-beneficios" type="button">
+            <span class="label-text">Ver todos os benefícios</span>
+            <span class="seta">▼</span>
+          </button>
 
-      <li>
-        <b>Galeria por item:</b> até <b>5 fotos</b> por produto no catálogo digital.
-      </li>
+          <ul class="feat">
+            <li>Todos os benefícios aplicados do Plano Básico.</li>
 
-      <li>Até 25 mil visitas/mês.</li>
+            <li>
+              Até 2 artes de banner web profissionais feitas pelo MostreAki,
+              configuradas na página principal com sua logomarca e cores personalizadas,
+              com direito a 1 rodada de ajuste, caso seja necessário.
+            </li>
 
-      <li>
-        <b>Até 5 pedidos de ajustes por mês</b> em textos e imagens institucionais do site
-        (ex.: trocar banner, atualizar botões de seções, trocar cores do site).
-        Para quem deseja que o MostreAki atualize o catálogo por você (produtos, fotos, preços, links),
-        oferecemos pacotes de gestão de catálogo na seção de
-        <a href="servicos-adicionais.html"><b>Serviços Adicionais</b></a>.
-      </li>
+            <li>
+              Catálogo digital com até <b>250 produtos</b>, permitindo ao cliente carregar
+              a foto do anúncio, editar nome, preço, descrição e link externo
+              (ex.: Mercado Livre, PicPay, PayPal, Pix via QR Code) e botão de contato.
+            </li>
 
-      <li>
-        Até 2 artes por mês para feed do Instagram, com direito a 1 rodada de ajuste,
-        caso seja necessário.
-      </li>
+            <li>
+              <b>Galeria por item:</b> até <b>5 fotos</b> por produto no catálogo digital.
+            </li>
 
-      <li class="note">
-        <b>Nota:</b> a criação das artes para Instagram segue o briefing enviado pelo cliente.
-      </li>
-    </ul>
+            <li>Até 25 mil visitas/mês.</li>
 
-    <div class="price-row" aria-label="Preço e pagamento">
-      <div class="price">R$ 347,00</div>
-      <div class="mp-slot">
-        <img src="mercado-pago-logo.svg" alt="Mercado Pago">
-        <div style="font-size:.85rem;color:#556">Pagamento Seguro ✅️</div>
-      </div>
-    </div>
-    <button class="assinar" type="button">AssineAki</button>
-    <div class="sub">
-      Plano ideal para quem já tem uma base de clientes e deseja um catálogo digital mais robusto.
-    </div>
-  </div>
-</article>
+            <li>
+              <b>Até 5 pedidos de ajustes por mês</b> em textos e imagens institucionais do site
+              (ex.: trocar banner, atualizar botões de seções, trocar cores do site).
+              Para quem deseja que o MostreAki atualize o catálogo por você (produtos, fotos, preços, links),
+              oferecemos pacotes de gestão de catálogo na seção de
+              <a href="servicos-adicionais.html"><b>Serviços Adicionais</b></a>.
+            </li>
 
- <!-- Avançado -->
-<article class="card" data-plan="avancado">
-  <div class="card-head">
-    <div class="card-title">Plano Avançado</div>
-    <label class="selector" for="sel-avancado">
-      <input type="radio" id="sel-avancado" name="plano" value="avancado">
-      <span>Escolher plano</span>
-    </label>
-  </div>
-  <div class="card-body">
-    <ul class="feat">
-      <li><b>Todos os benefícios aplicados do Plano Intermediário.</b></li>
+            <li>
+              Até 2 artes por mês para feed do Instagram, com direito a 1 rodada de ajuste,
+              caso seja necessário.
+            </li>
 
-      <li>
-        Até 3 artes de banner web profissionais feitas pelo MostreAki,
-        configuradas na página principal com sua logomarca e cores personalizadas,
-        com direito a 1 rodada de ajuste, caso seja necessário.
-      </li>
+            <li class="note">
+              <b>Nota:</b> a criação das artes para Instagram segue o briefing enviado pelo cliente.
+            </li>
+          </ul>
 
-      <li>
-        Catálogo digital com até <b>500 produtos</b>, permitindo ao cliente carregar
-        a foto do anúncio, editar nome, preço, descrição e link externo
-        (ex.: Mercado Livre, PicPay, PayPal, Pix via QR Code) e botão de contato.
-      </li>
+          <div class="price-row" aria-label="Preço e pagamento">
+            <div class="price">R$ 347,00</div>
+            <div class="mp-slot">
+              <img src="mercado-pago-logo.svg" alt="Mercado Pago">
+              <div style="font-size:.85rem;color:#556">Pagamento Seguro ✅️</div>
+            </div>
+          </div>
+          <button class="assinar" type="button">AssineAki</button>
+          <div class="sub">
+            Plano ideal para quem já tem uma base de clientes e deseja um catálogo digital mais robusto.
+          </div>
+        </div>
+      </article>
 
-      <li>
-        <b>Galeria por item:</b> até <b>9 fotos</b> por produto no catálogo digital.
-      </li>
+      <!-- Avançado -->
+      <article class="card" data-plan="avancado" data-open="false">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Plano Avançado</div>
+            <div class="price-destak">
+              R$ 499,00 <small>/mês</small>
+            </div>
+          </div>
+          <label class="selector" for="sel-avancado">
+            <input type="radio" id="sel-avancado" name="plano" value="avancado">
+            <span>Escolher</span>
+          </label>
+        </div>
+        <div class="card-body">
+          <button class="toggle-beneficios" type="button">
+            <span class="label-text">Ver todos os benefícios</span>
+            <span class="seta">▼</span>
+          </button>
 
-      <li>Até 50 mil visitas/mês.</li>
+          <ul class="feat">
+            <li><b>Todos os benefícios aplicados do Plano Intermediário.</b></li>
 
-      <li>
-        <b>Até 9 pedidos de ajustes por mês</b> em textos e imagens institucionais do site
-        (ex.: trocar banner, atualizar botões de seções, trocar cores do site).
-        Para quem deseja que o MostreAki atualize o catálogo por você (produtos, fotos, preços, links),
-        oferecemos pacotes de gestão de catálogo na seção de
-        <a href="servicos-adicionais.html"><b>Serviços Adicionais</b></a>.
-      </li>
+            <li>
+              Até 3 artes de banner web profissionais feitas pelo MostreAki,
+              configuradas na página principal com sua logomarca e cores personalizadas,
+              com direito a 1 rodada de ajuste, caso seja necessário.
+            </li>
 
-      <li>
-        Até 3 artes por mês para feed do Instagram, com direito a 1 rodada de ajuste,
-        caso seja necessário.
-      </li>
+            <li>
+              Catálogo digital com até <b>500 produtos</b>, permitindo ao cliente carregar
+              a foto do anúncio, editar nome, preço, descrição e link externo
+              (ex.: Mercado Livre, PicPay, PayPal, Pix via QR Code) e botão de contato.
+            </li>
 
-      <li class="note">
-        <b>Nota:</b> a criação das artes para Instagram segue o briefing enviado pelo cliente.
-      </li>
-    </ul>
+            <li>
+              <b>Galeria por item:</b> até <b>9 fotos</b> por produto no catálogo digital.
+            </li>
 
-    <div class="price-row" aria-label="Preço e pagamento">
-      <div class="price">R$ 499,00</div>
-      <div class="mp-slot">
-        <img src="mercado-pago-logo.svg" alt="Mercado Pago">
-        <div style="font-size:.85rem;color:#556">Pagamento Seguro ✅️</div>
-      </div>
-    </div>
-    <button class="assinar" type="button">AssineAki</button>
-    <div class="sub">
-      Plano profissional seguro, para quem já tem muitos produtos para cadastrar
-      e deseja engajar seu trabalho de forma integrada nas redes sociais.
-    </div>
-  </div>
-</article>
-  </section>
-</main>
+            <li>Até 50 mil visitas/mês.</li>
+
+            <li>
+              <b>Até 9 pedidos de ajustes por mês</b> em textos e imagens institucionais do site
+              (ex.: trocar banner, atualizar botões de seções, trocar cores do site).
+              Para quem deseja que o MostreAki atualize o catálogo por você (produtos, fotos, preços, links),
+              oferecemos pacotes de gestão de catálogo na seção de
+              <a href="servicos-adicionais.html"><b>Serviços Adicionais</b></a>.
+            </li>
+
+            <li>
+              Até 3 artes por mês para feed do Instagram, com direito a 1 rodada de ajuste,
+              caso seja necessário.
+            </li>
+
+            <li class="note">
+              <b>Nota:</b> a criação das artes para Instagram segue o briefing enviado pelo cliente.
+            </li>
+          </ul>
+
+          <div class="price-row" aria-label="Preço e pagamento">
+            <div class="price">R$ 499,00</div>
+            <div class="mp-slot">
+              <img src="mercado-pago-logo.svg" alt="Mercado Pago">
+              <div style="font-size:.85rem;color:#556">Pagamento Seguro ✅️</div>
+            </div>
+          </div>
+          <button class="assinar" type="button">AssineAki</button>
+          <div class="sub">
+            Plano profissional seguro, para quem já tem muitos produtos para cadastrar
+            e deseja engajar seu trabalho de forma integrada nas redes sociais.
+          </div>
+        </div>
+      </article>
+    </section>
+  </main>
 
   <footer>
     © 2025 MostreAki - Todos os direitos reservados.
   </footer>
 
   <script>
-    // Menu lateral simples (sem carrossel nesta página)
+    // Menu lateral
     const btnMenu = document.getElementById('btn-menu');
     const overlay = document.getElementById('menu-overlay');
     if (btnMenu && overlay) {
@@ -544,6 +644,25 @@
         a.addEventListener('click', () => overlay.classList.remove('show'))
       );
     }
+
+    // Acordeão de benefícios (mobile)
+    document.querySelectorAll('.card').forEach(card => {
+      const toggle = card.querySelector('.toggle-beneficios');
+      if (!toggle) return;
+
+      const label = toggle.querySelector('.label-text');
+
+      toggle.addEventListener('click', () => {
+        const isOpen = card.getAttribute('data-open') === 'true';
+        if (isOpen) {
+          card.setAttribute('data-open', 'false');
+          label.textContent = 'Ver todos os benefícios';
+        } else {
+          card.setAttribute('data-open', 'true');
+          label.textContent = 'Ocultar benefícios';
+        }
+      });
+    });
   </script>
 
 </body>
