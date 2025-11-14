@@ -104,12 +104,17 @@
       transform: translateY(-1px);
     }
 
-    main { flex: 1; }
+    /* ===== Main com mesmo respiro dos planos ===== */
+    main {
+      flex: 1;
+      max-width: min(1100px, 94vw);
+      margin: 2rem auto 2.6rem;
+    }
 
     /* ===== HERO / Carrossel ===== */
     .banner-wrapper {
-      width: min(1100px, 94vw);
-      margin: 1.6rem auto 2.4rem;
+      width: 100%;
+      margin: 0 auto 2.4rem;
       position: relative;
     }
     .banner-slider {
@@ -145,7 +150,7 @@
 
     /* ===== Hexágonos ===== */
     .menu-opcoes {
-      width: min(1100px, 96vw);
+      width: 100%;
       margin: 2.6rem auto 3.2rem;
       display: flex; gap: 1rem; justify-content: space-between; flex-wrap: wrap;
     }
@@ -172,9 +177,11 @@
       background: linear-gradient(180deg, var(--grad1), var(--grad2));
       border: 3px solid var(--bordo); border-radius: 12px;
       padding: .35rem .8rem; font-weight: 700; font-size: .78rem;
-      text-align: center; color: var(--texto); cursor: pointer;
+      text-align: center; color: var(--texto);
       opacity: .5; backdrop-filter: blur(5px); transition: .3s;
       box-shadow: 0 2px 4px rgba(0,0,0,0.15); min-width: 150px;
+      text-decoration: none;
+      cursor: pointer;
     }
     .hex-group:nth-child(1) .hex-btn { bottom: -12px; }
     .hex-group:nth-child(2) .hex-btn { top: -12px; }
@@ -207,7 +214,7 @@
       .menu-overlay { width: 280px; max-width: 85vw; }
       .menu-link { width: 210px; max-width: 100%; }
 
-      .banner-wrapper { width: 100%; border-radius: 0; margin-top: 1.2rem; }
+      .banner-wrapper { width: 100%; border-radius: 0; }
       .banner-slider { border-radius: 0; }
 
       .menu-opcoes {
@@ -302,23 +309,23 @@
     <section class="menu-opcoes">
       <div class="hex-group">
         <div class="hex"><img src="como-funciona.png" alt="Como Funciona"></div>
-        <div class="hex-btn">Como Funciona?</div>
+        <a href="/planos.html" class="hex-btn">Como Funciona?</a>
       </div>
       <div class="hex-group">
         <div class="hex"><img src="instrucoes.png" alt="Instruções"></div>
-        <div class="hex-btn">Instruções</div>
+        <a href="/instrucoes.html" class="hex-btn">Instruções</a>
       </div>
       <div class="hex-group">
         <div class="hex"><img src="servicos-adicionais.png" alt="Serviços Adicionais"></div>
-        <div class="hex-btn">Serviços Adicionais</div>
+        <a href="/servicos-adicionais.html" class="hex-btn">Serviços Adicionais</a>
       </div>
       <div class="hex-group">
         <div class="hex"><img src="parceiros.png" alt="Parceiros"></div>
-        <div class="hex-btn">Parceiros</div>
+        <a href="/parceiros.html" class="hex-btn">Parceiros</a>
       </div>
       <div class="hex-group">
         <div class="hex"><img src="redes-sociais.png" alt="Redes Sociais"></div>
-        <div class="hex-btn">Redes Sociais</div>
+        <a href="/redes-sociais.html" class="hex-btn">Redes Sociais</a>
       </div>
     </section>
   </main>
