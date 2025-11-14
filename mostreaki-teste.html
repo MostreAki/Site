@@ -17,33 +17,20 @@
       --grad2: #af91a1;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; }
 
     body {
+      margin: 0;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: var(--bg);
+      background: radial-gradient(circle at top, #cfe0e4 0, #92a9a6 38%, #6f8583 100%);
       color: var(--texto);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
 
-    main {
-      max-width: 1200px;
-      margin: 0 auto 3rem;
-      padding: 1rem;
-    }
-
-    a {
-      text-decoration: none;
-      color: inherit;
-    }
-
-    /* ===== Header ===== */
     header {
-      max-width: 1200px;
-      height: 60px;
+      max-width: 1100px;
       margin: 0 auto;
       padding: 0 1.2rem;
       display: flex;
@@ -59,21 +46,24 @@
 
     header img {
       height: 55px;
+      max-width: 190px;
+      object-fit: contain;
+      display: block;
     }
 
     .hamburger {
-      width: 42px;
-      height: 42px;
+      width: 40px;
+      height: 40px;
       border-radius: 999px;
       border: 2px solid var(--bordo);
-      background: #fff;
+      background: linear-gradient(180deg, var(--grad1), var(--grad2));
       display: flex;
       align-items: center;
       justify-content: center;
       flex-direction: column;
       gap: 4px;
       cursor: pointer;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+      padding: 0;
     }
 
     .hamburger span {
@@ -90,70 +80,78 @@
       width: 280px; max-width: 90vw;
       background: #92a9a6; box-shadow: -4px 0 12px rgba(0,0,0,.09);
       height: calc(100vh - 60px);
-      transform: translateX(100%); transition: transform .25s ease;
-      z-index: 999; display: flex; flex-direction: column; gap: .55rem; padding: 1rem;
+      transform: translateX(100%);
+      transition: transform .25s ease;
+      display: flex;
+      flex-direction: column;
+      padding: 1rem;
+      gap: .6rem;
+      z-index: 900;
     }
     .menu-overlay.show { transform: translateX(0); }
 
     .menu-link {
-      width: 210px;
-      max-width: 92vw;
-      align-self: center;
-      white-space: nowrap;
-      background: linear-gradient(180deg, var(--grad1), var(--grad2));
-      border-radius: 999px;
+      display: block;
       padding: .55rem 1rem;
       text-align: center;
       color: var(--bordo);
+      text-decoration: none;
       font-weight: 600;
-      border: 2px solid var(--bordo);
-      box-shadow: 0 2px 6px rgba(0,0,0,.15);
-      font-size: .9rem;
+      border: 2px solid rgba(0,0,0,.12);
+      box-shadow: 0 2px 6px rgba(0,0,0,.1);
+      font-size: .95rem;
+      background: #cde0e0;
+      border-radius: 999px;
     }
-
     .menu-link:hover {
-      filter: brightness(1.05);
+      filter: brightness(1.03);
       transform: translateY(-1px);
     }
 
-    /* ===== Banner carrossel ===== */
+    /* ===== Main com mesmo respiro dos planos ===== */
+    main {
+      flex: 1;
+      max-width: min(1100px, 94vw);
+      margin: 2rem auto 2.6rem;
+    }
+
+    /* ===== HERO / Carrossel ===== */
     .banner-wrapper {
-      margin: 1.8rem auto 2.4rem;
-      width: min(1100px, 100%);
-      background: linear-gradient(135deg, rgba(255,255,255,.65), rgba(255,255,255,.25));
-      padding: 6px;
-      border-radius: 26px;
-      box-shadow: 0 8px 24px rgba(0,0,0,.18);
-      border: 2px solid var(--bordo);
-    }
-
-    .banner-slider {
+      width: 80%;
+      margin: 0 auto 2.4rem;
       position: relative;
-      overflow: hidden;
-      border-radius: 20px;
     }
-
+    .banner-slider {
+      overflow: hidden;
+      border-radius: 18px;
+      box-shadow: 0 10px 35px rgba(0,0,0,.25);
+      background: #000;
+      position: relative;
+    }
     .banner-track {
       display: flex;
-      transition: transform .4s ease;
+      transition: transform .6s ease;
     }
-
     .banner-slide {
-      flex: 0 0 100%;
+      min-width: 100%;
     }
-
     .banner-slide video {
       width: 100%;
+      height: auto;
       display: block;
     }
 
     .banner-dots {
+      position: absolute;
+      bottom: 10px; left: 50%;
+      transform: translateX(-50%);
       display: flex;
-      justify-content: center;
-      gap: .4rem;
-      padding: .6rem 0 .2rem;
+      gap: 8px;
+      padding: 4px 10px;
+      background: rgba(0,0,0,.4);
+      border-radius: 999px;
+      backdrop-filter: blur(6px);
     }
-
     .banner-dot {
       width: 10px; height: 10px; border-radius: 50%;
       background: rgba(255,255,255,.4);
@@ -169,137 +167,87 @@
     .menu-opcoes {
       width: 100%;
       margin: 2.6rem auto 3.2rem;
-      display: flex; gap: 1rem; justify-content: space-between; flex-wrap: wrap;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1.6rem;
     }
+
     .hex-group {
-      position: relative; width: 180px; height: 240px;
-      display: flex; justify-content: center; align-items: center; transition:.3s;
+      text-align: center;
     }
-    .hex-group:nth-child(2),
-    .hex-group:nth-child(4) { transform: translateY(-40px); }
 
     .hex {
-      width: 150px; height: 130px;
-      border: 3px solid var(--bordo);
-      clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
-      overflow: hidden;
-      background: rgba(255,255,255,0.03);
-      box-shadow: 0 4px 8px rgba(0,0,0,.18);
-      position: relative;
-      cursor: pointer;
-      transition: transform .25s ease, box-shadow .25s ease, background .25s ease;
+      width: 160px;
+      height: 180px;
+      background: linear-gradient(135deg, var(--grad1), var(--grad2));
+      clip-path: polygon(25% 3%, 75% 3%, 100% 50%, 75% 97%, 25% 97%, 0% 50%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.22);
+      margin-bottom: .6rem;
     }
 
-    .hex:hover {
-      transform: translateY(-6px);
-      background: radial-gradient(circle at top, rgba(255,255,255,.4), rgba(255,255,255,0.02));
-      box-shadow: 0 8px 24px rgba(0,0,0,.2);
-    }
-
-    .hex::before {
-      content: "";
-      position: absolute; inset: 0;
-      background: linear-gradient(180deg, var(--grad1), var(--grad2));
-      opacity: 0.12;
-    }
-
-    .hex-content {
-      position: relative; z-index: 1;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      height: 100%;
-      text-align: center;
-      padding: .5rem;
-    }
-
-    .hex-icon {
-      width: 42px; height: 42px; border-radius: 999px;
-      background: #fff; border: 2px solid var(--bordo);
-      display:flex; align-items:center; justify-content:center;
-      margin-bottom: .4rem;
-      box-shadow: 0 2px 6px rgba(0,0,0,.15);
-      font-size: 1.3rem;
-    }
-
-    .hex-title {
-      font-weight: 700;
-      font-size: .9rem;
-      color: var(--bordo);
-      margin-bottom: .15rem;
-    }
-
-    .hex-desc {
-      font-size: .78rem;
-      color: #123;
+    .hex img {
+      max-width: 70%;
+      max-height: 70%;
+      object-fit: contain;
     }
 
     .hex-btn {
-      margin-top: .35rem;
-      font-size: .78rem;
-      padding: .2rem .6rem;
+      display: inline-block;
+      margin-top: .2rem;
+      padding: .45rem 1.2rem;
       border-radius: 999px;
-      border: 1px solid var(--bordo);
-      background: rgba(255,255,255,.8);
-      cursor: pointer;
-    }
-
-    /* ===== Texto de destaque ===== */
-    .hero-texto {
-      max-width: 860px;
-      margin: 0 auto 2.4rem;
-      text-align: center;
-      background: rgba(255,255,255,.7);
-      padding: 1.2rem 1.4rem;
-      border-radius: 18px;
-      border: 1px solid rgba(0,0,0,.06);
-      box-shadow: 0 4px 10px rgba(0,0,0,.12);
-    }
-    .hero-texto h1 {
-      font-family: "Poppins", system-ui, sans-serif;
-      margin-bottom: .5rem;
-      font-size: 1.4rem;
+      border: 2px solid var(--bordo);
+      background: #f5f5f5;
+      font-weight: 600;
+      text-decoration: none;
       color: var(--bordo);
-    }
-    .hero-texto p {
-      font-size: .94rem;
-      line-height: 1.6;
-      color: #123;
+      font-size: .9rem;
+      box-shadow: 0 3px 6px rgba(0,0,0,.15);
     }
 
-    /* ===== Rodapé ===== */
+    .hex-btn:hover {
+      filter: brightness(1.03);
+      transform: translateY(-1px);
+    }
+
+    @media (min-width: 768px) {
+      .banner-wrapper {
+        width: 100%;
+      }
+      .menu-opcoes {
+        gap: 2.2rem;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .menu-opcoes {
+        gap: 1.3rem;
+      }
+      .hex {
+        width: 140px;
+        height: 160px;
+      }
+    }
+
     footer {
       background: var(--header-footer);
-      padding: 1rem 1.2rem;
-      border-radius: 24px 24px 0 0;
-      box-shadow: 0 -2px 6px rgba(0,0,0,0.12);
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    footer .footer-inner {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 1rem;
-      flex-wrap: wrap;
-      font-size: 0.85rem;
+      text-align: center;
+      padding: 1rem .5rem;
+      font-size: .85rem;
       color: #234;
+      box-shadow: 0 -2px 6px rgba(0,0,0,0.1);
     }
 
-    footer .footer-inner a {
-      color: var(--bordo);
-      font-weight: 600;
-    }
+    .banner-desktop { display: none; }
+    .banner-mobile  { display: block; }
 
-    .footer-right {
-      display: flex;
-      gap: .75rem;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-
-    .footer-right span {
-      opacity: .9;
+    @media (min-width: 880px) {
+      .banner-desktop { display: block; }
+      .banner-mobile  { display: none;  }
     }
 
     /* ===== Login / avatar ===== */
@@ -492,44 +440,6 @@
       color:var(--bordo);
       border:1px solid #d7bfd0;
     }
-
-    /* ===== Breakpoints ===== */
-    @media (max-width: 768px) {
-      header { padding: 0 .9rem; }
-
-      .menu-overlay { width: 280px; max-width: 85vw; }
-      .menu-link { width: 210px; max-width: 100%; }
-
-      .banner-wrapper { width: 100%; border-radius: 0; }
-      .banner-slider { border-radius: 0; }
-
-      .menu-opcoes {
-        display:flex; flex-wrap:wrap; gap:1.1rem;
-        justify-content:center; margin-top:2.3rem;
-      }
-
-      .hex-group {
-        height: 210px;
-      }
-      .hex-group:nth-child(2),
-      .hex-group:nth-child(4) { transform: translateY(0); }
-
-      footer .footer-inner {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .hero-texto {
-        padding: 1rem 0.9rem;
-      }
-      .hero-texto h1 {
-        font-size: 1.18rem;
-      }
-      header img { height: 48px; }
-      .hex-group { width: 48%; min-width: 150px; }
-    }
   </style>
 </head>
 <body>
@@ -623,100 +533,41 @@
             <video src="servicos-adicionais-desktop-mostreaki.mp4" autoplay muted loop></video>
           </div>
         </div>
-      </div>
-      <div class="banner-dots" id="bannerDots">
-        <div class="banner-dot active" data-index="0"></div>
-        <div class="banner-dot" data-index="1"></div>
-        <div class="banner-dot" data-index="2"></div>
+
+        <div class="banner-dots">
+          <div class="banner-dot active"></div>
+          <div class="banner-dot"></div>
+          <div class="banner-dot"></div>
+        </div>
       </div>
     </section>
 
-    <!-- Texto de destaque -->
-    <section class="hero-texto">
-      <h1>MostreAki: sua marca em destaque, com catálogo digital integrado</h1>
-      <p>
-        O MostreAki nasceu para dar visibilidade à sua marca, mostrar seus serviços,
-        conteúdos e catálogo de produtos de forma clara, organizada e acessível,
-        tanto no computador quanto no celular.
-      </p>
-    </section>
-
-    <!-- Hexágonos principais -->
+    <!-- ===== Hexágonos ===== -->
     <section class="menu-opcoes">
-      <!-- Planos -->
       <div class="hex-group">
-        <a href="/planos.html" class="hex">
-          <div class="hex-content">
-            <div class="hex-icon">📋</div>
-            <div class="hex-title">Planos</div>
-            <div class="hex-desc">
-              Conheça as opções de assinatura para ter seu site e catálogo digital com a cara da sua marca.
-            </div>
-            <div class="hex-btn">Ver planos</div>
-          </div>
-        </a>
+        <div class="hex"><img src="planos.png" alt="Planos"></div>
+        <a href="/planos.html" class="hex-btn">Planos</a>
       </div>
-
-      <!-- Parceiros -->
       <div class="hex-group">
-        <a href="/parceiros.html" class="hex">
-          <div class="hex-content">
-            <div class="hex-icon">🤝</div>
-            <div class="hex-title">Parceiros</div>
-            <div class="hex-desc">
-              Veja quem já fortalece sua marca com a vitrine digital do MostreAki.
-            </div>
-            <div class="hex-btn">Ver parceiros</div>
-          </div>
-        </a>
+        <div class="hex"><img src="parceiros.png" alt="Parceiros"></div>
+        <a href="/parceiros.html" class="hex-btn">Parceiros</a>
       </div>
-
-      <!-- Serviços adicionais -->
       <div class="hex-group">
-        <a href="/servicos-adicionais.html" class="hex">
-          <div class="hex-content">
-            <div class="hex-icon">🎨</div>
-            <div class="hex-title">Serviços Adicionais</div>
-            <div class="hex-desc">
-              Artes personalizadas, ajustes e apoio extra para destacar o visual da sua marca.
-            </div>
-            <div class="hex-btn">Ver serviços</div>
-          </div>
-        </a>
+        <div class="hex"><img src="servicos-adicionais.png" alt="Serviços Adicionais"></div>
+        <a href="/servicos-adicionais.html" class="hex-btn">Serviços Adicionais</a>
       </div>
-
-      <!-- Redes sociais -->
       <div class="hex-group">
-        <a href="/redes-sociais.html" class="hex">
-          <div class="hex-content">
-            <div class="hex-icon">📱</div>
-            <div class="hex-title">Redes Sociais</div>
-            <div class="hex-desc">
-              Conecte sua presença digital com Instagram, YouTube, TikTok e mais.
-            </div>
-            <div class="hex-btn">Ver redes</div>
-          </div>
-        </a>
+        <div class="hex"><img src="redes-sociais.png" alt="Redes Sociais"></div>
+        <a href="/redes-sociais.html" class="hex-btn">Redes Sociais</a>
       </div>
     </section>
   </main>
 
   <footer>
-    <div class="footer-inner">
-      <div>
-        © <span id="ano"></span> MostreAki — Todos os direitos reservados.
-      </div>
-      <div class="footer-right">
-        <span>Desenvolvido por</span>
-        <a href="https://mostreaki.com.br">MostreAki</a>
-      </div>
-    </div>
+    © 2025 MostreAki - Todos os direitos reservados.
   </footer>
 
   <script>
-    // Ano dinâmico
-    document.getElementById("ano").textContent = new Date().getFullYear();
-
     // Menu lateral
     const btnMenu = document.getElementById('btn-menu');
     const overlay = document.getElementById('menu-overlay');
@@ -732,24 +583,31 @@
     const dots  = document.querySelectorAll(".banner-dot");
     const slider= document.getElementById("bannerSlider");
     let current = 0;
-    const total = 3;
+    const total = 3; // 3 dots, um por grupo
 
     function setSlide(index) {
       current = Math.max(0, Math.min(total - 1, index));
-      const width = slider.clientWidth;
-      track.style.transform = `translateX(-${width * current}px)`;
-      dots.forEach(d => d.classList.toggle("active", Number(d.dataset.index) === current));
+      const slidesPerGroup = 2; // mobile(3) + desktop(3) mas agrupado por "tema"
+      const offset = current * slidesPerGroup * -100;
+      track.style.transform = `translateX(${offset}%)`;
+      dots.forEach((d, i) => d.classList.toggle("active", i === current));
     }
 
-    dots.forEach(d => d.addEventListener("click", () => setSlide(Number(d.dataset.index))));
+    dots.forEach((dot, idx) => {
+      dot.addEventListener("click", () => setSlide(idx));
+    });
 
-    // Swipe touch
-    let startX = 0, dragging = false;
+    // Swipe no mobile
+    let startX = null;
+    let dragging = false;
     slider.addEventListener("touchstart", e => {
       dragging = true;
       startX = e.touches[0].clientX;
-    }, {passive:true})
-    slider.addEventListener("touchend",   e => {
+    });
+    slider.addEventListener("touchmove", e => {
+      if(!dragging) return;
+    });
+    slider.addEventListener("touchend", e => {
       if(!dragging) return;
       dragging = false;
       const diff = e.changedTouches[0].clientX - startX;
@@ -757,7 +615,7 @@
       else if (diff < -40) setSlide(current + 1);
     });
 
-    // Swipe mouse (desktop)
+    // Swipe no desktop (opcional)
     slider.addEventListener("mousedown", e => {
       dragging = true;
       startX = e.clientX;
