@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Login – MostreAki</title>
+  <title>Entrar – MostreAki</title>
 
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
@@ -30,7 +30,7 @@
       flex-direction: column;
     }
 
-    /* ===== Header padrão MostreAki ===== */
+    /* ===== Header MostreAki ===== */
     header {
       background: var(--header-footer);
       border-bottom: 3px solid var(--bordo);
@@ -60,7 +60,7 @@
       font-size: .85rem;
       color: var(--texto);
       cursor: pointer;
-      display: none; /* aqui não precisamos mostrar "Sair" na tela de login */
+      display: none;
     }
 
     .user-circle {
@@ -153,41 +153,44 @@
     main {
       flex: 1;
       max-width: min(1100px, 94vw);
-      margin: 2rem auto 2.6rem;
+      margin: 2.2rem auto 2.6rem;
       display: flex;
-      flex-direction: column;
       align-items: center;
+      justify-content: center;
+    }
+
+    .login-wrapper {
+      width: 100%;
+      max-width: 460px;
     }
 
     .page-title {
       font-size: 1.6rem;
       font-weight: 700;
-      margin-bottom: .25rem;
+      margin: 0 0 .3rem;
       color: var(--texto);
       text-align: center;
     }
     .page-sub {
-      font-size: .95rem;
+      font-size: .9rem;
       color: #214b4a;
-      margin-bottom: 1.8rem;
+      margin: 0 0 1.4rem;
       text-align: center;
-      max-width: 540px;
     }
 
-    .login-card {
+    .card {
       background: rgba(255,255,255,0.98);
       border-radius: 18px;
       box-shadow: 0 10px 24px rgba(0,0,0,.16);
-      padding: 1.8rem 1.6rem 1.8rem;
+      padding: 1.4rem 1.6rem 1.6rem;
       border: 2px solid rgba(125,47,89,0.25);
-      width: 100%;
-      max-width: 440px;
     }
 
-    .login-card h2 {
+    .card h2 {
       font-size: 1.1rem;
-      margin: 0 0 .9rem;
+      margin: 0 0 .8rem;
       color: var(--texto);
+      text-align: left;
     }
 
     .field-group {
@@ -199,7 +202,6 @@
       margin-bottom: .25rem;
       color: #234;
     }
-
     .field-group input[type="email"],
     .field-group input[type="password"] {
       width: 100%;
@@ -214,16 +216,11 @@
     .show-pass-row {
       display: flex;
       align-items: center;
-      gap: .35rem;
-      margin-top: .25rem;
+      gap: .4rem;
+      margin-top: -.3rem;
+      margin-bottom: .6rem;
       font-size: .8rem;
       color: #445;
-    }
-
-    .hint {
-      font-size: .8rem;
-      color: #566;
-      margin-top: .15rem;
     }
 
     .btn {
@@ -246,68 +243,77 @@
       color: var(--bordo);
       border: 2px solid rgba(125,47,89,0.4);
       box-shadow: 0 2px 6px rgba(0,0,0,.18);
+      width: 100%;
+      justify-content: center;
     }
     .btn-primary:hover {
       filter: brightness(1.04);
       transform: translateY(-1px);
     }
-    .btn-ghost {
-      background: transparent;
-      color: var(--bordo);
-      border: 1px dashed rgba(125,47,89,0.6);
-    }
-    .btn-ghost:hover { background: rgba(255,255,255,.4); }
 
     .btn-google {
       background: #ffffff;
-      border: 2px solid #dadce0;
-      color: #3c4043;
-      font-weight: 500;
+      color: #444;
+      border-radius: 999px;
+      border: 1px solid #d0d7df;
+      padding: .55rem 1.1rem;
       font-size: .9rem;
-      box-shadow: 0 1px 2px rgba(0,0,0,.15);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .55rem;
+      width: 100%;
+      margin-top: .6rem;
+      box-shadow: 0 1px 4px rgba(0,0,0,.08);
     }
     .btn-google img {
       width: 18px;
       height: 18px;
     }
     .btn-google:hover {
-      background: #f7f8fb;
-      transform: translateY(-1px);
+      background: #f5f7fa;
     }
 
-    .btn-row {
+    .divider {
       display: flex;
-      flex-direction: column;
-      gap: .6rem;
-      margin-top: .4rem;
+      align-items: center;
+      margin: 1rem 0 .8rem;
+      font-size: .8rem;
+      color: #667;
+    }
+    .divider span {
+      flex: 1;
+      height: 1px;
+      background: #d0d6dd;
+    }
+    .divider b {
+      margin: 0 .6rem;
+      font-weight: 500;
     }
 
     .links-row {
       display: flex;
       justify-content: space-between;
-      gap: .75rem;
-      margin-top: .75rem;
-      font-size: .85rem;
+      align-items: center;
+      font-size: .82rem;
+      margin-top: .8rem;
+      flex-wrap: wrap;
+      gap: .4rem .6rem;
     }
     .links-row a {
       color: var(--bordo);
       text-decoration: none;
       font-weight: 600;
     }
-    .links-row a:hover { text-decoration: underline; }
-
-    .separator {
-      display: flex;
-      align-items: center;
-      gap: .6rem;
-      margin: 1.1rem 0 .9rem;
-      font-size: .8rem;
-      color: #667;
+    .links-row a:hover {
+      text-decoration: underline;
     }
-    .separator span {
-      flex: 1;
-      height: 1px;
-      background: rgba(0,0,0,.15);
+
+    .hint {
+      font-size: .8rem;
+      color: #566;
+      margin-top: .2rem;
     }
 
     /* ===== Alert brand ===== */
@@ -359,6 +365,26 @@
       justify-content: flex-end;
       gap: .5rem;
       background: #f7faf9;
+    }
+    .btn-alert-primary {
+      background: linear-gradient(180deg, var(--grad1), var(--grad2));
+      color: var(--bordo);
+      border-radius: 999px;
+      border: 2px solid rgba(125,47,89,0.4);
+      font-size: .85rem;
+      font-weight: 600;
+      padding: .45rem 1rem;
+      cursor: pointer;
+    }
+    .btn-alert-ghost {
+      background: transparent;
+      color: var(--bordo);
+      border-radius: 999px;
+      border: 1px dashed rgba(125,47,89,0.7);
+      font-size: .85rem;
+      font-weight: 600;
+      padding: .45rem .9rem;
+      cursor: pointer;
     }
 
     footer {
@@ -416,54 +442,54 @@
   </div>
 
   <main>
-    <h1 class="page-title">Entrar na sua conta</h1>
-    <p class="page-sub">
-      Acesse o painel do MostreAki para gerenciar seus dados, assinatura, catálogos e muito mais.
-    </p>
+    <div class="login-wrapper">
+      <h1 class="page-title">Entrar no MostreAki</h1>
+      <p class="page-sub">
+        Acesse sua conta para gerenciar sua assinatura, catálogo e presença digital.
+      </p>
 
-    <section class="login-card">
-      <h2>Login com e-mail</h2>
+      <article class="card">
+        <h2>Login com e-mail</h2>
 
-      <div class="field-group">
-        <label for="email">E-mail</label>
-        <input type="email" id="email" autocomplete="email" />
-      </div>
+        <div class="field-group">
+          <label for="email">E-mail</label>
+          <input type="email" id="email" autocomplete="email" />
+        </div>
 
-      <div class="field-group">
-        <label for="senha">Senha</label>
-        <input type="password" id="senha" autocomplete="current-password" />
+        <div class="field-group">
+          <label for="senha">Senha</label>
+          <input type="password" id="senha" autocomplete="current-password" />
+        </div>
+
         <div class="show-pass-row">
           <input type="checkbox" id="chkMostrarSenha" />
-          <label for="chkMostrarSenha" style="margin:0;">Mostrar senha</label>
+          <label for="chkMostrarSenha">Mostrar senha</label>
         </div>
-      </div>
 
-      <div class="btn-row">
-        <button class="btn btn-primary" type="button" id="btnEntrar">
+        <button class="btn btn-primary" type="button" id="btnEntrarEmail">
           Entrar
         </button>
-      </div>
 
-      <div class="links-row">
-        <a href="recuperar-senha.html">Esqueci minha senha</a>
-        <a href="cadastro.html">Criar conta</a>
-      </div>
+        <div class="links-row">
+          <a href="recuperar-senha.html">Esqueci minha senha</a>
+          <span>Não tem conta? <a href="cadastro.html">Cadastrar</a></span>
+        </div>
 
-      <div class="separator">
-        <span></span> ou <span></span>
-      </div>
+        <div class="divider">
+          <span></span><b>ou</b><span></span>
+        </div>
 
-      <div class="btn-row">
-        <button class="btn btn-google" type="button" id="btnGoogle">
-          <!-- Se quiser, pode colocar o ícone do Google aqui -->
-          Entrar com Google
+        <button class="btn-google" type="button" id="btnGoogle">
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="">
+          <span>Entrar com Google</span>
         </button>
-      </div>
 
-      <p class="hint" style="margin-top:1rem;">
-        Se for seu primeiro acesso com Google, vamos pedir o seu nome de usuário (slug) e WhatsApp na próxima etapa.
-      </p>
-    </section>
+        <p class="hint">
+          Se for seu primeiro acesso com Google, vamos pedir seu nome de usuário e WhatsApp
+          na próxima tela para criar sua slug e vincular sua conta.
+        </p>
+      </article>
+    </div>
   </main>
 
   <footer>
@@ -476,18 +502,16 @@
     import {
       getAuth,
       onAuthStateChanged,
+      signOut,
       signInWithEmailAndPassword,
-      GoogleAuthProvider,
       signInWithPopup,
+      GoogleAuthProvider,
       sendEmailVerification
     } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
     import {
       getFirestore,
       doc,
-      getDoc,
-      collection,
-      addDoc,
-      serverTimestamp
+      getDoc
     } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
     const app = initializeApp({
@@ -505,7 +529,6 @@
 
     const $ = (id) => document.getElementById(id);
 
-    /* ===== menu ===== */
     const menu = $("menu");
     window.toggleMenu = function () {
       if (!menu) return;
@@ -517,19 +540,18 @@
       });
     }
 
-    /* ===== alerta brand ===== */
     const alertBG = $("alert");
     const alertTitle = $("alertTitle");
     const alertMsg = $("alertMsg");
     const alertActions = $("alertActions");
 
-    function showAlert({ title = "Aviso", html = "", actions = [{ text: "Fechar" }] }) {
+    function showAlert({ title = "Aviso", html = "", actions = [{ text: "Fechar", kind: "primary" }] }) {
       alertTitle.textContent = title;
       alertMsg.innerHTML = html;
       alertActions.innerHTML = "";
       actions.forEach(a => {
         const btn = document.createElement("button");
-        btn.className = "btn " + (a.kind === "danger" ? "btn-danger" : "btn-primary");
+        btn.className = a.kind === "ghost" ? "btn-alert-ghost" : "btn-alert-primary";
         btn.textContent = a.text;
         btn.onclick = () => {
           if (a.onClick) a.onClick();
@@ -544,9 +566,20 @@
       if (e.target === alertBG) closeAlert();
     });
 
-    /* ===== helpers login lock ===== */
-    const emailRe = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$/;
-    const emailValido = (v) => emailRe.test(v);
+    const userCircle = $("userCircle");
+    const authText = $("authText");
+
+    /* ===== Mostrar senha ===== */
+    (function wireShowPassword() {
+      const input = $("senha"), chk = $("chkMostrarSenha");
+      if (!input || !chk) return;
+      const apply = () => { input.type = chk.checked ? "text" : "password"; };
+      chk.addEventListener("change", apply);
+    })();
+
+    /* ===== Anti força-bruta (lock progressivo) ===== */
+    const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    const emailValido = v => emailRe.test(v);
 
     function getState() {
       const now = Date.now();
@@ -592,160 +625,177 @@
       });
     }
 
-    /* ===== log de login ===== */
-    async function logLogin(email, status, errorCode = null) {
+    function hasProfileData(data) {
+      if (!data) return false;
+      const slug = data.slug || data.username || data.catalogoSlug;
+      const cel = data.celular || data.whatsapp || data.telefone;
+      return !!(slug && cel);
+    }
+
+    async function checkProfileAndRedirect(user) {
       try {
-        await addDoc(collection(db, 'logs_login'), {
-          email,
-          status,
-          errorCode,
-          timestamp: serverTimestamp(),
-          userAgent: navigator.userAgent
-        });
+        const userDocRef = doc(db, "usuarios", user.uid);
+        const snap = await getDoc(userDocRef);
+        const data = snap.exists() ? snap.data() : null;
+
+        if (hasProfileData(data)) {
+          // perfil completo → segue para Minha Conta
+          window.location.href = "minha-conta.html";
+        } else {
+          // falta slug / celular → finalizar cadastro Google
+          window.location.href = "login-google.html";
+        }
       } catch (e) {
-        console.error('Erro ao registrar log:', e);
+        console.error("Erro ao checar perfil:", e);
+        // Em caso de erro, levar para login-google pra garantir que complete.
+        window.location.href = "login-google.html";
       }
     }
 
-    /* ===== mostrar senha ===== */
-    (function wireShowPassword() {
-      const input = $("senha"), chk = $("chkMostrarSenha");
-      if (!input || !chk) return;
-      const apply = () => { input.type = chk.checked ? 'text' : 'password'; };
-      chk.addEventListener('change', apply);
-    })();
-
-    /* ===== redirecionar se já estiver logado ===== */
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        // Já está logado → joga direto para minha-conta
-        window.location.href = "minha-conta.html";
+    /* ===== Estado de auth global nessa página ===== */
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        if (userCircle) userCircle.style.display = "none";
+        if (authText) authText.style.display = "none";
+        return;
       }
+
+      // Já logado → verifica perfil e redireciona
+      checkProfileAndRedirect(user);
+
+      // (UI visual, mesmo que só apareça rápido)
+      if (userCircle) {
+        const letra = (user.displayName || user.email || "?").trim().charAt(0).toUpperCase();
+        userCircle.textContent = letra;
+        userCircle.style.display = "flex";
+      }
+      if (authText) authText.style.display = "inline";
     });
 
-    /* ===== login email/senha ===== */
-    async function loginEmailSenha() {
-      if (isLocked()) return showLockMsg();
-
-      const email = $("email").value.trim();
-      const senha = $("senha").value;
-
-      if (!email) {
-        incFail();
-        await logLogin(email, 'erro', 'email_vazio');
-        return showAlert({ title: "E-mail vazio", html: "Digite seu e-mail para continuar." });
-      }
-      if (!emailValido(email)) {
-        incFail();
-        await logLogin(email, 'erro', 'email_invalido');
-        return showAlert({ title: "E-mail inválido", html: "Revise o endereço digitado." });
-      }
-      if (!senha) {
-        incFail();
-        await logLogin(email, 'erro', 'senha_vazia');
-        return showAlert({ title: "Senha vazia", html: "Digite sua senha para continuar." });
-      }
-
-      try {
-        const cred = await signInWithEmailAndPassword(auth, email, senha);
-
-        if (!cred.user.emailVerified) {
-          await sendEmailVerification(cred.user);
-          await logLogin(email, 'email_nao_verificado');
+    if (authText) {
+      authText.addEventListener("click", async () => {
+        try {
+          await signOut(auth);
+          localStorage.removeItem("fotoPerfil");
+          localStorage.removeItem("catalogoSlug");
+          window.location.href = "index.html";
+        } catch (e) {
           showAlert({
-            title: "Confirme seu e-mail",
-            html: `Seu e-mail ainda não foi verificado.<br>Reenviamos o link para <b>${email}</b>. Verifique sua caixa de entrada (ou spam) e tente novamente após confirmar.`
-          });
-          return;
-        }
-
-        resetFails();
-        await logLogin(email, 'sucesso');
-        window.location.href = "minha-conta.html";
-
-      } catch (e) {
-        console.error(e);
-        incFail();
-        await logLogin(email, 'erro', e.code);
-        const codes = ["auth/invalid-credential", "auth/wrong-password", "auth/user-not-found"];
-        if (codes.includes(e.code)) {
-          if (isLocked()) return showLockMsg();
-          return showAlert({
-            title: "Não conseguimos entrar",
-            html: "E-mail e/ou senha incorretos. Você pode tentar novamente ou recuperar a senha.",
-            actions: [
-              { text: "Recuperar senha", kind: "ghost", onClick: () => location.href = "recuperar-senha.html" },
-              { text: "Cadastrar", kind: "ghost", onClick: () => location.href = "cadastro.html" },
-              { text: "Fechar", kind: "primary" }
-            ]
+            title: "Erro ao sair",
+            html: "Não foi possível encerrar a sessão. Tente novamente."
           });
         }
-        if (e.code === "auth/too-many-requests") {
-          lockMore();
-          return showLockMsg();
+      });
+    }
+
+    /* ===== Login com e-mail/senha ===== */
+    const btnEntrarEmail = $("btnEntrarEmail");
+    if (btnEntrarEmail) {
+      btnEntrarEmail.addEventListener("click", async () => {
+        if (isLocked()) return showLockMsg();
+
+        const email = $("email").value.trim();
+        const senha = $("senha").value;
+
+        if (!email) {
+          incFail();
+          return showAlert({ title: "E-mail vazio", html: "Digite seu e-mail para continuar." });
         }
-        if (e.code === "auth/invalid-email") {
+        if (!emailValido(email)) {
+          incFail();
           return showAlert({ title: "E-mail inválido", html: "Revise o endereço digitado." });
         }
-        showAlert({ title: "Erro", html: `Erro inesperado (${e.code}). Tente novamente.` });
-      }
-    }
-
-    $("btnEntrar").onclick = loginEmailSenha;
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Enter') loginEmailSenha();
-    });
-
-    /* ===== login com Google ===== */
-    async function loginGoogle() {
-      if (isLocked()) return showLockMsg();
-
-      try {
-        const result = await signInWithPopup(auth, provider);
-        const user = result.user;
-
-        if (!user) {
-          return showAlert({
-            title: "Erro",
-            html: "Não foi possível completar o login com Google. Tente novamente."
-          });
+        if (!senha) {
+          incFail();
+          return showAlert({ title: "Senha vazia", html: "Digite sua senha para continuar." });
         }
 
-        const uid = user.uid;
-        const userDocRef = doc(db, "usuarios", uid);
-        const snap = await getDoc(userDocRef);
+        try {
+          const cred = await signInWithEmailAndPassword(auth, email, senha);
+          const user = cred.user;
 
-        let precisaCompletarCadastro = true;
+          if (!user.emailVerified) {
+            await sendEmailVerification(user);
+            await signOut(auth);
+            incFail(); // conta como falha até confirmar
+            return showAlert({
+              title: "Confirme seu e-mail",
+              html: `Seu e-mail ainda não foi verificado.<br>
+                     Enviamos novamente o link para <b>${email}</b>.<br>
+                     Confirme e depois retorne para fazer login.`
+            });
+          }
 
-        if (snap.exists()) {
-          const data = snap.data();
-          const slug = data.slug || data.username || data.catalogoSlug;
-          if (slug && String(slug).trim() !== "") {
-            precisaCompletarCadastro = false;
+          resetFails();
+          await checkProfileAndRedirect(user);
+
+        } catch (e) {
+          console.error(e);
+          incFail();
+
+          const codes = ["auth/invalid-credential", "auth/wrong-password", "auth/user-not-found"];
+          if (codes.includes(e.code)) {
+            if (isLocked()) return showLockMsg();
+            return showAlert({
+              title: "Não conseguimos entrar",
+              html: "E-mail e/ou senha incorretos. Você pode tentar novamente ou recuperar a senha.",
+              actions: [
+                { text: "Recuperar senha", kind: "ghost", onClick: () => window.location.href = "recuperar-senha.html" },
+                { text: "Cadastrar", kind: "ghost", onClick: () => window.location.href = "cadastro.html" },
+                { text: "Fechar", kind: "primary" }
+              ]
+            });
+          }
+
+          if (e.code === "auth/too-many-requests") {
+            lockMore();
+            return showLockMsg();
+          }
+
+          if (e.code === "auth/invalid-email") {
+            return showAlert({ title: "E-mail inválido", html: "Revise o endereço digitado." });
+          }
+
+          showAlert({ title: "Erro", html: `Erro inesperado (${e.code || "desconhecido"}). Tente novamente.` });
+        }
+      });
+
+      // Enter para enviar
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          const active = document.activeElement;
+          if (active && (active.id === "email" || active.id === "senha")) {
+            btnEntrarEmail.click();
           }
         }
-
-        if (precisaCompletarCadastro) {
-          // Primeiro acesso com Google → precisa definir slug e WhatsApp
-          window.location.href = "login-google.html";
-        } else {
-          // Já tem slug configurada → vai para minha conta
-          window.location.href = "minha-conta.html";
-        }
-
-      } catch (e) {
-        console.error(e);
-        if (e.code === "auth/popup-closed-by-user") {
-          return; // usuário só fechou o popup, sem precisar alertar
-        }
-        showAlert({
-          title: "Erro no Google",
-          html: "Não foi possível entrar com o Google no momento. Tente novamente em instantes."
-        });
-      }
+      });
     }
 
-    $("btnGoogle").onclick = loginGoogle;
+    /* ===== Login com Google ===== */
+    const btnGoogle = $("btnGoogle");
+    if (btnGoogle) {
+      btnGoogle.addEventListener("click", async () => {
+        if (isLocked()) return showLockMsg();
+
+        try {
+          const result = await signInWithPopup(auth, provider);
+          const user = result.user;
+          resetFails();
+          await checkProfileAndRedirect(user);
+        } catch (e) {
+          console.error(e);
+          // usuário fechou popup
+          if (e.code === "auth/popup-closed-by-user") {
+            return; 
+          }
+          incFail();
+          showAlert({
+            title: "Não foi possível entrar com Google",
+            html: "Tente novamente ou use o login por e-mail e senha."
+          });
+        }
+      });
+    }
   </script>
 </body>
 </html>
