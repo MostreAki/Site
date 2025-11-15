@@ -1,221 +1,885 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Entrar – MostreAki</title>
-<style>
-  :root{--brand:#15b0af; --brandLight:#c2e7df; --accent:#FA1E39; --ink:#063b39;}
-  body{font-family:Arial, sans-serif;background:#f4f7f7;display:flex;min-height:100vh;align-items:center;justify-content:center}
-  .card{background:#fff;border-radius:12px;box-shadow:0 6px 24px rgba(0,0,0,.08);padding:24px;max-width:380px;width:92%}
-  .card h1{margin:0 0 12px;color:#0f6f6e}
-  label{display:block;margin:10px 0 6px;color:#333}
-  input{width:100%;padding:10px;border:1px solid #ddd;border-radius:8px}
-  button,.btn{width:100%;margin-top:12px;padding:12px;border-radius:8px;border:0;font-weight:bold;cursor:pointer}
-  .primary{background:var(--brand);color:#fff}
-  .muted{font-size:.9rem;color:#666;margin-top:10px}
-  a{color:var(--brand);text-decoration:none;font-weight:bold}
+  <meta charset="UTF-8">
+  <title>Entrar • MostreAki</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  /* Campo de senha — agora com checkbox “Mostrar senha” */
-  .pwd-wrap{position:relative}
-  .showpwd{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:.9rem;color:#444}
-  .showpwd input{width:auto}
+  <style>
+    :root {
+      --fundo: #92a9a6;
+      --fundo-claro: #cfe0dd;
+      --bordo: #7d2f59;
+      --bordo-escuro: #5c2342;
+      --grad1: #d9d9d9;
+      --grad2: #af91a1;
+      --texto: #003735;
+      --texto-suave: #264b4a;
+      --erro: #b00020;
+      --ok: #1a8f4b;
+      --card-radius: 22px;
+      --shadow-soft: 0 10px 30px rgba(0, 0, 0, .18);
+    }
 
-  /* POPUP */
-  .alert-bg{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:9999;padding:20px}
-  .alert-card{background:#fff;border-radius:16px;overflow:hidden;max-width:460px;width:100%;box-shadow:0 22px 70px rgba(0,0,0,.25);border:2px solid var(--brandLight)}
-  .alert-head{background:linear-gradient(90deg,var(--brandLight),var(--brand));padding:14px 16px;display:flex;align-items:center;gap:10px}
-  .alert-dot{width:10px;height:10px;border-radius:50%;background:var(--accent)}
-  .alert-title{color:var(--ink);font-weight:bold}
-  .alert-body{padding:16px;color:#2b2b2b}
-  .alert-actions{display:flex;gap:10px;flex-wrap:wrap;padding:0 16px 16px}
-  .btn-solid{background:var(--brand);color:#fff}
-  .btn-ghost{background:#fff;border:2px solid var(--brand);color:var(--brand)}
-  .btn-danger{background:var(--accent);color:#fff}
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-  /* Link “recuperar senha” que só aparece após 1º erro */
-  #recoverLine{display:none;text-align:center;margin-top:6px}
-</style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #cfe0dd 0, var(--fundo) 38%, #7f9693 100%);
+      color: var(--texto);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    a {
+      color: var(--bordo);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    /* HEADER */
+
+    header {
+      background: var(--fundo-claro);
+      padding: .6rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 8px rgba(0,0,0,.12);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+
+    .brand img {
+      height: 55px;
+    }
+
+    .brand-title {
+      font-weight: 800;
+      font-size: 1.35rem;
+      color: var(--texto);
+    }
+
+    .brand-title span {
+      color: var(--bordo);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+    }
+
+    .btn-entrar-header {
+      border-radius: 999px;
+      border: none;
+      padding: .4rem 1.2rem;
+      font-weight: 600;
+      font-size: .9rem;
+      background: var(--bordo);
+      color: #fff;
+      box-shadow: 0 4px 10px rgba(0,0,0,.25);
+      cursor: pointer;
+      transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+    }
+
+    .btn-entrar-header:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 14px rgba(0,0,0,.3);
+      background: var(--bordo-escuro);
+    }
+
+    .user-circle {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--bordo);
+      color: #fff;
+      display: none; /* padrão: escondido até logar */
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: .95rem;
+      background-size: cover;
+      background-position: center;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,.25);
+    }
+
+    .auth-text {
+      display: none;
+      font-size: .8rem;
+      color: var(--bordo);
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    /* hambúrguer + menu lateral */
+
+    .burger {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: 2px solid var(--bordo);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .burger span,
+    .burger span::before,
+    .burger span::after {
+      position: absolute;
+      content: "";
+      width: 20px;
+      height: 2px;
+      background: var(--bordo);
+      border-radius: 999px;
+      transition: transform .25s ease, top .25s ease, opacity .2s;
+    }
+
+    .burger span {
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .burger span::before {
+      top: -6px;
+    }
+
+    .burger span::after {
+      top: 6px;
+    }
+
+    .burger.open span {
+      transform: translateY(-50%) rotate(45deg);
+    }
+
+    .burger.open span::before {
+      top: 0;
+      transform: rotate(-90deg);
+    }
+
+    .burger.open span::after {
+      top: 0;
+      opacity: 0;
+    }
+
+    nav.menu {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.32);
+      display: none;
+      z-index: 19;
+    }
+
+    nav.menu.active {
+      display: flex;
+    }
+
+    .menu-panel {
+      width: min(320px, 80vw);
+      background: rgba(147, 171, 167, .98);
+      padding: 1.5rem 1rem 2rem;
+      box-shadow: 4px 0 18px rgba(0,0,0,.35);
+      display: flex;
+      flex-direction: column;
+      gap: .75rem;
+    }
+
+    .menu-link {
+      width: 210px;
+      max-width: 92vw;
+      align-self: center;
+      white-space: nowrap;
+      background: linear-gradient(180deg, var(--grad1), var(--grad2));
+      border-radius: 999px;
+      padding: .55rem 1rem;
+      text-align: center;
+      color: var(--bordo);
+      text-decoration: none;
+      font-weight: 600;
+      border: 2px solid rgba(0,0,0,.12);
+      box-shadow: 0 2px 6px rgba(0,0,0,.1);
+      font-size: .95rem;
+    }
+
+    .menu-link:hover {
+      filter: brightness(1.02);
+    }
+
+    /* Título da página */
+
+    .divider-magenta {
+      height: 4px;
+      background: var(--bordo);
+      margin: 0;
+    }
+
+    main {
+      flex: 1;
+      padding: 1.5rem 1rem 2.5rem;
+      display: flex;
+      justify-content: center;
+    }
+
+    .login-shell {
+      width: 100%;
+      max-width: 480px;
+    }
+
+    .page-title {
+      font-size: 2.1rem;
+      font-weight: 800;
+      margin-bottom: .3rem;
+    }
+
+    .page-sub {
+      font-size: .98rem;
+      color: var(--texto-suave);
+      margin-bottom: 1.2rem;
+      max-width: 32rem;
+    }
+
+    /* CARD LOGIN */
+
+    .card {
+      background: rgba(207, 224, 221, 0.96);
+      border-radius: var(--card-radius);
+      padding: 1.5rem 1.25rem 1.8rem;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(255,255,255,.6);
+      backdrop-filter: blur(12px);
+    }
+
+    .card h2 {
+      font-size: 1.4rem;
+      margin-bottom: .5rem;
+    }
+
+    .card p.lead {
+      font-size: .9rem;
+      color: var(--texto-suave);
+      margin-bottom: 1.2rem;
+    }
+
+    .field {
+      margin-bottom: 1rem;
+    }
+
+    .field label {
+      display: block;
+      font-size: .85rem;
+      font-weight: 600;
+      margin-bottom: .25rem;
+    }
+
+    .field input[type="email"],
+    .field input[type="password"] {
+      width: 100%;
+      border-radius: 999px;
+      border: 1px solid rgba(0,0,0,.12);
+      padding: .65rem 1rem;
+      font-size: .95rem;
+      outline: none;
+      background: #f6f6f6;
+    }
+
+    .field input:focus {
+      border-color: var(--bordo);
+      box-shadow: 0 0 0 1px rgba(125,47,89,.25);
+    }
+
+    .field-inline {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      font-size: .85rem;
+      color: var(--texto-suave);
+      margin-bottom: .8rem;
+    }
+
+    .field-inline input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--bordo);
+    }
+
+    .links-row {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: .5rem;
+      font-size: .85rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .btn-solid {
+      border-radius: 999px;
+      padding: .7rem 1.3rem;
+      border: none;
+      background: linear-gradient(180deg, var(--grad1), var(--grad2));
+      color: var(--bordo-escuro);
+      font-weight: 700;
+      font-size: .95rem;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,.18);
+      width: 100%;
+      margin-bottom: .8rem;
+      transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
+    }
+
+    .btn-solid:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(0,0,0,.25);
+      filter: brightness(1.03);
+    }
+
+    .btn-ghost {
+      border-radius: 999px;
+      padding: .6rem 1.2rem;
+      border: 1px solid var(--bordo);
+      background: transparent;
+      color: var(--bordo);
+      font-weight: 600;
+      cursor: pointer;
+      font-size: .9rem;
+      transition: background .15s ease, color .15s ease;
+    }
+
+    .btn-ghost:hover {
+      background: rgba(125,47,89,.08);
+    }
+
+    .divider-row {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      margin: .4rem 0 .9rem;
+    }
+
+    .divider-row span {
+      font-size: .8rem;
+      color: var(--texto-suave);
+      white-space: nowrap;
+    }
+
+    .divider-row::before,
+    .divider-row::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: rgba(0,0,0,.1);
+    }
+
+    .btn-google {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .6rem;
+      border-radius: 999px;
+      border: 1px solid rgba(0,0,0,.18);
+      padding: .65rem 1rem;
+      background: #fff;
+      cursor: pointer;
+      font-size: .92rem;
+      font-weight: 600;
+      box-shadow: 0 3px 10px rgba(0,0,0,.15);
+      width: 100%;
+    }
+
+    .btn-google img {
+      width: 18px;
+      height: 18px;
+    }
+
+    .hint {
+      font-size: .8rem;
+      color: var(--texto-suave);
+      margin-top: .35rem;
+    }
+
+    /* ALERTA */
+
+    .alert-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.45);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 40;
+    }
+
+    .alert-box {
+      background: #fdfdfd;
+      border-radius: 18px;
+      max-width: 360px;
+      width: 90%;
+      padding: 1.2rem 1.1rem 1rem;
+      box-shadow: 0 14px 34px rgba(0,0,0,.4);
+      text-align: left;
+    }
+
+    .alert-title {
+      font-weight: 700;
+      margin-bottom: .35rem;
+      color: var(--texto);
+    }
+
+    .alert-message {
+      font-size: .9rem;
+      color: #333;
+      margin-bottom: 1rem;
+    }
+
+    .alert-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: .5rem;
+    }
+
+    /* FOOTER */
+
+    footer {
+      margin-top: auto;
+      background: var(--fundo-claro);
+      border-top: 4px solid var(--bordo);
+      padding: .8rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: .78rem;
+      color: var(--texto-suave);
+    }
+
+    footer img {
+      height: 40px;
+    }
+
+    @media (min-width: 768px) {
+      main {
+        padding: 2rem 2rem 3rem;
+      }
+      .card {
+        padding: 2rem 2rem 2.2rem;
+      }
+      .page-title {
+        font-size: 2.3rem;
+      }
+    }
+  </style>
 </head>
 <body>
-<div class="card">
-  <h1>Entrar</h1>
-
-  <label for="email">E-mail</label>
-  <input id="email" type="email" autocomplete="username" required
-         pattern="^[^\s@]+@[^\s@]+\.[^\s@]{2,}$" placeholder="voce@exemplo.com">
-
-  <label for="senha">Senha</label>
-  <div class="pwd-wrap">
-    <input id="senha" type="password" autocomplete="current-password" required>
-    <!-- Checkbox que substitui o botão “olho” -->
-    <label class="showpwd" for="chkMostrarSenha">
-      <input id="chkMostrarSenha" type="checkbox" aria-controls="senha" aria-label="Mostrar senha">
-      Mostrar senha
-    </label>
-  </div>
-
-  <button class="primary" id="btnEntrar">Entrar</button>
-
-  <div id="recoverLine" class="muted">
-    Esqueceu a senha? <a href="/recuperar-senha.html">Recuperar senha</a>
-  </div>
-
-  <p class="muted">Não tem conta? <a href="/cadastro.html">Cadastre-se</a></p>
-</div>
-
-<!-- POPUP -->
-<div id="alert" class="alert-bg" role="dialog" aria-modal="true" aria-labelledby="alertTitle" aria-live="polite">
-  <div class="alert-card">
-    <div class="alert-head">
-      <div class="alert-dot"></div>
-      <div id="alertTitle" class="alert-title">Mensagem</div>
+  <!-- HEADER -->
+  <header>
+    <div class="brand">
+      <a href="index.html">
+        <img src="logo-mostreaki.svg" alt="MostreAki">
+      </a>
+      <div class="brand-title">Mostre<span>Aki</span></div>
     </div>
-    <div id="alertMsg" class="alert-body">...</div>
-    <div id="alertActions" class="alert-actions"></div>
+    <div class="header-right">
+      <button id="btnAbrirLogin" class="btn-entrar-header" type="button">Entrar</button>
+      <div id="userCircle" class="user-circle" title="Ir para Minha Conta"></div>
+      <span id="authText" class="auth-text" title="Sair da conta">Sair</span>
+      <div class="burger" id="burger" onclick="toggleMenu()">
+        <span></span>
+      </div>
+    </div>
+  </header>
+  <div class="divider-magenta"></div>
+
+  <!-- MENU LATERAL -->
+  <nav id="menu" class="menu" onclick="menuBackdropClick(event)">
+    <div class="menu-panel">
+      <a class="menu-link" href="sobre.html">Sobre</a>
+      <a class="menu-link" href="minha-conta.html">Minha Conta</a>
+      <a class="menu-link" href="planos.html">Planos</a>
+      <a class="menu-link" href="parceiros.html">Parceiros</a>
+      <a class="menu-link" href="servicos-adicionais.html">Serviços Adicionais</a>
+      <a class="menu-link" href="instrucoes.html">Instruções</a>
+      <a class="menu-link" href="contato.html">Contato</a>
+    </div>
+  </nav>
+
+  <!-- ALERTA -->
+  <div id="alert" class="alert-backdrop">
+    <div class="alert-box">
+      <div id="alertTitle" class="alert-title">Aviso</div>
+      <div id="alertMsg" class="alert-message">Mensagem</div>
+      <div id="alertActions" class="alert-actions">
+        <!-- botões inseridos via JS -->
+      </div>
+    </div>
   </div>
-</div>
 
-<script type="module">
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-import {
-  getAuth, signInWithEmailAndPassword,
-  onAuthStateChanged, sendEmailVerification, signOut
-} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+  <!-- CONTEÚDO -->
+  <main>
+    <div class="login-shell">
+      <h1 class="page-title">Entrar</h1>
+      <p class="page-sub">
+        Acesse sua conta MostreAki para gerenciar assinatura, catálogo digital e artes da sua marca.
+      </p>
 
-const app = initializeApp({
-  apiKey:"AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
-  authDomain:"mostreaki-2025.firebaseapp.com",
-  projectId:"mostreaki-2025",
-  storageBucket:"mostreaki-2025.firebasestorage.app",
-  messagingSenderId:"748712068097",
-  appId:"1:748712068097:web:09cf043fbb45917ef6ec00"
-});
-const auth = getAuth(app);
+      <section class="card">
+        <h2>Faça login para continuar</h2>
+        <p class="lead">
+          Use o mesmo e-mail que você cadastrou na plataforma. Caso ainda não tenha conta, você pode se cadastrar em poucos passos.
+        </p>
 
-/* Popup */
-const alertBG = document.getElementById('alert');
-const alertTitle = document.getElementById('alertTitle');
-const alertMsg = document.getElementById('alertMsg');
-const alertActions = document.getElementById('alertActions');
-function showAlert({title="Aviso", html="", actions=[{text:"Fechar", kind:"solid"}]}){
-  alertTitle.textContent = title; alertMsg.innerHTML = html; alertActions.innerHTML = "";
-  actions.forEach(a=>{
-    const b=document.createElement('button');
-    b.className = 'btn ' + (a.kind==='danger'?'btn-danger':a.kind==='ghost'?'btn-ghost':'btn-solid');
-    b.textContent = a.text;
-    b.onclick = ()=>{ if(a.onClick) a.onClick(); closeAlert(); };
-    alertActions.appendChild(b);
-  });
-  alertBG.style.display='flex';
-}
-function closeAlert(){ alertBG.style.display='none'; }
-alertBG.addEventListener('click', e=>{ if(e.target===alertBG) closeAlert(); });
-window.addEventListener('keydown', e=>{ if(e.key==='Escape' && alertBG.style.display==='flex') closeAlert(); });
+        <div class="field">
+          <label for="email">E-mail de acesso</label>
+          <input id="email" type="email" placeholder="voce@exemplo.com">
+        </div>
 
-const $ = (id)=>document.getElementById(id);
+        <div class="field">
+          <label for="senha">Senha</label>
+          <input id="senha" type="password" placeholder="Sua senha">
+        </div>
 
-/* Checkbox “Mostrar senha” (substitui o olho) */
-(function wireShowPassword(){
-  const input = $("senha"), chk = $("chkMostrarSenha");
-  if(!input || !chk) return;
-  const apply = ()=>{ input.type = chk.checked ? 'text' : 'password'; };
-  chk.addEventListener('change', apply);
-})();
+        <div class="field-inline">
+          <input id="chkMostrarSenha" type="checkbox">
+          <label for="chkMostrarSenha">Mostrar senha</label>
+        </div>
 
-/* Validação leve */
-const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-const emailValido = v => emailRe.test(v);
+        <div class="links-row">
+          <a href="recuperar-senha.html">Esqueci minha senha</a>
+          <a href="cadastro.html">Quero me cadastrar</a>
+        </div>
 
-/* Trava de tentativas local (UX): 5 falhas => bloqueia 30s (exponencial) */
-function getState(){
-  const now=Date.now();
-  const s = JSON.parse(sessionStorage.getItem('loginState')||'{}');
-  if(!s.lockUntil) s.lockUntil=0;
-  if(!s.failCount) s.failCount=0;
-  if(!s.blockMult) s.blockMult=1;
-  if(now > s.lockUntil){ s.lockUntil=0; }
-  return s;
-}
-function setState(s){ sessionStorage.setItem('loginState', JSON.stringify(s)); }
-function isLocked(){ const s=getState(); return s.lockUntil && Date.now()<s.lockUntil; }
-function lockMore(){
-  const s=getState();
-  const base=30000; // 30s
-  s.blockMult = Math.min(s.blockMult*2, 8);
-  s.lockUntil = Date.now() + base * s.blockMult;
-  setState(s);
-}
-function incFail(){
-  const s=getState(); s.failCount=(s.failCount||0)+1;
-  if(s.failCount>=5){ s.failCount=0; lockMore(); }
-  setState(s);
-}
-function resetFails(){ setState({failCount:0, blockMult:1, lockUntil:0}); }
-function showLockMsg(){
-  const s=getState();
-  const secs = Math.ceil((s.lockUntil - Date.now())/1000);
-  showAlert({title:"Muitas tentativas", html:`Aguarde <b>${secs}s</b> para tentar novamente.`});
-}
+        <button id="btnEntrar" class="btn-solid" type="button">Entrar</button>
 
-/* Entrar */
-async function loginEmailSenha(){
-  if(isLocked()) return showLockMsg();
+        <div class="divider-row"><span>ou</span></div>
 
-  const email = $("email").value.trim();
-  const senha = $("senha").value;
+        <button id="btnGoogle" class="btn-google" type="button">
+          <img src="google-logo.svg" alt="">
+          <span>Entrar com Google</span>
+        </button>
+        <p class="hint">
+          Ao continuar, você concorda com o uso dos seus dados para login e gestão da sua assinatura MostreAki.
+        </p>
+      </section>
+    </div>
+  </main>
 
-  if(!email) return showAlert({title:"E-mail vazio", html:"Digite seu e-mail para continuar."});
-  if(!emailValido(email)) return showAlert({title:"E-mail inválido", html:"Revise o endereço digitado."});
-  if(!senha) return showAlert({title:"Senha vazia", html:"Digite sua senha para continuar."});
+  <!-- FOOTER -->
+  <footer>
+    <span>© <span id="yearSpan"></span> MostreAki • Todos os direitos reservados.</span>
+    <img src="guieaki-mini.svg" alt="GuieAki mascote">
+  </footer>
 
-  try{
-    const cred = await signInWithEmailAndPassword(auth, email, senha);
+  <!-- Firebase + Script -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+    import {
+      getAuth,
+      onAuthStateChanged,
+      signOut,
+      signInWithEmailAndPassword,
+      sendEmailVerification,
+      GoogleAuthProvider,
+      signInWithPopup,
+      updateProfile
+    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+    import {
+      getFirestore,
+      collection,
+      addDoc,
+      serverTimestamp
+    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+    import {
+      getStorage
+    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
 
-    if (!cred.user.emailVerified){
-      await sendEmailVerification(cred.user);
-      showAlert({
-        title:"Confirme seu e-mail",
-        html:`Seu e-mail ainda não foi verificado.<br>Reenviamos o link para <b>${email}</b>. Verifique sua caixa de entrada (ou spam) e tente novamente após confirmar.`,
-        actions:[ {text:"OK, vou verificar", kind:"solid"} ]
+    // ====== Firebase init ======
+    const app = initializeApp({
+      apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
+      authDomain: "mostreaki-2025.firebaseapp.com",
+      projectId: "mostreaki-2025",
+      storageBucket: "mostreaki-2025.firebasestorage.app",
+      messagingSenderId: "748712068097",
+      appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
+    });
+
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+    const googleProvider = new GoogleAuthProvider();
+
+    // ===== helpers UI =====
+    const $ = (id) => document.getElementById(id);
+    const alertBG = $('alert');
+    const alertTitle = $('alertTitle');
+    const alertMsg = $('alertMsg');
+    const alertActions = $('alertActions');
+    const userCircle = $('userCircle');
+    const authText = $('authText');
+    const btnAbrir = $('btnAbrirLogin');
+
+    function showAlert({ title = "Aviso", html = "", actions = [{ text: "Fechar", kind: "solid" }] }) {
+      alertTitle.textContent = title;
+      alertMsg.innerHTML = html;
+      alertActions.innerHTML = "";
+      actions.forEach(a => {
+        const b = document.createElement('button');
+        b.className = (a.kind === 'ghost' ? 'btn-ghost' : 'btn-solid');
+        b.textContent = a.text;
+        b.onclick = () => { if (a.onClick) a.onClick(); closeAlert(); };
+        alertActions.appendChild(b);
       });
-      await signOut(auth);
-      return;
+      alertBG.style.display = 'flex';
+    }
+    function closeAlert() {
+      alertBG.style.display = 'none';
+    }
+    alertBG.addEventListener('click', e => {
+      if (e.target === alertBG) closeAlert();
+    });
+
+    // mostrar senha
+    (function wireShowPassword() {
+      const input = $("senha"), chk = $("chkMostrarSenha");
+      if (!input || !chk) return;
+      const apply = () => { input.type = chk.checked ? 'text' : 'password'; };
+      chk.addEventListener('change', apply);
+    })();
+
+    // rate limit
+    const emailRe = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$/;
+    const emailValido = v => emailRe.test(v);
+
+    function getState() {
+      const now = Date.now();
+      const s = JSON.parse(sessionStorage.getItem('loginState') || '{}');
+      if (!s.lockUntil) s.lockUntil = 0;
+      if (!s.failCount) s.failCount = 0;
+      if (!s.blockMult) s.blockMult = 1;
+      if (now > s.lockUntil) s.lockUntil = 0;
+      return s;
+    }
+    function setState(s) {
+      sessionStorage.setItem('loginState', JSON.stringify(s));
+    }
+    function isLocked() {
+      const s = getState();
+      return s.lockUntil && Date.now() < s.lockUntil;
+    }
+    function lockMore() {
+      const s = getState();
+      const base = 30000;
+      s.blockMult = Math.min(s.blockMult * 2, 8);
+      s.lockUntil = Date.now() + base * s.blockMult;
+      setState(s);
+    }
+    function incFail() {
+      const s = getState();
+      s.failCount = (s.failCount || 0) + 1;
+      if (s.failCount >= 5) { s.failCount = 0; lockMore(); }
+      setState(s);
+    }
+    function resetFails() {
+      setState({ failCount: 0, blockMult: 1, lockUntil: 0 });
+    }
+    function showLockMsg() {
+      const s = getState();
+      const secs = Math.ceil((s.lockUntil - Date.now()) / 1000);
+      showAlert({ title: "Muitas tentativas", html: `Aguarde <b>${secs}s</b> para tentar novamente.` });
     }
 
-    resetFails();
-    if(cred.user.photoURL) localStorage.setItem("fotoPerfil", cred.user.photoURL);
-    location.href="/minha-conta.html";
-
-  }catch(e){
-    const codes = ["auth/invalid-credential","auth/wrong-password","auth/user-not-found"];
-    if(codes.includes(e.code)){
-      $("recoverLine").style.display = "block";
-      incFail();
-      if(isLocked()) return showLockMsg();
-
-      return showAlert({
-        title:"Não conseguimos entrar",
-        html:"E-mail e/ou senha incorretos. Você pode tentar novamente ou recuperar a senha.",
-        actions:[
-          {text:"Recuperar senha", kind:"ghost", onClick:()=>location.href="/recuperar-senha.html"},
-          {text:"Cadastrar", kind:"ghost", onClick:()=>location.href="/cadastro.html"},
-          {text:"Fechar", kind:"solid"}
-        ]
-      });
+    // logs
+    async function logLogin(email, status, errorCode = null, provider = 'email') {
+      try {
+        await addDoc(collection(db, 'logs_login'), {
+          email: email || null,
+          status,
+          errorCode,
+          provider,
+          timestamp: serverTimestamp(),
+          userAgent: navigator.userAgent
+        });
+      } catch (e) {
+        console.error('Erro ao registrar log:', e);
+      }
     }
-    if(e.code==="auth/too-many-requests"){ lockMore(); return showLockMsg(); }
-    if(e.code==="auth/invalid-email"){ return showAlert({title:"E-mail inválido", html:"Revise o endereço digitado."}); }
-    showAlert({title:"Erro", html:`Erro inesperado (${e.code}). Tente novamente.`});
-  }
-}
-$("btnEntrar").onclick = loginEmailSenha;
 
-/* Enter envia */
-document.addEventListener('keydown', (ev)=>{ if(ev.key === 'Enter') loginEmailSenha(); });
+    async function updateFotoPerfil(user, photoURL) {
+      if (photoURL) {
+        try {
+          await updateProfile(user, { photoURL });
+          localStorage.setItem("fotoPerfil", photoURL);
+        } catch (e) {
+          console.error('Erro ao atualizar foto de perfil:', e);
+        }
+      }
+    }
 
-/* Já logado e verificado → painel */
-onAuthStateChanged(auth, (u)=>{ if(u && u.emailVerified) location.href="/minha-conta.html"; });
-</script>
+    async function loginEmailSenha() {
+      if (isLocked()) return showLockMsg();
+
+      const email = $("email").value.trim();
+      const senha = $("senha").value;
+
+      if (!email) {
+        incFail();
+        await logLogin(email, 'erro', 'email_vazio');
+        return showAlert({ title: "E-mail vazio", html: "Digite seu e-mail para continuar." });
+      }
+      if (!emailValido(email)) {
+        incFail();
+        await logLogin(email, 'erro', 'email_invalido');
+        return showAlert({ title: "E-mail inválido", html: "Revise o endereço digitado." });
+      }
+      if (!senha) {
+        incFail();
+        await logLogin(email, 'erro', 'senha_vazia');
+        return showAlert({ title: "Senha vazia", html: "Digite sua senha para continuar." });
+      }
+
+      try {
+        const cred = await signInWithEmailAndPassword(auth, email, senha);
+
+        if (!cred.user.emailVerified) {
+          await sendEmailVerification(cred.user);
+          await logLogin(email, 'email_nao_verificado');
+          showAlert({
+            title: "Confirme seu e-mail",
+            html: `Seu e-mail ainda não foi verificado.<br>Reenviamos o link para <b>${email}</b>. Verifique sua caixa de entrada (ou spam) e tente novamente após confirmar.`
+          });
+          return;
+        }
+
+        resetFails();
+        await logLogin(email, 'sucesso', null, 'email');
+        await updateFotoPerfil(cred.user, cred.user.photoURL);
+        location.href = "minha-conta.html";
+      } catch (e) {
+        incFail();
+        await logLogin(email, 'erro', e.code, 'email');
+        const codes = ["auth/invalid-credential", "auth/wrong-password", "auth/user-not-found"];
+        if (codes.includes(e.code)) {
+          if (isLocked()) return showLockMsg();
+          return showAlert({
+            title: "Não conseguimos entrar",
+            html: "E-mail e/ou senha incorretos. Você pode tentar novamente ou recuperar a senha.",
+            actions: [
+              { text: "Recuperar senha", kind: "ghost", onClick: () => location.href = "recuperar-senha.html" },
+              { text: "Cadastrar", kind: "ghost", onClick: () => location.href = "cadastro.html" },
+              { text: "Fechar", kind: "solid" }
+            ]
+          });
+        }
+        if (e.code === "auth/too-many-requests") {
+          lockMore();
+          return showLockMsg();
+        }
+        if (e.code === "auth/invalid-email") {
+          return showAlert({ title: "E-mail inválido", html: "Revise o endereço digitado." });
+        }
+        showAlert({ title: "Erro", html: `Erro inesperado (${e.code}). Tente novamente.` });
+      }
+    }
+
+    async function loginGoogle() {
+      if (isLocked()) return showLockMsg();
+      try {
+        const result = await signInWithPopup(auth, googleProvider);
+        const user = result.user;
+        resetFails();
+        await logLogin(user.email || 'google_sem_email', 'sucesso', null, 'google');
+        await updateFotoPerfil(user, user.photoURL);
+        location.href = "minha-conta.html";
+      } catch (e) {
+        incFail();
+        await logLogin(null, 'erro', e.code, 'google');
+        if (e.code !== 'auth/popup-closed-by-user') {
+          showAlert({ title: "Erro no Google", html: "Não foi possível entrar com Google. Tente novamente." });
+        }
+      }
+    }
+
+    $("btnEntrar").onclick = loginEmailSenha;
+    $("btnGoogle").onclick = loginGoogle;
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Enter') loginEmailSenha();
+      if (e.key === 'Escape') closeAlert();
+    });
+
+    // estado de auth: header
+    onAuthStateChanged(auth, (user) => {
+      const fotoURL = localStorage.getItem("fotoPerfil");
+      if (user) {
+        if (fotoURL) {
+          userCircle.style.backgroundImage = `url('${fotoURL}')`;
+          userCircle.textContent = "";
+        } else {
+          const nome = (user.displayName || user.email || "?").trim();
+          userCircle.textContent = nome.charAt(0).toUpperCase();
+          userCircle.style.backgroundImage = "";
+        }
+        userCircle.style.display = "flex";
+        authText.style.display = "inline";
+        btnAbrir.style.display = "none";
+
+        userCircle.onclick = () => location.href = "minha-conta.html";
+      } else {
+        userCircle.style.display = "none";
+        authText.style.display = "none";
+        btnAbrir.style.display = "inline-block";
+      }
+    });
+
+    // sair
+    authText.addEventListener("click", async () => {
+      try {
+        await signOut(auth);
+        await logLogin('desconhecido', 'logout');
+        localStorage.removeItem("fotoPerfil");
+        location.reload();
+      } catch (e) {
+        showAlert({ title: "Sair", html: "Não foi possível sair. Tente de novo." });
+      }
+    });
+
+    // botão entrar do header neste contexto apenas foca no formulário
+    btnAbrir.addEventListener("click", () => {
+      document.getElementById("email").focus();
+      window.scrollTo({ top: document.querySelector(".card").offsetTop - 80, behavior: 'smooth' });
+    });
+
+    // menu
+    window.toggleMenu = function () {
+      const menu = document.getElementById("menu");
+      const burger = document.getElementById("burger");
+      const active = menu.classList.toggle("active");
+      burger.classList.toggle("open", active);
+    };
+
+    window.menuBackdropClick = function (e) {
+      if (e.target.id === "menu") toggleMenu();
+    };
+
+    // ano footer
+    document.getElementById("yearSpan").textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>
