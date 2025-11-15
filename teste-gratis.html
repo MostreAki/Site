@@ -79,6 +79,7 @@
       background-position: center;
       font-size: .9rem;
       cursor: pointer;
+      flex: 0 0 34px;
     }
 
     .hamburger {
@@ -104,16 +105,33 @@
       background: var(--bordo);
     }
 
-    /* ===== Menu lateral ===== */
-    .menu-overlay{
-      position: fixed; top: 60px; right: 0;
-      width: 280px; max-width: 90vw;
-      background: #92a9a6; box-shadow: -4px 0 12px rgba(0,0,0,.09);
-      height: calc(100vh - 60px);
-      transform: translateX(100%); transition: transform .25s ease;
-      z-index: 999; display: flex; flex-direction: column; gap: .55rem; padding: 1rem;
+    /* ===== Menu lateral (overlay + painel) ===== */
+    .menu-overlay {
+      position: fixed;
+      top: 60px;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, .15);
+      display: none;
+      justify-content: flex-end;
+      z-index: 999;
     }
-    .menu-overlay.show { transform: translateX(0); }
+    .menu-overlay.show {
+      display: flex;
+    }
+
+    .menu-panel {
+      width: 280px;
+      max-width: 90vw;
+      background: #92a9a6;
+      box-shadow: -4px 0 12px rgba(0, 0, 0, .09);
+      height: 100%;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: .55rem;
+    }
 
     .menu-link {
       width: 210px;
@@ -227,8 +245,9 @@
       margin-bottom: .8rem;
     }
     .avatar-preview {
-      width: 80px;
-      height: 80px;
+      width: 90px;
+      height: 90px;
+      aspect-ratio: 1 / 1;
       border-radius: 50%;
       background: linear-gradient(135deg,#d9d9d9,#af91a1);
       border: 3px solid var(--bordo);
@@ -240,6 +259,7 @@
       color: #fff;
       font-weight: 700;
       font-size: 1.3rem;
+      flex: 0 0 90px;
     }
 
     .btn {
@@ -382,7 +402,7 @@
       text-align: center;
       color: #444;
       margin-top: auto;
-      border-top: 2px solid rgba(0,0,0,.05);
+      border-top: 3px solid var(--bordo);
     }
   </style>
 </head>
@@ -406,13 +426,15 @@
 
   <!-- Menu lateral -->
   <nav id="menu" class="menu-overlay" aria-label="Menu principal">
-    <a class="menu-link" href="index.html">Início</a>
-    <a class="menu-link" href="planos.html">Planos</a>
-    <a class="menu-link" href="parceiros.html">Templates de Parceiros</a>
-    <a class="menu-link" href="servicos-adicionais.html">Serviços Adicionais</a>
-    <a class="menu-link" href="instrucoes.html">Instruções</a>
-    <a class="menu-link" href="sobre.html">Sobre o MostreAki</a>
-    <a class="menu-link" href="contato.html">Contato</a>
+    <div class="menu-panel">
+      <a class="menu-link" href="index.html">Início</a>
+      <a class="menu-link" href="planos.html">Planos</a>
+      <a class="menu-link" href="parceiros.html">Templates de Parceiros</a>
+      <a class="menu-link" href="servicos-adicionais.html">Serviços Adicionais</a>
+      <a class="menu-link" href="instrucoes.html">Instruções</a>
+      <a class="menu-link" href="sobre.html">Sobre o MostreAki</a>
+      <a class="menu-link" href="contato.html">Contato</a>
+    </div>
   </nav>
 
   <!-- ALERTA -->
@@ -584,6 +606,15 @@
       menu.classList.toggle("show");
     };
 
+    // fechar menu ao clicar fora do painel
+    if (menu) {
+      menu.addEventListener("click", (e) => {
+        if (e.target === menu) {
+          menu.classList.remove("show");
+        }
+      });
+    }
+
     const alertBG = $("alert");
     const alertTitle = $("alertTitle");
     const alertMsg = $("alertMsg");
@@ -663,9 +694,6 @@
         authText.style.display = "inline";
       }
 
-      // TODO: Aqui você integra o Firestore de verdade.
-      // Exemplo de estrutura que você comentou:
-      //   /usuarios/{uid} -> { slug, assinaturaStatus, catalogoAtivo, albumAtivo, fotoPerfilURL }
       try {
         const docRef = doc(db, "usuarios", user.uid);
         const snap = await getDoc(docRef);
