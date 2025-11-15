@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Completar cadastro – MostreAki</title>
+  <title>Completar cadastro – Login Google | MostreAki</title>
 
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
@@ -18,7 +18,9 @@
       --card: #ffffff;
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
@@ -30,6 +32,7 @@
       flex-direction: column;
     }
 
+    /* ===== Header padrão MostreAki ===== */
     header {
       background: var(--header-footer);
       border-bottom: 3px solid var(--bordo);
@@ -55,6 +58,30 @@
       gap: .75rem;
     }
 
+    .header-auth-label {
+      font-size: .85rem;
+      color: var(--texto);
+      cursor: pointer;
+      display: inline; /* aqui pode ficar sempre visível, se quiser usar como 'Sair' */
+    }
+
+    .user-circle {
+      background: var(--bordo);
+      color: #fff;
+      font-weight: 600;
+      border-radius: 50%;
+      width: 34px;
+      height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-size: cover;
+      background-position: center;
+      font-size: .9rem;
+      cursor: default;
+      flex: 0 0 34px;
+    }
+
     .hamburger {
       width: 40px;
       height: 40px;
@@ -69,6 +96,7 @@
       cursor: pointer;
       padding: 0;
     }
+
     .hamburger span {
       display: block;
       width: 60%;
@@ -77,6 +105,7 @@
       background: var(--bordo);
     }
 
+    /* ===== Menu lateral (overlay + painel) ===== */
     .menu-overlay {
       position: fixed;
       top: 60px;
@@ -88,7 +117,9 @@
       justify-content: flex-end;
       z-index: 999;
     }
-    .menu-overlay.show { display: flex; }
+    .menu-overlay.show {
+      display: flex;
+    }
 
     .menu-panel {
       width: 280px;
@@ -123,6 +154,7 @@
       transform: translateY(-1px);
     }
 
+    /* ===== Main ===== */
     main {
       flex: 1;
       max-width: min(900px, 94vw);
@@ -130,7 +162,7 @@
     }
 
     .page-title {
-      font-size: 1.7rem;
+      font-size: 1.6rem;
       font-weight: 700;
       margin-bottom: .25rem;
       color: var(--texto);
@@ -147,8 +179,50 @@
       background: rgba(255,255,255,0.98);
       border-radius: 18px;
       box-shadow: 0 10px 24px rgba(0,0,0,.16);
-      padding: 1.6rem 1.8rem 1.8rem;
+      padding: 1.6rem 1.6rem 1.8rem;
       border: 2px solid rgba(125,47,89,0.25);
+      max-width: 640px;
+      margin: 0 auto;
+    }
+
+    .card h2 {
+      font-size: 1.1rem;
+      margin: 0 0 .6rem;
+      color: var(--texto);
+      text-align: left;
+    }
+    .card p.desc {
+      font-size: .9rem;
+      color: #345;
+      margin: 0 0 1.2rem;
+    }
+
+    .user-mini {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      margin-bottom: 1.1rem;
+    }
+
+    .user-circle-mini {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--bordo);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: .9rem;
+      background-size: cover;
+      background-position: center;
+      flex: 0 0 38px;
+    }
+
+    .user-mini-info {
+      font-size: .85rem;
+      color: #223;
     }
 
     .field-group {
@@ -159,9 +233,9 @@
       font-size: .9rem;
       margin-bottom: .25rem;
       color: #234;
-      font-weight: 600;
     }
-    .field-group input {
+    .field-group input[type="text"],
+    .field-group input[type="tel"] {
       width: 100%;
       padding: .55rem .75rem;
       border-radius: 10px;
@@ -170,14 +244,21 @@
       outline: none;
       background: #f7f8fa;
     }
-    .field-group input[disabled] {
-      background: #eceff1;
-      color: #677;
+    .field-group input:focus {
+      border-color: var(--bordo);
+      box-shadow: 0 0 0 1px rgba(125,47,89,0.2);
     }
     .hint {
       font-size: .8rem;
       color: #566;
       margin-top: .15rem;
+    }
+
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .6rem;
+      margin-top: 1rem;
     }
 
     .btn {
@@ -200,21 +281,25 @@
       color: var(--bordo);
       border: 2px solid rgba(125,47,89,0.4);
       box-shadow: 0 2px 6px rgba(0,0,0,.18);
-      margin-top: 1rem;
     }
     .btn-primary:hover {
       filter: brightness(1.04);
       transform: translateY(-1px);
     }
+    .btn-ghost {
+      background: transparent;
+      color: var(--bordo);
+      border: 1px dashed rgba(125,47,89,0.6);
+    }
+    .btn-ghost:hover {
+      background: rgba(255,255,255,.4);
+    }
 
-    footer {
-      background: var(--header-footer);
-      padding: 1rem;
-      font-size: .85rem;
-      text-align: center;
-      color: #444;
-      margin-top: auto;
-      border-top: 3px solid var(--bordo);
+    .note {
+      margin-top: 1rem;
+      font-size: .8rem;
+      color: #445;
+      line-height: 1.5;
     }
 
     /* ===== Alert brand ===== */
@@ -267,6 +352,22 @@
       gap: .5rem;
       background: #f7faf9;
     }
+
+    footer {
+      background: var(--header-footer);
+      padding: 1rem;
+      font-size: .85rem;
+      text-align: center;
+      color: #444;
+      margin-top: auto;
+      border-top: 3px solid var(--bordo);
+    }
+
+    @media (max-width: 600px) {
+      .card {
+        padding: 1.3rem 1.2rem 1.4rem;
+      }
+    }
   </style>
 </head>
 <body>
@@ -276,12 +377,18 @@
     </a>
 
     <div class="header-right">
+      <div id="authText" class="header-auth-label" title="Clique para sair">
+        Sair
+      </div>
+      <div id="userCircle" class="user-circle" title="Usuário">?</div>
+
       <button class="hamburger" type="button" onclick="toggleMenu()" aria-label="Abrir menu">
         <span></span><span></span><span></span>
       </button>
     </div>
   </header>
 
+  <!-- Menu lateral -->
   <nav id="menu" class="menu-overlay" aria-label="Menu principal">
     <div class="menu-panel">
       <a class="menu-link" href="index.html">Início</a>
@@ -302,46 +409,62 @@
         <div id="alertTitle" class="alert-title">Aviso</div>
       </div>
       <div id="alertMsg" class="alert-body">Mensagem.</div>
-      <div id="alertActions" class="alert-actions"></div>
+      <div id="alertActions" class="alert-actions">
+        <!-- botões criados via JS -->
+      </div>
     </div>
   </div>
 
   <main>
-    <h1 class="page-title">Completar cadastro</h1>
+    <h1 class="page-title">Só falta completar uma etapa</h1>
     <p class="page-sub">
-      Só falta definir seu nome de usuário (slug) e celular/WhatsApp para concluirmos seu acesso pelo Google.
+      Você entrou com o Google, mas ainda não definimos o <b>nome de usuário</b> (slug) e o <b>celular/WhatsApp</b> para conectar seu site, catálogos e álbuns.
     </p>
 
     <section class="card">
-      <div class="field-group">
-        <label for="email">E-mail</label>
-        <input type="email" id="email" disabled />
+      <div class="user-mini">
+        <div id="miniAvatar" class="user-circle-mini">?</div>
+        <div class="user-mini-info">
+          <div id="miniNome">Carregando usuário...</div>
+          <div id="miniEmail" style="opacity:.8;">&nbsp;</div>
+        </div>
       </div>
 
-      <div class="field-group">
-        <label for="nome">Nome</label>
-        <input type="text" id="nome" disabled />
-      </div>
+      <h2>Defina seu nome de usuário e WhatsApp</h2>
+      <p class="desc">
+        O nome de usuário será usado como <b>slug</b>, por exemplo:<br>
+        <code>mostreaki.com.br/seu-nome</code>
+      </p>
 
       <div class="field-group">
-        <label for="username">Nome de usuário (slug)</label>
-        <input type="text" id="username" autocomplete="off" />
+        <label for="slugInput">Nome de usuário (slug)</label>
+        <input type="text" id="slugInput" placeholder="ex: minha-loja-top" autocomplete="off" />
         <div class="hint">
-          Esse será o seu <b>slug</b> no MostreAki (usado para catálogos e identificação da conta).
+          Use apenas letras, números e hífen. Ex.: <b>minha-loja</b> &middot; mínimo 3 caracteres.
         </div>
       </div>
 
       <div class="field-group">
-        <label for="celular">Celular / WhatsApp</label>
-        <input type="tel" id="celular" autocomplete="tel" />
+        <label for="celInput">Celular / WhatsApp</label>
+        <input type="tel" id="celInput" placeholder="(DDD) 99999-9999" autocomplete="tel" />
         <div class="hint">
-          Informe com DDD (ex: 11 91234-5678). Usaremos para suporte e contato se necessário.
+          Usado para contato e suporte. Você poderá atualizar depois em <b>Minha Conta</b>.
         </div>
       </div>
 
-      <button class="btn btn-primary" type="button" id="btnSalvar">
-        Salvar e continuar
-      </button>
+      <div class="btn-row">
+        <button class="btn btn-primary" type="button" id="btnSalvar">
+          Salvar dados e continuar
+        </button>
+        <button class="btn btn-ghost" type="button" id="btnCancelar">
+          Cancelar / Sair
+        </button>
+      </div>
+
+      <div class="note">
+        Depois de salvar, vamos criar a base do seu site e áreas de catálogo, álbum e eventos no MostreAki.
+        Você poderá ativar / utilizar esses recursos conforme a sua assinatura.
+      </div>
     </section>
   </main>
 
@@ -349,21 +472,19 @@
     MostreAki &copy; 2025 — Fortalecendo a identidade da sua marca no universo digital.
   </footer>
 
+  <!-- Firebase + Script -->
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
     import {
       getAuth,
-      onAuthStateChanged
+      onAuthStateChanged,
+      signOut
     } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
     import {
       getFirestore,
       doc,
-      setDoc,
       getDoc,
-      collection,
-      query,
-      where,
-      getDocs,
+      setDoc,
       serverTimestamp
     } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
@@ -377,9 +498,10 @@
     });
 
     const auth = getAuth(app);
-    const db   = getFirestore(app);
+    const db = getFirestore(app);
 
-    const $ = id => document.getElementById(id);
+    /* ===== helpers UI ===== */
+    const $ = (id) => document.getElementById(id);
 
     const menu = $("menu");
     window.toggleMenu = function () {
@@ -388,7 +510,9 @@
     };
     if (menu) {
       menu.addEventListener("click", (e) => {
-        if (e.target === menu) menu.classList.remove("show");
+        if (e.target === menu) {
+          menu.classList.remove("show");
+        }
       });
     }
 
@@ -403,7 +527,7 @@
       alertActions.innerHTML = "";
       actions.forEach(a => {
         const btn = document.createElement("button");
-        btn.className = "btn btn-primary";
+        btn.className = "btn " + (a.kind === "ghost" ? "btn-ghost" : "btn-primary");
         btn.textContent = a.text;
         btn.onclick = () => {
           if (a.onClick) a.onClick();
@@ -420,139 +544,276 @@
       if (e.target === alertBG) closeAlert();
     });
 
-    function slugify(str) {
-      return str
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .toLowerCase()
-        .trim()
-        .replace(/[^a-z0-9\-_\s]/g, '')
-        .replace(/\s+/g, '-');
-    }
+    const userCircle = $("userCircle");
+    const authText = $("authText");
+    const miniAvatar = $("miniAvatar");
+    const miniNome = $("miniNome");
+    const miniEmail = $("miniEmail");
 
-    async function slugDisponivel(slug) {
-      const q = query(
-        collection(db, "usuarios"),
-        where("slug", "==", slug)
-      );
-      const snap = await getDocs(q);
-      return snap.empty;
-    }
+    const slugInput = $("slugInput");
+    const celInput = $("celInput");
+    const btnSalvar = $("btnSalvar");
+    const btnCancelar = $("btnCancelar");
 
     let currentUser = null;
+    let usuarioDocData = null;
 
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
-        // não logado → volta para login
+        // Se não estiver logado, manda pro login normal
         window.location.href = "login.html";
         return;
       }
-
       currentUser = user;
-      $("email").value = user.email || "";
-      $("nome").value = user.displayName || "";
 
-      // Se por acaso já tiver slug + celular setados, manda direto pra minha-conta
-      const docRef = doc(db, "usuarios", user.uid);
-      const snap = await getDoc(docRef);
-      if (snap.exists()) {
-        const data = snap.data();
-        if (data.slug && data.celular) {
-          window.location.href = "minha-conta.html";
+      // Header / mini user
+      const nome = user.displayName || "";
+      const email = user.email || "";
+      const letra = (nome || email || "?").trim().charAt(0).toUpperCase() || "?";
+
+      if (userCircle) {
+        userCircle.textContent = letra;
+      }
+      if (miniAvatar) {
+        miniAvatar.textContent = letra;
+      }
+      if (miniNome) {
+        miniNome.textContent = nome || "(Usuário Google)";
+      }
+      if (miniEmail) {
+        miniEmail.textContent = email;
+      }
+
+      if (authText) {
+        authText.addEventListener("click", async () => {
+          try {
+            await signOut(auth);
+            window.location.href = "index.html";
+          } catch (e) {
+            showAlert({
+              title: "Erro ao sair",
+              html: "Não foi possível encerrar a sessão agora. Tente novamente."
+            });
+          }
+        });
+      }
+
+      // Carrega doc de usuarios/{uid}
+      try {
+        const uRef = doc(db, "usuarios", user.uid);
+        const snap = await getDoc(uRef);
+        if (snap.exists()) {
+          usuarioDocData = snap.data();
+          const prevSlug = usuarioDocData.slug || "";
+          const prevCel = usuarioDocData.celular || usuarioDocData.whatsapp || "";
+
+          if (prevSlug) slugInput.value = prevSlug;
+          if (prevCel) celInput.value = prevCel;
+
+          // Se já tiver slug e celular, a rigor não precisa estar aqui:
+          if (prevSlug && prevCel) {
+            showAlert({
+              title: "Dados já completos",
+              html: "Seu nome de usuário e WhatsApp já estão configurados.<br>Vamos para a sua conta.",
+              actions: [
+                {
+                  text: "Ir para Minha Conta",
+                  onClick: () => window.location.href = "minha-conta.html"
+                }
+              ]
+            });
+          }
         } else {
-          // se tiver algo já preenchido, jogar pra tela como sugestão
-          if (data.slug) $("username").value = data.slug;
-          if (data.celular) $("celular").value = data.celular;
+          // Sem doc ainda: deixa campos vazios para preencher
+          usuarioDocData = {};
         }
+      } catch (e) {
+        console.error("Erro ao ler usuarios/{uid}:", e);
+        showAlert({
+          title: "Erro ao carregar dados",
+          html: "Não foi possível carregar seus dados agora. Você ainda pode tentar preencher o formulário e salvar."
+        });
       }
     });
 
-    async function salvarPerfilGoogle() {
+    function normalizarSlug(raw) {
+      return raw
+        .trim()
+        .toLowerCase()
+        .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // remove acentos
+        .replace(/[^a-z0-9-]/g, "-")                     // troca tudo que não é a-z, 0-9 ou hífen por hífen
+        .replace(/-+/g, "-")                             // evita hífens duplos
+        .replace(/^-|-$/g, "");                          // remove hífen no começo/fim
+    }
+
+    async function salvarDados() {
       if (!currentUser) {
         showAlert({
-          title: "Sessão expirada",
-          html: "Faça login novamente pelo Google para completar o cadastro."
+          title: "Sessão inválida",
+          html: "Sua sessão expirou. Faça login novamente.",
+          actions: [{ text: "Ir para login", onClick: () => window.location.href = "login.html" }]
         });
         return;
       }
 
-      const usernameRaw = $("username").value.trim();
-      const celular = $("celular").value.trim();
+      let slugRaw = slugInput.value || "";
+      let celRaw = celInput.value || "";
 
-      if (!usernameRaw) {
-        return showAlert({
-          title: "Nome de usuário",
-          html: "Digite um nome de usuário (slug) para sua conta."
-        });
-      }
-      if (!celular) {
-        return showAlert({
-          title: "Celular / WhatsApp",
-          html: "Informe um número de celular ou WhatsApp."
-        });
-      }
+      slugRaw = slugRaw.trim();
+      celRaw = celRaw.trim();
 
-      const slug = slugify(usernameRaw);
-      if (!slug) {
-        return showAlert({
+      if (!slugRaw) {
+        showAlert({
+          title: "Informe o nome de usuário",
+          html: "Digite o nome de usuário que será usado como endereço do seu site."
+        });
+        return;
+      }
+      const slug = normalizarSlug(slugRaw);
+      if (!slug || slug.length < 3) {
+        showAlert({
           title: "Slug inválido",
-          html: "O nome informado não gerou um slug válido. Tente outro formato (apenas letras e números)."
+          html: "O nome de usuário (slug) deve ter pelo menos <b>3 caracteres</b> após a normalização.<br>Tente algo como <b>minha-loja</b>."
         });
+        return;
+      }
+
+      if (!celRaw) {
+        showAlert({
+          title: "Informe o celular / WhatsApp",
+          html: "Digite um número de celular/WhatsApp para contato e suporte."
+        });
+        return;
+      }
+
+      // Validação básica simples (pelo menos 8 dígitos)
+      const digits = celRaw.replace(/\D/g, "");
+      if (digits.length < 8) {
+        showAlert({
+          title: "Celular inválido",
+          html: "Verifique o número de celular/WhatsApp informado."
+        });
+        return;
       }
 
       try {
-        const disponivel = await slugDisponivel(slug);
-        if (!disponivel) {
-          return showAlert({
-            title: "Slug já em uso",
-            html: "Esse nome de usuário já está sendo usado. Escolha outro."
-          });
+        // Verifica se slug já existe em sites/{slug} com outro ownerUid
+        const siteRef = doc(db, "sites", slug);
+        const siteSnap = await getDoc(siteRef);
+        if (siteSnap.exists()) {
+          const sData = siteSnap.data();
+          if (sData.ownerUid && sData.ownerUid !== currentUser.uid) {
+            showAlert({
+              title: "Nome de usuário em uso",
+              html: "Este nome de usuário (slug) já está sendo usado por outra conta.<br>Escolha outro nome.",
+            });
+            return;
+          }
         }
 
-        const refUser = doc(db, "usuarios", currentUser.uid);
-        const snap = await getDoc(refUser);
-
-        const payload = {
+        // Atualiza usuarios/{uid}
+        const uRef = doc(db, "usuarios", currentUser.uid);
+        await setDoc(uRef, {
           slug,
-          username: usernameRaw,
-          celular,
-          email: currentUser.email || "",
+          celular: celRaw,
+          whatsapp: celRaw,
+          email: currentUser.email || null,
+          displayName: currentUser.displayName || null,
           provider: "google",
-          updatedAt: serverTimestamp()
-        };
+          atualizadoEm: serverTimestamp()
+        }, { merge: true });
 
-        if (snap.exists()) {
-          await setDoc(refUser, { ...snap.data(), ...payload }, { merge: true });
-        } else {
-          await setDoc(refUser, {
-            ...payload,
-            createdAt: serverTimestamp()
-          });
-        }
+        // Cria/atualiza sites/{slug}
+        await setDoc(siteRef, {
+          slug,
+          ownerUid: currentUser.uid,
+          criadoEm: siteSnap.exists() && siteSnap.data().criadoEm ? siteSnap.data().criadoEm : serverTimestamp(),
+          atualizadoEm: serverTimestamp()
+        }, { merge: true });
+
+        // Cria/atualiza sites/{slug}/meta/config
+        const siteMetaRef = doc(db, "sites", slug, "meta", "config");
+        await setDoc(siteMetaRef, {
+          slug,
+          ownerUid: currentUser.uid,
+          tituloSite: (currentUser.displayName || slug),
+          criadoEm: serverTimestamp(),
+          atualizadoEm: serverTimestamp()
+        }, { merge: true });
+
+        // Cria base de catalogos/{slug}/meta/config (sem itens)
+        const catMetaRef = doc(db, "catalogos", slug, "meta", "config");
+        await setDoc(catMetaRef, {
+          slug,
+          ownerUid: currentUser.uid,
+          catalogoAtivo: false,
+          limiteItens: 0,
+          criadoEm: serverTimestamp(),
+          atualizadoEm: serverTimestamp()
+        }, { merge: true });
+
+        // Cria base de albuns/{slug}/meta/config
+        const albMetaRef = doc(db, "albuns", slug, "meta", "config");
+        await setDoc(albMetaRef, {
+          slug,
+          ownerUid: currentUser.uid,
+          albumAtivo: false,
+          limiteItens: 0,
+          criadoEm: serverTimestamp(),
+          atualizadoEm: serverTimestamp()
+        }, { merge: true });
+
+        // Cria base de eventos/{slug}/meta/config
+        const evtMetaRef = doc(db, "eventos", slug, "meta", "config");
+        await setDoc(evtMetaRef, {
+          slug,
+          ownerUid: currentUser.uid,
+          eventosAtivo: false,
+          criadoEm: serverTimestamp(),
+          atualizadoEm: serverTimestamp()
+        }, { merge: true });
 
         showAlert({
-          title: "Cadastro completo",
-          html: "Pronto! Seu acesso pelo Google foi concluído. Vamos para a página Minha Conta.",
+          title: "Dados salvos com sucesso",
+          html: "Seu nome de usuário e WhatsApp foram definidos, e a base do seu site/recursos foi criada.<br>Vamos para sua conta MostreAki.",
           actions: [
-            {
-              text: "Continuar",
-              onClick: () => { window.location.href = "minha-conta.html"; }
-            }
+            { text: "Ir para Minha Conta", onClick: () => window.location.href = "minha-conta.html" }
           ]
         });
 
       } catch (e) {
-        console.error(e);
+        console.error("Erro ao salvar slug/celular:", e);
         showAlert({
           title: "Erro ao salvar",
-          html: "Não foi possível salvar os dados agora. Tente novamente em instantes."
+          html: "Não foi possível salvar as informações agora.<br>Código: <b>" + (e.code || "desconhecido") + "</b>."
         });
       }
     }
 
-    $("btnSalvar").addEventListener("click", salvarPerfilGoogle);
+    if (btnSalvar) {
+      btnSalvar.addEventListener("click", salvarDados);
+    }
+
+    if (btnCancelar) {
+      btnCancelar.addEventListener("click", async () => {
+        try {
+          await signOut(auth);
+        } catch (e) {
+          // mesmo que dê erro, vamos sair da página
+        }
+        window.location.href = "index.html";
+      });
+    }
+
+    // Permitir Enter para enviar
     document.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") salvarPerfilGoogle();
+      if (e.key === "Enter") {
+        const active = document.activeElement;
+        if (active === slugInput || active === celInput) {
+          e.preventDefault();
+          salvarDados();
+        }
+      }
     });
   </script>
 </body>
