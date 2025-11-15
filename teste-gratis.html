@@ -247,7 +247,6 @@
     .avatar-preview {
       width: 90px;
       height: 90px;
-      aspect-ratio: 1 / 1;
       border-radius: 50%;
       background: linear-gradient(135deg,#d9d9d9,#af91a1);
       border: 3px solid var(--bordo);
@@ -575,7 +574,8 @@
     import {
       getFirestore,
       doc,
-      getDoc
+      getDoc,
+      setDoc
     } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
     import {
       getStorage,
@@ -665,6 +665,8 @@
     const btnAlterarPlano = $("btnAlterarPlano");
     const btnCancelarPlano = $("btnCancelarPlano");
 
+    let currentSlug = null;
+
     /* ===== estado de auth ===== */
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
@@ -681,56 +683,71 @@
         const letra = (user.displayName || user.email || "?").trim().charAt(0).toUpperCase();
         userCircle.textContent = letra;
         userCircle.style.display = "flex";
-
-        // Se já tiver fotoPerfil no localStorage, usa
-        const savedFoto = localStorage.getItem("fotoPerfil");
-        if (savedFoto) {
-          userCircle.style.backgroundImage = `url('${savedFoto}')`;
-          avatarPreview.style.backgroundImage = `url('${savedFoto}')`;
-          avatarPreview.textContent = "";
-        }
       }
       if (authText) {
         authText.style.display = "inline";
       }
 
       try {
+        // -------- documento em /usuarios/{uid} ----------
         const docRef = doc(db, "usuarios", user.uid);
         const snap = await getDoc(docRef);
         if (snap.exists()) {
           const data = snap.data();
 
-          // slug
-          if (data.slug) {
-            slugInput.value = data.slug;
+          // SLUG: usamos catalogoSlug como principal
+          currentSlug = data.catalogoSlug || data.slug || "";
+          if (currentSlug) {
+            slugInput.value = currentSlug;
+            localStorage.setItem("catalogoSlug", currentSlug);
           } else {
             slugInput.value = "(definir slug no Firestore)";
           }
 
-          // foto de perfil do Firestore (se existir e ainda não tiver no localStorage)
-          if (data.fotoPerfilURL && !localStorage.getItem("fotoPerfil")) {
-            localStorage.setItem("fotoPerfil", data.fotoPerfilURL);
-            userCircle.style.backgroundImage = `url('${data.fotoPerfilURL}')`;
-            avatarPreview.style.backgroundImage = `url('${data.fotoPerfilURL}')`;
+          // FOTO DE PERFIL: fotoPerfilURL ou fotoPerfil
+          const fotoUrl = data.fotoPerfilURL || data.fotoPerfil;
+          if (fotoUrl) {
+            localStorage.setItem("fotoPerfil", fotoUrl);
+          }
+          const savedFoto = localStorage.getItem("fotoPerfil");
+          if (savedFoto) {
+            userCircle.style.backgroundImage = `url('${savedFoto}')`;
+            avatarPreview.style.backgroundImage = `url('${savedFoto}')`;
             avatarPreview.textContent = "";
+          } else {
+            avatarPreview.textContent = (user.displayName || user.email || "?")
+              .trim()
+              .charAt(0)
+              .toUpperCase();
           }
 
-          // assinatura
-          const status = data.assinaturaStatus || "sem-assinatura";
+          // ASSINATURA (campo genérico no doc de usuário, se já existir)
+          const status =
+            data.assinaturaStatus ||
+            (data.assinaturaAtiva ? "ativa" : "sem-assinatura");
+
           if (status === "ativa") {
             dotAssinatura.classList.remove("off");
             textoAssinatura.textContent = "Assinatura ativa";
           } else if (status === "suspensa") {
             dotAssinatura.classList.add("off");
             textoAssinatura.textContent = "Assinatura suspensa";
-          } else {
+          } else if (status === "sem-assinatura") {
             dotAssinatura.classList.add("off");
             textoAssinatura.textContent = "Sem assinatura ativa";
+          } else {
+            // fallback genérico
+            dotAssinatura.classList.add("off");
+            textoAssinatura.textContent = "Status de assinatura não definido";
           }
 
-          // catálogo
+          // CATÁLOGO: baseado em usuarios/{uid}.catalogoAtivo
           const catAtivo = !!data.catalogoAtivo;
-          if (catAtivo) {
+          if (catAtivo && currentSlug) {
+            dotCatalogo.classList.remove("off");
+            textoCatalogo.textContent = `Catálogo digital ativo (${currentSlug})`;
+            btnEditarCatalogo.style.display = "inline-flex";
+          } else if (catAtivo) {
             dotCatalogo.classList.remove("off");
             textoCatalogo.textContent = "Catálogo digital ativo";
             btnEditarCatalogo.style.display = "inline-flex";
@@ -740,7 +757,7 @@
             btnEditarCatalogo.style.display = "none";
           }
 
-          // álbum
+          // ÁLBUM: baseado em usuarios/{uid}.albumAtivo (boolean)
           const albAtivo = !!data.albumAtivo;
           if (albAtivo) {
             dotAlbum.classList.remove("off");
@@ -756,6 +773,10 @@
           dotAssinatura.classList.add("off");
           textoAssinatura.textContent = "Sem assinatura ativa.";
         }
+
+        // Aqui no futuro dá pra buscar também:
+        // catalogos/{slug}/meta/config, se você quiser detalhes avançados.
+
       } catch (e) {
         console.error("Erro ao ler Firestore:", e);
         textoAssinatura.textContent = "Não foi possível carregar os dados da assinatura.";
@@ -768,6 +789,7 @@
         try {
           await signOut(auth);
           localStorage.removeItem("fotoPerfil");
+          localStorage.removeItem("catalogoSlug");
           window.location.href = "index.html";
         } catch (e) {
           showAlert({
@@ -810,10 +832,25 @@
           await uploadBytes(storageRef, file);
           const url = await getDownloadURL(storageRef);
 
+          // salva em localStorage
           localStorage.setItem("fotoPerfil", url);
+
+          // atualiza UI
           userCircle.style.backgroundImage = `url('${url}')`;
           avatarPreview.style.backgroundImage = `url('${url}')`;
           avatarPreview.textContent = "";
+
+          // salva também no Firestore em /usuarios/{uid}
+          const userDocRef = doc(db, "usuarios", user.uid);
+          await setDoc(
+            userDocRef,
+            {
+              fotoPerfilURL: url,
+              fotoPerfil: url
+            },
+            { merge: true }
+          );
+
           showAlert({
             title: "Foto atualizada",
             html: "Sua foto de perfil foi atualizada com sucesso!"
@@ -856,6 +893,7 @@
     // Editar catálogo
     if (btnEditarCatalogo) {
       btnEditarCatalogo.addEventListener("click", () => {
+        // você pode usar o slug salvo no localStorage dentro da página editar-catalogo.html
         window.location.href = "editar-catalogo.html";
       });
     }
