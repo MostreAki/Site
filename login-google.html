@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Completar cadastro – MostreAki</title>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+    :root {
+      --bg: #aabcbb;
+      --header-footer: #cde0e0;
+      --bordo: #7d2f59;
+      --texto: #003735;
+      --grad1: #d9d9d9;
+      --grad2: #af91a1;
+      --card: #ffffff;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: radial-gradient(circle at top left, #cfe0e0, #92a9a6);
+      font-family: 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--texto);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: var(--header-footer);
+      border-bottom: 3px solid var(--bordo);
+      padding: .4rem .9rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 999;
+    }
+
+    header img {
+      height: 55px;
+      max-width: 190px;
+      object-fit: contain;
+      display: block;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+    }
+
+    .hamburger {
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      border: 2px solid var(--bordo);
+      background: linear-gradient(180deg, var(--grad1), var(--grad2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 4px;
+      cursor: pointer;
+      padding: 0;
+    }
+    .hamburger span {
+      display: block;
+      width: 60%;
+      height: 3px;
+      border-radius: 999px;
+      background: var(--bordo);
+    }
+
+    .menu-overlay {
+      position: fixed;
+      top: 60px;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, .15);
+      display: none;
+      justify-content: flex-end;
+      z-index: 999;
+    }
+    .menu-overlay.show { display: flex; }
+
+    .menu-panel {
+      width: 280px;
+      max-width: 90vw;
+      background: #92a9a6;
+      box-shadow: -4px 0 12px rgba(0, 0, 0, .09);
+      height: 100%;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: .55rem;
+    }
+
+    .menu-link {
+      width: 210px;
+      max-width: 92vw;
+      align-self: center;
+      white-space: nowrap;
+      background: linear-gradient(180deg, var(--grad1), var(--grad2));
+      border-radius: 999px;
+      padding: .55rem 1rem;
+      text-align: center;
+      color: var(--bordo);
+      text-decoration: none;
+      font-weight: 600;
+      border: 2px solid rgba(0,0,0,.12);
+      box-shadow: 0 2px 6px rgba(0,0,0,.1);
+      font-size: .95rem;
+    }
+    .menu-link:hover {
+      filter: brightness(1.03);
+      transform: translateY(-1px);
+    }
+
+    main {
+      flex: 1;
+      max-width: min(900px, 94vw);
+      margin: 2rem auto 2.6rem;
+    }
+
+    .page-title {
+      font-size: 1.7rem;
+      font-weight: 700;
+      margin-bottom: .25rem;
+      color: var(--texto);
+      text-align: center;
+    }
+    .page-sub {
+      font-size: .95rem;
+      color: #214b4a;
+      margin-bottom: 1.8rem;
+      text-align: center;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.98);
+      border-radius: 18px;
+      box-shadow: 0 10px 24px rgba(0,0,0,.16);
+      padding: 1.6rem 1.8rem 1.8rem;
+      border: 2px solid rgba(125,47,89,0.25);
+    }
+
+    .field-group {
+      margin-bottom: 1rem;
+    }
+    .field-group label {
+      display: block;
+      font-size: .9rem;
+      margin-bottom: .25rem;
+      color: #234;
+      font-weight: 600;
+    }
+    .field-group input {
+      width: 100%;
+      padding: .55rem .75rem;
+      border-radius: 10px;
+      border: 1px solid #c3c9cf;
+      font-size: .9rem;
+      outline: none;
+      background: #f7f8fa;
+    }
+    .field-group input[disabled] {
+      background: #eceff1;
+      color: #677;
+    }
+    .hint {
+      font-size: .8rem;
+      color: #566;
+      margin-top: .15rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .4rem;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-size: .9rem;
+      font-weight: 600;
+      padding: .55rem 1.4rem;
+      text-decoration: none;
+      transition: .18s;
+      white-space: nowrap;
+    }
+    .btn-primary {
+      background: linear-gradient(180deg, var(--grad1), var(--grad2));
+      color: var(--bordo);
+      border: 2px solid rgba(125,47,89,0.4);
+      box-shadow: 0 2px 6px rgba(0,0,0,.18);
+      margin-top: 1rem;
+    }
+    .btn-primary:hover {
+      filter: brightness(1.04);
+      transform: translateY(-1px);
+    }
+
+    footer {
+      background: var(--header-footer);
+      padding: 1rem;
+      font-size: .85rem;
+      text-align: center;
+      color: #444;
+      margin-top: auto;
+      border-top: 3px solid var(--bordo);
+    }
+
+    /* ===== Alert brand ===== */
+    .alert-bg {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.55);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      padding: 20px;
+    }
+    .alert-card {
+      background: #fff;
+      border-radius: 16px;
+      overflow: hidden;
+      max-width: 460px;
+      width: 100%;
+      box-shadow: 0 22px 70px rgba(0,0,0,.25);
+      border: 2px solid #cde0e0;
+    }
+    .alert-head {
+      background: linear-gradient(90deg,#cde0e0,#af91a1);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .alert-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #FA1E39;
+    }
+    .alert-title {
+      color: #003735;
+      font-weight: 700;
+      font-size: .98rem;
+    }
+    .alert-body {
+      padding: 16px;
+      color: #223;
+      font-size: .9rem;
+    }
+    .alert-actions {
+      padding: 10px 16px 14px;
+      display: flex;
+      justify-content: flex-end;
+      gap: .5rem;
+      background: #f7faf9;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="index.html" aria-label="Voltar para a página inicial">
+      <img src="logomarca.svg" alt="MostreAki">
+    </a>
+
+    <div class="header-right">
+      <button class="hamburger" type="button" onclick="toggleMenu()" aria-label="Abrir menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <nav id="menu" class="menu-overlay" aria-label="Menu principal">
+    <div class="menu-panel">
+      <a class="menu-link" href="index.html">Início</a>
+      <a class="menu-link" href="planos.html">Planos</a>
+      <a class="menu-link" href="parceiros.html">Templates de Parceiros</a>
+      <a class="menu-link" href="servicos-adicionais.html">Serviços Adicionais</a>
+      <a class="menu-link" href="instrucoes.html">Instruções</a>
+      <a class="menu-link" href="sobre.html">Sobre o MostreAki</a>
+      <a class="menu-link" href="contato.html">Contato</a>
+    </div>
+  </nav>
+
+  <!-- ALERTA -->
+  <div id="alert" class="alert-bg" role="alertdialog" aria-modal="true">
+    <div class="alert-card">
+      <div class="alert-head">
+        <div class="alert-dot"></div>
+        <div id="alertTitle" class="alert-title">Aviso</div>
+      </div>
+      <div id="alertMsg" class="alert-body">Mensagem.</div>
+      <div id="alertActions" class="alert-actions"></div>
+    </div>
+  </div>
+
+  <main>
+    <h1 class="page-title">Completar cadastro</h1>
+    <p class="page-sub">
+      Só falta definir seu nome de usuário (slug) e celular/WhatsApp para concluirmos seu acesso pelo Google.
+    </p>
+
+    <section class="card">
+      <div class="field-group">
+        <label for="email">E-mail</label>
+        <input type="email" id="email" disabled />
+      </div>
+
+      <div class="field-group">
+        <label for="nome">Nome</label>
+        <input type="text" id="nome" disabled />
+      </div>
+
+      <div class="field-group">
+        <label for="username">Nome de usuário (slug)</label>
+        <input type="text" id="username" autocomplete="off" />
+        <div class="hint">
+          Esse será o seu <b>slug</b> no MostreAki (usado para catálogos e identificação da conta).
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label for="celular">Celular / WhatsApp</label>
+        <input type="tel" id="celular" autocomplete="tel" />
+        <div class="hint">
+          Informe com DDD (ex: 11 91234-5678). Usaremos para suporte e contato se necessário.
+        </div>
+      </div>
+
+      <button class="btn btn-primary" type="button" id="btnSalvar">
+        Salvar e continuar
+      </button>
+    </section>
+  </main>
+
+  <footer>
+    MostreAki &copy; 2025 — Fortalecendo a identidade da sua marca no universo digital.
+  </footer>
+
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+    import {
+      getAuth,
+      onAuthStateChanged
+    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+    import {
+      getFirestore,
+      doc,
+      setDoc,
+      getDoc,
+      collection,
+      query,
+      where,
+      getDocs,
+      serverTimestamp
+    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+    const app = initializeApp({
+      apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
+      authDomain: "mostreaki-2025.firebaseapp.com",
+      projectId: "mostreaki-2025",
+      storageBucket: "mostreaki-2025.firebasestorage.app",
+      messagingSenderId: "748712068097",
+      appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
+    });
+
+    const auth = getAuth(app);
+    const db   = getFirestore(app);
+
+    const $ = id => document.getElementById(id);
+
+    const menu = $("menu");
+    window.toggleMenu = function () {
+      if (!menu) return;
+      menu.classList.toggle("show");
+    };
+    if (menu) {
+      menu.addEventListener("click", (e) => {
+        if (e.target === menu) menu.classList.remove("show");
+      });
+    }
+
+    const alertBG = $("alert");
+    const alertTitle = $("alertTitle");
+    const alertMsg = $("alertMsg");
+    const alertActions = $("alertActions");
+
+    function showAlert({ title = "Aviso", html = "", actions = [{ text: "Fechar" }] }) {
+      alertTitle.textContent = title;
+      alertMsg.innerHTML = html;
+      alertActions.innerHTML = "";
+      actions.forEach(a => {
+        const btn = document.createElement("button");
+        btn.className = "btn btn-primary";
+        btn.textContent = a.text;
+        btn.onclick = () => {
+          if (a.onClick) a.onClick();
+          closeAlert();
+        };
+        alertActions.appendChild(btn);
+      });
+      alertBG.style.display = "flex";
+    }
+    function closeAlert() {
+      alertBG.style.display = "none";
+    }
+    alertBG.addEventListener("click", (e) => {
+      if (e.target === alertBG) closeAlert();
+    });
+
+    function slugify(str) {
+      return str
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9\-_\s]/g, '')
+        .replace(/\s+/g, '-');
+    }
+
+    async function slugDisponivel(slug) {
+      const q = query(
+        collection(db, "usuarios"),
+        where("slug", "==", slug)
+      );
+      const snap = await getDocs(q);
+      return snap.empty;
+    }
+
+    let currentUser = null;
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        // não logado → volta para login
+        window.location.href = "login.html";
+        return;
+      }
+
+      currentUser = user;
+      $("email").value = user.email || "";
+      $("nome").value = user.displayName || "";
+
+      // Se por acaso já tiver slug + celular setados, manda direto pra minha-conta
+      const docRef = doc(db, "usuarios", user.uid);
+      const snap = await getDoc(docRef);
+      if (snap.exists()) {
+        const data = snap.data();
+        if (data.slug && data.celular) {
+          window.location.href = "minha-conta.html";
+        } else {
+          // se tiver algo já preenchido, jogar pra tela como sugestão
+          if (data.slug) $("username").value = data.slug;
+          if (data.celular) $("celular").value = data.celular;
+        }
+      }
+    });
+
+    async function salvarPerfilGoogle() {
+      if (!currentUser) {
+        showAlert({
+          title: "Sessão expirada",
+          html: "Faça login novamente pelo Google para completar o cadastro."
+        });
+        return;
+      }
+
+      const usernameRaw = $("username").value.trim();
+      const celular = $("celular").value.trim();
+
+      if (!usernameRaw) {
+        return showAlert({
+          title: "Nome de usuário",
+          html: "Digite um nome de usuário (slug) para sua conta."
+        });
+      }
+      if (!celular) {
+        return showAlert({
+          title: "Celular / WhatsApp",
+          html: "Informe um número de celular ou WhatsApp."
+        });
+      }
+
+      const slug = slugify(usernameRaw);
+      if (!slug) {
+        return showAlert({
+          title: "Slug inválido",
+          html: "O nome informado não gerou um slug válido. Tente outro formato (apenas letras e números)."
+        });
+      }
+
+      try {
+        const disponivel = await slugDisponivel(slug);
+        if (!disponivel) {
+          return showAlert({
+            title: "Slug já em uso",
+            html: "Esse nome de usuário já está sendo usado. Escolha outro."
+          });
+        }
+
+        const refUser = doc(db, "usuarios", currentUser.uid);
+        const snap = await getDoc(refUser);
+
+        const payload = {
+          slug,
+          username: usernameRaw,
+          celular,
+          email: currentUser.email || "",
+          provider: "google",
+          updatedAt: serverTimestamp()
+        };
+
+        if (snap.exists()) {
+          await setDoc(refUser, { ...snap.data(), ...payload }, { merge: true });
+        } else {
+          await setDoc(refUser, {
+            ...payload,
+            createdAt: serverTimestamp()
+          });
+        }
+
+        showAlert({
+          title: "Cadastro completo",
+          html: "Pronto! Seu acesso pelo Google foi concluído. Vamos para a página Minha Conta.",
+          actions: [
+            {
+              text: "Continuar",
+              onClick: () => { window.location.href = "minha-conta.html"; }
+            }
+          ]
+        });
+
+      } catch (e) {
+        console.error(e);
+        showAlert({
+          title: "Erro ao salvar",
+          html: "Não foi possível salvar os dados agora. Tente novamente em instantes."
+        });
+      }
+    }
+
+    $("btnSalvar").addEventListener("click", salvarPerfilGoogle);
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") salvarPerfilGoogle();
+    });
+  </script>
+</body>
+</html>
