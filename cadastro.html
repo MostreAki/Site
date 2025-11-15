@@ -2,550 +2,459 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>Cadastro • MostreAki</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cadastro – MostreAki</title>
+
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
     :root {
-      --verde-escuro: #003735;
-      --verde-texto: #214645;
-      --fundo: #92a9a6;
+      --bg: #aabcbb;
+      --header-footer: #cde0e0;
       --bordo: #7d2f59;
+      --texto: #003735;
       --grad1: #d9d9d9;
       --grad2: #af91a1;
-      --chip-bg: #f5e7ef;
-      --input-bg: #f7f7f7;
+      --card: #ffffff;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; }
 
     body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: var(--fundo);
-      color: var(--verde-texto);
+      margin: 0;
+      background: radial-gradient(circle at top left, #cfe0e0, #92a9a6);
+      font-family: 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--texto);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
 
-    /* HEADER */
+    /* ===== Header padrão MostreAki ===== */
     header {
-      background: #c4d4d1;
-      padding: 0.75rem 1rem;
-      box-shadow: 0 2px 4px rgba(0,0,0,.08);
-      position: sticky;
-      top: 0;
-      z-index: 20;
-    }
-
-    .topbar-inner {
-      max-width: 1100px;
-      margin: 0 auto;
+      background: var(--header-footer);
+      border-bottom: 3px solid var(--bordo);
+      padding: .4rem .9rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 1rem;
+      position: sticky;
+      top: 0;
+      z-index: 999;
     }
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: .5rem;
-      text-decoration: none;
-      color: var(--verde-escuro);
-      font-weight: 700;
-      letter-spacing: .01em;
-    }
-
-    .brand img {
+    header img {
       height: 55px;
-      width: auto;
+      max-width: 190px;
+      object-fit: contain;
       display: block;
     }
 
-    .brand span {
-      font-size: 1.35rem;
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
     }
 
-    .topbar-accent {
-      height: 4px;
+    .hamburger {
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      border: 2px solid var(--bordo);
+      background: linear-gradient(180deg, var(--grad1), var(--grad2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 4px;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 60%;
+      height: 3px;
+      border-radius: 999px;
       background: var(--bordo);
-      box-shadow: 0 1px 3px rgba(0,0,0,.15);
     }
 
-    /* MAIN LAYOUT */
+    /* ===== Menu lateral ===== */
+    .menu-overlay {
+      position: fixed;
+      top: 60px;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, .15);
+      display: none;
+      justify-content: flex-end;
+      z-index: 999;
+    }
+    .menu-overlay.show { display: flex; }
+
+    .menu-panel {
+      width: 280px;
+      max-width: 90vw;
+      background: #92a9a6;
+      box-shadow: -4px 0 12px rgba(0, 0, 0, .09);
+      height: 100%;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: .55rem;
+    }
+
+    .menu-link {
+      width: 210px;
+      max-width: 92vw;
+      align-self: center;
+      white-space: nowrap;
+      background: linear-gradient(180deg, var(--grad1), var(--grad2));
+      border-radius: 999px;
+      padding: .55rem 1rem;
+      text-align: center;
+      color: var(--bordo);
+      text-decoration: none;
+      font-weight: 600;
+      border: 2px solid rgba(0,0,0,.12);
+      box-shadow: 0 2px 6px rgba(0,0,0,.1);
+      font-size: .95rem;
+    }
+    .menu-link:hover {
+      filter: brightness(1.03);
+      transform: translateY(-1px);
+    }
+
     main {
       flex: 1;
-      padding: 2rem 1rem 2.5rem;
-    }
-
-    .wrap {
-      max-width: 1100px;
-      margin: 0 auto;
+      max-width: min(900px, 94vw);
+      margin: 2rem auto 2.6rem;
     }
 
     .page-title {
-      font-size: clamp(1.8rem, 4vw, 2.3rem);
-      color: var(--verde-escuro);
+      font-size: 1.7rem;
+      font-weight: 700;
       margin-bottom: .25rem;
-      font-weight: 800;
+      color: var(--texto);
+      text-align: center;
     }
-
     .page-sub {
-      font-size: 1rem;
-      margin-bottom: 1.5rem;
-      max-width: 620px;
-      line-height: 1.5;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: minmax(0, 3fr);
-      gap: 1.75rem;
-    }
-
-    @media (min-width: 880px) {
-      .grid {
-        grid-template-columns: minmax(0, 3fr) minmax(0, 2.4fr);
-        align-items: flex-start;
-      }
+      font-size: .95rem;
+      color: #214b4a;
+      margin-bottom: 1.8rem;
+      text-align: center;
     }
 
     .card {
-      background: #fdfdfd;
-      border-radius: 24px;
-      box-shadow:
-        0 18px 30px rgba(0,0,0,.18),
-        0 0 0 1px rgba(255,255,255,.7);
-      padding: 1.75rem 1.5rem 1.9rem;
-      position: relative;
-      overflow: hidden;
+      background: rgba(255,255,255,0.98);
+      border-radius: 18px;
+      box-shadow: 0 10px 24px rgba(0,0,0,.16);
+      padding: 1.6rem 1.8rem 1.8rem;
+      border: 2px solid rgba(125,47,89,0.25);
     }
 
-    .card::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      background:
-        radial-gradient(circle at 0 0, rgba(255,255,255,.7) 0, transparent 45%),
-        radial-gradient(circle at 100% 100%, rgba(125,47,89,.08) 0, transparent 55%);
-      opacity: .9;
+    .field-group {
+      margin-bottom: 1rem;
     }
-
-    .card-inner {
-      position: relative;
-      z-index: 1;
-    }
-
-    .card-title {
-      font-size: 1.3rem;
-      color: var(--verde-escuro);
-      font-weight: 700;
-      margin-bottom: .35rem;
-    }
-
-    .card-sub {
-      font-size: .95rem;
-      line-height: 1.6;
-      margin-bottom: 1.15rem;
-    }
-
-    /* FORM */
-    form {
-      display: flex;
-      flex-direction: column;
-      gap: .9rem;
-    }
-
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: .3rem;
-    }
-
-    .field-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: .75rem;
-    }
-
-    .field-row .field {
-      flex: 1 1 160px;
-    }
-
-    label {
+    .field-group label {
+      display: block;
       font-size: .9rem;
+      margin-bottom: .25rem;
+      color: #234;
       font-weight: 600;
-      color: var(--verde-escuro);
     }
-
+    .field-group input {
+      width: 100%;
+      padding: .55rem .75rem;
+      border-radius: 10px;
+      border: 1px solid #c3c9cf;
+      font-size: .9rem;
+      outline: none;
+      background: #f7f8fa;
+    }
     .hint {
       font-size: .8rem;
-      color: #666;
-      line-height: 1.4;
+      color: #566;
+      margin-top: .15rem;
     }
 
-    input[type="text"],
-    input[type="email"],
-    input[type="password"],
-    input[type="tel"] {
-      width: 100%;
-      border-radius: 999px;
-      border: 1px solid rgba(0,0,0,.12);
-      background: var(--input-bg);
-      padding: .7rem 1rem;
-      font-size: .95rem;
-      outline: none;
-      transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
-    }
-
-    input:focus {
-      border-color: var(--bordo);
-      box-shadow: 0 0 0 3px rgba(125,47,89,.18);
-      background: #fff;
-    }
-
-    input[readonly] {
-      color: #777;
-      background: #ececec;
-    }
-
-    .actions {
+    .row {
       display: flex;
-      flex-direction: column;
-      gap: .75rem;
-      margin-top: .75rem;
+      flex-wrap: wrap;
+      gap: .5rem 1rem;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 1.2rem;
     }
 
     .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .4rem;
       border-radius: 999px;
       border: none;
       cursor: pointer;
+      font-size: .9rem;
       font-weight: 600;
-      font-size: .98rem;
-      padding: .7rem 1.2rem;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: .55rem;
-      transition: transform .1s ease, box-shadow .1s ease, filter .1s ease;
+      padding: .55rem 1.4rem;
       text-decoration: none;
-      text-align: center;
+      transition: .18s;
       white-space: nowrap;
     }
-
-    .btn:active {
-      transform: translateY(1px);
-      box-shadow: none;
-    }
-
     .btn-primary {
       background: linear-gradient(180deg, var(--grad1), var(--grad2));
       color: var(--bordo);
-      box-shadow: 0 4px 10px rgba(0,0,0,.18);
-      border: 2px solid rgba(0,0,0,.08);
+      border: 2px solid rgba(125,47,89,0.4);
+      box-shadow: 0 2px 6px rgba(0,0,0,.18);
     }
-
     .btn-primary:hover {
-      filter: brightness(1.03);
+      filter: brightness(1.04);
+      transform: translateY(-1px);
     }
-
-    .btn-google {
-      background: #fff;
-      color: #444;
-      border: 1px solid rgba(0,0,0,.16);
-      box-shadow: 0 2px 6px rgba(0,0,0,.12);
-    }
-
     .btn-ghost {
-      background: transparent;
-      color: var(--bordo);
-      border: 1px solid rgba(125,47,89,.45);
+      background: #fff;
+      color: var(--texto);
+      border: 1px dashed rgba(125,47,89,0.5);
     }
-
-    .btn-google img {
-      width: 18px;
-      height: 18px;
+    .btn-ghost:hover {
+      background: rgba(255,255,255,.9);
     }
 
     .divider {
-      display: flex;
-      align-items: center;
-      gap: .75rem;
-      margin: .8rem 0 .2rem;
-      font-size: .8rem;
-      color: #777;
+      text-align: center;
+      margin: 1.5rem 0 1.2rem;
+      font-size: .85rem;
+      color: #566;
+      position: relative;
     }
-
-    .divider span {
-      flex: 1;
+    .divider::before,
+    .divider::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      width: 40%;
       height: 1px;
-      background: rgba(0,0,0,.12);
+      background: rgba(0,0,0,.15);
+    }
+    .divider::before { left: 0; }
+    .divider::after  { right: 0; }
+
+    .btn-google {
+      background: #ffffff;
+      border: 1px solid #dadce0;
+      color: #3c4043;
+      font-weight: 500;
+      padding: .55rem 1.2rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,.12);
+    }
+    .btn-google span.g {
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      background: conic-gradient(
+        from 0deg,
+        #4285f4 0deg 90deg,
+        #ea4335 90deg 180deg,
+        #fbbc05 180deg 270deg,
+        #34a853 270deg 360deg
+      );
     }
 
-    .small-text {
-      font-size: .8rem;
-      color: #666;
-      line-height: 1.5;
-      margin-top: .4rem;
-    }
-
-    /* LATERAL CARD */
-    .side-card-title {
-      font-weight: 700;
-      margin-bottom: .4rem;
-      color: var(--verde-escuro);
-    }
-
-    .bullet-list {
+    .login-link {
+      margin-top: 1.2rem;
       font-size: .9rem;
-      line-height: 1.6;
-      padding-left: 1rem;
+      text-align: center;
+      color: #234;
     }
-
-    .bullet-list li + li {
-      margin-top: .3rem;
-    }
-
-    .chip {
-      display: inline-flex;
-      align-items: center;
-      gap: .4rem;
-      padding: .25rem .7rem;
-      border-radius: 999px;
-      background: var(--chip-bg);
-      font-size: .8rem;
+    .login-link a {
       color: var(--bordo);
-      margin-top: .6rem;
+      font-weight: 600;
+      text-decoration: none;
     }
 
-    /* ALERT MODAL */
-    .alert-backdrop {
+    footer {
+      background: var(--header-footer);
+      padding: 1rem;
+      font-size: .85rem;
+      text-align: center;
+      color: #444;
+      margin-top: auto;
+      border-top: 3px solid var(--bordo);
+    }
+
+    /* ===== Alert brand ===== */
+    .alert-bg {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,.45);
+      background: rgba(0,0,0,.55);
       display: none;
       align-items: center;
       justify-content: center;
-      z-index: 50;
-      padding: 1rem;
+      z-index: 10000;
+      padding: 20px;
     }
-
-    .alert-box {
+    .alert-card {
       background: #fff;
-      border-radius: 18px;
-      max-width: 420px;
+      border-radius: 16px;
+      overflow: hidden;
+      max-width: 460px;
       width: 100%;
-      padding: 1.3rem 1.4rem 1.1rem;
-      box-shadow: 0 18px 35px rgba(0,0,0,.35);
-      border: 1px solid rgba(125,47,89,.18);
+      box-shadow: 0 22px 70px rgba(0,0,0,.25);
+      border: 2px solid #cde0e0;
     }
-
+    .alert-head {
+      background: linear-gradient(90deg,#cde0e0,#af91a1);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .alert-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #FA1E39;
+    }
     .alert-title {
+      color: #003735;
       font-weight: 700;
-      margin-bottom: .25rem;
-      color: var(--verde-escuro);
+      font-size: .98rem;
     }
-
-    .alert-msg {
+    .alert-body {
+      padding: 16px;
+      color: #223;
       font-size: .9rem;
-      line-height: 1.5;
-      margin-bottom: .9rem;
     }
-
     .alert-actions {
+      padding: 10px 16px 14px;
       display: flex;
       justify-content: flex-end;
       gap: .5rem;
-    }
-
-    .alert-actions .btn {
-      padding-inline: 1rem;
-      font-size: .88rem;
-    }
-
-    /* FOOTER */
-    footer {
-      margin-top: auto;
-      background: #7c9390;
-      padding: 1.1rem 1rem 1.3rem;
-      color: #f5f5f5;
-    }
-
-    footer .foot-inner {
-      max-width: 1100px;
-      margin: 0 auto;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      gap: .5rem;
-      font-size: .8rem;
-      align-items: center;
-    }
-
-    footer img {
-      height: 26px;
-      width: auto;
-      display: block;
+      background: #f7faf9;
     }
   </style>
 </head>
 <body>
   <header>
-    <div class="topbar-inner">
-      <a href="index.html" class="brand" aria-label="Voltar para a página inicial MostreAki">
-        <img src="logo.svg" alt="MostreAki">
-        <span>MostreAki</span>
-      </a>
+    <a href="index.html" aria-label="Voltar para a página inicial">
+      <img src="logomarca.svg" alt="MostreAki">
+    </a>
+
+    <div class="header-right">
+      <button class="hamburger" type="button" onclick="toggleMenu()" aria-label="Abrir menu">
+        <span></span><span></span><span></span>
+      </button>
     </div>
-    <div class="topbar-accent"></div>
   </header>
 
-  <main>
-    <div class="wrap">
-      <h1 class="page-title">Criar conta</h1>
-      <p class="page-sub">
-        Crie sua conta MostreAki para ativar sua assinatura, configurar seu catálogo
-        digital e gerenciar tudo em um só lugar.
-      </p>
+  <!-- Menu lateral -->
+  <nav id="menu" class="menu-overlay" aria-label="Menu principal">
+    <div class="menu-panel">
+      <a class="menu-link" href="index.html">Início</a>
+      <a class="menu-link" href="planos.html">Planos</a>
+      <a class="menu-link" href="parceiros.html">Templates de Parceiros</a>
+      <a class="menu-link" href="servicos-adicionais.html">Serviços Adicionais</a>
+      <a class="menu-link" href="instrucoes.html">Instruções</a>
+      <a class="menu-link" href="sobre.html">Sobre o MostreAki</a>
+      <a class="menu-link" href="contato.html">Contato</a>
+    </div>
+  </nav>
 
-      <div class="grid">
-        <!-- FORM CARD -->
-        <section class="card">
-          <div class="card-inner">
-            <h2 class="card-title">Dados de acesso</h2>
-            <p class="card-sub">
-              Você pode se cadastrar usando um e-mail e senha ou conectar sua conta Google.
-            </p>
-
-            <div class="actions">
-              <button type="button" id="btnGoogle" class="btn btn-google">
-                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="">
-                <span>Continuar com Google</span>
-              </button>
-            </div>
-
-            <div class="divider" aria-hidden="true">
-              <span></span> ou preencha seus dados <span></span>
-            </div>
-
-            <form id="cadastroForm" novalidate>
-              <div class="field">
-                <label for="slug">Nome de usuário (slug)</label>
-                <input id="slug" type="text" autocomplete="username" required
-                       placeholder="ex: lamaggie, studio-ana, bar-do-joao" />
-                <p class="hint">
-                  Esse será o seu <strong>nome de usuário público</strong> e também o identificador
-                  do seu catálogo. Use apenas letras, números, pontos e hífen.
-                </p>
-              </div>
-
-              <div class="field">
-                <label for="telefone">WhatsApp comercial</label>
-                <input id="telefone" type="tel" autocomplete="tel" required
-                       placeholder="(11) 90000-0000" />
-                <p class="hint">
-                  Telefone usado para contato nos botões de WhatsApp dos seus anúncios
-                  (pode ser ajustado depois na sua conta).
-                </p>
-              </div>
-
-              <div class="field">
-                <label for="email">E-mail de acesso</label>
-                <input id="email" type="email" autocomplete="email" required
-                       placeholder="voce@exemplo.com" />
-              </div>
-
-              <div class="field-row" id="pwRow">
-                <div class="field">
-                  <label for="senha">Senha</label>
-                  <input id="senha" type="password" autocomplete="new-password" minlength="6" />
-                </div>
-                <div class="field">
-                  <label for="senha2">Confirmar senha</label>
-                  <input id="senha2" type="password" autocomplete="new-password" minlength="6" />
-                </div>
-              </div>
-
-              <p class="small-text">
-                Ao criar sua conta você concorda com os termos de uso e autoriza o contato
-                do MostreAki para assuntos relacionados à sua assinatura.
-              </p>
-
-              <div class="actions">
-                <button type="submit" class="btn btn-primary" id="btnCriarConta">
-                  Criar conta
-                </button>
-                <a href="login.html" class="btn btn-ghost">Já tenho conta</a>
-              </div>
-            </form>
-          </div>
-        </section>
-
-        <!-- SIDE CARD -->
-        <aside class="card">
-          <div class="card-inner">
-            <h3 class="side-card-title">O que você ganha com sua conta?</h3>
-            <ul class="bullet-list">
-              <li>Gerenciar seus dados de titular diretamente na página <b>Minha Conta</b>.</li>
-              <li>Acesso ao <b>catálogo digital</b> e ao <b>álbum</b> conforme o plano contratado.</li>
-              <li>Facilidade para trocar banners, fotos e informações principais do seu site.</li>
-              <li>Integração com links externos (Mercado Livre, PicPay, PayPal, Pix QR Code e outros).</li>
-              <li>Suporte do MostreAki por WhatsApp em horário comercial.</li>
-            </ul>
-            <div class="chip">
-              ✔ Cadastro simples • sem burocracia
-            </div>
-          </div>
-        </aside>
+  <!-- ALERTA -->
+  <div id="alert" class="alert-bg" role="alertdialog" aria-modal="true">
+    <div class="alert-card">
+      <div class="alert-head">
+        <div class="alert-dot"></div>
+        <div id="alertTitle" class="alert-title">Aviso</div>
       </div>
-    </div>
-  </main>
-
-  <footer>
-    <div class="foot-inner">
-      <div>© <span id="year"></span> MostreAki • Todos os direitos reservados.</div>
-      <img src="logo.svg" alt="MostreAki">
-    </div>
-  </footer>
-
-  <!-- ALERT -->
-  <div id="alert" class="alert-backdrop" role="alertdialog" aria-modal="true">
-    <div class="alert-box">
-      <div class="alert-title" id="alertTitle">Aviso</div>
-      <div class="alert-msg" id="alertMsg">Mensagem.</div>
-      <div class="alert-actions" id="alertActions"></div>
+      <div id="alertMsg" class="alert-body">Mensagem.</div>
+      <div id="alertActions" class="alert-actions"></div>
     </div>
   </div>
 
-  <!-- Firebase + Lógica de cadastro -->
+  <main>
+    <h1 class="page-title">Criar conta</h1>
+    <p class="page-sub">
+      Cadastre-se para gerenciar sua marca, catálogo e presença digital no MostreAki.
+    </p>
+
+    <section class="card">
+      <div class="field-group">
+        <label for="email">E-mail</label>
+        <input type="email" id="email" autocomplete="email" />
+      </div>
+
+      <div class="field-group">
+        <label for="senha">Senha</label>
+        <input type="password" id="senha" autocomplete="new-password" />
+        <div class="hint">Mínimo de 6 caracteres.</div>
+      </div>
+
+      <div class="field-group">
+        <label for="username">Nome de usuário (slug)</label>
+        <input type="text" id="username" autocomplete="off" />
+        <div class="hint">
+          Esse será o seu <b>slug</b>. Ele é usado para identificar sua conta e seus catálogos.
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label for="celular">Celular / WhatsApp</label>
+        <input type="tel" id="celular" autocomplete="tel" />
+        <div class="hint">
+          Usado para contato e suporte. Informe com DDD (ex: 11 91234-5678).
+        </div>
+      </div>
+
+      <div class="row">
+        <button class="btn btn-primary" type="button" id="btnCriarConta">
+          Criar conta
+        </button>
+      </div>
+
+      <div class="divider">ou</div>
+
+      <div class="row" style="justify-content:center;">
+        <button class="btn btn-google" type="button" id="btnGoogle">
+          <span class="g"></span>
+          <span>Entrar com Google</span>
+        </button>
+      </div>
+
+      <div class="login-link">
+        Já tem conta? <a href="login.html">Entrar</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    MostreAki &copy; 2025 — Fortalecendo a identidade da sua marca no universo digital.
+  </footer>
+
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
     import {
       getAuth,
       createUserWithEmailAndPassword,
-      signInWithPopup,
+      updateProfile,
       GoogleAuthProvider,
-      sendEmailVerification,
-      updateProfile
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+      signInWithPopup
+    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
     import {
       getFirestore,
       doc,
       setDoc,
       getDoc,
-      getDocs,
       collection,
       query,
       where,
+      getDocs,
       serverTimestamp
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
-    // ====== Firebase config ======
+    /* === Firebase config MostreAki === */
     const app = initializeApp({
       apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
       authDomain: "mostreaki-2025.firebaseapp.com",
@@ -554,12 +463,23 @@
       messagingSenderId: "748712068097",
       appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
     });
+
     const auth = getAuth(app);
     const db   = getFirestore(app);
 
-    // ====== util ======
+    /* ===== helpers UI ===== */
     const $ = id => document.getElementById(id);
-    $("year").textContent = new Date().getFullYear();
+
+    const menu = $("menu");
+    window.toggleMenu = function () {
+      if (!menu) return;
+      menu.classList.toggle("show");
+    };
+    if (menu) {
+      menu.addEventListener("click", (e) => {
+        if (e.target === menu) menu.classList.remove("show");
+      });
+    }
 
     const alertBG = $("alert");
     const alertTitle = $("alertTitle");
@@ -572,7 +492,7 @@
       alertActions.innerHTML = "";
       actions.forEach(a => {
         const btn = document.createElement("button");
-        btn.className = "btn " + (a.variant === "ghost" ? "btn-ghost" : "btn-primary");
+        btn.className = "btn " + (a.kind === "ghost" ? "btn-ghost" : "btn-primary");
         btn.textContent = a.text;
         btn.onclick = () => {
           if (a.onClick) a.onClick();
@@ -582,200 +502,160 @@
       });
       alertBG.style.display = "flex";
     }
-
     function closeAlert() {
       alertBG.style.display = "none";
     }
-
-    alertBG.addEventListener("click", e => {
+    alertBG.addEventListener("click", (e) => {
       if (e.target === alertBG) closeAlert();
     });
 
-    // ====== helpers de slug e telefone ======
-    function normalizarSlug(raw) {
-      return raw
-        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")   // tira acentos
+    /* ===== helpers de validação ===== */
+    const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    const emailValido = v => emailRe.test(v);
+
+    function slugify(str) {
+      return str
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
         .toLowerCase()
-        .replace(/[^a-z0-9.-]+/g, "-")                     // só letras/números/ponto/hífen
-        .replace(/-+/g, "-")
-        .replace(/^-|-$/g, "");
+        .trim()
+        .replace(/[^a-z0-9\-_\s]/g, '')
+        .replace(/\s+/g, '-');
     }
 
-    async function slugJaExiste(slug) {
-      const q = query(collection(db, "usuarios"), where("slug", "==", slug));
+    async function slugDisponivel(slug) {
+      const q = query(
+        collection(db, "usuarios"),
+        where("slug", "==", slug)
+      );
       const snap = await getDocs(q);
-      return !snap.empty;
+      return snap.empty;
     }
 
-    // ====== estado: cadastro via Google? ======
-    let usandoGoogle = false;
+    async function criarContaEmailSenha() {
+      const email = $("email").value.trim();
+      const senha = $("senha").value;
+      const usernameRaw = $("username").value.trim();
+      const celular = $("celular").value.trim();
 
-    const form = $("cadastroForm");
-    const inputSlug = $("slug");
-    const inputTel = $("telefone");
-    const inputEmail = $("email");
-    const inputSenha = $("senha");
-    const inputSenha2 = $("senha2");
-    const pwRow = $("pwRow");
-    const btnGoogle = $("btnGoogle");
-
-    btnGoogle.addEventListener("click", async () => {
-      try {
-        const provider = new GoogleAuthProvider();
-        const result = await signInWithPopup(auth, provider);
-        const user = result.user;
-
-        usandoGoogle = true;
-        inputEmail.value = user.email || "";
-        inputEmail.readOnly = true;
-        pwRow.style.display = "none";
-
-        if (!inputSlug.value && user.displayName) {
-          inputSlug.value = normalizarSlug(user.displayName);
-        }
-
-        showAlert({
-          title: "Conta Google conectada",
-          html: "Agora escolha o seu <b>nome de usuário (slug)</b> e informe o WhatsApp comercial. Depois clique em <b>Criar conta</b> para concluir o cadastro."
-        });
-
-      } catch (e) {
-        console.error(e);
-        showAlert({
-          title: "Não foi possível entrar com Google",
-          html: "Tente novamente ou use o cadastro por e-mail e senha."
+      if (!email || !emailValido(email)) {
+        return showAlert({
+          title: "E-mail inválido",
+          html: "Digite um e-mail válido para continuar."
         });
       }
-    });
-
-    form.addEventListener("submit", async (ev) => {
-      ev.preventDefault();
-
-      const slugRaw = inputSlug.value.trim();
-      const tel = inputTel.value.trim();
-      const email = inputEmail.value.trim();
-      const senha = inputSenha.value;
-      const senha2 = inputSenha2.value;
-
-      if (!slugRaw) {
-        return showAlert({ title: "Slug obrigatório", html: "Informe o seu nome de usuário (slug)." });
+      if (!senha || senha.length < 6) {
+        return showAlert({
+          title: "Senha fraca",
+          html: "A senha precisa ter pelo menos <b>6 caracteres</b>."
+        });
       }
-      const slug = normalizarSlug(slugRaw);
+      if (!usernameRaw) {
+        return showAlert({
+          title: "Nome de usuário",
+          html: "Digite um nome de usuário (slug) para sua conta."
+        });
+      }
+      if (!celular) {
+        return showAlert({
+          title: "Celular / WhatsApp",
+          html: "Informe um número de celular ou WhatsApp."
+        });
+      }
+
+      const slug = slugify(usernameRaw);
       if (!slug) {
         return showAlert({
           title: "Slug inválido",
-          html: "Use apenas letras, números, pontos e hífens no seu nome de usuário."
+          html: "O nome informado não gerou um slug válido. Tente outro formato (apenas letras e números)."
         });
       }
 
-      if (!tel) {
-        return showAlert({ title: "WhatsApp obrigatório", html: "Informe o número de WhatsApp comercial." });
-      }
-
-      if (!email) {
-        return showAlert({ title: "E-mail obrigatório", html: "Informe um e-mail para acesso." });
-      }
-
-      // e-mail simples
-      const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-      if (!emailRe.test(email)) {
-        return showAlert({ title: "E-mail inválido", html: "Revise o endereço de e-mail informado." });
-      }
-
-      // se NÃO for Google, precisamos de senha
-      if (!usandoGoogle) {
-        if (!senha || !senha2) {
-          return showAlert({
-            title: "Defina uma senha",
-            html: "Informe e confirme sua senha para continuar."
-          });
-        }
-        if (senha.length < 6) {
-          return showAlert({
-            title: "Senha fraca",
-            html: "A senha deve ter pelo menos <b>6 caracteres</b>."
-          });
-        }
-        if (senha !== senha2) {
-          return showAlert({
-            title: "Senhas diferentes",
-            html: "A confirmação de senha não confere. Digite novamente."
-          });
-        }
-      }
-
       try {
-        // checar se slug já existe
-        if (await slugJaExiste(slug)) {
+        // checar se já existe algum usuário com esse slug
+        const disponivel = await slugDisponivel(slug);
+        if (!disponivel) {
           return showAlert({
-            title: "Nome de usuário em uso",
-            html: "Esse slug já está cadastrado. Escolha outro nome de usuário."
+            title: "Slug já em uso",
+            html: "Esse nome de usuário já está sendo usado. Escolha outro."
           });
         }
 
-        let user;
+        const cred = await createUserWithEmailAndPassword(auth, email, senha);
+        const user = cred.user;
 
-        if (usandoGoogle) {
-          user = auth.currentUser;
-          if (!user) {
-            return showAlert({
-              title: "Sessão expirada",
-              html: "Entre novamente com Google ou faça o cadastro por e-mail."
-            });
-          }
-          // atualiza displayName e e-mail (já vem do Google)
-          await updateProfile(user, { displayName: slug });
-        } else {
-          const cred = await createUserWithEmailAndPassword(auth, email, senha);
-          user = cred.user;
-          await updateProfile(user, { displayName: slug });
-          await sendEmailVerification(user);
-        }
+        await updateProfile(user, { displayName: usernameRaw });
 
-        // cria/atualiza documento em "usuarios"
-        const userDocRef = doc(db, "usuarios", user.uid);
-        await setDoc(userDocRef, {
-          email,
+        // criar documento em /usuarios/{uid}
+        await setDoc(doc(db, "usuarios", user.uid), {
           slug,
-          catalogoSlug: slug,
-          whatsapp: tel,
-          createdAt: serverTimestamp(),
-          catalogoAtivo: false
-        }, { merge: true });
+          username: usernameRaw,
+          celular,
+          email,
+          provider: "password",
+          createdAt: serverTimestamp()
+        });
 
-        // tudo ok
-        if (usandoGoogle) {
-          showAlert({
-            title: "Cadastro concluído",
-            html: "Sua conta foi vinculada ao Google e os dados foram salvos. Você já pode acessar a página <b>Minha Conta</b> e seus recursos.",
-            actions: [
-              {
-                text: "Ir para Minha Conta",
-                onClick: () => { window.location.href = "minha-conta.html"; }
-              }
-            ]
-          });
-        } else {
-          showAlert({
-            title: "Cadastro criado",
-            html: "Enviamos um e-mail de confirmação para <b>" + email +
-                  "</b>.<br>Confirme o endereço e, depois, acesse a página <b>Minha Conta</b> para continuar.",
-            actions: [
-              {
-                text: "Ir para login",
-                onClick: () => { window.location.href = "login.html"; }
-              }
-            ]
-          });
-        }
+        showAlert({
+          title: "Conta criada",
+          html: "Sua conta foi criada com sucesso! Vamos levar você para a página Minha Conta.",
+          actions: [
+            {
+              text: "Continuar",
+              onClick: () => { window.location.href = "minha-conta.html"; }
+            }
+          ]
+        });
 
       } catch (e) {
         console.error(e);
-        let msg = "Erro inesperado ao criar conta. Tente novamente em alguns instantes.";
+        let msg = "Não foi possível criar a conta agora. Tente novamente mais tarde.";
         if (e.code === "auth/email-already-in-use") {
-          msg = "Este e-mail já está sendo usado em outra conta. Tente fazer login ou recuperar a senha.";
+          msg = "Este e-mail já está em uso. Tente fazer login ou recuperar a senha.";
         }
-        showAlert({ title: "Não foi possível concluir", html: msg });
+        showAlert({ title: "Erro ao criar conta", html: msg });
+      }
+    }
+
+    async function loginGoogle() {
+      const provider = new GoogleAuthProvider();
+      try {
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+
+        // verificar se já existe doc em /usuarios/{uid} com slug + celular
+        const docRef = doc(db, "usuarios", user.uid);
+        const snap = await getDoc(docRef);
+
+        if (snap.exists()) {
+          const data = snap.data();
+          if (data.slug && data.celular) {
+            // perfil completo
+            window.location.href = "minha-conta.html";
+            return;
+          }
+        }
+
+        // se chegou aqui, precisa completar perfil (slug + celular)
+        window.location.href = "login-google.html";
+
+      } catch (e) {
+        console.error(e);
+        if (e.code === "auth/popup-closed-by-user") return;
+        showAlert({
+          title: "Erro no Google",
+          html: "Não foi possível concluir o login com Google. Tente novamente."
+        });
+      }
+    }
+
+    $("btnCriarConta").addEventListener("click", criarContaEmailSenha);
+    $("btnGoogle").addEventListener("click", loginGoogle);
+
+    // Enter envia o formulário
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        criarContaEmailSenha();
       }
     });
   </script>
