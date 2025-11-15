@@ -1,20 +1,20 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>MostreAki – Teste de Login</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MostreAki</title>
 
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap');
+
     :root {
-      --fundo: #92a9a6;
+      --bg: #aabcbb;
+      --header-footer: #cde0e0;
       --bordo: #7d2f59;
-      --bordo-escuro: #5d2343;
+      --texto: #003735;
       --grad1: #d9d9d9;
       --grad2: #af91a1;
-      --cards-bg: #e7f0f3;
-      --texto-escuro: #003735;
-      --branco: #ffffff;
     }
 
     * {
@@ -25,50 +25,67 @@
 
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: var(--fundo);
-      color: var(--texto-escuro);
-      -webkit-font-smoothing: antialiased;
+      background: radial-gradient(circle at top, #dbe7f4 0, var(--bg) 55%, #7c9090 100%);
+      color: var(--texto);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
 
-    /* ===== HEADER / CABEÇALHO ===== */
+    a {
+      color: inherit;
+    }
+
+    /* ===== Cabeçalho ===== */
     header {
-      background: #c3d2d4;
-      padding: .7rem 1rem;
+      background: var(--header-footer);
+      border-bottom: 3px solid var(--bordo);
+      padding: .4rem .9rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
       position: sticky;
       top: 0;
-      z-index: 20;
-      box-shadow: 0 2px 6px rgba(0,0,0,.12);
+      z-index: 999;
     }
 
-    .logo-wrap {
+    header img {
+      height: 55px;
+      max-width: 190px;
+      object-fit: contain;
+      display: block;
+    }
+
+    .hamburger {
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      border: 2px solid var(--bordo);
+      background: linear-gradient(180deg, var(--grad1), var(--grad2));
       display: flex;
       align-items: center;
-      gap: .4rem;
+      justify-content: center;
+      flex-direction: column;
+      gap: 4px;
+      cursor: pointer;
+      padding: 0;
     }
 
-    .logo-icon {
-      width: 32px;
-      height: 32px;
-      background: linear-gradient(180deg, #cee3f2, #cfcfcf);
-      border-radius: 6px;
-      position: relative;
-      box-shadow: 0 0 0 2px #003735;
+    .hamburger span {
+      display: block;
+      width: 60%;
+      height: 3px;
+      border-radius: 999px;
+      background: var(--bordo);
     }
 
-    .logo-text {
-      font-size: 1.15rem;
-      font-weight: 800;
-      letter-spacing: .02em;
+    /* ===== Login / UserCircle / Modais ===== */
+    .header-left {
       display: flex;
-      gap: .1rem;
+      align-items: center;
+      gap: .5rem;
     }
-    .logo-text span:nth-child(1) { color: #003735; }
-    .logo-text span:nth-child(2) { color: var(--bordo); }
 
-    /* Botão Entrar + user circle */
     .header-right {
       display: flex;
       align-items: center;
@@ -89,7 +106,7 @@
     }
     #btnAbrirLogin:hover {
       transform: translateY(-1px);
-      background: var(--bordo-escuro);
+      background: #5d2343;
       box-shadow: 0 3px 10px rgba(0,0,0,.3);
     }
 
@@ -99,7 +116,7 @@
       border-radius: 50%;
       background: var(--bordo);
       color: #fff;
-      display: none; /* começa escondido */
+      display: none;
       align-items: center;
       justify-content: center;
       font-weight: 700;
@@ -119,112 +136,7 @@
       text-decoration: underline;
     }
 
-    /* Menu hamburguer */
-    .menu-btn {
-      width: 42px;
-      height: 42px;
-      border-radius: 999px;
-      border: 2px solid var(--bordo);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      background: transparent;
-      position: relative;
-    }
-
-    .menu-icon,
-    .menu-icon::before,
-    .menu-icon::after {
-      content: "";
-      display: block;
-      width: 20px;
-      height: 2px;
-      background: var(--bordo);
-      border-radius: 999px;
-      transition: transform .2s, opacity .2s;
-    }
-    .menu-icon::before {
-      position: relative;
-      top: -6px;
-    }
-    .menu-icon::after {
-      position: relative;
-      top: 6px;
-    }
-
-    /* Tarja bordô logo abaixo do header */
-    .header-strip {
-      height: 4px;
-      background: var(--bordo);
-      box-shadow: 0 2px 4px rgba(0,0,0,.15);
-    }
-
-    /* ===== MENU LATERAL ===== */
-    nav#menu {
-      display: none;
-      position: fixed;
-      inset: 60px 0 0 auto;
-      width: min(380px, 80vw);
-      background: rgba(0,0,0,.25);
-      z-index: 18;
-    }
-    nav#menu.open {
-      display: block;
-    }
-    .menu-panel {
-      background: #c3d2d4;
-      height: 100%;
-      padding: 1.5rem 1.25rem;
-      box-shadow: -2px 0 8px rgba(0,0,0,.25);
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    .menu-link {
-      width: 210px;
-      max-width: 92vw;
-      align-self: center;
-      white-space: nowrap;
-      background: linear-gradient(180deg, var(--grad1), var(--grad2));
-      border-radius: 999px;
-      padding: .55rem 1rem;
-      text-align: center;
-      color: var(--bordo);
-      text-decoration: none;
-      font-weight: 600;
-      border: 2px solid rgba(0,0,0,.12);
-      box-shadow: 0 2px 6px rgba(0,0,0,.1);
-      font-size: .95rem;
-    }
-
-    /* ===== MAIN DEMO ===== */
-    main {
-      padding: 1.5rem 1rem 3rem;
-    }
-
-    .demo-box {
-      max-width: 700px;
-      margin: 0 auto;
-      background: var(--cards-bg);
-      border-radius: 1.25rem;
-      padding: 1.5rem;
-      box-shadow: 0 6px 14px rgba(0,0,0,.2);
-    }
-
-    .demo-box h1 {
-      font-size: 1.4rem;
-      margin-bottom: .75rem;
-      color: var(--bordo-escuro);
-    }
-
-    .demo-box p {
-      margin-bottom: 1rem;
-      line-height: 1.5;
-    }
-
-    /* ===== MODAL LOGIN ===== */
+    /* Modal de autenticação */
     #authModal {
       position: fixed;
       inset: 0;
@@ -232,7 +144,7 @@
       display: none;
       align-items: center;
       justify-content: center;
-      z-index: 30;
+      z-index: 1000;
     }
 
     .auth-card {
@@ -247,7 +159,7 @@
     .auth-card h2 {
       font-size: 1.2rem;
       margin-bottom: .5rem;
-      color: var(--bordo-escuro);
+      color: #5d2343;
     }
     .auth-sub {
       font-size: .9rem;
@@ -304,7 +216,7 @@
       transition: background .15s, transform .15s, box-shadow .15s;
     }
     #btnEntrar:hover {
-      background: var(--bordo-escuro);
+      background: #5d2343;
       transform: translateY(-1px);
       box-shadow: 0 5px 16px rgba(0,0,0,.55);
     }
@@ -318,7 +230,7 @@
       flex-wrap: wrap;
     }
     .auth-links a {
-      color: var(--bordo-escuro);
+      color: #5d2343;
       text-decoration: none;
       font-weight: 600;
     }
@@ -334,7 +246,7 @@
       color: #888;
     }
 
-    /* ===== ALERTA BRAND ===== */
+    /* Alerta brand */
     #alert {
       position: fixed;
       inset: 0;
@@ -342,7 +254,7 @@
       align-items: center;
       justify-content: center;
       background: rgba(0,0,0,.6);
-      z-index: 40;
+      z-index: 1100;
     }
 
     .alert-card {
@@ -355,7 +267,7 @@
     .alert-title {
       font-weight: 700;
       margin-bottom: .4rem;
-      color: var(--bordo-escuro);
+      color: #5d2343;
     }
     .alert-msg {
       font-size: .9rem;
@@ -383,120 +295,511 @@
     }
     .btn-ghost {
       background: transparent;
-      color: var(--bordo-escuro);
+      color: #5d2343;
     }
 
-    @media (min-width: 768px) {
-      header {
-        padding-inline: 2.5rem;
+    /* ===== Menu lateral ===== */
+    .menu-overlay{
+      position: fixed; top: 60px; right: 0;
+      width: 280px; max-width: 90vw;
+      background: #92a9a6; box-shadow: -4px 0 12px rgba(0,0,0,.09);
+      height: calc(100vh - 60px);
+      transform: translateX(100%); transition: transform .25s ease;
+      z-index: 999; display: flex; flex-direction: column; gap: .55rem; padding: 1rem;
+    }
+    .menu-overlay.show { transform: translateX(0); }
+
+    .menu-link {
+      width: 210px;
+      max-width: 92vw;
+      align-self: center;
+      white-space: nowrap;
+      background: linear-gradient(180deg, var(--grad1), var(--grad2));
+      border-radius: 999px;
+      padding: .55rem 1rem;
+      text-align: center;
+      color: var(--bordo);
+      text-decoration: none;
+      font-weight: 600;
+      border: 2px solid rgba(0,0,0,.12);
+      box-shadow: 0 2px 6px rgba(0,0,0,.1);
+      font-size: .95rem;
+    }
+    .menu-link:hover {
+      filter: brightness(1.03);
+      transform: translateY(-1px);
+    }
+
+    /* ===== Main com mesmo respiro dos planos ===== */
+    main {
+      flex: 1;
+      max-width: min(1100px, 94vw);
+      margin: 2rem auto 2.6rem;
+    }
+
+    /* ===== Carrossel ===== */
+    .banner-wrapper {
+      margin: 0 auto 2.5rem;
+      width: min(1100px, 94vw);
+      border-radius: 1.6rem;
+      overflow: hidden;
+      box-shadow: 0 14px 34px rgba(0,0,0,.28);
+      background: #000;
+    }
+    .banner-slider {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+      border-radius: 1.6rem;
+    }
+
+    .banner-track {
+      display: flex;
+      transition: transform .4s ease;
+    }
+
+    .banner-slide {
+      min-width: 100%;
+      height: clamp(220px, 45vw, 420px);
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .banner-slide video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .banner-desktop { display: none; }
+    .banner-mobile  { display: block; }
+
+    .banner-dots {
+      position: absolute;
+      bottom: 10px; left: 50%;
+      transform: translateX(-50%);
+      display: flex; gap: 8px;
+    }
+    .banner-dot {
+      width: 10px; height: 10px; border-radius: 50%;
+      background: rgba(255,255,255,.4);
+      border: 2px solid rgba(0,0,0,.15);
+      cursor: pointer; transition: .2s;
+    }
+    .banner-dot.active {
+      background: var(--bordo);
+      border-color: rgba(0,0,0,.35);
+    }
+
+    /* ===== Hexágonos ===== */
+    .menu-opcoes {
+      width: 100%;
+      margin: 2.6rem auto 3.2rem;
+      display: flex; gap: 1rem; justify-content: space-between; flex-wrap: wrap;
+    }
+    .hex-group {
+      position: relative; width: 180px; height: 240px;
+      display: flex; justify-content: center; align-items: center; transition:.3s;
+    }
+    .hex-group:nth-child(2),
+    .hex-group:nth-child(4) { transform: translateY(-40px); }
+
+    .hex {
+      width: 150px; height: 130px;
+      border: 3px solid var(--bordo);
+      clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+      overflow: hidden;
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(8px);
+      display:flex; align-items:center; justify-content:center;
+      box-shadow: 0 10px 24px rgba(0,0,0,.35);
+    }
+    .hex::before {
+      content:"";
+      position:absolute; inset:1px;
+      background: radial-gradient(circle at top, rgba(255,255,255,.4), transparent 60%);
+      opacity:.9;
+    }
+
+    .hex-btn {
+      position:relative; z-index:1;
+      width:100%; height:100%;
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      color:#111; text-decoration:none; text-align:center;
+      padding:.5rem;
+    }
+    .hex-btn span {
+      display:block;
+    }
+
+    .hex-icon {
+      width:36px; height:36px; border-radius:12px;
+      border:1px solid rgba(0,0,0,.15);
+      display:flex; align-items:center; justify-content:center;
+      margin-bottom:.35rem;
+      background: linear-gradient(180deg, #f5f5f5, #dcdcdc);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.8);
+      font-size:1.2rem;
+    }
+
+    .hex-title {
+      font-weight:700; font-size:.9rem;
+      margin-bottom:.25rem;
+    }
+    .hex-desc {
+      font-size:.8rem;
+    }
+
+    .hex-group:hover {
+      transform: translateY(-8px);
+    }
+    .hex-group:hover .hex {
+      box-shadow: 0 12px 30px rgba(0,0,0,.4);
+    }
+
+    /* ===== Sessão texto ===== */
+    .intro {
+      margin-top: .5rem;
+      padding: 1.4rem 1.1rem 1.6rem;
+      background: rgba(205,224,224,.93);
+      border-radius: 1.5rem;
+      box-shadow: 0 10px 26px rgba(0,0,0,.2);
+      border: 1px solid rgba(255,255,255,.5);
+    }
+    .intro h1 {
+      font-family: "Poppins", system-ui, sans-serif;
+      font-size: clamp(1.4rem, 2.1vw, 1.9rem);
+      color: var(--bordo);
+      margin-bottom: .6rem;
+      letter-spacing: .02em;
+    }
+    .intro p {
+      font-size: .95rem;
+      line-height: 1.5;
+      margin-bottom: .55rem;
+    }
+    .intro p:last-child { margin-bottom: 0; }
+
+    /* ===== Rodapé ===== */
+    footer {
+      margin-top: auto;
+      background: var(--header-footer);
+      border-top: 3px solid var(--bordo);
+      padding: .8rem 1rem 1rem;
+      font-size: .8rem;
+      color: #123;
+    }
+    footer .linha {
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:space-between;
+      gap:.5rem;
+      align-items:center;
+    }
+    footer a {
+      color: var(--bordo);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    /* ===== Breakpoints ===== */
+    @media (max-width: 768px) {
+      header { padding: 0 .9rem; }
+
+      .menu-overlay { width: 280px; max-width: 85vw; }
+      .menu-link { width: 210px; max-width: 100%; }
+
+      .banner-wrapper { width: 100%; border-radius: 0; }
+      .banner-slider { border-radius: 0; }
+
+      .menu-opcoes {
+        display:flex; flex-wrap:wrap; gap:1.1rem;
+        justify-content:center; margin-top:2.3rem;
       }
-      main {
-        padding-inline: 2.5rem;
+      .hex-group {
+        width:160px; height:210px;
+        transform:none !important;
+      }
+      .hex {
+        width:140px; height:120px;
+      }
+      .intro {
+        margin-top:1rem;
       }
     }
+
+    @media (max-width: 480px){
+      .menu-opcoes {
+        gap:1rem;
+      }
+      .hex-group {
+        width:140px; height:200px;
+      }
+      .hex {
+        width:130px; height:110px;
+      }
+      .intro {
+        padding:1.1rem 1rem 1.3rem;
+      }
+    }
+
+    @media (hover:hover){
+      .hex-group:hover .hex-btn {
+        transform:translateY(-1px);
+      }
+    }
+
+    @media (pointer:coarse){
+      .hex-group {
+        opacity:1; border-radius:10px;
+      }
+      .hex-group:nth-child(2),
+      .hex-group:nth-child(4) { margin-top:1.4rem; }
+      .hex-group:active .hex,
+      .hex-group:active .hex-btn {
+        box-shadow: 0 0 12px 2px rgba(125,47,89,.75);
+      }
+    }
+
+    @media (min-width: 880px) {
+      .banner-desktop { display: block; }
+      .banner-mobile  { display: none;  }
+    }
+  
   </style>
 </head>
 <body>
+  <header>
+    <div class="header-left">
+      <img src="/logomarca.svg" alt="MostreAki">
+    </div>
+    <div class="header-right">
+      <button id="btnAbrirLogin" type="button">Entrar</button>
+      <div id="userCircle" title="Minha conta"></div>
+      <span id="authText">Sair</span>
+      <button class="hamburger" id="btn-menu" aria-label="Abrir menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
 
-<header>
-  <div class="logo-wrap">
-    <div class="logo-icon"></div>
-    <div class="logo-text">
-      <span>Mostre</span><span>Aki</span>
+  <!-- Menu lateral -->
+  <nav class="menu-overlay" id="menu-overlay">
+    <!-- página atual (index) não aparece -->
+    <a href="/sobre.html" class="menu-link">Sobre</a>
+    <a href="/minha-conta.html" class="menu-link">Minha Conta</a>
+    <a href="/planos.html" class="menu-link">Planos</a>
+    <a href="/parceiros.html" class="menu-link">Parceiros</a>
+    <a href="/servicos-adicionais.html" class="menu-link">Serviços Adicionais</a>
+    <a href="/redes-sociais.html" class="menu-link">Redes Sociais</a>
+    <a href="/contato.html" class="menu-link">Contato</a>
+  </nav>
+
+  <!-- Modal de autenticação -->
+  <div id="authModal">
+    <div class="auth-card">
+      <button class="btn-close-modal" onclick="fecharModal()">&times;</button>
+      <h2>Entrar na sua conta</h2>
+      <div class="auth-sub">Use seu e-mail e senha cadastrados no MostreAki.</div>
+
+      <div class="field">
+        <label for="email">E-mail</label>
+        <input type="email" id="email" autocomplete="email" />
+      </div>
+
+      <div class="field">
+        <label for="senha">Senha</label>
+        <input type="password" id="senha" autocomplete="current-password" />
+        <label class="show-pass">
+          <input type="checkbox" id="chkMostrarSenha" />
+          Mostrar senha
+        </label>
+      </div>
+
+      <button id="btnEntrar" type="button">Entrar</button>
+
+      <div class="auth-links">
+        <a href="/recuperar-senha.html">Esqueci minha senha</a>
+        <a href="/cadastro.html">Ainda não tenho cadastro</a>
+      </div>
     </div>
   </div>
 
-  <div class="header-right">
-    <button id="btnAbrirLogin" type="button">Entrar</button>
-
-    <div id="userCircle" title="Minha conta"></div>
-    <span id="authText">Sair</span>
-
-    <button class="menu-btn" type="button" onclick="toggleMenu()">
-      <span class="menu-icon"></span>
-    </button>
-  </div>
-</header>
-
-<div class="header-strip"></div>
-
-<nav id="menu">
-  <div class="menu-panel">
-    <a class="menu-link" href="sobre.html">Sobre</a>
-    <a class="menu-link" href="minha-conta.html">Minha Conta</a>
-    <a class="menu-link" href="planos.html">Planos</a>
-    <a class="menu-link" href="parceiros.html">Parceiros</a>
-    <a class="menu-link" href="servicos-adicionais.html">Serviços Adicionais</a>
-    <a class="menu-link" href="redes-sociais.html">Redes Sociais</a>
-    <a class="menu-link" href="contato.html">Contato</a>
-  </div>
-</nav>
-
-<main>
-  <div class="demo-box">
-    <h1>Teste de Login MostreAki</h1>
-    <p>
-      Este é só um arquivo de teste: o objetivo é validar o comportamento do botão
-      <b>Entrar</b>, do <b>userCircle</b> com foto vinda do Firebase Storage e dos
-      alertas personalizados.
-    </p>
-    <p>
-      Depois que estiver tudo ok, pegamos apenas a parte de
-      <b>header + modais + script</b> e encaixamos na <code>index.html</code>
-      oficial, sem mexer na estrutura dos hexágonos nem do restante da página.
-    </p>
-  </div>
-</main>
-
-<!-- MODAL LOGIN -->
-<div id="authModal">
-  <div class="auth-card">
-    <button class="btn-close-modal" onclick="fecharModal()">&times;</button>
-    <h2>Entrar na sua conta</h2>
-    <div class="auth-sub">
-      Use seu e-mail e senha cadastrados no MostreAki.
-    </div>
-
-    <div class="field">
-      <label for="email">E-mail</label>
-      <input type="email" id="email" autocomplete="email">
-    </div>
-    <div class="field">
-      <label for="senha">Senha</label>
-      <input type="password" id="senha" autocomplete="current-password">
-      <label class="show-pass">
-        <input type="checkbox" id="chkMostrarSenha">
-        Mostrar senha
-      </label>
-    </div>
-
-    <button id="btnEntrar" type="button">Entrar</button>
-
-    <div class="auth-links">
-      <a href="recuperar-senha.html">Esqueci minha senha</a>
-      <a href="cadastro.html">Ainda não tenho conta</a>
+  <!-- Alerta de sistema -->
+  <div id="alert">
+    <div class="alert-card">
+      <div class="alert-title" id="alertTitle">Aviso</div>
+      <div class="alert-msg" id="alertMsg"></div>
+      <div class="alert-actions" id="alertActions"></div>
     </div>
   </div>
-</div>
 
-<!-- ALERTA -->
-<div id="alert">
-  <div class="alert-card">
-    <div id="alertTitle" class="alert-title"></div>
-    <div id="alertMsg" class="alert-msg"></div>
-    <div id="alertActions" class="alert-actions"></div>
-  </div>
-</div>
+  <main>
+    <!-- ===== Carrossel 6 banners ===== -->
+    <section class="banner-wrapper">
+      <div class="banner-slider" id="bannerSlider">
+        <div class="banner-track" id="bannerTrack">
+          <!-- mobile -->
+          <div class="banner-slide banner-mobile">
+            <video src="planos-mobile-mostreaki.mp4" autoplay muted loop playsinline></video>
+          </div>
+          <div class="banner-slide banner-mobile">
+            <video src="parceiros-mobile-mostreaki.mp4" autoplay muted loop playsinline></video>
+          </div>
+          <div class="banner-slide banner-mobile">
+            <video src="servicos-mobile-mostreaki.mp4" autoplay muted loop playsinline></video>
+          </div>
 
-<!-- Firebase + Script -->
-<script type="module">
+          <!-- desktop -->
+          <div class="banner-slide banner-desktop">
+            <video src="planos-desktop-mostreaki.mp4" autoplay muted loop playsinline></video>
+          </div>
+          <div class="banner-slide banner-desktop">
+            <video src="parceiros-desktop-mostreaki.mp4" autoplay muted loop playsinline></video>
+          </div>
+          <div class="banner-slide banner-desktop">
+            <video src="servicos-desktop-mostreaki.mp4" autoplay muted loop playsinline></video>
+          </div>
+        </div>
+
+        <div class="banner-dots" aria-label="Navegação dos banners">
+          <button class="banner-dot active" data-index="0"></button>
+          <button class="banner-dot" data-index="1"></button>
+          <button class="banner-dot" data-index="2"></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Hexágonos ===== -->
+    <section class="menu-opcoes" aria-label="Acessos principais">
+      <div class="hex-group">
+        <div class="hex">
+          <a href="/planos.html" class="hex-btn">
+            <div class="hex-icon">💼</div>
+            <span class="hex-title">Planos</span>
+            <span class="hex-desc">Conheça as opções para ter sua vitrine digital.</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="hex-group">
+        <div class="hex">
+          <a href="/parceiros.html" class="hex-btn">
+            <div class="hex-icon">🤝</div>
+            <span class="hex-title">Parceiros</span>
+            <span class="hex-desc">Veja quem já está fortalecendo a marca com o MostreAki.</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="hex-group">
+        <div class="hex">
+          <a href="/servicos-adicionais.html" class="hex-btn">
+            <div class="hex-icon">🎨</div>
+            <span class="hex-title">Serviços Adicionais</span>
+            <span class="hex-desc">Artes, ajustes e soluções extras para sua presença digital.</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="hex-group">
+        <div class="hex">
+          <a href="/redes-sociais.html" class="hex-btn">
+            <div class="hex-icon">📲</div>
+            <span class="hex-title">Redes Sociais</span>
+            <span class="hex-desc">Conecte seu catálogo à sua audiência.</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Texto institucional ===== -->
+    <section class="intro">
+      <h1>MostreAki: a vitrine digital da sua marca</h1>
+      <p>O MostreAki nasceu para dar visibilidade à sua marca, ao seu serviço, conteúdo e catálogo de produtos.</p>
+      <p>Nosso objetivo é exibir uma vitrine digital acessível, organizada e integrada com as redes sociais, para que o seu cliente encontre tudo o que precisa em poucos cliques.</p>
+      <p>Enquanto você cuida do seu trabalho, nós cuidamos da apresentação da sua marca no ambiente digital.</p>
+    </section>
+  </main>
+
+  <footer>
+    <div class="linha">
+      <span>&copy; <span id="ano"></span> MostreAki. Todos os direitos reservados.</span>
+      <span>Desenvolvido por <a href="https://mostreaki.com.br">MostreAki</a></span>
+    </div>
+  </footer>
+
+  <script>
+    // Menu lateral
+    const btnMenu = document.getElementById('btn-menu');
+    const overlay = document.getElementById('menu-overlay');
+    if (btnMenu && overlay) {
+      btnMenu.addEventListener('click', () => overlay.classList.toggle('show'));
+      overlay.querySelectorAll('a').forEach(a =>
+        a.addEventListener('click', () => overlay.classList.remove('show'))
+      );
+    }
+
+    // Carrossel (3 grupos: 0,1,2)
+    const track = document.getElementById("bannerTrack");
+    const dots  = document.querySelectorAll(".banner-dot");
+    const slider= document.getElementById("bannerSlider");
+    let current = 0;
+    const total  = 3;
+
+    function setSlide(index) {
+      current = Math.max(0, Math.min(total - 1, index));
+      const width = slider.clientWidth;
+      track.style.transform = `translateX(-${width * current}px)`;
+      dots.forEach(d => d.classList.toggle("active", Number(d.dataset.index) === current));
+    }
+
+    dots.forEach(d => d.addEventListener("click", () => setSlide(Number(d.dataset.index))));
+
+    // Swipe touch
+    let startX = 0, dragging = false;
+    slider.addEventListener("touchstart", e => {
+      dragging = true;
+      startX = e.touches[0].clientX;
+    }, {passive:true});
+    slider.addEventListener("touchend",   e => {
+      if(!dragging) return;
+      dragging = false;
+      const diff = e.changedTouches[0].clientX - startX;
+      if (diff > 40) setSlide(current - 1);
+      else if (diff < -40) setSlide(current + 1);
+    });
+
+    // Swipe mouse (desktop)
+    slider.addEventListener("mousedown", e => {
+      dragging = true;
+      startX = e.clientX;
+    });
+    slider.addEventListener("mouseup",   e => {
+      if(!dragging) return;
+      dragging = false;
+      const diff = e.clientX - startX;
+      if (diff > 40) setSlide(current - 1);
+      else if (diff < -40) setSlide(current + 1);
+    });
+
+    window.addEventListener("resize", () => setSlide(current));
+    setSlide(0);
+
+    // Ano no rodapé
+    const spanAno = document.getElementById('ano');
+    if (spanAno) spanAno.textContent = new Date().getFullYear();
+  </script>
+
+  <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
 import { 
-  getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword,
-  sendEmailVerification, updateProfile 
+  getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, sendEmailVerification, updateProfile 
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 import { getFirestore, collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-import { getStorage, ref, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
+import { getStorage } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
 
 const app = initializeApp({
   apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
@@ -517,25 +820,31 @@ const btnAbrir = $("btnAbrirLogin");
 const authText = $("authText");
 const userCircle = $("userCircle");
 
-function abrirModal() {
-  modal.style.display = "flex";
-  document.body.style.overflow = "hidden";
+function abrirModal() { 
+  if (!modal) return;
+  modal.style.display = "flex"; 
+  document.body.style.overflow = "hidden"; 
 }
-window.fecharModal = function() {
-  modal.style.display = "none";
-  document.body.style.overflow = "";
+window.fecharModal = function() { 
+  if (!modal) return;
+  modal.style.display = "none"; 
+  document.body.style.overflow = ""; 
 }
-btnAbrir.addEventListener("click", abrirModal);
-modal.addEventListener("click", e => { if (e.target === modal) fecharModal(); });
-window.addEventListener("keydown", e => { if (e.key === "Escape" && modal.style.display === "flex") fecharModal(); });
+if (btnAbrir) {
+  btnAbrir.addEventListener("click", abrirModal);
+}
+if (modal) {
+  modal.addEventListener("click", e => { if (e.target === modal) fecharModal(); });
+}
+window.addEventListener("keydown", e => { if (e.key === "Escape" && modal && modal.style.display === "flex") fecharModal(); });
 
-/* ===== ALERTA BRAND ===== */
+/* ===== alerta brand ===== */
 const alertBG = document.getElementById('alert');
 const alertTitle = document.getElementById('alertTitle');
 const alertMsg = document.getElementById('alertMsg');
 const alertActions = document.getElementById('alertActions');
-
 function showAlert({ title = "Aviso", html = "", actions = [{ text: "Fechar", kind: "solid" }] }) {
+  if (!alertBG || !alertTitle || !alertMsg || !alertActions) return;
   alertTitle.textContent = title;
   alertMsg.innerHTML = html;
   alertActions.innerHTML = "";
@@ -548,8 +857,9 @@ function showAlert({ title = "Aviso", html = "", actions = [{ text: "Fechar", ki
   });
   alertBG.style.display = 'flex';
 }
-function closeAlert() {
-  alertBG.style.display = 'none';
+function closeAlert() { 
+  if (!alertBG) return;
+  alertBG.style.display = 'none'; 
 }
 
 /* ===== mostrar senha via checkbox ===== */
@@ -560,10 +870,9 @@ function closeAlert() {
   chk.addEventListener('change', apply);
 })();
 
-/* ===== STATE LOGIN (trava progressiva) ===== */
+/* ===== login ===== */
 const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const emailValido = v => emailRe.test(v);
-
 function getState() {
   const now = Date.now();
   const s = JSON.parse(sessionStorage.getItem('loginState') || '{}');
@@ -573,16 +882,16 @@ function getState() {
   if (now > s.lockUntil) s.lockUntil = 0;
   return s;
 }
-function setState(s) {
-  sessionStorage.setItem('loginState', JSON.stringify(s));
+function setState(s) { 
+  sessionStorage.setItem('loginState', JSON.stringify(s)); 
 }
-function isLocked() {
-  const s = getState();
-  return s.lockUntil && Date.now() < s.lockUntil;
+function isLocked() { 
+  const s = getState(); 
+  return s.lockUntil && Date.now() < s.lockUntil; 
 }
 function lockMore() {
   const s = getState();
-  const base = 30000; // 30s
+  const base = 30000;
   s.blockMult = Math.min(s.blockMult * 2, 8);
   s.lockUntil = Date.now() + base * s.blockMult;
   setState(s);
@@ -593,8 +902,8 @@ function incFail() {
   if (s.failCount >= 5) { s.failCount = 0; lockMore(); }
   setState(s);
 }
-function resetFails() {
-  setState({ failCount: 0, blockMult: 1, lockUntil: 0 });
+function resetFails() { 
+  setState({ failCount: 0, blockMult: 1, lockUntil: 0 }); 
 }
 function showLockMsg() {
   const s = getState();
@@ -602,7 +911,7 @@ function showLockMsg() {
   showAlert({ title: "Muitas tentativas", html: `Aguarde <b>${secs}s</b> para tentar novamente.` });
 }
 
-/* ===== LOG NO FIRESTORE ===== */
+// Registrar log no Firestore
 async function logLogin(email, status, errorCode = null) {
   try {
     await addDoc(collection(db, 'logs_login'), {
@@ -617,57 +926,29 @@ async function logLogin(email, status, errorCode = null) {
   }
 }
 
-/* ===== AVATAR NO STORAGE =====
-   Ajuste o caminho conforme você já usa no projeto:
-   aqui suponho "avatars/{uid}.jpg"
-*/
-async function buscarAvatarStorage(user) {
-  try {
-    const avatarRef = ref(storage, `avatars/${user.uid}.jpg`);
-    const url = await getDownloadURL(avatarRef);
-    return url;
-  } catch (e) {
-    console.info('Nenhum avatar encontrado no Storage, usando photoURL se existir.');
-    return user.photoURL || null;
-  }
-}
-
-async function aplicarAvatarNoCircle(user) {
-  const fotoLocal = localStorage.getItem("fotoPerfil");
-  let url = fotoLocal;
-
-  if (!url) {
-    url = await buscarAvatarStorage(user);
-    if (url) {
-      localStorage.setItem("fotoPerfil", url);
-      try {
-        await updateProfile(user, { photoURL: url });
-      } catch (e) {
-        console.error("Erro ao atualizar photoURL:", e);
-      }
+// Atualizar foto de perfil no Storage (URL já salva no usuário)
+async function updateFotoPerfil(user, photoURL) {
+  if (photoURL) {
+    try {
+      await updateProfile(user, { photoURL });
+      localStorage.setItem("fotoPerfil", photoURL);
+    } catch (e) {
+      console.error('Erro ao atualizar foto de perfil:', e);
     }
   }
-
-  if (url) {
-    userCircle.style.backgroundImage = `url('${url}')`;
-    userCircle.textContent = "";
-  } else {
-    const nome = (user.displayName || user.email || "?").trim();
-    userCircle.textContent = nome.charAt(0).toUpperCase();
-    userCircle.style.backgroundImage = "";
-  }
 }
 
-/* ===== LOGIN EMAIL/SENHA ===== */
 async function loginEmailSenha() {
   if (isLocked()) return showLockMsg();
 
-  const email = $("email").value.trim();
-  const senha = $("senha").value;
+  const emailInput = $("email");
+  const senhaInput = $("senha");
+  const email = emailInput ? emailInput.value.trim() : "";
+  const senha = senhaInput ? senhaInput.value : "";
 
   if (!email) {
     incFail();
-    await logLogin(email, 'erro', 'email_vazio');
+    await logLogin(email || "", 'erro', 'email_vazio');
     return showAlert({ title: "E-mail vazio", html: "Digite seu e-mail para continuar." });
   }
   if (!emailValido(email)) {
@@ -689,20 +970,16 @@ async function loginEmailSenha() {
       await logLogin(email, 'email_nao_verificado');
       showAlert({
         title: "Confirme seu e-mail",
-        html: `Seu e-mail ainda não foi verificado.<br>Reenviamos o link para <b>${email}</b>. 
-               Verifique sua caixa de entrada (ou spam) e tente novamente após confirmar.`
+        html: `Seu e-mail ainda não foi verificado.<br>Reenviamos o link para <b>${email}</b>. Verifique sua caixa de entrada (ou spam) e tente novamente após confirmar.`
       });
       return;
     }
 
     resetFails();
     await logLogin(email, 'sucesso');
-
-    await aplicarAvatarNoCircle(cred.user);
-
+    await updateFotoPerfil(cred.user, cred.user.photoURL);
     fecharModal();
-    // aqui, na index real, você pode redirecionar:
-    // location.href = "/minha-conta.html";
+    location.href = "/minha-conta.html";
 
   } catch (e) {
     incFail();
@@ -731,43 +1008,48 @@ async function loginEmailSenha() {
   }
 }
 
-$("btnEntrar").onclick = loginEmailSenha;
-document.addEventListener('keydown', e => {
-  if (e.key === 'Enter' && modal.style.display === 'flex') loginEmailSenha();
-});
+const btnEntrar = document.getElementById("btnEntrar");
+if (btnEntrar) {
+  btnEntrar.onclick = loginEmailSenha;
+}
+document.addEventListener('keydown', e => { if (e.key === 'Enter' && modal && modal.style.display === 'flex') loginEmailSenha(); });
 
-/* ===== ESTADO AUTH: userCircle / Entrar / Sair ===== */
-onAuthStateChanged(auth, async (user) => {
+/* ===== estado de auth: avatar/entrar/sair ===== */
+onAuthStateChanged(auth, (user) => {
+  const fotoURL = localStorage.getItem("fotoPerfil") || (user && user.photoURL);
   if (user) {
-    await aplicarAvatarNoCircle(user);
-    userCircle.style.display = "flex";
-    authText.style.display = "inline";
-    btnAbrir.style.display = "none";
+    if (fotoURL && userCircle) {
+      userCircle.style.backgroundImage = `url('${fotoURL}')`;
+      userCircle.textContent = "";
+    } else if (userCircle) {
+      const nome = (user.displayName || user.email || "?").trim();
+      userCircle.textContent = nome.charAt(0).toUpperCase();
+      userCircle.style.backgroundImage = "";
+    }
+    if (userCircle) userCircle.style.display = "flex";
+    if (authText) authText.style.display = "inline";
+    if (btnAbrir) btnAbrir.style.display = "none";
   } else {
-    userCircle.style.display = "none";
-    authText.style.display = "none";
-    btnAbrir.style.display = "inline-block";
+    if (userCircle) userCircle.style.display = "none";
+    if (authText) authText.style.display = "none";
+    if (btnAbrir) btnAbrir.style.display = "inline-block";
   }
 });
 
-/* ===== SAIR ===== */
-authText.addEventListener("click", async () => {
-  try {
-    await signOut(auth);
-    await logLogin('desconhecido', 'logout');
-    localStorage.removeItem("fotoPerfil");
-    location.reload();
-  } catch (e) {
-    showAlert({ title: "Sair", html: "Não foi possível sair. Tente de novo." });
-  }
-});
-
-/* ===== MENU ===== */
-window.toggleMenu = function() {
-  const menu = document.getElementById("menu");
-  menu.classList.toggle("open");
-};
-</script>
+/* ===== sair ===== */
+if (authText) {
+  authText.addEventListener("click", async () => {
+    try {
+      await signOut(auth);
+      await logLogin('desconhecido', 'logout');
+      localStorage.removeItem("fotoPerfil");
+      location.reload();
+    } catch (e) {
+      showAlert({ title: "Sair", html: "Não foi possível sair. Tente de novo." });
+    }
+  });
+}
+  </script>
 
 </body>
 </html>
