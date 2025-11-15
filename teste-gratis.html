@@ -484,8 +484,9 @@
           </label>
           <input type="text" id="slug" disabled value="carregando..." />
           <div class="hint">
-            Para alterar o seu slug, envie uma solicitação para
-            <b>mostreaki@mostreaki.com.br</b>. Essa alteração afeta os links públicos do seu site.
+            Esse é o seu <b>nome de usuário</b> e também o <b>slug</b> usado nos links públicos
+            do seu catálogo/álbum. Para alterar, envie uma solicitação para
+            <b>mostreaki@mostreaki.com.br</b>.
           </div>
         </div>
 
@@ -575,7 +576,12 @@
     import {
       getFirestore,
       doc,
-      getDoc
+      getDoc,
+      collection,
+      query,
+      where,
+      getDocs,
+      updateDoc
     } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
     import {
       getStorage,
@@ -665,21 +671,6 @@
     const btnAlterarPlano = $("btnAlterarPlano");
     const btnCancelarPlano = $("btnCancelarPlano");
 
-    function normalizarPlano(planoRaw) {
-      if (!planoRaw) return null;
-      const p = planoRaw.toLowerCase();
-      if (p.includes("basi")) return "básico";
-      if (p.includes("inter")) return "intermediário";
-      if (p.includes("avanc")) return "avançado";
-      return null;
-    }
-
-    const limitesPlano = {
-      "básico": 100,
-      "intermediário": 250,
-      "avançado": 500
-    };
-
     /* ===== estado de auth ===== */
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
@@ -697,6 +688,7 @@
         userCircle.textContent = letra;
         userCircle.style.display = "flex";
 
+        // Se já tiver fotoPerfil no localStorage, usa
         const savedFoto = localStorage.getItem("fotoPerfil");
         if (savedFoto) {
           userCircle.style.backgroundImage = `url('${savedFoto}')`;
@@ -708,112 +700,99 @@
         authText.style.display = "inline";
       }
 
-      let slug = null;
-
-      // 1) Ler documento em /usuarios/{uid} para slug, catálogo e álbum
       try {
-        const docRef = doc(db, "usuarios", user.uid);
-        const snap = await getDoc(docRef);
+        const usuarioRef = doc(db, "usuarios", user.uid);
+        const snap = await getDoc(usuarioRef);
+
+        let data = {};
         if (snap.exists()) {
-          const data = snap.data();
-
-          // slug
-          if (data.slug) {
-            slug = data.slug;
-            slugInput.value = data.slug;
-          } else {
-            slugInput.value = "(definir slug no Firestore)";
-          }
-
-          // foto de perfil armazenada no Firestore (opcional)
-          if (data.fotoPerfilURL && !localStorage.getItem("fotoPerfil")) {
-            localStorage.setItem("fotoPerfil", data.fotoPerfilURL);
-            if (userCircle) {
-              userCircle.style.backgroundImage = `url('${data.fotoPerfilURL}')`;
-            }
-            avatarPreview.style.backgroundImage = `url('${data.fotoPerfilURL}')`;
-            avatarPreview.textContent = "";
-          }
-
-          // catálogo ativo
-          const catAtivo = !!data.catalogoAtivo;
-          if (catAtivo) {
-            dotCatalogo.classList.remove("off");
-            textoCatalogo.textContent = "Catálogo digital ativo.";
-            btnEditarCatalogo.style.display = "inline-flex";
-          } else {
-            dotCatalogo.classList.add("off");
-            textoCatalogo.textContent = "Catálogo ainda não habilitado.";
-            btnEditarCatalogo.style.display = "none";
-          }
-
-          // álbum ativo
-          const albAtivo = !!data.albumAtivo;
-          if (albAtivo) {
-            dotAlbum.classList.remove("off");
-            textoAlbum.textContent = "Álbum / galeria ativo.";
-            btnEditarAlbum.style.display = "inline-flex";
-          } else {
-            dotAlbum.classList.add("off");
-            textoAlbum.textContent = "Álbum ainda não habilitado.";
-            btnEditarAlbum.style.display = "none";
-          }
-
-        } else {
-          slugInput.value = "(usuário sem documento em /usuarios ainda)";
-          dotCatalogo.classList.add("off");
-          textoCatalogo.textContent = "Catálogo ainda não habilitado.";
-          dotAlbum.classList.add("off");
-          textoAlbum.textContent = "Álbum ainda não habilitado.";
+          data = snap.data();
         }
-      } catch (e) {
-        console.error("Erro ao ler /usuarios:", e);
-        slugInput.value = "(erro ao carregar dados)";
-      }
 
-      // 2) Ler documento em /assinaturas/{uid} para status + tipo de plano
-      try {
-        const assRef = doc(db, "assinaturas", user.uid);
-        const assSnap = await getDoc(assRef);
+        // ===== sincronizar slug com catalogos (ownerUid == uid) =====
+        let slugFinal = "";
+        try {
+          const slugUsuario = (data && data.slug) ? String(data.slug) : "";
+          let slugCatalogo = "";
 
-        if (assSnap.exists()) {
-          const a = assSnap.data();
-          const statusRaw = (a.status || "").toLowerCase();
-          const planoRaw = a.plano || a.planos || "";
-          const planoNorm = normalizarPlano(planoRaw);
-          const limite = planoNorm ? limitesPlano[planoNorm] : null;
-
-          let ativa = false;
-          let suspensa = false;
-
-          if (statusRaw === "ativo" || statusRaw === "ativa") {
-            ativa = true;
-          } else if (statusRaw === "suspenso" || statusRaw === "suspensa") {
-            suspensa = true;
+          const q = query(
+            collection(db, "catalogos"),
+            where("ownerUid", "==", user.uid)
+          );
+          const qSnap = await getDocs(q);
+          if (!qSnap.empty) {
+            // pega o primeiro catálogo associado ao ownerUid
+            slugCatalogo = qSnap.docs[0].id;
           }
 
-          if (ativa) {
-            dotAssinatura.classList.remove("off");
-            if (planoNorm && limite) {
-              textoAssinatura.textContent =
-                `Assinatura ativa – Plano ${planoNorm} (até ${limite} produtos no catálogo).`;
-            } else {
-              textoAssinatura.textContent = "Assinatura ativa.";
-            }
-          } else if (suspensa) {
-            dotAssinatura.classList.add("off");
-            textoAssinatura.textContent = "Assinatura suspensa.";
-          } else {
-            dotAssinatura.classList.add("off");
-            textoAssinatura.textContent = "Sem assinatura ativa.";
+          if (slugCatalogo && slugUsuario && slugCatalogo !== slugUsuario) {
+            // se são diferentes, padroniza para o do catálogo
+            await updateDoc(usuarioRef, { slug: slugCatalogo });
+            slugFinal = slugCatalogo;
+          } else if (slugCatalogo && !slugUsuario) {
+            await updateDoc(usuarioRef, { slug: slugCatalogo });
+            slugFinal = slugCatalogo;
+          } else if (slugUsuario) {
+            slugFinal = slugUsuario;
           }
+
+        } catch (e) {
+          console.error("Erro ao sincronizar slug com catalogos:", e);
+        }
+
+        if (slugFinal) {
+          slugInput.value = slugFinal;
+        } else {
+          slugInput.value = "(definir slug no Firestore)";
+        }
+
+        // foto de perfil do Firestore (se existir e ainda não tiver no localStorage)
+        if (data.fotoPerfilURL && !localStorage.getItem("fotoPerfil")) {
+          localStorage.setItem("fotoPerfil", data.fotoPerfilURL);
+          userCircle.style.backgroundImage = `url('${data.fotoPerfilURL}')`;
+          avatarPreview.style.backgroundImage = `url('${data.fotoPerfilURL}')`;
+          avatarPreview.textContent = "";
+        }
+
+        // assinatura (status básico salvo em /usuarios, se você estiver usando assim)
+        const status = data.assinaturaStatus || "sem-assinatura";
+        if (status === "ativa") {
+          dotAssinatura.classList.remove("off");
+          textoAssinatura.textContent = "Assinatura ativa";
+        } else if (status === "suspensa") {
+          dotAssinatura.classList.add("off");
+          textoAssinatura.textContent = "Assinatura suspensa";
         } else {
           dotAssinatura.classList.add("off");
-          textoAssinatura.textContent = "Sem assinatura ativa.";
+          textoAssinatura.textContent = "Sem assinatura ativa";
         }
+
+        // catálogo
+        const catAtivo = !!data.catalogoAtivo;
+        if (catAtivo) {
+          dotCatalogo.classList.remove("off");
+          textoCatalogo.textContent = "Catálogo digital ativo";
+          btnEditarCatalogo.style.display = "inline-flex";
+        } else {
+          dotCatalogo.classList.add("off");
+          textoCatalogo.textContent = "Catálogo ainda não habilitado";
+          btnEditarCatalogo.style.display = "none";
+        }
+
+        // álbum
+        const albAtivo = !!data.albumAtivo;
+        if (albAtivo) {
+          dotAlbum.classList.remove("off");
+          textoAlbum.textContent = "Álbum / galeria ativo";
+          btnEditarAlbum.style.display = "inline-flex";
+        } else {
+          dotAlbum.classList.add("off");
+          textoAlbum.textContent = "Álbum ainda não habilitado";
+          btnEditarAlbum.style.display = "none";
+        }
+
       } catch (e) {
-        console.error("Erro ao ler /assinaturas:", e);
-        dotAssinatura.classList.add("off");
+        console.error("Erro ao ler Firestore:", e);
         textoAssinatura.textContent = "Não foi possível carregar os dados da assinatura.";
       }
     });
@@ -867,9 +846,7 @@
           const url = await getDownloadURL(storageRef);
 
           localStorage.setItem("fotoPerfil", url);
-          if (userCircle) {
-            userCircle.style.backgroundImage = `url('${url}')`;
-          }
+          userCircle.style.backgroundImage = `url('${url}')`;
           avatarPreview.style.backgroundImage = `url('${url}')`;
           avatarPreview.textContent = "";
           showAlert({
