@@ -17,19 +17,26 @@
       --grad2: #af91a1;
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     body {
-      margin: 0;
-      background: radial-gradient(circle at top left, #cfe0e0, #92a9a6);
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #dbe7f4 0, var(--bg) 55%, #7c9090 100%);
       color: var(--texto);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
 
-    /* ===== Cabeçalho (padrão planos) ===== */
+    a {
+      color: inherit;
+    }
+
+    /* ===== Cabeçalho ===== */
     header {
       background: var(--header-footer);
       border-bottom: 3px solid var(--bordo);
@@ -72,6 +79,225 @@
       background: var(--bordo);
     }
 
+    /* ===== Login / UserCircle / Modais ===== */
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+
+    #btnAbrirLogin {
+      border-radius: 999px;
+      border: none;
+      padding: .45rem 1.1rem;
+      font-weight: 600;
+      color: #fff;
+      background: var(--bordo);
+      box-shadow: 0 2px 6px rgba(0,0,0,.25);
+      cursor: pointer;
+      font-size: .9rem;
+      transition: transform .15s, box-shadow .15s, background .15s;
+    }
+    #btnAbrirLogin:hover {
+      transform: translateY(-1px);
+      background: #5d2343;
+      box-shadow: 0 3px 10px rgba(0,0,0,.3);
+    }
+
+    #userCircle {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--bordo);
+      color: #fff;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: .9rem;
+      background-size: cover;
+      background-position: center;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,.25);
+    }
+
+    #authText {
+      display: none;
+      font-size: .85rem;
+      color: var(--bordo);
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    /* Modal de autenticação */
+    #authModal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.55);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .auth-card {
+      background: #f4f7f9;
+      border-radius: 1.25rem;
+      width: min(420px, 92vw);
+      padding: 1.5rem 1.75rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,.45);
+      position: relative;
+    }
+
+    .auth-card h2 {
+      font-size: 1.2rem;
+      margin-bottom: .5rem;
+      color: #5d2343;
+    }
+    .auth-sub {
+      font-size: .9rem;
+      color: #555;
+      margin-bottom: 1.1rem;
+    }
+
+    .field {
+      margin-bottom: 1rem;
+    }
+    .field label {
+      font-size: .85rem;
+      font-weight: 600;
+      display: block;
+      margin-bottom: .15rem;
+    }
+    .field input[type="email"],
+    .field input[type="password"],
+    .field input[type="text"] {
+      width: 100%;
+      border-radius: .7rem;
+      border: 1px solid #b7c2ca;
+      padding: .6rem .75rem;
+      font-size: .9rem;
+      outline: none;
+      transition: border .15s, box-shadow .15s;
+    }
+    .field input:focus {
+      border-color: var(--bordo);
+      box-shadow: 0 0 0 2px rgba(125,47,89,.25);
+    }
+
+    .show-pass {
+      display: flex;
+      align-items: center;
+      gap: .35rem;
+      margin-top: .25rem;
+      font-size: .8rem;
+      color: #444;
+    }
+
+    #btnEntrar {
+      width: 100%;
+      border-radius: 999px;
+      border: none;
+      padding: .65rem;
+      margin-top: .25rem;
+      background: var(--bordo);
+      color: #fff;
+      font-weight: 600;
+      font-size: .95rem;
+      cursor: pointer;
+      box-shadow: 0 3px 10px rgba(0,0,0,.4);
+      transition: background .15s, transform .15s, box-shadow .15s;
+    }
+    #btnEntrar:hover {
+      background: #5d2343;
+      transform: translateY(-1px);
+      box-shadow: 0 5px 16px rgba(0,0,0,.55);
+    }
+
+    .auth-links {
+      margin-top: .85rem;
+      font-size: .8rem;
+      display: flex;
+      justify-content: space-between;
+      gap: .5rem;
+      flex-wrap: wrap;
+    }
+    .auth-links a {
+      color: #5d2343;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .btn-close-modal {
+      position: absolute;
+      top: .6rem;
+      right: .8rem;
+      border: none;
+      background: transparent;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #888;
+    }
+
+    /* Alerta brand */
+    #alert {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,.6);
+      z-index: 1100;
+    }
+
+    .alert-card {
+      width: min(380px, 90vw);
+      background: #fefefe;
+      border-radius: 1.1rem;
+      padding: 1.25rem 1.4rem 1.1rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,.45);
+    }
+    .alert-title {
+      font-weight: 700;
+      margin-bottom: .4rem;
+      color: #5d2343;
+    }
+    .alert-msg {
+      font-size: .9rem;
+      margin-bottom: .9rem;
+      color: #333;
+    }
+    .alert-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: .5rem;
+    }
+
+    .btn-solid,
+    .btn-ghost {
+      border-radius: 999px;
+      padding: .4rem .9rem;
+      font-size: .85rem;
+      cursor: pointer;
+      border: none;
+      font-weight: 600;
+    }
+    .btn-solid {
+      background: var(--bordo);
+      color: #fff;
+    }
+    .btn-ghost {
+      background: transparent;
+      color: #5d2343;
+    }
+
     /* ===== Menu lateral ===== */
     .menu-overlay{
       position: fixed; top: 60px; right: 0;
@@ -111,31 +337,50 @@
       margin: 2rem auto 2.6rem;
     }
 
-    /* ===== HERO / Carrossel ===== */
+    /* ===== Carrossel ===== */
     .banner-wrapper {
-      width: 80%;
-      margin: 0 auto 2.4rem;
-      position: relative;
+      margin: 0 auto 2.5rem;
+      width: min(1100px, 94vw);
+      border-radius: 1.6rem;
+      overflow: hidden;
+      box-shadow: 0 14px 34px rgba(0,0,0,.28);
+      background: #000;
     }
     .banner-slider {
+      position: relative;
+      width: 100%;
       overflow: hidden;
-      border-radius: 18px;
-      background: rgba(0,0,0,.05);
+      border-radius: 1.6rem;
     }
+
     .banner-track {
       display: flex;
-      transition: transform .35s ease;
-      touch-action: pan-y;
+      transition: transform .4s ease;
     }
-    .banner-slide { min-width: 100%; background:#000; }
-    .banner-slide video,
-    .banner-slide img { width: 100%; display:block; height: auto; }
+
+    .banner-slide {
+      min-width: 100%;
+      height: clamp(220px, 45vw, 420px);
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .banner-slide video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
 
     .banner-desktop { display: none; }
     .banner-mobile  { display: block; }
 
     .banner-dots {
-      display: flex; gap: .5rem; justify-content: center; margin-top: .6rem;
+      position: absolute;
+      bottom: 10px; left: 50%;
+      transform: translateX(-50%);
+      display: flex; gap: 8px;
     }
     .banner-dot {
       width: 10px; height: 10px; border-radius: 50%;
@@ -167,44 +412,96 @@
       clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
       overflow: hidden;
       background: rgba(255,255,255,0.03);
-      backdrop-filter: blur(4px);
-      transition: .3s;
+      backdrop-filter: blur(8px);
+      display:flex; align-items:center; justify-content:center;
+      box-shadow: 0 10px 24px rgba(0,0,0,.35);
     }
-    .hex img { width: 100%; height: 100%; object-fit: cover; opacity: .5; transition:.3s; }
+    .hex::before {
+      content:"";
+      position:absolute; inset:1px;
+      background: radial-gradient(circle at top, rgba(255,255,255,.4), transparent 60%);
+      opacity:.9;
+    }
 
     .hex-btn {
-      position: absolute; left: 50%; transform: translateX(-50%);
-      background: linear-gradient(180deg, var(--grad1), var(--grad2));
-      border: 3px solid var(--bordo); border-radius: 12px;
-      padding: .35rem .8rem; font-weight: 700; font-size: .78rem;
-      text-align: center; color: var(--texto);
-      opacity: .5; backdrop-filter: blur(5px); transition: .3s;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.15); min-width: 150px;
-      text-decoration: none;
-      cursor: pointer;
+      position:relative; z-index:1;
+      width:100%; height:100%;
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      color:#111; text-decoration:none; text-align:center;
+      padding:.5rem;
     }
-    .hex-group:nth-child(1) .hex-btn { bottom: -12px; }
-    .hex-group:nth-child(2) .hex-btn { top: -12px; }
-    .hex-group:nth-child(3) .hex-btn { bottom: -12px; }
-    .hex-group:nth-child(4) .hex-btn { top: -12px; }
-    .hex-group:nth-child(5) .hex-btn { bottom: -12px; }
-
-    .hex-group:hover .hex,
-    .hex-group:hover .hex img,
-    .hex-group:hover .hex-btn {
-      opacity: 1; filter: brightness(1.04); backdrop-filter: blur(9px);
+    .hex-btn span {
+      display:block;
     }
-    .hex-group:hover .hex { transform: scale(1.03); }
 
-    /* ===== Rodapé (padrão planos) ===== */
+    .hex-icon {
+      width:36px; height:36px; border-radius:12px;
+      border:1px solid rgba(0,0,0,.15);
+      display:flex; align-items:center; justify-content:center;
+      margin-bottom:.35rem;
+      background: linear-gradient(180deg, #f5f5f5, #dcdcdc);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.8);
+      font-size:1.2rem;
+    }
+
+    .hex-title {
+      font-weight:700; font-size:.9rem;
+      margin-bottom:.25rem;
+    }
+    .hex-desc {
+      font-size:.8rem;
+    }
+
+    .hex-group:hover {
+      transform: translateY(-8px);
+    }
+    .hex-group:hover .hex {
+      box-shadow: 0 12px 30px rgba(0,0,0,.4);
+    }
+
+    /* ===== Sessão texto ===== */
+    .intro {
+      margin-top: .5rem;
+      padding: 1.4rem 1.1rem 1.6rem;
+      background: rgba(205,224,224,.93);
+      border-radius: 1.5rem;
+      box-shadow: 0 10px 26px rgba(0,0,0,.2);
+      border: 1px solid rgba(255,255,255,.5);
+    }
+    .intro h1 {
+      font-family: "Poppins", system-ui, sans-serif;
+      font-size: clamp(1.4rem, 2.1vw, 1.9rem);
+      color: var(--bordo);
+      margin-bottom: .6rem;
+      letter-spacing: .02em;
+    }
+    .intro p {
+      font-size: .95rem;
+      line-height: 1.5;
+      margin-bottom: .55rem;
+    }
+    .intro p:last-child { margin-bottom: 0; }
+
+    /* ===== Rodapé ===== */
     footer {
       margin-top: auto;
       background: var(--header-footer);
       border-top: 3px solid var(--bordo);
-      text-align: center;
-      padding: .7rem 1rem;
-      font-size: .9rem;
-      color: var(--texto);
+      padding: .8rem 1rem 1rem;
+      font-size: .8rem;
+      color: #123;
+    }
+    footer .linha {
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:space-between;
+      gap:.5rem;
+      align-items:center;
+    }
+    footer a {
+      color: var(--bordo);
+      text-decoration: none;
+      font-weight: 600;
     }
 
     /* ===== Breakpoints ===== */
@@ -222,18 +519,40 @@
         justify-content:center; margin-top:2.3rem;
       }
       .hex-group {
-        width: 47%; height:auto; transform:none!important;
-        display:flex; flex-direction:column; align-items:center; gap:.3rem;
+        width:160px; height:210px;
+        transform:none !important;
       }
       .hex {
-        width:125px; height:108px;
-        background: rgba(255,255,255,0.9);
-        backdrop-filter: blur(2px);
+        width:140px; height:120px;
       }
-      .hex img { opacity: 1; }
-      .hex-btn {
-        position: static; transform:none; width:75%;
-        font-size:.62rem; padding:.25rem .6rem; border-width:2px;
+      .intro {
+        margin-top:1rem;
+      }
+    }
+
+    @media (max-width: 480px){
+      .menu-opcoes {
+        gap:1rem;
+      }
+      .hex-group {
+        width:140px; height:200px;
+      }
+      .hex {
+        width:130px; height:110px;
+      }
+      .intro {
+        padding:1.1rem 1rem 1.3rem;
+      }
+    }
+
+    @media (hover:hover){
+      .hex-group:hover .hex-btn {
+        transform:translateY(-1px);
+      }
+    }
+
+    @media (pointer:coarse){
+      .hex-group {
         opacity:1; border-radius:10px;
       }
       .hex-group:nth-child(2),
@@ -248,14 +567,22 @@
       .banner-desktop { display: block; }
       .banner-mobile  { display: none;  }
     }
+  
   </style>
 </head>
 <body>
   <header>
-    <img src="/logomarca.svg" alt="MostreAki">
-    <button class="hamburger" id="btn-menu" aria-label="Abrir menu">
-      <span></span><span></span><span></span>
-    </button>
+    <div class="header-left">
+      <img src="/logomarca.svg" alt="MostreAki">
+    </div>
+    <div class="header-right">
+      <button id="btnAbrirLogin" type="button">Entrar</button>
+      <div id="userCircle" title="Minha conta"></div>
+      <span id="authText">Sair</span>
+      <button class="hamburger" id="btn-menu" aria-label="Abrir menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
   </header>
 
   <!-- Menu lateral -->
@@ -270,6 +597,45 @@
     <a href="/contato.html" class="menu-link">Contato</a>
   </nav>
 
+  <!-- Modal de autenticação -->
+  <div id="authModal">
+    <div class="auth-card">
+      <button class="btn-close-modal" onclick="fecharModal()">&times;</button>
+      <h2>Entrar na sua conta</h2>
+      <div class="auth-sub">Use seu e-mail e senha cadastrados no MostreAki.</div>
+
+      <div class="field">
+        <label for="email">E-mail</label>
+        <input type="email" id="email" autocomplete="email" />
+      </div>
+
+      <div class="field">
+        <label for="senha">Senha</label>
+        <input type="password" id="senha" autocomplete="current-password" />
+        <label class="show-pass">
+          <input type="checkbox" id="chkMostrarSenha" />
+          Mostrar senha
+        </label>
+      </div>
+
+      <button id="btnEntrar" type="button">Entrar</button>
+
+      <div class="auth-links">
+        <a href="/recuperar-senha.html">Esqueci minha senha</a>
+        <a href="/cadastro.html">Ainda não tenho cadastro</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Alerta de sistema -->
+  <div id="alert">
+    <div class="alert-card">
+      <div class="alert-title" id="alertTitle">Aviso</div>
+      <div class="alert-msg" id="alertMsg"></div>
+      <div class="alert-actions" id="alertActions"></div>
+    </div>
+  </div>
+
   <main>
     <!-- ===== Carrossel 6 banners ===== -->
     <section class="banner-wrapper">
@@ -283,55 +649,86 @@
             <video src="parceiros-mobile-mostreaki.mp4" autoplay muted loop playsinline></video>
           </div>
           <div class="banner-slide banner-mobile">
-            <video src="servicos-adicionais-mobile-mostreaki.mp4" autoplay muted loop playsinline></video>
+            <video src="servicos-mobile-mostreaki.mp4" autoplay muted loop playsinline></video>
           </div>
 
           <!-- desktop -->
           <div class="banner-slide banner-desktop">
-            <video src="planos-desktop-mostreaki.mp4" autoplay muted loop></video>
+            <video src="planos-desktop-mostreaki.mp4" autoplay muted loop playsinline></video>
           </div>
           <div class="banner-slide banner-desktop">
-            <video src="parceiros-desktop-mostreaki.mp4" autoplay muted loop></video>
+            <video src="parceiros-desktop-mostreaki.mp4" autoplay muted loop playsinline></video>
           </div>
           <div class="banner-slide banner-desktop">
-            <video src="servicos-adicionais-desktop-mostreaki.mp4" autoplay muted loop></video>
+            <video src="servicos-desktop-mostreaki.mp4" autoplay muted loop playsinline></video>
           </div>
         </div>
-      </div>
-      <div class="banner-dots" id="bannerDots">
-        <div class="banner-dot active" data-index="0"></div>
-        <div class="banner-dot" data-index="1"></div>
-        <div class="banner-dot" data-index="2"></div>
+
+        <div class="banner-dots" aria-label="Navegação dos banners">
+          <button class="banner-dot active" data-index="0"></button>
+          <button class="banner-dot" data-index="1"></button>
+          <button class="banner-dot" data-index="2"></button>
+        </div>
       </div>
     </section>
 
     <!-- ===== Hexágonos ===== -->
-    <section class="menu-opcoes">
+    <section class="menu-opcoes" aria-label="Acessos principais">
       <div class="hex-group">
-        <div class="hex"><img src="como-funciona.png" alt="Como Funciona"></div>
-        <a href="/planos.html" class="hex-btn">Como Funciona?</a>
+        <div class="hex">
+          <a href="/planos.html" class="hex-btn">
+            <div class="hex-icon">💼</div>
+            <span class="hex-title">Planos</span>
+            <span class="hex-desc">Conheça as opções para ter sua vitrine digital.</span>
+          </a>
+        </div>
       </div>
+
       <div class="hex-group">
-        <div class="hex"><img src="instrucoes.png" alt="Instruções"></div>
-        <a href="/instrucoes.html" class="hex-btn">Instruções</a>
+        <div class="hex">
+          <a href="/parceiros.html" class="hex-btn">
+            <div class="hex-icon">🤝</div>
+            <span class="hex-title">Parceiros</span>
+            <span class="hex-desc">Veja quem já está fortalecendo a marca com o MostreAki.</span>
+          </a>
+        </div>
       </div>
+
       <div class="hex-group">
-        <div class="hex"><img src="servicos-adicionais.png" alt="Serviços Adicionais"></div>
-        <a href="/servicos-adicionais.html" class="hex-btn">Serviços Adicionais</a>
+        <div class="hex">
+          <a href="/servicos-adicionais.html" class="hex-btn">
+            <div class="hex-icon">🎨</div>
+            <span class="hex-title">Serviços Adicionais</span>
+            <span class="hex-desc">Artes, ajustes e soluções extras para sua presença digital.</span>
+          </a>
+        </div>
       </div>
+
       <div class="hex-group">
-        <div class="hex"><img src="parceiros.png" alt="Parceiros"></div>
-        <a href="/parceiros.html" class="hex-btn">Parceiros</a>
+        <div class="hex">
+          <a href="/redes-sociais.html" class="hex-btn">
+            <div class="hex-icon">📲</div>
+            <span class="hex-title">Redes Sociais</span>
+            <span class="hex-desc">Conecte seu catálogo à sua audiência.</span>
+          </a>
+        </div>
       </div>
-      <div class="hex-group">
-        <div class="hex"><img src="redes-sociais.png" alt="Redes Sociais"></div>
-        <a href="/redes-sociais.html" class="hex-btn">Redes Sociais</a>
-      </div>
+    </section>
+
+    <!-- ===== Texto institucional ===== -->
+    <section class="intro">
+      <h1>MostreAki: a vitrine digital da sua marca</h1>
+      <p>O MostreAki nasceu para dar visibilidade à sua marca, ao seu serviço, conteúdo e catálogo de produtos.</p>
+      <p>Nosso objetivo é exibir uma vitrine digital acessível, organizada e integrada com as redes sociais, para que o seu cliente encontre tudo o que precisa em poucos cliques.</p>
+      <p>Enquanto você cuida do seu trabalho, nós cuidamos da apresentação da sua marca no ambiente digital.</p>
     </section>
   </main>
 
   <footer>
-    © 2025 MostreAki - Todos os direitos reservados.
+    <div class="linha">
+      <span>&copy; <span id="ano"></span> MostreAki. Todos os direitos reservados.</span>
+      <span>Desenvolvido por <a href="https://mostreaki.com.br">MostreAki</a></span>
+    </div>
   </footer>
 
   <script>
@@ -350,7 +747,7 @@
     const dots  = document.querySelectorAll(".banner-dot");
     const slider= document.getElementById("bannerSlider");
     let current = 0;
-    const total = 3; // 3 dots, um por grupo
+    const total  = 3;
 
     function setSlide(index) {
       current = Math.max(0, Math.min(total - 1, index));
@@ -390,6 +787,269 @@
 
     window.addEventListener("resize", () => setSlide(current));
     setSlide(0);
+
+    // Ano no rodapé
+    const spanAno = document.getElementById('ano');
+    if (spanAno) spanAno.textContent = new Date().getFullYear();
   </script>
+
+  <script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { 
+  getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, sendEmailVerification, updateProfile 
+} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import { getFirestore, collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+import { getStorage } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
+
+const app = initializeApp({
+  apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
+  authDomain: "mostreaki-2025.firebaseapp.com",
+  projectId: "mostreaki-2025",
+  storageBucket: "mostreaki-2025.firebasestorage.app",
+  messagingSenderId: "748712068097",
+  appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
+});
+const auth = getAuth(app);
+const db = getFirestore(app);
+const storage = getStorage(app);
+
+/* ===== helpers UI ===== */
+const $ = (id) => document.getElementById(id);
+const modal = $("authModal");
+const btnAbrir = $("btnAbrirLogin");
+const authText = $("authText");
+const userCircle = $("userCircle");
+
+function abrirModal() { 
+  if (!modal) return;
+  modal.style.display = "flex"; 
+  document.body.style.overflow = "hidden"; 
+}
+window.fecharModal = function() { 
+  if (!modal) return;
+  modal.style.display = "none"; 
+  document.body.style.overflow = ""; 
+}
+if (btnAbrir) {
+  btnAbrir.addEventListener("click", abrirModal);
+}
+if (modal) {
+  modal.addEventListener("click", e => { if (e.target === modal) fecharModal(); });
+}
+window.addEventListener("keydown", e => { if (e.key === "Escape" && modal && modal.style.display === "flex") fecharModal(); });
+
+/* ===== alerta brand ===== */
+const alertBG = document.getElementById('alert');
+const alertTitle = document.getElementById('alertTitle');
+const alertMsg = document.getElementById('alertMsg');
+const alertActions = document.getElementById('alertActions');
+function showAlert({ title = "Aviso", html = "", actions = [{ text: "Fechar", kind: "solid" }] }) {
+  if (!alertBG || !alertTitle || !alertMsg || !alertActions) return;
+  alertTitle.textContent = title;
+  alertMsg.innerHTML = html;
+  alertActions.innerHTML = "";
+  actions.forEach(a => {
+    const b = document.createElement('button');
+    b.className = (a.kind === 'ghost' ? 'btn-ghost' : 'btn-solid');
+    b.textContent = a.text;
+    b.onclick = () => { if (a.onClick) a.onClick(); closeAlert(); };
+    alertActions.appendChild(b);
+  });
+  alertBG.style.display = 'flex';
+}
+function closeAlert() { 
+  if (!alertBG) return;
+  alertBG.style.display = 'none'; 
+}
+
+/* ===== mostrar senha via checkbox ===== */
+(function wireShowPassword() {
+  const input = $("senha"), chk = $("chkMostrarSenha");
+  if (!input || !chk) return;
+  const apply = () => { input.type = chk.checked ? 'text' : 'password'; };
+  chk.addEventListener('change', apply);
+})();
+
+/* ===== login ===== */
+const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const emailValido = v => emailRe.test(v);
+function getState() {
+  const now = Date.now();
+  const s = JSON.parse(sessionStorage.getItem('loginState') || '{}');
+  if (!s.lockUntil) s.lockUntil = 0;
+  if (!s.failCount) s.failCount = 0;
+  if (!s.blockMult) s.blockMult = 1;
+  if (now > s.lockUntil) s.lockUntil = 0;
+  return s;
+}
+function setState(s) { 
+  sessionStorage.setItem('loginState', JSON.stringify(s)); 
+}
+function isLocked() { 
+  const s = getState(); 
+  return s.lockUntil && Date.now() < s.lockUntil; 
+}
+function lockMore() {
+  const s = getState();
+  const base = 30000;
+  s.blockMult = Math.min(s.blockMult * 2, 8);
+  s.lockUntil = Date.now() + base * s.blockMult;
+  setState(s);
+}
+function incFail() {
+  const s = getState();
+  s.failCount = (s.failCount || 0) + 1;
+  if (s.failCount >= 5) { s.failCount = 0; lockMore(); }
+  setState(s);
+}
+function resetFails() { 
+  setState({ failCount: 0, blockMult: 1, lockUntil: 0 }); 
+}
+function showLockMsg() {
+  const s = getState();
+  const secs = Math.ceil((s.lockUntil - Date.now()) / 1000);
+  showAlert({ title: "Muitas tentativas", html: `Aguarde <b>${secs}s</b> para tentar novamente.` });
+}
+
+// Registrar log no Firestore
+async function logLogin(email, status, errorCode = null) {
+  try {
+    await addDoc(collection(db, 'logs_login'), {
+      email,
+      status,
+      errorCode,
+      timestamp: serverTimestamp(),
+      userAgent: navigator.userAgent
+    });
+  } catch (e) {
+    console.error('Erro ao registrar log:', e);
+  }
+}
+
+// Atualizar foto de perfil no Storage (URL já salva no usuário)
+async function updateFotoPerfil(user, photoURL) {
+  if (photoURL) {
+    try {
+      await updateProfile(user, { photoURL });
+      localStorage.setItem("fotoPerfil", photoURL);
+    } catch (e) {
+      console.error('Erro ao atualizar foto de perfil:', e);
+    }
+  }
+}
+
+async function loginEmailSenha() {
+  if (isLocked()) return showLockMsg();
+
+  const emailInput = $("email");
+  const senhaInput = $("senha");
+  const email = emailInput ? emailInput.value.trim() : "";
+  const senha = senhaInput ? senhaInput.value : "";
+
+  if (!email) {
+    incFail();
+    await logLogin(email || "", 'erro', 'email_vazio');
+    return showAlert({ title: "E-mail vazio", html: "Digite seu e-mail para continuar." });
+  }
+  if (!emailValido(email)) {
+    incFail();
+    await logLogin(email, 'erro', 'email_invalido');
+    return showAlert({ title: "E-mail inválido", html: "Revise o endereço digitado." });
+  }
+  if (!senha) {
+    incFail();
+    await logLogin(email, 'erro', 'senha_vazia');
+    return showAlert({ title: "Senha vazia", html: "Digite sua senha para continuar." });
+  }
+
+  try {
+    const cred = await signInWithEmailAndPassword(auth, email, senha);
+
+    if (!cred.user.emailVerified) {
+      await sendEmailVerification(cred.user);
+      await logLogin(email, 'email_nao_verificado');
+      showAlert({
+        title: "Confirme seu e-mail",
+        html: `Seu e-mail ainda não foi verificado.<br>Reenviamos o link para <b>${email}</b>. Verifique sua caixa de entrada (ou spam) e tente novamente após confirmar.`
+      });
+      return;
+    }
+
+    resetFails();
+    await logLogin(email, 'sucesso');
+    await updateFotoPerfil(cred.user, cred.user.photoURL);
+    fecharModal();
+    location.href = "/minha-conta.html";
+
+  } catch (e) {
+    incFail();
+    await logLogin(email, 'erro', e.code);
+    const codes = ["auth/invalid-credential", "auth/wrong-password", "auth/user-not-found"];
+    if (codes.includes(e.code)) {
+      if (isLocked()) return showLockMsg();
+      return showAlert({
+        title: "Não conseguimos entrar",
+        html: "E-mail e/ou senha incorretos. Você pode tentar novamente ou recuperar a senha.",
+        actions: [
+          { text: "Recuperar senha", kind: "ghost", onClick: () => location.href = "/recuperar-senha.html" },
+          { text: "Cadastrar", kind: "ghost", onClick: () => location.href = "/cadastro.html" },
+          { text: "Fechar", kind: "solid" }
+        ]
+      });
+    }
+    if (e.code === "auth/too-many-requests") {
+      lockMore();
+      return showLockMsg();
+    }
+    if (e.code === "auth/invalid-email") {
+      return showAlert({ title: "E-mail inválido", html: "Revise o endereço digitado." });
+    }
+    showAlert({ title: "Erro", html: `Erro inesperado (${e.code}). Tente novamente.` });
+  }
+}
+
+const btnEntrar = document.getElementById("btnEntrar");
+if (btnEntrar) {
+  btnEntrar.onclick = loginEmailSenha;
+}
+document.addEventListener('keydown', e => { if (e.key === 'Enter' && modal && modal.style.display === 'flex') loginEmailSenha(); });
+
+/* ===== estado de auth: avatar/entrar/sair ===== */
+onAuthStateChanged(auth, (user) => {
+  const fotoURL = localStorage.getItem("fotoPerfil") || (user && user.photoURL);
+  if (user) {
+    if (fotoURL && userCircle) {
+      userCircle.style.backgroundImage = `url('${fotoURL}')`;
+      userCircle.textContent = "";
+    } else if (userCircle) {
+      const nome = (user.displayName || user.email || "?").trim();
+      userCircle.textContent = nome.charAt(0).toUpperCase();
+      userCircle.style.backgroundImage = "";
+    }
+    if (userCircle) userCircle.style.display = "flex";
+    if (authText) authText.style.display = "inline";
+    if (btnAbrir) btnAbrir.style.display = "none";
+  } else {
+    if (userCircle) userCircle.style.display = "none";
+    if (authText) authText.style.display = "none";
+    if (btnAbrir) btnAbrir.style.display = "inline-block";
+  }
+});
+
+/* ===== sair ===== */
+if (authText) {
+  authText.addEventListener("click", async () => {
+    try {
+      await signOut(auth);
+      await logLogin('desconhecido', 'logout');
+      localStorage.removeItem("fotoPerfil");
+      location.reload();
+    } catch (e) {
+      showAlert({ title: "Sair", html: "Não foi possível sair. Tente de novo." });
+    }
+  });
+}
+  </script>
+
 </body>
 </html>
