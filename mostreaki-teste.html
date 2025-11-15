@@ -2,305 +2,396 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Teste Login MostreAki</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>MostreAki – Teste de Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <style>
     :root {
-      --cor-fundo: #92a9a6;
-      --cor-header: #cde0dd;
-      --cor-magenta: #7d2f59;
-      --cor-magenta-clara: #af91a1;
-      --cor-botao: #7d2f59;
-      --cor-botao-texto: #fff;
-      --cor-alert-bg: rgba(0,0,0,.55);
-      --cor-card-alert: #f5f0f4;
-      --cor-texto: #123;
+      --fundo: #92a9a6;
+      --bordo: #7d2f59;
+      --bordo-escuro: #5d2343;
+      --grad1: #d9d9d9;
+      --grad2: #af91a1;
+      --cards-bg: #e7f0f3;
+      --texto-escuro: #003735;
+      --branco: #ffffff;
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
     body {
-      background: radial-gradient(circle at top, #a8b9b6 0, #92a9a6 40%, #7f9692 100%);
-      color: var(--cor-texto);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--fundo);
+      color: var(--texto-escuro);
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* HEADER */
+    /* ===== HEADER / CABEÇALHO ===== */
     header {
-      background: var(--cor-header);
-      padding: .6rem 1rem;
+      background: #c3d2d4;
+      padding: .7rem 1rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      box-shadow: 0 2px 6px rgba(0,0,0,.08);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      box-shadow: 0 2px 6px rgba(0,0,0,.12);
     }
 
-    .logo-area {
+    .logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+    }
+
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(180deg, #cee3f2, #cfcfcf);
+      border-radius: 6px;
+      position: relative;
+      box-shadow: 0 0 0 2px #003735;
+    }
+
+    .logo-text {
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: .02em;
+      display: flex;
+      gap: .1rem;
+    }
+    .logo-text span:nth-child(1) { color: #003735; }
+    .logo-text span:nth-child(2) { color: var(--bordo); }
+
+    /* Botão Entrar + user circle */
+    .header-right {
       display: flex;
       align-items: center;
       gap: .5rem;
     }
 
-    .logo-mark {
-      width: 34px;
-      height: 34px;
-      border-radius: 6px;
-      background: linear-gradient(180deg, #003735 0, #7d2f59 100%);
-    }
-
-    .logo-text-main {
-      font-weight: 700;
-      color: #003735;
-      font-size: 1.25rem;
-    }
-    .logo-text-sub {
-      font-weight: 700;
-      color: #7d2f59;
-      font-size: 1.25rem;
-    }
-
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: .75rem;
-    }
-
     #btnAbrirLogin {
-      border: none;
-      padding: .4rem 1.1rem;
       border-radius: 999px;
-      background: var(--cor-botao);
-      color: var(--cor-botao-texto);
+      border: none;
+      padding: .45rem 1.1rem;
       font-weight: 600;
+      color: #fff;
+      background: var(--bordo);
+      box-shadow: 0 2px 6px rgba(0,0,0,.25);
       cursor: pointer;
-      box-shadow: 0 3px 10px rgba(0,0,0,.18);
-      transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
-      font-size: .95rem;
+      font-size: .9rem;
+      transition: transform .15s, box-shadow .15s, background .15s;
     }
     #btnAbrirLogin:hover {
       transform: translateY(-1px);
-      box-shadow: 0 4px 14px rgba(0,0,0,.22);
-      background: #5e2342;
-    }
-
-    #authText {
-      font-size: .9rem;
-      color: var(--cor-magenta);
-      font-weight: 600;
-      cursor: pointer;
-      display: none;
+      background: var(--bordo-escuro);
+      box-shadow: 0 3px 10px rgba(0,0,0,.3);
     }
 
     #userCircle {
-      width: 36px;
-      height: 36px;
-      border-radius: 999px;
-      background: #7d2f59;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--bordo);
       color: #fff;
-      display: none;
+      display: none; /* começa escondido */
       align-items: center;
       justify-content: center;
       font-weight: 700;
-      font-size: .95rem;
+      font-size: .9rem;
       background-size: cover;
       background-position: center;
-      box-shadow: 0 0 0 2px #f2e7ee;
       cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,.25);
     }
 
+    #authText {
+      display: none;
+      font-size: .85rem;
+      color: var(--bordo);
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    /* Menu hamburguer */
+    .menu-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 999px;
+      border: 2px solid var(--bordo);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      background: transparent;
+      position: relative;
+    }
+
+    .menu-icon,
+    .menu-icon::before,
+    .menu-icon::after {
+      content: "";
+      display: block;
+      width: 20px;
+      height: 2px;
+      background: var(--bordo);
+      border-radius: 999px;
+      transition: transform .2s, opacity .2s;
+    }
+    .menu-icon::before {
+      position: relative;
+      top: -6px;
+    }
+    .menu-icon::after {
+      position: relative;
+      top: 6px;
+    }
+
+    /* Tarja bordô logo abaixo do header */
+    .header-strip {
+      height: 4px;
+      background: var(--bordo);
+      box-shadow: 0 2px 4px rgba(0,0,0,.15);
+    }
+
+    /* ===== MENU LATERAL ===== */
+    nav#menu {
+      display: none;
+      position: fixed;
+      inset: 60px 0 0 auto;
+      width: min(380px, 80vw);
+      background: rgba(0,0,0,.25);
+      z-index: 18;
+    }
+    nav#menu.open {
+      display: block;
+    }
+    .menu-panel {
+      background: #c3d2d4;
+      height: 100%;
+      padding: 1.5rem 1.25rem;
+      box-shadow: -2px 0 8px rgba(0,0,0,.25);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .menu-link {
+      width: 210px;
+      max-width: 92vw;
+      align-self: center;
+      white-space: nowrap;
+      background: linear-gradient(180deg, var(--grad1), var(--grad2));
+      border-radius: 999px;
+      padding: .55rem 1rem;
+      text-align: center;
+      color: var(--bordo);
+      text-decoration: none;
+      font-weight: 600;
+      border: 2px solid rgba(0,0,0,.12);
+      box-shadow: 0 2px 6px rgba(0,0,0,.1);
+      font-size: .95rem;
+    }
+
+    /* ===== MAIN DEMO ===== */
     main {
-      padding: 1.5rem 1rem;
+      padding: 1.5rem 1rem 3rem;
+    }
+
+    .demo-box {
       max-width: 700px;
       margin: 0 auto;
-      text-align: center;
+      background: var(--cards-bg);
+      border-radius: 1.25rem;
+      padding: 1.5rem;
+      box-shadow: 0 6px 14px rgba(0,0,0,.2);
     }
 
-    h1 {
-      font-size: 1.8rem;
-      margin-bottom: .5rem;
-      color: #003735;
-    }
-    p.desc {
-      font-size: .95rem;
-      color: #123;
-      max-width: 480px;
-      margin: 0 auto 1.5rem;
+    .demo-box h1 {
+      font-size: 1.4rem;
+      margin-bottom: .75rem;
+      color: var(--bordo-escuro);
     }
 
-    /* MODAL LOGIN */
-    .modal-backdrop {
+    .demo-box p {
+      margin-bottom: 1rem;
+      line-height: 1.5;
+    }
+
+    /* ===== MODAL LOGIN ===== */
+    #authModal {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,.5);
+      background: rgba(0,0,0,.55);
       display: none;
       align-items: center;
       justify-content: center;
-      z-index: 50;
+      z-index: 30;
     }
-    .modal {
-      background: #f7f4f8;
-      border-radius: 16px;
-      padding: 1.5rem 1.25rem 1.25rem;
-      max-width: 360px;
-      width: 92%;
-      box-shadow: 0 10px 35px rgba(0,0,0,.35);
+
+    .auth-card {
+      background: #f4f7f9;
+      border-radius: 1.25rem;
+      width: min(420px, 92vw);
+      padding: 1.5rem 1.75rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,.45);
       position: relative;
-      border-top: 5px solid var(--cor-magenta);
     }
-    .modal h2 {
-      font-size: 1.3rem;
-      margin-bottom: .25rem;
-      color: #003735;
+
+    .auth-card h2 {
+      font-size: 1.2rem;
+      margin-bottom: .5rem;
+      color: var(--bordo-escuro);
     }
-    .modal p {
-      font-size: .85rem;
-      color: #444;
+    .auth-sub {
+      font-size: .9rem;
+      color: #555;
+      margin-bottom: 1.1rem;
+    }
+
+    .field {
       margin-bottom: 1rem;
     }
-    .modal .close {
-      position: absolute;
-      top: .5rem;
-      right: .7rem;
-      border: none;
-      background: transparent;
-      font-size: 1.3rem;
-      cursor: pointer;
-      color: #777;
-    }
-    .field {
-      text-align: left;
-      margin-bottom: .75rem;
-    }
     .field label {
+      font-size: .85rem;
+      font-weight: 600;
       display: block;
-      font-size: .8rem;
-      margin-bottom: .25rem;
-      color: #333;
+      margin-bottom: .15rem;
     }
     .field input[type="email"],
-    .field input[type="password"] {
+    .field input[type="password"],
+    .field input[type="text"] {
       width: 100%;
-      padding: .6rem .7rem;
-      border-radius: 10px;
-      border: 1px solid #c9b6c5;
+      border-radius: .7rem;
+      border: 1px solid #b7c2ca;
+      padding: .6rem .75rem;
       font-size: .9rem;
       outline: none;
-      background: #fff;
+      transition: border .15s, box-shadow .15s;
     }
     .field input:focus {
-      border-color: var(--cor-magenta);
-      box-shadow: 0 0 0 1px rgba(125,47,89,.25);
+      border-color: var(--bordo);
+      box-shadow: 0 0 0 2px rgba(125,47,89,.25);
     }
-    .field-inline {
+
+    .show-pass {
       display: flex;
       align-items: center;
-      gap: .4rem;
+      gap: .35rem;
+      margin-top: .25rem;
       font-size: .8rem;
-      color: #555;
-    }
-    .field-inline input {
-      width: auto;
+      color: #444;
     }
 
     #btnEntrar {
-      margin-top: .6rem;
       width: 100%;
-      padding: .65rem;
       border-radius: 999px;
       border: none;
-      background: var(--cor-botao);
-      color: white;
+      padding: .65rem;
+      margin-top: .25rem;
+      background: var(--bordo);
+      color: #fff;
       font-weight: 600;
-      cursor: pointer;
       font-size: .95rem;
-      box-shadow: 0 4px 16px rgba(0,0,0,.25);
+      cursor: pointer;
+      box-shadow: 0 3px 10px rgba(0,0,0,.4);
+      transition: background .15s, transform .15s, box-shadow .15s;
     }
     #btnEntrar:hover {
-      background: #5e2342;
+      background: var(--bordo-escuro);
+      transform: translateY(-1px);
+      box-shadow: 0 5px 16px rgba(0,0,0,.55);
     }
 
-    .modal-links {
-      margin-top: .6rem;
-      display: flex;
-      flex-direction: column;
-      gap: .3rem;
+    .auth-links {
+      margin-top: .85rem;
       font-size: .8rem;
-      text-align: left;
+      display: flex;
+      justify-content: space-between;
+      gap: .5rem;
+      flex-wrap: wrap;
     }
-    .modal-links a {
-      color: var(--cor-magenta);
+    .auth-links a {
+      color: var(--bordo-escuro);
       text-decoration: none;
       font-weight: 600;
     }
 
-    /* ALERTA */
+    .btn-close-modal {
+      position: absolute;
+      top: .6rem;
+      right: .8rem;
+      border: none;
+      background: transparent;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #888;
+    }
+
+    /* ===== ALERTA BRAND ===== */
     #alert {
       position: fixed;
       inset: 0;
       display: none;
       align-items: center;
       justify-content: center;
-      background: var(--cor-alert-bg);
-      z-index: 60;
+      background: rgba(0,0,0,.6);
+      z-index: 40;
     }
-    .alert-box {
-      background: var(--cor-card-alert);
-      border-radius: 14px;
-      padding: 1.1rem .9rem .8rem;
-      max-width: 320px;
-      width: 90%;
-      box-shadow: 0 10px 30px rgba(0,0,0,.4);
-      border-left: 4px solid var(--cor-magenta);
+
+    .alert-card {
+      width: min(380px, 90vw);
+      background: #fefefe;
+      border-radius: 1.1rem;
+      padding: 1.25rem 1.4rem 1.1rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,.45);
     }
     .alert-title {
       font-weight: 700;
-      font-size: 1rem;
-      margin-bottom: .3rem;
-      color: #2a1a28;
+      margin-bottom: .4rem;
+      color: var(--bordo-escuro);
     }
     .alert-msg {
-      font-size: .85rem;
-      color: #463545;
-      margin-bottom: .7rem;
+      font-size: .9rem;
+      margin-bottom: .9rem;
+      color: #333;
     }
     .alert-actions {
       display: flex;
       justify-content: flex-end;
-      gap: .4rem;
+      gap: .5rem;
     }
+
     .btn-solid,
     .btn-ghost {
-      font-size: .8rem;
-      padding: .4rem .75rem;
       border-radius: 999px;
+      padding: .4rem .9rem;
+      font-size: .85rem;
       cursor: pointer;
       border: none;
       font-weight: 600;
     }
     .btn-solid {
-      background: var(--cor-magenta);
+      background: var(--bordo);
       color: #fff;
     }
     .btn-ghost {
       background: transparent;
-      color: var(--cor-magenta);
-      border: 1px solid rgba(125,47,89,.5);
+      color: var(--bordo-escuro);
     }
 
-    @media (min-width: 720px) {
+    @media (min-width: 768px) {
       header {
         padding-inline: 2.5rem;
       }
       main {
-        padding-top: 2rem;
+        padding-inline: 2.5rem;
       }
     }
   </style>
@@ -308,341 +399,374 @@
 <body>
 
 <header>
-  <div class="logo-area">
-    <div class="logo-mark"></div>
-    <div>
-      <span class="logo-text-main">Mostre</span><span class="logo-text-sub">Aki</span>
+  <div class="logo-wrap">
+    <div class="logo-icon"></div>
+    <div class="logo-text">
+      <span>Mostre</span><span>Aki</span>
     </div>
   </div>
 
   <div class="header-right">
     <button id="btnAbrirLogin" type="button">Entrar</button>
-    <span id="authText" title="Sair da conta">Sair</span>
+
     <div id="userCircle" title="Minha conta"></div>
+    <span id="authText">Sair</span>
+
+    <button class="menu-btn" type="button" onclick="toggleMenu()">
+      <span class="menu-icon"></span>
+    </button>
   </div>
 </header>
 
+<div class="header-strip"></div>
+
+<nav id="menu">
+  <div class="menu-panel">
+    <a class="menu-link" href="sobre.html">Sobre</a>
+    <a class="menu-link" href="minha-conta.html">Minha Conta</a>
+    <a class="menu-link" href="planos.html">Planos</a>
+    <a class="menu-link" href="parceiros.html">Parceiros</a>
+    <a class="menu-link" href="servicos-adicionais.html">Serviços Adicionais</a>
+    <a class="menu-link" href="redes-sociais.html">Redes Sociais</a>
+    <a class="menu-link" href="contato.html">Contato</a>
+  </div>
+</nav>
+
 <main>
-  <h1>Teste de Login MostreAki</h1>
-  <p class="desc">
-    Este é um ambiente de <b>teste</b> só para verificar o comportamento do botão <b>Entrar</b>,
-    do <b>user circle</b> e do modal de login com Firebase Auth.
-  </p>
+  <div class="demo-box">
+    <h1>Teste de Login MostreAki</h1>
+    <p>
+      Este é só um arquivo de teste: o objetivo é validar o comportamento do botão
+      <b>Entrar</b>, do <b>userCircle</b> com foto vinda do Firebase Storage e dos
+      alertas personalizados.
+    </p>
+    <p>
+      Depois que estiver tudo ok, pegamos apenas a parte de
+      <b>header + modais + script</b> e encaixamos na <code>index.html</code>
+      oficial, sem mexer na estrutura dos hexágonos nem do restante da página.
+    </p>
+  </div>
 </main>
 
 <!-- MODAL LOGIN -->
-<div class="modal-backdrop" id="authModal">
-  <div class="modal">
-    <button class="close" onclick="fecharModal()">×</button>
+<div id="authModal">
+  <div class="auth-card">
+    <button class="btn-close-modal" onclick="fecharModal()">&times;</button>
     <h2>Entrar na sua conta</h2>
-    <p>Use o e-mail e senha cadastrados para acessar sua conta MostreAki.</p>
-
-    <div class="field">
-      <label for="email">E-mail</label>
-      <input type="email" id="email" autocomplete="email" placeholder="voce@exemplo.com">
+    <div class="auth-sub">
+      Use seu e-mail e senha cadastrados no MostreAki.
     </div>
 
     <div class="field">
+      <label for="email">E-mail</label>
+      <input type="email" id="email" autocomplete="email">
+    </div>
+    <div class="field">
       <label for="senha">Senha</label>
-      <input type="password" id="senha" autocomplete="current-password" placeholder="Sua senha">
-      <div class="field-inline">
+      <input type="password" id="senha" autocomplete="current-password">
+      <label class="show-pass">
         <input type="checkbox" id="chkMostrarSenha">
-        <label for="chkMostrarSenha">Mostrar senha</label>
-      </div>
+        Mostrar senha
+      </label>
     </div>
 
     <button id="btnEntrar" type="button">Entrar</button>
 
-    <div class="modal-links">
-      <a href="/recuperar-senha.html">Esqueci minha senha</a>
-      <a href="/cadastro.html">Criar nova conta</a>
+    <div class="auth-links">
+      <a href="recuperar-senha.html">Esqueci minha senha</a>
+      <a href="cadastro.html">Ainda não tenho conta</a>
     </div>
   </div>
 </div>
 
 <!-- ALERTA -->
 <div id="alert">
-  <div class="alert-box">
-    <div class="alert-title" id="alertTitle">Aviso</div>
-    <div class="alert-msg" id="alertMsg"></div>
-    <div class="alert-actions" id="alertActions"></div>
+  <div class="alert-card">
+    <div id="alertTitle" class="alert-title"></div>
+    <div id="alertMsg" class="alert-msg"></div>
+    <div id="alertActions" class="alert-actions"></div>
   </div>
 </div>
 
 <!-- Firebase + Script -->
 <script type="module">
-  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-  import {
-    getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword,
-    sendEmailVerification, updateProfile
-  } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-  import {
-    getFirestore, collection, addDoc, serverTimestamp
-  } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-  import {
-    getStorage
-  } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { 
+  getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword,
+  sendEmailVerification, updateProfile 
+} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import { getFirestore, collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+import { getStorage, ref, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
 
-  const app = initializeApp({
-    apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
-    authDomain: "mostreaki-2025.firebaseapp.com",
-    projectId: "mostreaki-2025",
-    storageBucket: "mostreaki-2025.firebasestorage.app",
-    messagingSenderId: "748712068097",
-    appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
+const app = initializeApp({
+  apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
+  authDomain: "mostreaki-2025.firebaseapp.com",
+  projectId: "mostreaki-2025",
+  storageBucket: "mostreaki-2025.firebasestorage.app",
+  messagingSenderId: "748712068097",
+  appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
+});
+const auth = getAuth(app);
+const db = getFirestore(app);
+const storage = getStorage(app);
+
+/* ===== helpers UI ===== */
+const $ = (id) => document.getElementById(id);
+const modal = $("authModal");
+const btnAbrir = $("btnAbrirLogin");
+const authText = $("authText");
+const userCircle = $("userCircle");
+
+function abrirModal() {
+  modal.style.display = "flex";
+  document.body.style.overflow = "hidden";
+}
+window.fecharModal = function() {
+  modal.style.display = "none";
+  document.body.style.overflow = "";
+}
+btnAbrir.addEventListener("click", abrirModal);
+modal.addEventListener("click", e => { if (e.target === modal) fecharModal(); });
+window.addEventListener("keydown", e => { if (e.key === "Escape" && modal.style.display === "flex") fecharModal(); });
+
+/* ===== ALERTA BRAND ===== */
+const alertBG = document.getElementById('alert');
+const alertTitle = document.getElementById('alertTitle');
+const alertMsg = document.getElementById('alertMsg');
+const alertActions = document.getElementById('alertActions');
+
+function showAlert({ title = "Aviso", html = "", actions = [{ text: "Fechar", kind: "solid" }] }) {
+  alertTitle.textContent = title;
+  alertMsg.innerHTML = html;
+  alertActions.innerHTML = "";
+  actions.forEach(a => {
+    const b = document.createElement('button');
+    b.className = (a.kind === 'ghost' ? 'btn-ghost' : 'btn-solid');
+    b.textContent = a.text;
+    b.onclick = () => { if (a.onClick) a.onClick(); closeAlert(); };
+    alertActions.appendChild(b);
   });
+  alertBG.style.display = 'flex';
+}
+function closeAlert() {
+  alertBG.style.display = 'none';
+}
 
-  const auth = getAuth(app);
-  const db   = getFirestore(app);
-  const storage = getStorage(app);
+/* ===== mostrar senha via checkbox ===== */
+(function wireShowPassword() {
+  const input = $("senha"), chk = $("chkMostrarSenha");
+  if (!input || !chk) return;
+  const apply = () => { input.type = chk.checked ? 'text' : 'password'; };
+  chk.addEventListener('change', apply);
+})();
 
-  /* helpers */
-  const $ = (id) => document.getElementById(id);
-  const modal = $("authModal");
-  const btnAbrir = $("btnAbrirLogin");
-  const authText = $("authText");
-  const userCircle = $("userCircle");
+/* ===== STATE LOGIN (trava progressiva) ===== */
+const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const emailValido = v => emailRe.test(v);
 
-  function abrirModal() {
-    modal.style.display = "flex";
-    document.body.style.overflow = "hidden";
-  }
-  window.fecharModal = function() {
-    modal.style.display = "none";
-    document.body.style.overflow = "";
-  };
+function getState() {
+  const now = Date.now();
+  const s = JSON.parse(sessionStorage.getItem('loginState') || '{}');
+  if (!s.lockUntil) s.lockUntil = 0;
+  if (!s.failCount) s.failCount = 0;
+  if (!s.blockMult) s.blockMult = 1;
+  if (now > s.lockUntil) s.lockUntil = 0;
+  return s;
+}
+function setState(s) {
+  sessionStorage.setItem('loginState', JSON.stringify(s));
+}
+function isLocked() {
+  const s = getState();
+  return s.lockUntil && Date.now() < s.lockUntil;
+}
+function lockMore() {
+  const s = getState();
+  const base = 30000; // 30s
+  s.blockMult = Math.min(s.blockMult * 2, 8);
+  s.lockUntil = Date.now() + base * s.blockMult;
+  setState(s);
+}
+function incFail() {
+  const s = getState();
+  s.failCount = (s.failCount || 0) + 1;
+  if (s.failCount >= 5) { s.failCount = 0; lockMore(); }
+  setState(s);
+}
+function resetFails() {
+  setState({ failCount: 0, blockMult: 1, lockUntil: 0 });
+}
+function showLockMsg() {
+  const s = getState();
+  const secs = Math.ceil((s.lockUntil - Date.now()) / 1000);
+  showAlert({ title: "Muitas tentativas", html: `Aguarde <b>${secs}s</b> para tentar novamente.` });
+}
 
-  btnAbrir.addEventListener("click", abrirModal);
-  modal.addEventListener("click", e => {
-    if (e.target === modal) fecharModal();
-  });
-  window.addEventListener("keydown", e => {
-    if (e.key === "Escape" && modal.style.display === "flex") fecharModal();
-  });
-
-  /* alerta brand */
-  const alertBG = $("alert");
-  const alertTitle = $("alertTitle");
-  const alertMsg = $("alertMsg");
-  const alertActions = $("alertActions");
-
-  function showAlert({ title = "Aviso", html = "", actions = [{ text: "Fechar", kind: "solid" }] }) {
-    alertTitle.textContent = title;
-    alertMsg.innerHTML = html;
-    alertActions.innerHTML = "";
-    actions.forEach(a => {
-      const b = document.createElement("button");
-      b.className = a.kind === "ghost" ? "btn-ghost" : "btn-solid";
-      b.textContent = a.text;
-      b.onclick = () => {
-        if (a.onClick) a.onClick();
-        closeAlert();
-      };
-      alertActions.appendChild(b);
+/* ===== LOG NO FIRESTORE ===== */
+async function logLogin(email, status, errorCode = null) {
+  try {
+    await addDoc(collection(db, 'logs_login'), {
+      email,
+      status,
+      errorCode,
+      timestamp: serverTimestamp(),
+      userAgent: navigator.userAgent
     });
-    alertBG.style.display = "flex";
+  } catch (e) {
+    console.error('Erro ao registrar log:', e);
   }
-  function closeAlert() {
-    alertBG.style.display = "none";
-  }
+}
 
-  /* mostrar senha */
-  (function wireShowPassword() {
-    const input = $("senha"), chk = $("chkMostrarSenha");
-    if (!input || !chk) return;
-    const apply = () => { input.type = chk.checked ? "text" : "password"; };
-    chk.addEventListener("change", apply);
-  })();
+/* ===== AVATAR NO STORAGE =====
+   Ajuste o caminho conforme você já usa no projeto:
+   aqui suponho "avatars/{uid}.jpg"
+*/
+async function buscarAvatarStorage(user) {
+  try {
+    const avatarRef = ref(storage, `avatars/${user.uid}.jpg`);
+    const url = await getDownloadURL(avatarRef);
+    return url;
+  } catch (e) {
+    console.info('Nenhum avatar encontrado no Storage, usando photoURL se existir.');
+    return user.photoURL || null;
+  }
+}
 
-  /* bloqueio progressivo */
-  const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-  const emailValido = v => emailRe.test(v);
+async function aplicarAvatarNoCircle(user) {
+  const fotoLocal = localStorage.getItem("fotoPerfil");
+  let url = fotoLocal;
 
-  function getState() {
-    const now = Date.now();
-    const s = JSON.parse(sessionStorage.getItem("loginState") || "{}");
-    if (!s.lockUntil) s.lockUntil = 0;
-    if (!s.failCount) s.failCount = 0;
-    if (!s.blockMult) s.blockMult = 1;
-    if (now > s.lockUntil) s.lockUntil = 0;
-    return s;
-  }
-  function setState(s) {
-    sessionStorage.setItem("loginState", JSON.stringify(s));
-  }
-  function isLocked() {
-    const s = getState();
-    return s.lockUntil && Date.now() < s.lockUntil;
-  }
-  function lockMore() {
-    const s = getState();
-    const base = 30000;
-    s.blockMult = Math.min(s.blockMult * 2, 8);
-    s.lockUntil = Date.now() + base * s.blockMult;
-    setState(s);
-  }
-  function incFail() {
-    const s = getState();
-    s.failCount = (s.failCount || 0) + 1;
-    if (s.failCount >= 5) {
-      s.failCount = 0;
-      lockMore();
-    }
-    setState(s);
-  }
-  function resetFails() {
-    setState({ failCount: 0, blockMult: 1, lockUntil: 0 });
-  }
-  function showLockMsg() {
-    const s = getState();
-    const secs = Math.ceil((s.lockUntil - Date.now()) / 1000);
-    showAlert({
-      title: "Muitas tentativas",
-      html: `Aguarde <b>${secs}s</b> para tentar novamente.`
-    });
-  }
-
-  // LOG de login
-  async function logLogin(email, status, errorCode = null) {
-    try {
-      await addDoc(collection(db, "logs_login"), {
-        email,
-        status,
-        errorCode,
-        timestamp: serverTimestamp(),
-        userAgent: navigator.userAgent
-      });
-    } catch (e) {
-      console.error("Erro ao registrar log:", e);
-    }
-  }
-
-  // Atualizar foto de perfil (se tiver)
-  async function updateFotoPerfil(user, photoURL) {
-    if (photoURL) {
+  if (!url) {
+    url = await buscarAvatarStorage(user);
+    if (url) {
+      localStorage.setItem("fotoPerfil", url);
       try {
-        await updateProfile(user, { photoURL });
-        localStorage.setItem("fotoPerfil", photoURL);
+        await updateProfile(user, { photoURL: url });
       } catch (e) {
-        console.error("Erro ao atualizar foto de perfil:", e);
+        console.error("Erro ao atualizar photoURL:", e);
       }
     }
   }
 
-  async function loginEmailSenha() {
-    if (isLocked()) return showLockMsg();
+  if (url) {
+    userCircle.style.backgroundImage = `url('${url}')`;
+    userCircle.textContent = "";
+  } else {
+    const nome = (user.displayName || user.email || "?").trim();
+    userCircle.textContent = nome.charAt(0).toUpperCase();
+    userCircle.style.backgroundImage = "";
+  }
+}
 
-    const email = $("email").value.trim();
-    const senha = $("senha").value;
+/* ===== LOGIN EMAIL/SENHA ===== */
+async function loginEmailSenha() {
+  if (isLocked()) return showLockMsg();
 
-    if (!email) {
-      incFail();
-      await logLogin(email, "erro", "email_vazio");
-      return showAlert({ title: "E-mail vazio", html: "Digite seu e-mail para continuar." });
+  const email = $("email").value.trim();
+  const senha = $("senha").value;
+
+  if (!email) {
+    incFail();
+    await logLogin(email, 'erro', 'email_vazio');
+    return showAlert({ title: "E-mail vazio", html: "Digite seu e-mail para continuar." });
+  }
+  if (!emailValido(email)) {
+    incFail();
+    await logLogin(email, 'erro', 'email_invalido');
+    return showAlert({ title: "E-mail inválido", html: "Revise o endereço digitado." });
+  }
+  if (!senha) {
+    incFail();
+    await logLogin(email, 'erro', 'senha_vazia');
+    return showAlert({ title: "Senha vazia", html: "Digite sua senha para continuar." });
+  }
+
+  try {
+    const cred = await signInWithEmailAndPassword(auth, email, senha);
+
+    if (!cred.user.emailVerified) {
+      await sendEmailVerification(cred.user);
+      await logLogin(email, 'email_nao_verificado');
+      showAlert({
+        title: "Confirme seu e-mail",
+        html: `Seu e-mail ainda não foi verificado.<br>Reenviamos o link para <b>${email}</b>. 
+               Verifique sua caixa de entrada (ou spam) e tente novamente após confirmar.`
+      });
+      return;
     }
-    if (!emailValido(email)) {
-      incFail();
-      await logLogin(email, "erro", "email_invalido");
+
+    resetFails();
+    await logLogin(email, 'sucesso');
+
+    await aplicarAvatarNoCircle(cred.user);
+
+    fecharModal();
+    // aqui, na index real, você pode redirecionar:
+    // location.href = "/minha-conta.html";
+
+  } catch (e) {
+    incFail();
+    await logLogin(email, 'erro', e.code);
+    const codes = ["auth/invalid-credential", "auth/wrong-password", "auth/user-not-found"];
+    if (codes.includes(e.code)) {
+      if (isLocked()) return showLockMsg();
+      return showAlert({
+        title: "Não conseguimos entrar",
+        html: "E-mail e/ou senha incorretos. Você pode tentar novamente ou recuperar a senha.",
+        actions: [
+          { text: "Recuperar senha", kind: "ghost", onClick: () => location.href = "/recuperar-senha.html" },
+          { text: "Cadastrar", kind: "ghost", onClick: () => location.href = "/cadastro.html" },
+          { text: "Fechar", kind: "solid" }
+        ]
+      });
+    }
+    if (e.code === "auth/too-many-requests") {
+      lockMore();
+      return showLockMsg();
+    }
+    if (e.code === "auth/invalid-email") {
       return showAlert({ title: "E-mail inválido", html: "Revise o endereço digitado." });
     }
-    if (!senha) {
-      incFail();
-      await logLogin(email, "erro", "senha_vazia");
-      return showAlert({ title: "Senha vazia", html: "Digite sua senha para continuar." });
-    }
-
-    try {
-      const cred = await signInWithEmailAndPassword(auth, email, senha);
-
-      if (!cred.user.emailVerified) {
-        await sendEmailVerification(cred.user);
-        await logLogin(email, "email_nao_verificado");
-        showAlert({
-          title: "Confirme seu e-mail",
-          html: `Seu e-mail ainda não foi verificado.<br>Reenviamos o link para <b>${email}</b>. 
-                 Verifique sua caixa de entrada (ou spam) e tente novamente após confirmar.`
-        });
-        return;
-      }
-
-      resetFails();
-      await logLogin(email, "sucesso");
-      await updateFotoPerfil(cred.user, cred.user.photoURL);
-      fecharModal();
-      // na página de teste vamos só recarregar:
-      location.reload();
-
-    } catch (e) {
-      incFail();
-      await logLogin(email, "erro", e.code);
-      const codes = ["auth/invalid-credential", "auth/wrong-password", "auth/user-not-found"];
-      if (codes.includes(e.code)) {
-        if (isLocked()) return showLockMsg();
-        return showAlert({
-          title: "Não conseguimos entrar",
-          html: "E-mail e/ou senha incorretos. Você pode tentar novamente ou recuperar a senha.",
-          actions: [
-            { text: "Recuperar senha", kind: "ghost", onClick: () => location.href = "/recuperar-senha.html" },
-            { text: "Cadastrar",       kind: "ghost", onClick: () => location.href = "/cadastro.html" },
-            { text: "Fechar",          kind: "solid" }
-          ]
-        });
-      }
-      if (e.code === "auth/too-many-requests") {
-        lockMore();
-        return showLockMsg();
-      }
-      if (e.code === "auth/invalid-email") {
-        return showAlert({ title: "E-mail inválido", html: "Revise o endereço digitado." });
-      }
-      showAlert({ title: "Erro", html: `Erro inesperado (${e.code}). Tente novamente.` });
-    }
+    showAlert({ title: "Erro", html: `Erro inesperado (${e.code}). Tente novamente.` });
   }
+}
 
-  $("btnEntrar").onclick = loginEmailSenha;
-  document.addEventListener("keydown", e => {
-    if (e.key === "Enter" && modal.style.display === "flex") loginEmailSenha();
-  });
+$("btnEntrar").onclick = loginEmailSenha;
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && modal.style.display === 'flex') loginEmailSenha();
+});
 
-  // Estado de auth: mostrar/ocultar Entrar, Sair e avatar
-  onAuthStateChanged(auth, (user) => {
-    const fotoURL = localStorage.getItem("fotoPerfil");
-    if (user) {
-      if (fotoURL) {
-        userCircle.style.backgroundImage = `url('${fotoURL}')`;
-        userCircle.textContent = "";
-      } else {
-        const nome = (user.displayName || user.email || "?").trim();
-        userCircle.textContent = nome.charAt(0).toUpperCase();
-        userCircle.style.backgroundImage = "";
-      }
-      userCircle.style.display = "flex";
-      authText.style.display = "inline";
-      btnAbrir.style.display = "none";
-    } else {
-      userCircle.style.display = "none";
-      authText.style.display  = "none";
-      btnAbrir.style.display  = "inline-block";
-    }
-  });
+/* ===== ESTADO AUTH: userCircle / Entrar / Sair ===== */
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    await aplicarAvatarNoCircle(user);
+    userCircle.style.display = "flex";
+    authText.style.display = "inline";
+    btnAbrir.style.display = "none";
+  } else {
+    userCircle.style.display = "none";
+    authText.style.display = "none";
+    btnAbrir.style.display = "inline-block";
+  }
+});
 
-  // sair
-  authText.addEventListener("click", async () => {
-    try {
-      await signOut(auth);
-      await logLogin("desconhecido", "logout");
-      localStorage.removeItem("fotoPerfil");
-      location.reload();
-    } catch (e) {
-      showAlert({ title: "Sair", html: "Não foi possível sair. Tente de novo." });
-    }
-  });
+/* ===== SAIR ===== */
+authText.addEventListener("click", async () => {
+  try {
+    await signOut(auth);
+    await logLogin('desconhecido', 'logout');
+    localStorage.removeItem("fotoPerfil");
+    location.reload();
+  } catch (e) {
+    showAlert({ title: "Sair", html: "Não foi possível sair. Tente de novo." });
+  }
+});
 
-  // opcional: clicar no avatar leva para /minha-conta
-  userCircle.addEventListener("click", () => {
-    location.href = "/minha-conta.html";
-  });
-
+/* ===== MENU ===== */
+window.toggleMenu = function() {
+  const menu = document.getElementById("menu");
+  menu.classList.toggle("open");
+};
 </script>
 
 </body>
