@@ -1,787 +1,906 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Minha Conta – MostreAki</title>
+
   <style>
-    :root{ --brand:#15b0af; --brandLight:#c2e7df; --ink:#083f3e; --danger:#d73e45; }
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
 
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      background-image:url("fundo-mobile-mostreaki.png");
-      background-size:cover;background-repeat:no-repeat;background-attachment:fixed;
-      font:16px/1.4 system-ui,Segoe UI,Roboto,Arial;
-      color:#0b3e3c;
-    }
-    @media (min-width:768px){
-      body{ background-image:url("fundo-desktop-mostreaki.png"); }
+    :root {
+      --bg: #aabcbb;
+      --header-footer: #cde0e0;
+      --bordo: #7d2f59;
+      --texto: #003735;
+      --grad1: #d9d9d9;
+      --grad2: #af91a1;
+      --card: #ffffff;
     }
 
-    header{
-      position:sticky;top:0;z-index:1000;
-      background:#c2e7df;
-      display:flex;align-items:center;gap:12px;
-      padding:10px 16px;border-bottom:1px solid #bfe3da
-    }
-    header .logo{
-      display:flex;align-items:center;gap:10px;font-weight:800;color:#0b3e3c;
-      cursor:pointer;
-    }
-    .logo .mostreaki{color:#FA1E39}
-
-    .user-wrap{margin-left:auto;display:flex;align-items:center;gap:10px}
-    .user-circle{
-      width:56px;height:56px;border-radius:50%;overflow:hidden;display:none;
-      border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.15)
+    * {
+      box-sizing: border-box;
     }
 
-    .menu-icon{width:36px;height:26px;position:relative;display:flex;align-items:center;justify-content:center;cursor:pointer}
-    .menu-icon span{
-      position:absolute;width:24px;height:3px;background:var(--brand);border-radius:3px;
-      transition:filter .15s ease;
+    body {
+      margin: 0;
+      background: radial-gradient(circle at top left, #cfe0e0, #92a9a6);
+      font-family: 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--texto);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
-    .menu-icon span:nth-child(1){top:2px}
-    .menu-icon span:nth-child(2){top:11px}
-    .menu-icon span:nth-child(3){bottom:2px}
-    .menu-icon:hover span{filter:brightness(.9)}
 
-    nav#menu{
-      display:none;position:absolute;right:12px;top:64px;background:#fff;
-      border:1px solid #e8f2ef;border-radius:12px;box-shadow:0 18px 50px rgba(0,0,0,.12);
-      padding:10px 12px;gap:8px;flex-direction:column
+    /* ===== Header padrão MostreAki ===== */
+    header {
+      background: var(--header-footer);
+      border-bottom: 3px solid var(--bordo);
+      padding: .4rem .9rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 999;
     }
-    nav#menu a{
-      padding:10px 12px;border-radius:8px;text-decoration:none;
-      color:#fff;background:#FA1E39;font-weight:700;text-align:center;
+
+    header img {
+      height: 55px;
+      max-width: 190px;
+      object-fit: contain;
+      display: block;
     }
-    nav#menu a:hover{background:#b8313b}
 
-    a.btn.ghost{border:2px solid var(--brand);color:var(--brand);background:#fff;border-radius:10px;padding:10px 14px;font-weight:700;text-decoration:none}
-
-    main.container{max-width:980px;margin:22px auto;padding:0 16px}
-
-    .section-title{
-      background:#fff;border:1px solid #e7f3f1;border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.06);
-      padding:16px 18px;margin:0 0 18px 0;text-align:center;
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
     }
-    .section-title h2{color:#0b3e3c;margin:0;font-size:1.8rem}
 
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-    .card{background:#fff;border:1px solid #e7f3f1;border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.06)}
-    .card .head{padding:14px 16px;border-bottom:1px solid #e7f3f1;font-weight:700;color:#0b3e3c}
-    .card .body{padding:16px}
-
-    label{display:block;margin:10px 0 6px;color:#124b49;font-weight:600}
-    input[type="text"],input[type="file"],input[type="email"]{width:100%;padding:10px 12px;border:1px solid #cfe9e3;border-radius:10px}
-    #fotoPreview{display:block;margin-top:10px;max-width:180px;border-radius:12px}
-
-    .row-btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-    .btn{border:0;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer}
-    .btn.save{background:var(--brand);color:#fff}
-    .btn.remove{background:var(--danger);color:#fff}
-    .btn.link{background:#0b3e3c;color:#fff;text-decoration:none;display:inline-flex;align-items:center}
-
-    .chip{display:inline-block;padding:6px 10px;border-radius:999px;font-weight:700;border:1px solid #e8f2ef}
-    .chip.sem-plano{background:#fff;color:#666}
-    .chip.pendente{background:#fff7e6;color:#a36b00;border-color:#f7dfb6}
-    .chip.ativo{background:#e8fff6;color:#0a7a58;border-color:#b9f0dc}
-    .chip.trial{background:#e6f7ff;color:#005f99;border-color:#b3e0ff}
-    .chip.cancelamento_solicitado{background:#fff1f1;color:#a72d2d;border-color:#f3c3c3}
-    .chip.cancelado{background:#f1f3f4;color:#666}
-
-    .help{font-size:.85rem;color:#567;margin-top:2px}
-    .alerta-login{display:none;margin:14px auto;max-width:980px;background:#fffbe6;border:1px solid #ffe8a3;border-radius:12px;padding:10px 14px;color:#7a5600}
-    .trial-note{font-size:.9rem;color:#005f99;margin-top:8px}
-    .trial-note a{color:var(--brand);text-decoration:none;font-weight:bold}
-
-    @media(max-width:860px){.grid{grid-template-columns:1fr}}
-
-    .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:9999;padding:20px}
-    .modal-card{
-      background:#fff;width:100%;max-width:420px;border-radius:16px;
-      box-shadow:0 20px 60px rgba(0,0,0,.25);overflow:hidden;border:2px solid var(--brandLight);
+    .header-auth-label {
+      font-size: .85rem;
+      color: var(--texto);
+      cursor: pointer;
+      display: none; /* será mostrado quando logado */
     }
-    .modal-head{
-      background:linear-gradient(90deg,var(--brandLight),var(--brand));
-      padding:16px 18px;color:#0b4d4c;display:flex;align-items:center;justify-content:space-between;
+
+    .user-circle {
+      background: var(--bordo);
+      color: #fff;
+      font-weight: 600;
+      border-radius: 50%;
+      width: 34px;
+      height: 34px;
+      display: none; /* será mostrado quando logado */
+      align-items: center;
+      justify-content: center;
+      background-size: cover;
+      background-position: center;
+      font-size: .9rem;
+      cursor: pointer;
+      flex: 0 0 34px;
     }
-    .modal-head h2{font-size:1.1rem;color:#063b39}
-    .modal-close{background:transparent;border:none;font-size:22px;line-height:1;cursor:pointer;color:#063b39}
-    .modal-body{padding:18px}
-    .modal-body p.muted{color:#555;margin-bottom:10px}
-    label{display:block;margin:10px 0 6px;color:#333}
-    input{width:100%;padding:10px;border:1px solid #ddd;border-radius:8px}
-    .primary{background:var(--brand);color:#fff;border:0;border-radius:8px;padding:12px;font-weight:bold;cursor:pointer;width:100%;margin-top:12px}
-    .muted{font-size:.9rem;color:#666;margin-top:10px}
-    .muted a{color:var(--brand);text-decoration:none;font-weight:bold}
 
-    .pwd-wrap{position:relative}
-    .showpwd{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:.9rem;color:#444}
-    .showpwd input{width:auto}
+    .hamburger {
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      border: 2px solid var(--bordo);
+      background: linear-gradient(180deg, var(--grad1), var(--grad2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 4px;
+      cursor: pointer;
+      padding: 0;
+    }
 
-    .ssl-seal {
+    .hamburger span {
+      display: block;
+      width: 60%;
+      height: 3px;
+      border-radius: 999px;
+      background: var(--bordo);
+    }
+
+    /* ===== Menu lateral (overlay + painel) ===== */
+    .menu-overlay {
+      position: fixed;
+      top: 60px;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, .15);
+      display: none;
+      justify-content: flex-end;
+      z-index: 999;
+    }
+    .menu-overlay.show {
+      display: flex;
+    }
+
+    .menu-panel {
+      width: 280px;
+      max-width: 90vw;
+      background: #92a9a6;
+      box-shadow: -4px 0 12px rgba(0, 0, 0, .09);
+      height: 100%;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: .55rem;
+    }
+
+    .menu-link {
+      width: 210px;
+      max-width: 92vw;
+      align-self: center;
+      white-space: nowrap;
+      background: linear-gradient(180deg, var(--grad1), var(--grad2));
+      border-radius: 999px;
+      padding: .55rem 1rem;
       text-align: center;
-      padding: 16px 0;
-      background: var(--brandLight);
-      margin-top: 20px;
-      border-top: 1px solid rgba(250,30,39,.22);
-    }
-    .ssl-seal a {
+      color: var(--bordo);
       text-decoration: none;
-      display: inline-block;
+      font-weight: 600;
+      border: 2px solid rgba(0,0,0,.12);
+      box-shadow: 0 2px 6px rgba(0,0,0,.1);
+      font-size: .95rem;
     }
-    .ssl-seal img {
-      max-width: 100px;
-      height: auto;
+    .menu-link:hover {
+      filter: brightness(1.03);
+      transform: translateY(-1px);
     }
-    .ssl-seal p {
-      font-size: 0.8rem;
-      color: var(--muted);
-      margin: 4px 0 0;
+
+    /* ===== Main ===== */
+    main {
+      flex: 1;
+      max-width: min(1100px, 94vw);
+      margin: 2rem auto 2.6rem;
     }
-    .ssl-seal p:hover {
-      color: var(--brand);
+
+    .page-title {
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-bottom: .25rem;
+      color: var(--texto);
     }
-    .ssl-seal .fallback-svg {
-      width: 50px;
-      height: 50px;
-      vertical-align: middle;
+    .page-sub {
+      font-size: .95rem;
+      color: #214b4a;
+      margin-bottom: 1.8rem;
     }
+
+    .conta-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+      gap: 1.6rem;
+    }
+
     @media (max-width: 768px) {
-      .ssl-seal img {
-        max-width: 80px;
+      .conta-grid {
+        grid-template-columns: minmax(0, 1fr);
       }
-      .ssl-seal p {
-        font-size: 0.75rem;
-      }
+    }
+
+    .card {
+      background: rgba(255,255,255,0.98);
+      border-radius: 18px;
+      box-shadow: 0 10px 24px rgba(0,0,0,.16);
+      padding: 1.4rem 1.6rem 1.6rem;
+      border: 2px solid rgba(125,47,89,0.25);
+    }
+    .card h2 {
+      font-size: 1.1rem;
+      margin: 0 0 .4rem;
+      color: var(--texto);
+    }
+    .card p.desc {
+      font-size: .9rem;
+      color: #345;
+      margin: 0 0 1.2rem;
+    }
+
+    .field-group {
+      margin-bottom: 1rem;
+    }
+    .field-group label {
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+      font-size: .9rem;
+      margin-bottom: .25rem;
+      color: #234;
+    }
+    .lock-icon {
+      font-size: .95rem;
+      color: var(--bordo);
+    }
+    .field-group input[type="text"],
+    .field-group input[type="email"] {
+      width: 100%;
+      padding: .55rem .75rem;
+      border-radius: 10px;
+      border: 1px solid #c3c9cf;
+      font-size: .9rem;
+      outline: none;
+      background: #f7f8fa;
+    }
+    .field-group input[disabled] {
+      color: #667;
+      cursor: not-allowed;
+    }
+    .hint {
+      font-size: .8rem;
+      color: #566;
+      margin-top: .15rem;
+    }
+
+    .avatar-wrap {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: .8rem;
+    }
+    .avatar-preview {
+      width: 90px;
+      height: 90px;
+      aspect-ratio: 1 / 1;
+      border-radius: 50%;
+      background: linear-gradient(135deg,#d9d9d9,#af91a1);
+      border: 3px solid var(--bordo);
+      background-position: center;
+      background-size: cover;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 700;
+      font-size: 1.3rem;
+      flex: 0 0 90px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .4rem;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-size: .9rem;
+      font-weight: 600;
+      padding: .55rem 1.2rem;
+      text-decoration: none;
+      transition: .18s;
+      white-space: nowrap;
+    }
+    .btn-primary {
+      background: linear-gradient(180deg, var(--grad1), var(--grad2));
+      color: var(--bordo);
+      border: 2px solid rgba(125,47,89,0.4);
+      box-shadow: 0 2px 6px rgba(0,0,0,.18);
+    }
+    .btn-primary:hover {
+      filter: brightness(1.04);
+      transform: translateY(-1px);
+    }
+    .btn-ghost {
+      background: transparent;
+      color: var(--bordo);
+      border: 1px dashed rgba(125,47,89,0.6);
+    }
+    .btn-ghost:hover {
+      background: rgba(255,255,255,.4);
+    }
+    .btn-danger {
+      background: #fae0e6;
+      color: #9a1536;
+      border: 2px solid #e38ba3;
+    }
+    .btn-danger:hover {
+      filter: brightness(1.02);
+      transform: translateY(-1px);
+    }
+
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .6rem;
+      margin-top: .6rem;
+    }
+
+    .section-title {
+      font-size: .95rem;
+      font-weight: 700;
+      margin: 1rem 0 .4rem;
+      color: #20373a;
+    }
+    .section-note {
+      font-size: .8rem;
+      color: #445;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: .3rem;
+      font-size: .8rem;
+      padding: .25rem .55rem;
+      border-radius: 999px;
+      background: #e8d7e1;
+      color: var(--bordo);
+      margin-bottom: .4rem;
+    }
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #47b572;
+    }
+    .dot.off {
+      background: #e03a58;
+    }
+
+    /* ===== Alert brand ===== */
+    .alert-bg {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.55);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      padding: 20px;
+    }
+    .alert-card {
+      background: #fff;
+      border-radius: 16px;
+      overflow: hidden;
+      max-width: 460px;
+      width: 100%;
+      box-shadow: 0 22px 70px rgba(0,0,0,.25);
+      border: 2px solid #cde0e0;
+    }
+    .alert-head {
+      background: linear-gradient(90deg,#cde0e0,#af91a1);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .alert-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #FA1E39;
+    }
+    .alert-title {
+      color: #003735;
+      font-weight: 700;
+      font-size: .98rem;
+    }
+    .alert-body {
+      padding: 16px;
+      color: #223;
+      font-size: .9rem;
+    }
+    .alert-actions {
+      padding: 10px 16px 14px;
+      display: flex;
+      justify-content: flex-end;
+      gap: .5rem;
+      background: #f7faf9;
+    }
+
+    footer {
+      background: var(--header-footer);
+      padding: 1rem;
+      font-size: .85rem;
+      text-align: center;
+      color: #444;
+      margin-top: auto;
+      border-top: 3px solid var(--bordo);
     }
   </style>
 </head>
 <body>
-
-  <div id="authModal" class="modal-bg" role="dialog" aria-modal="true" aria-labelledby="authTitle">
-    <div class="modal-card">
-      <div class="modal-head">
-        <h2 id="authTitle">Entrar no MostreAki</h2>
-        <button class="modal-close" onclick="fecharModal()" aria-label="Fechar">×</button>
-      </div>
-      <div class="modal-body">
-        <label for="email">E-mail</label>
-        <input id="email" type="email" autocomplete="username" required
-               pattern="^[^\s@]+@[^\s@]+\.[^\s@]{2,}$" placeholder="voce@exemplo.com">
-
-        <label for="senha">Senha</label>
-        <div class="pwd-wrap">
-          <input id="senha" type="password" autocomplete="current-password" required>
-          <label class="showpwd" for="chkMostrarSenha">
-            <input id="chkMostrarSenha" type="checkbox" aria-controls="senha" aria-label="Mostrar senha">
-            Mostrar senha
-          </label>
-        </div>
-
-        <button class="primary" id="btnEntrar">Entrar</button>
-
-        <div class="muted" style="text-align:center;margin-top:6px">
-          Esqueceu a senha? <a href="/recuperar-senha.html">Recuperar senha</a>
-        </div>
-        <p class="muted">Não tem conta? <a href="/cadastro.html">Cadastre-se</a></p>
-      </div>
-    </div>
-  </div>
-
-  <div id="emailModal" class="modal-bg" role="dialog" aria-modal="true" aria-labelledby="emailTitle">
-    <div class="modal-card">
-      <div class="modal-head">
-        <h2 id="emailTitle">Alterar E-mail</h2>
-        <button class="modal-close" onclick="fecharEmailModal()" aria-label="Fechar">×</button>
-      </div>
-      <div class="modal-body">
-        <p style="margin:.2rem 0 1rem;color:#475569">Digite o <b>novo e-mail</b> e confirme sua <b>senha atual</b> para segurança. Enviaremos um link de confirmação para o novo endereço.</p>
-
-        <label for="novoEmail" style="font-weight:700;color:#0b615f">Novo e-mail</label>
-        <input id="novoEmail" type="email" placeholder="novo@exemplo.com" style="width:100%;padding:12px;border:1px solid #d9e7e6;border-radius:12px;margin:.35rem 0 0.8rem" />
-
-        <label for="senhaAtual" style="font-weight:700;color:#0b615f">Senha atual</label>
-        <div style="position:relative;margin-top:.35rem">
-          <input id="senhaAtual" type="password" autocomplete="current-password"
-                 style="width:100%;padding:12px 46px 12px 12px;border:1px solid #d9e7e6;border-radius:12px">
-          <button type="button" id="toggleSenhaAtual" aria-label="Mostrar/ocultar senha"
-                  style="position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:#f1f5f9;border-radius:10px;padding:6px 10px;cursor:pointer">
-            mostrar
-          </button>
-        </div>
-
-        <div id="msgTrocaEmail" class="msg" style="display:none;margin-top:10px;padding:10px;border-radius:10px;background:#f9fafb;color:#334155"></div>
-
-        <button id="btnTrocarEmail" class="primary"
-                style="margin-top:12px;width:100%;padding:12px;border:0;border-radius:12px;background:linear-gradient(135deg,#15b0af,#109a99);color:#fff;font-weight:800;cursor:pointer">
-          Enviar verificação para o novo e-mail
-        </button>
-
-        <p class="muted" style="margin-top:10px;color:#64748b;font-size:.9rem">
-          Após confirmar o link recebido no novo e-mail, seu login será atualizado automaticamente.
-        </p>
-      </div>
-    </div>
-  </div>
-
   <header>
-    <div class="logo" onclick="location.href='index.html'">
-      <img src="/logo.svg" alt="" height="28">
-      <span class="mostreaki">MostreAki</span>
-    </div>
-    <div class="user-wrap">
-      <div id="userCircle" class="user-circle"></div>
-      <a id="authText" href="/login.html" class="btn ghost" style="text-decoration:none">Entrar</a>
-      <div id="menuBtn" class="menu-icon" aria-label="Abrir menu" role="button" tabindex="0">
-        <span></span><span></span><span></span>
+    <a href="index.html" aria-label="Voltar para a página inicial">
+      <img src="logo-mostreaki.svg" alt="MostreAki">
+    </a>
+
+    <div class="header-right">
+      <div id="authText" class="header-auth-label" title="Clique para sair">
+        Sair
       </div>
-      <nav id="menu">
-        <a href="/index.html">Página Inicial</a>
-        <a href="/sobre.html">Sobre</a>
-        <a href="/planos.html">Planos</a>
-        <a href="/parceiros.html">Parceiros</a>
-        <a href="/servicos-adicionais.html">Serviços Adicionais</a>
-        <a href="/redes-sociais.html">Redes Sociais</a>
-        <a href="/contatos.html">Contatos</a>
-      </nav>
+      <div id="userCircle" class="user-circle" title="Minha conta"></div>
+
+      <button class="hamburger" type="button" onclick="toggleMenu()" aria-label="Abrir menu">
+        <span></span><span></span><span></span>
+      </button>
     </div>
   </header>
 
-  <div id="alertaLogin" class="alerta-login">Você precisa estar logado para acessar a página Minha Conta. Redirecionando…</div>
-
-  <main class="container">
-    <div class="section-title"><h2>Minha Conta</h2></div>
-
-    <div class="grid">
-      <section class="card">
-        <div class="head">Perfil e Redes</div>
-        <div class="body">
-          <label for="nomeCompleto">Nome completo</label>
-          <input id="nomeCompleto" type="text" placeholder="Seu nome e sobrenome">
-
-          <label for="username">Nome de usuário</label>
-          <input id="username" type="text" placeholder="ex.: joao-silva" readonly aria-readonly="true" title="Bloqueado para edição. Entre em contato com o suporte para alterar.">
-          <div class="lock-note">Bloqueado para edição (apenas o suporte poderá fazer a alteração).</div>
-
-          <label for="foto" style="margin-top:12px">Foto de Perfil</label>
-          <input id="foto" type="file" accept="image/*">
-          <img id="fotoPreview" alt="Preview">
-
-          <label style="margin-top:12px">Instagram</label><input id="instagram" type="text" placeholder="@seuusuario">
-          <label>Facebook</label><input id="facebook" type="text" placeholder="link da página">
-          <label>WhatsApp</label><input id="whatsapp" type="text" placeholder="55DDD999999999">
-          <label>YouTube</label><input id="youtube" type="text" placeholder="link do canal">
-
-          <div class="row-btns">
-            <button id="btnSalvar" class="btn save">Salvar alterações</button>
-            <button id="btnExcluirFoto" class="btn remove">Remover foto</button>
-            <a id="btnEditarCatalogo" class="btn link" style="display:none" href="#">Editar catálogo</a>
-            <button id="btnAlterarEmail" class="btn save" style="margin-top:10px">Alterar E-mail</button>
-          </div>
-          <div id="catalogoInfo" class="help" style="display:none;margin-top:6px"></div>
-        </div>
-      </section>
-
-      <section class="card">
-        <div class="head">Assinatura</div>
-        <div class="body">
-          <div id="statusChip" class="chip sem-plano">Sem plano</div>
-          <p id="planoLabel" style="margin:10px 0 6px">Plano atual: —</p>
-          <small id="assinaturaMeta" style="color:#557"></small>
-          <p id="trialExpiry" class="trial-note" style="display:none"></p>
-          <div class="row-btns" style="margin-top:14px">
-            <button id="btnAssinar" class="btn save">Assinar</button>
-            <button id="btnAlterar" class="btn ghost" style="display:none">Alterar plano</button>
-            <button id="btnCancelar" class="btn remove" style="display:none">Cancelar plano</button>
-          </div>
-        </div>
-      </section>
+  <!-- Menu lateral -->
+  <nav id="menu" class="menu-overlay" aria-label="Menu principal">
+    <div class="menu-panel">
+      <a class="menu-link" href="index.html">Início</a>
+      <a class="menu-link" href="planos.html">Planos</a>
+      <a class="menu-link" href="parceiros.html">Templates de Parceiros</a>
+      <a class="menu-link" href="servicos-adicionais.html">Serviços Adicionais</a>
+      <a class="menu-link" href="instrucoes.html">Instruções</a>
+      <a class="menu-link" href="sobre.html">Sobre o MostreAki</a>
+      <a class="menu-link" href="contato.html">Contato</a>
     </div>
+  </nav>
 
-    <div class="ssl-seal">
-      <a href="https://www.ssllabs.com/ssltest/analyze.html?d=app.mostreaki.com.br&hideResults=on" target="_blank" rel="noopener" title="Verificar Certificado SSL (SSL Labs)">
-        <img src="https://seal.ssl2buy.com/images/seal/ssl2buy-seal.gif?v=2" alt="SSL Secured by SSL2BUY" onerror="this.style.display='none';this.nextElementSibling.style.display='inline-block';">
-        <svg class="fallback-svg" style="display:none;" viewBox="0 0 24 24" fill="none" stroke="#15b0af" stroke-width="2">
-          <path d="M12 17v4m0-4c-2.8 0-5-2.2-5-5V8c0-1.1.9-2 2-2h6c1.1 0 2 .9 2 2v4c0 2.8-2.2 5-5 5z"/>
-          <path d="M9 8V6c0-1.7 1.3-3 3-3s3 1.3 3 3v2"/>
-        </svg>
-      </a>
-      <p>Site Seguro com Certificado SSL</p>
+  <!-- ALERTA -->
+  <div id="alert" class="alert-bg" role="alertdialog" aria-modal="true">
+    <div class="alert-card">
+      <div class="alert-head">
+        <div class="alert-dot"></div>
+        <div id="alertTitle" class="alert-title">Aviso</div>
+      </div>
+      <div id="alertMsg" class="alert-body">Mensagem.</div>
+      <div id="alertActions" class="alert-actions">
+        <!-- botões via JS -->
+      </div>
     </div>
+  </div>
 
-    <footer>&copy; 2025 MostreAki. Todos os direitos reservados.</footer>
+  <main>
+    <h1 class="page-title">Minha Conta</h1>
+    <p class="page-sub">
+      Aqui você gerencia seus dados, assinatura e acessos ao catálogo e álbum da sua marca.
+    </p>
+
+    <section class="conta-grid">
+      <!-- Dados principais -->
+      <article class="card">
+        <h2>Dados do titular</h2>
+        <p class="desc">Informações básicas vinculadas à sua conta MostreAki.</p>
+
+        <div class="avatar-wrap">
+          <div id="avatarPreview" class="avatar-preview">M</div>
+
+          <div>
+            <button class="btn btn-primary" type="button" id="btnEscolherFoto">
+              Escolher imagem
+            </button>
+            <input type="file" id="fileFoto" accept="image/*" style="display:none" />
+            <div class="hint">
+              A foto será usada no círculo de usuário. Tamanho máximo: <b>400 KB</b>.
+            </div>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label for="slug">
+            Nome de usuário (slug)
+            <span class="lock-icon" title="Campo bloqueado">&#128274;</span>
+          </label>
+          <input type="text" id="slug" disabled value="carregando..." />
+          <div class="hint">
+            Esse é o seu <b>nome de usuário</b> e também o <b>slug</b> usado nos links públicos
+            do seu catálogo/álbum. Para alterar, envie uma solicitação para
+            <b>mostreaki@mostreaki.com.br</b>.
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label for="emailConta">E-mail de acesso</label>
+          <input type="email" id="emailConta" disabled value="carregando..." />
+          <div class="btn-row">
+            <button class="btn btn-primary" type="button" id="btnAlterarEmail">
+              Alterar e-mail
+            </button>
+          </div>
+          <div class="hint">
+            O e-mail é usado para login e comunicações importantes do MostreAki.
+          </div>
+        </div>
+      </article>
+
+      <!-- Assinatura + recursos -->
+      <article class="card">
+        <h2>Assinatura & recursos</h2>
+        <p class="desc">Gerencie sua assinatura e os acessos ao catálogo e álbum digital.</p>
+
+        <!-- Status assinatura -->
+        <div class="section-title">Status da assinatura</div>
+        <div id="statusAssinatura" class="status-pill">
+          <span class="dot" id="dotAssinatura"></span>
+          <span id="textoAssinatura">Carregando assinatura...</span>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn-primary" type="button" id="btnAlterarPlano">
+            Alterar assinatura
+          </button>
+          <button class="btn btn-danger" type="button" id="btnCancelarPlano">
+            Cancelar assinatura
+          </button>
+        </div>
+        <div class="section-note">
+          A alteração de plano será redirecionada para a página de planos. O cancelamento segue as regras do intermediador de pagamento.
+        </div>
+
+        <!-- Catálogo -->
+        <div class="section-title" style="margin-top:1.4rem;">Catálogo digital</div>
+        <div id="statusCatalogo" class="status-pill">
+          <span class="dot off" id="dotCatalogo"></span>
+          <span id="textoCatalogo">Verificando acesso ao catálogo...</span>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" type="button" id="btnEditarCatalogo" style="display:none;">
+            Editar catálogo
+          </button>
+        </div>
+        <div class="section-note">
+          O botão "Editar catálogo" só aparece se sua assinatura estiver com o catálogo ativo no Firestore.
+        </div>
+
+        <!-- Álbum -->
+        <div class="section-title" style="margin-top:1.4rem;">Álbum / Galeria</div>
+        <div id="statusAlbum" class="status-pill">
+          <span class="dot off" id="dotAlbum"></span>
+          <span id="textoAlbum">Verificando acesso ao álbum...</span>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" type="button" id="btnEditarAlbum" style="display:none;">
+            Editar álbum
+          </button>
+        </div>
+        <div class="section-note">
+          Assim como o catálogo, o acesso ao álbum depende da configuração da sua assinatura no Firestore.
+        </div>
+      </article>
+    </section>
   </main>
 
-  <script type="module">
-    import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-    import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, sendEmailVerification } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-    import { getFirestore, doc, getDoc, setDoc, onSnapshot, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-    import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
-    import { EmailAuthProvider, reauthenticateWithCredential, verifyBeforeUpdateEmail } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+  <footer>
+    MostreAki &copy; 2025 — Fortalecendo a identidade da sua marca no universo digital.
+  </footer>
 
-    const cfg = {
-      apiKey: 'AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE',
-      authDomain: 'mostreaki-2025.firebaseapp.com',
-      projectId: 'mostreaki-2025',
-      storageBucket: 'mostreaki-2025.firebasestorage.app',
-      messagingSenderId: '748712068097',
-      appId: '1:748712068097:web:09cf043fbb45917ef6ec00'
-    };
-    const app = getApps().length ? getApp() : initializeApp(cfg);
+  <!-- Firebase + Script -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+    import {
+      getAuth,
+      onAuthStateChanged,
+      signOut
+    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      collection,
+      query,
+      where,
+      getDocs,
+      updateDoc
+    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+    import {
+      getStorage,
+      ref,
+      uploadBytes,
+      getDownloadURL
+    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
+
+    const app = initializeApp({
+      apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
+      authDomain: "mostreaki-2025.firebaseapp.com",
+      projectId: "mostreaki-2025",
+      storageBucket: "mostreaki-2025.firebasestorage.app",
+      messagingSenderId: "748712068097",
+      appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
+    });
+
     const auth = getAuth(app);
     const db = getFirestore(app);
-    const storage = getStorage(app, 'gs://mostreaki-2025.firebasestorage.app');
+    const storage = getStorage(app);
 
-    const $ = s => document.querySelector(s);
-    const cacheBust = u => u ? u + (u.includes('?')?'&':'?') + 'v=' + Date.now() : u;
+    /* ===== helpers UI ===== */
+    const $ = (id) => document.getElementById(id);
 
-    // === TOBLOB ASYNC (SEGURANÇA) ===
-    CanvasRenderingContext2D.prototype.toBlobAsync = function(type, quality) {
-      return new Promise(resolve => this.canvas.toBlob(resolve, type, quality));
+    const menu = $("menu");
+    window.toggleMenu = function () {
+      if (!menu) return;
+      menu.classList.toggle("show");
     };
 
-    /* Modal Login */
-    const modal = $('#authModal');
-    function abrirModal() { if (modal) { modal.style.display = 'flex'; document.body.style.overflow = 'hidden'; } }
-    window.fecharModal = function() { if (modal) { modal.style.display = 'none'; document.body.style.overflow = ''; } };
-    modal?.addEventListener('click', e => { if (e.target === modal) fecharModal(); });
-    window.addEventListener('keydown', e => { if (e.key === 'Escape' && modal?.style.display === 'flex') fecharModal(); });
+    // fechar menu ao clicar fora do painel
+    if (menu) {
+      menu.addEventListener("click", (e) => {
+        if (e.target === menu) {
+          menu.classList.remove("show");
+        }
+      });
+    }
 
-    /* Modal Alterar E-mail */
-    const emailModal = $('#emailModal');
-    function abrirEmailModal() { if (emailModal) { emailModal.style.display = 'flex'; document.body.style.overflow = 'hidden'; } }
-    window.fecharEmailModal = function() { if (emailModal) { emailModal.style.display = 'none'; document.body.style.overflow = ''; $('#novoEmail').value = ''; $('#senhaAtual').value = ''; $('#msgTrocaEmail').style.display = 'none'; } };
-    emailModal?.addEventListener('click', e => { if (e.target === emailModal) fecharEmailModal(); });
+    const alertBG = $("alert");
+    const alertTitle = $("alertTitle");
+    const alertMsg = $("alertMsg");
+    const alertActions = $("alertActions");
 
-    (function wireShowPassword() {
-      const input = $('#senha'), chk = $('#chkMostrarSenha');
-      if (!input || !chk) return;
-      const apply = () => { input.type = chk.checked ? 'text' : 'password'; };
-      chk.addEventListener('change', apply);
-    })();
+    function showAlert({ title = "Aviso", html = "", actions = [{ text: "Fechar" }] }) {
+      alertTitle.textContent = title;
+      alertMsg.innerHTML = html;
+      alertActions.innerHTML = "";
+      actions.forEach(a => {
+        const btn = document.createElement("button");
+        btn.className = "btn " + (a.kind === "danger" ? "btn-danger" : "btn-primary");
+        btn.textContent = a.text;
+        btn.onclick = () => {
+          if (a.onClick) a.onClick();
+          closeAlert();
+        };
+        alertActions.appendChild(btn);
+      });
+      alertBG.style.display = "flex";
+    }
+    function closeAlert() {
+      alertBG.style.display = "none";
+    }
+    alertBG.addEventListener("click", (e) => {
+      if (e.target === alertBG) closeAlert();
+    });
 
-    const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-    const emailValido = v => emailRe.test(v);
-    async function loginEmailSenha() {
-      const email = $('#email').value.trim();
-      const senha = $('#senha').value;
-      if (!email) return alert('Digite seu e-mail.');
-      if (!emailValido(email)) return alert('E-mail inválido.');
-      if (!senha) return alert('Digite sua senha.');
+    const userCircle = $("userCircle");
+    const authText = $("authText");
+    const avatarPreview = $("avatarPreview");
+    const fileFoto = $("fileFoto");
+    const btnEscolherFoto = $("btnEscolherFoto");
+
+    const slugInput = $("slug");
+    const emailConta = $("emailConta");
+
+    const dotAssinatura = $("dotAssinatura");
+    const textoAssinatura = $("textoAssinatura");
+    const dotCatalogo = $("dotCatalogo");
+    const textoCatalogo = $("textoCatalogo");
+    const dotAlbum = $("dotAlbum");
+    const textoAlbum = $("textoAlbum");
+    const btnEditarCatalogo = $("btnEditarCatalogo");
+    const btnEditarAlbum = $("btnEditarAlbum");
+
+    const btnAlterarEmail = $("btnAlterarEmail");
+    const btnAlterarPlano = $("btnAlterarPlano");
+    const btnCancelarPlano = $("btnCancelarPlano");
+
+    /* ===== estado de auth ===== */
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        // Não logado: volta para a página inicial
+        window.location.href = "index.html";
+        return;
+      }
+
+      // Preenche e-mail
+      emailConta.value = user.email || "";
+
+      // Mostra user-circle e label "Sair"
+      if (userCircle) {
+        const letra = (user.displayName || user.email || "?").trim().charAt(0).toUpperCase();
+        userCircle.textContent = letra;
+        userCircle.style.display = "flex";
+
+        // Se já tiver fotoPerfil no localStorage, usa
+        const savedFoto = localStorage.getItem("fotoPerfil");
+        if (savedFoto) {
+          userCircle.style.backgroundImage = `url('${savedFoto}')`;
+          avatarPreview.style.backgroundImage = `url('${savedFoto}')`;
+          avatarPreview.textContent = "";
+        }
+      }
+      if (authText) {
+        authText.style.display = "inline";
+      }
+
       try {
-        const cred = await signInWithEmailAndPassword(auth, email, senha);
-        if (!cred.user.emailVerified) {
-          try { await sendEmailVerification(cred.user); } catch {}
-          alert('E-mail não verificado. Reenviamos o link.');
+        const usuarioRef = doc(db, "usuarios", user.uid);
+        const snap = await getDoc(usuarioRef);
+
+        let data = {};
+        if (snap.exists()) {
+          data = snap.data();
+        }
+
+        // ===== sincronizar slug com catalogos (ownerUid == uid) =====
+        let slugFinal = "";
+        try {
+          const slugUsuario = (data && data.slug) ? String(data.slug) : "";
+          let slugCatalogo = "";
+
+          const q = query(
+            collection(db, "catalogos"),
+            where("ownerUid", "==", user.uid)
+          );
+          const qSnap = await getDocs(q);
+          if (!qSnap.empty) {
+            // pega o primeiro catálogo associado ao ownerUid
+            slugCatalogo = qSnap.docs[0].id;
+          }
+
+          if (slugCatalogo && slugUsuario && slugCatalogo !== slugUsuario) {
+            // se são diferentes, padroniza para o do catálogo
+            await updateDoc(usuarioRef, { slug: slugCatalogo });
+            slugFinal = slugCatalogo;
+          } else if (slugCatalogo && !slugUsuario) {
+            await updateDoc(usuarioRef, { slug: slugCatalogo });
+            slugFinal = slugCatalogo;
+          } else if (slugUsuario) {
+            slugFinal = slugUsuario;
+          }
+
+        } catch (e) {
+          console.error("Erro ao sincronizar slug com catalogos:", e);
+        }
+
+        if (slugFinal) {
+          slugInput.value = slugFinal;
+        } else {
+          slugInput.value = "(definir slug no Firestore)";
+        }
+
+        // foto de perfil do Firestore (se existir e ainda não tiver no localStorage)
+        if (data.fotoPerfilURL && !localStorage.getItem("fotoPerfil")) {
+          localStorage.setItem("fotoPerfil", data.fotoPerfilURL);
+          userCircle.style.backgroundImage = `url('${data.fotoPerfilURL}')`;
+          avatarPreview.style.backgroundImage = `url('${data.fotoPerfilURL}')`;
+          avatarPreview.textContent = "";
+        }
+
+        // assinatura (status básico salvo em /usuarios, se você estiver usando assim)
+        const status = data.assinaturaStatus || "sem-assinatura";
+        if (status === "ativa") {
+          dotAssinatura.classList.remove("off");
+          textoAssinatura.textContent = "Assinatura ativa";
+        } else if (status === "suspensa") {
+          dotAssinatura.classList.add("off");
+          textoAssinatura.textContent = "Assinatura suspensa";
+        } else {
+          dotAssinatura.classList.add("off");
+          textoAssinatura.textContent = "Sem assinatura ativa";
+        }
+
+        // catálogo
+        const catAtivo = !!data.catalogoAtivo;
+        if (catAtivo) {
+          dotCatalogo.classList.remove("off");
+          textoCatalogo.textContent = "Catálogo digital ativo";
+          btnEditarCatalogo.style.display = "inline-flex";
+        } else {
+          dotCatalogo.classList.add("off");
+          textoCatalogo.textContent = "Catálogo ainda não habilitado";
+          btnEditarCatalogo.style.display = "none";
+        }
+
+        // álbum
+        const albAtivo = !!data.albumAtivo;
+        if (albAtivo) {
+          dotAlbum.classList.remove("off");
+          textoAlbum.textContent = "Álbum / galeria ativo";
+          btnEditarAlbum.style.display = "inline-flex";
+        } else {
+          dotAlbum.classList.add("off");
+          textoAlbum.textContent = "Álbum ainda não habilitado";
+          btnEditarAlbum.style.display = "none";
+        }
+
+      } catch (e) {
+        console.error("Erro ao ler Firestore:", e);
+        textoAssinatura.textContent = "Não foi possível carregar os dados da assinatura.";
+      }
+    });
+
+    // Sair
+    if (authText) {
+      authText.addEventListener("click", async () => {
+        try {
+          await signOut(auth);
+          localStorage.removeItem("fotoPerfil");
+          window.location.href = "index.html";
+        } catch (e) {
+          showAlert({
+            title: "Erro ao sair",
+            html: "Não foi possível encerrar a sessão. Tente novamente."
+          });
+        }
+      });
+    }
+
+    // Avatar: escolher arquivo
+    if (btnEscolherFoto && fileFoto) {
+      btnEscolherFoto.addEventListener("click", () => fileFoto.click());
+
+      fileFoto.addEventListener("change", async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        if (file.size > 400 * 1024) {
+          showAlert({
+            title: "Imagem muito pesada",
+            html: "Por favor, escolha uma imagem com até <b>400 KB</b> para o avatar."
+          });
+          fileFoto.value = "";
           return;
         }
-        fecharModal();
-      } catch (e) {
-        const codes = ['auth/invalid-credential', 'auth/wrong-password', 'auth/user-not-found'];
-        if (codes.includes(e.code)) return alert('E-mail e/ou senha incorretos.');
-        if (e.code === 'auth/too-many-requests') return alert('Muitas tentativas. Tente mais tarde.');
-        if (e.code === 'auth/invalid-email') return alert('E-mail inválido.');
-        alert('Erro ao entrar. Tente novamente.');
-      }
-    }
-    $('#btnEntrar').onclick = loginEmailSenha;
 
-    /* Menu */
-    (function wireMenu() {
-      const btn = $('#menuBtn'), menu = $('#menu');
-      if (!btn || !menu) return;
-      const open = () => {
-        menu.style.display = 'flex';
-        document.addEventListener('click', onDoc, true);
-        document.addEventListener('keydown', onKey);
-      };
-      const close = () => {
-        menu.style.display = 'none';
-        document.removeEventListener('click', onDoc, true);
-        document.removeEventListener('keydown', onKey);
-      };
-      const toggle = () => (menu.style.display === 'flex' ? close() : open());
-      function onDoc(e) { if (!menu.contains(e.target) && e.target !== btn) close(); }
-      function onKey(e) { if (e.key === 'Escape') close(); }
-      btn.addEventListener('click', toggle);
-    })();
-
-    /* === HELPERS CORRIGIDAS === */
-    const ACCEPTED = /image\/(jpeg|jpg|png|webp|gif|heic|heif)/i;
-
-    async function decodeToBitmap(file) {
-      try { return await createImageBitmap(file); } catch {}
-      const url = URL.createObjectURL(file);
-      const img = await new Promise((res, rej) => {
-        const i = new Image();
-        i.onload = () => res(i);
-        i.onerror = rej;
-        i.src = url;
-      });
-      URL.revokeObjectURL(url);
-      return img;
-    }
-
-    async function normalizeToWebp(file, maxBytes = 400 * 1024) {
-      const isHeic = /heic|heif/i.test(file.type);
-      const isAccepted = ACCEPTED.test(file.type);
-      const isSmall = file.size <= maxBytes;
-
-      // Só converte se for HEIC ou se for grande
-      if (!isHeic && isAccepted && isSmall) return file;
-
-      let bmp;
-      try { bmp = await decodeToBitmap(file); } catch { return file; }
-      if (!bmp || !bmp.width || !bmp.height) return file;
-
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d', { alpha: true });
-
-      const MAX_W = 1280, MAX_H = 1280;
-      let { width, height } = bmp;
-      const scale = Math.min(1, MAX_W / width, MAX_H / height);
-      canvas.width = Math.round(width * scale);
-      canvas.height = Math.round(height * scale);
-
-      ctx.drawImage(bmp, 0, 0, canvas.width, canvas.height);
-
-      let quality = 0.92;
-      let blob;
-      do {
-        blob = await ctx.toBlobAsync('image/webp', quality);
-        quality -= 0.07;
-      } while (blob && blob.size > maxBytes && quality > 0.45);
-
-      return blob ? new File([blob], 'avatar.webp', { type: 'image/webp' }) : file;
-    }
-
-    /* === UPLOAD CORRIGIDO COM TRY/CATCH === */
-    async function previewImagem(ev, uid) {
-      let file = ev.target.files?.[0];
-      if (!file) return;
-
-      try {
-        // Normaliza (só converte se necessário)
-        file = await normalizeToWebp(file, 400 * 1024);
-
-        // Preview
-        const prev = $('#fotoPreview');
-        if (prev) prev.src = URL.createObjectURL(file);
-
-        // Extensão
-        const ext = file.type.includes('webp') ? 'webp' : (file.type.split('/')[1] || 'jpg').replace('jpeg', 'jpg');
-        const storageRef = ref(storage, `usuarios/${uid}/perfil/avatar.${ext}`);
-
-        // Upload
-        await uploadBytes(storageRef, file);
-        const url = await getDownloadURL(storageRef);
-
-        // Firestore + local
-        await setDoc(doc(db, 'usuarios', uid), { fotoPerfil: url }, { merge: true });
-        localStorage.setItem('fotoPerfil', url);
-
-        // Limpa versões antigas
-        for (const e of ['jpg','png','webp','gif']) if (e !== ext) {
-          try { await deleteObject(ref(storage, `usuarios/${uid}/perfil/avatar.${e}`)); } catch {}
+        const user = auth.currentUser;
+        if (!user) {
+          showAlert({
+            title: "Sessão expirada",
+            html: "Faça login novamente para alterar sua foto de perfil.",
+            actions: [{ text: "Ok" }]
+          });
+          return;
         }
-
-        // Atualiza círculo
-        const circle = $('#userCircle');
-        if (circle) {
-          circle.style.display = 'flex';
-          circle.innerHTML = `<img src="${url}" alt="Foto" style="width:100%;height:100%;object-fit:cover;">`;
-        }
-
-        alert('Foto atualizada com sucesso!');
-
-      } catch (err) {
-        console.error('Erro no upload:', err);
-        alert('Falha ao fazer upload. Tente com outra imagem ou mais tarde.');
-      }
-    }
-
-    /* === REMOÇÃO (inalterada) === */
-    async function removerFoto(uid) {
-      let removed = false;
-      for (const e of ['jpg', 'png', 'webp', 'gif']) { 
-        try { await deleteObject(ref(storage, `usuarios/${uid}/perfil/avatar.${e}`)); removed = true; } catch {} 
-      }
-      await setDoc(doc(db, 'usuarios', uid), { fotoPerfil: '' }, { merge: true });
-      localStorage.removeItem('fotoPerfil');
-      $('#fotoPreview').src = ''; 
-      $('#userCircle').style.display = 'none';
-      alert(removed ? 'Foto removida.' : 'Nenhuma foto encontrada para remover.');
-    }
-
-    /* === RESTANTE DO CÓDIGO (100% inalterado) === */
-    function setAvatar(url) {
-      if (!url) return;
-      localStorage.setItem('fotoPerfil', url);
-      const el = $('#userCircle'); if (!el) return;
-      el.textContent = ''; el.style.display = 'flex';
-      const img = new Image();
-      img.src = cacheBust(url); img.alt = 'Foto'; img.style.width = '100%'; img.style.height = '100%'; img.style.objectFit = 'cover';
-      el.append(img);
-      const prev = $('#fotoPreview'); if (prev) prev.src = url;
-    }
-    (() => { const c = localStorage.getItem('fotoPerfil'); if (c) setAvatar(c); })();
-
-    async function prefetchFoto(uid) {
-      const tryExt = e => getDownloadURL(ref(storage, `usuarios/${uid}/perfil/avatar.${e}`)).catch(() => null);
-      const direct = await tryExt('jpg') || await tryExt('png') || await tryExt('webp') || await tryExt('gif');
-      if (direct) { setAvatar(direct); try { await setDoc(doc(db, 'usuarios', uid), { fotoPerfil: direct }, { merge: true }); } catch {} }
-    }
-
-    let ORIGINAL_USERNAME = '';
-    function slugify(v) {
-      return v.toLowerCase()
-        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-        .replace(/[^a-z0-9-_.]/g, '-')
-        .replace(/-{2,}/g, '-').replace(/^[-_.]+|[-_.]+$/g, '');
-    }
-    async function salvar(uid) {
-      const nomeCompleto = $('#nomeCompleto').value.trim();
-      const username = ORIGINAL_USERNAME;
-      const data = {
-        nomeCompleto,
-        instagram: $('#instagram').value.trim(),
-        facebook: $('#facebook').value.trim(),
-        whatsapp: $('#whatsapp').value.trim(),
-        youtube: $('#youtube').value.trim(),
-        updatedAt: serverTimestamp()
-      };
-      await setDoc(doc(db, 'usuarios', uid), data, { merge: true });
-      alert('Dados salvos! (nome de usuário permanece bloqueado)');
-      wireCatalogo(uid);
-    }
-    async function carregar(uid) {
-      const s = await getDoc(doc(db, 'usuarios', uid));
-      if (!s.exists()) return;
-      const d = s.data();
-      ORIGINAL_USERNAME = (d.username || d.catalogoSlug || '').trim();
-      $('#username').value = ORIGINAL_USERNAME;
-      $('#username').readOnly = true;
-      $('#username').setAttribute('aria-readonly', 'true');
-      $('#username').title = 'Bloqueado para edição. Entre em contato com o suporte para alterar.';
-      $('#nomeCompleto').value = d.nomeCompleto || '';
-      $('#instagram').value = d.instagram || '';
-      $('#facebook').value = d.facebook || '';
-      $('#whatsapp').value = d.whatsapp || '';
-      $('#youtube').value = d.youtube || '';
-    }
-
-    const PLANOS = { trial: 'Plano Trial', light: 'Plano Light', basico: 'Plano Básico', essencial: 'Plano Intermediário', avancado: 'Plano Avançado' };
-    const STATUS_LABEL = { 'sem-plano': 'Sem plano', 'pendente': 'Pendente', 'ativo': 'Ativo', 'cancelamento_solicitado': 'Cancelamento solicitado', 'cancelado': 'Cancelado' };
-    function renderAssinatura(data) {
-      const status = data?.status || 'sem-plano';
-      const plano = data?.plano || null;
-      const chip = $('#statusChip');
-      chip.className = 'chip ' + (plano === 'trial' ? 'trial' : status);
-      chip.textContent = STATUS_LABEL[status] || '—';
-      $('#planoLabel').textContent = 'Plano atual: ' + (plano ? PLANOS[plano] : '—');
-      const meta = [];
-      if (data?.createdAt?.toDate) meta.push('Início: ' + data.createdAt.toDate().toLocaleDateString());
-      if (data?.updatedAt?.toDate) meta.push('Atualizado: ' + data.updatedAt.toDate().toLocaleString());
-      $('#assinaturaMeta').textContent = meta.join(' · ');
-      const trialExpiry = $('#trialExpiry');
-      if (plano === 'trial' && data?.expiresAt?.toDate) {
-        const daysLeft = Math.ceil((data.expiresAt.toDate() - new Date()) / (1000 * 60 * 60 * 24));
-        trialExpiry.style.display = 'block';
-        trialExpiry.innerHTML = daysLeft > 0
-          ? `Expira em ${daysLeft} dia${daysLeft === 1 ? '' : 's'}. <a href="/planos.html#light">Assinar plano pago</a>`
-          : 'Trial expirado. <a href="/planos.html#light">Assinar plano pago</a>';
-      } else {
-        trialExpiry.style.display = 'none';
-      }
-      const btnAssinar = $('#btnAssinar'), btnAlterar = $('#btnAlterar'), btnCancelar = $('#btnCancelar');
-      if (status === 'sem-plano' || !plano) {
-        btnAssinar.style.display = 'inline-block';
-        btnAlterar.style.display = 'none';
-        btnCancelar.style.display = 'none';
-      } else if (status === 'ativo' || status === 'pendente') {
-        btnAssinar.style.display = 'none';
-        btnAlterar.style.display = 'inline-block';
-        btnCancelar.style.display = 'inline-block';
-      } else {
-        btnAssinar.style.display = 'inline-block';
-        btnAlterar.style.display = 'none';
-        btnCancelar.style.display = 'none';
-      }
-    }
-    async function ensureAssinaturaDoc(uid) {
-      const r = await getDoc(doc(db, 'assinaturas', uid));
-      if (!r.exists()) {
-        const urlParams = new URLSearchParams(location.search);
-        const plano = urlParams.get('plano');
-        const status = urlParams.get('status');
-        await setDoc(doc(db, 'assinaturas', uid), {
-          status: plano === 'trial' ? 'ativo' : 'sem-plano',
-          plano: plano === 'trial' ? 'trial' : null,
-          provider: plano === 'trial' ? 'mostreaki' : 'mercado_pago',
-          createdAt: serverTimestamp(),
-          expiresAt: plano === 'trial' ? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) : null,
-          updatedAt: serverTimestamp()
-        }, { merge: true });
-      }
-    }
-    async function setAssinatura(uid, patch) {
-      await setDoc(doc(db, 'assinaturas', uid), { updatedAt: serverTimestamp(), ...patch }, { merge: true });
-    }
-    function wireAssinatura(uid) {
-      onSnapshot(doc(db, 'assinaturas', uid), snap => {
-        renderAssinatura(snap.exists() ? snap.data() : { status: 'sem-plano' });
-      });
-      $('#btnAssinar').onclick = () => location.href = '/planos.html#trial';
-      $('#btnAlterar').onclick = () => location.href = '/planos.html#' + ($('#planoLabel').textContent.includes('Trial') ? 'light' : 'trial');
-      $('#btnCancelar').onclick = async () => {
-        const snap = await getDoc(doc(db, 'assinaturas', uid));
-        const plano = snap.exists() ? snap.data().plano : null;
-        if (plano === 'trial') {
-          if (!confirm('Encerrar o Trial? Seu site será desativado.')) return;
-          await setAssinatura(uid, { status: 'inativo', plano: null, expiresAt: null });
-          alert('Trial encerrado.');
-        } else {
-          if (!confirm('Confirmar cancelamento do plano?')) return;
-          await setAssinatura(uid, { status: 'cancelamento_solicitado' });
-          alert('Cancelamento solicitado. Entraremos em contato.');
-        }
-      };
-    }
-    async function aplicarParametrosURL(uid) {
-      const p = new URLSearchParams(location.search);
-      const status = p.get('status');
-      const plano = p.get('plano');
-      if (!status && !plano) return;
-      const patch = {};
-      if (['pendente', 'ativo', 'cancelado'].includes(status)) patch.status = status;
-      if (['basico', 'essencial', 'avancado', 'light', 'trial'].includes(plano)) {
-        patch.plano = plano;
-        patch.provider = plano === 'trial' ? 'mostreaki' : 'mercado_pago';
-        if (plano === 'trial') patch.expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-      }
-      if (Object.keys(patch).length) await setAssinatura(uid, patch);
-      history.replaceState({}, '', location.pathname);
-    }
-
-    async function wireCatalogo(uid) {
-      const btn = $('#btnEditarCatalogo');
-      const info = $('#catalogoInfo');
-      btn.style.display = 'none';
-      info.style.display = 'none';
-      info.textContent = '';
-      const assSnap = await getDoc(doc(db, 'assinaturas', uid));
-      const ass = assSnap.exists() ? assSnap.data() : null;
-      const ativo = ass && String(ass.status || '').toLowerCase() === 'ativo';
-      if (!ativo) return;
-      const uSnap = await getDoc(doc(db, 'usuarios', uid));
-      const u = uSnap.exists() ? uSnap.data() : {};
-      const slug = (u.catalogoSlug || u.username || '').trim();
-      if (!slug) return;
-      const cfgRef = doc(db, 'catalogos', slug, 'meta', 'config');
-      try {
-        const cfg = await getDoc(cfgRef);
-        if (cfg.exists() && cfg.data().ownerUid === uid && cfg.data().catalogoAtivo === true) {
-          btn.href = `/editar-catalogo.html?c=${encodeURIComponent(slug)}`;
-          btn.style.display = 'inline-flex';
-          info.textContent = `Catálogo habilitado. Slug: ${slug}`;
-          info.style.display = 'block';
-        }
-      } catch {}
-    }
-
-    const LOGIN_URL = 'https://mostreaki-2025.web.app/confirmar.html';
-    function showMsg(txt, ok=false) {
-      const el = $('#msgTrocaEmail');
-      if (!el) return;
-      el.textContent = txt;
-      el.style.display = 'block';
-      el.style.background = ok ? '#ecfdf5' : '#f9fafb';
-      el.style.color = ok ? '#065f46' : '#334155';
-    }
-    const toggleBtn = $('#toggleSenhaAtual');
-    const senhaEl = $('#senhaAtual');
-    toggleBtn?.addEventListener('click', () => {
-      if (!senhaEl) return;
-      const isPw = senhaEl.type === 'password';
-      senhaEl.type = isPw ? 'text' : 'password';
-      toggleBtn.textContent = isPw ? 'ocultar' : 'mostrar';
-    });
-    async function iniciarTrocaEmail(user) {
-      const btn = $('#btnTrocarEmail');
-      const novo = $('#novoEmail');
-      const senha = $('#senhaAtual');
-      if (!btn || !novo || !senha) return;
-
-      let busy = false;
-      btn.onclick = async () => {
-        if (busy) return;
-        const novoEmail = (novo.value || '').trim();
-        const senhaAtual = senha.value;
-
-        if (!novoEmail) { showMsg('Digite o novo e-mail.'); return; }
-        if (!emailRe.test(novoEmail)) { showMsg('Novo e-mail inválido.'); return; }
-        if (!senhaAtual) { showMsg('Informe sua senha atual para confirmar.'); return; }
 
         try {
-          busy = true; btn.disabled = true; btn.style.opacity = '.7'; showMsg('Verificando credenciais…');
-          const cred = EmailAuthProvider.credential(user.email, senhaAtual);
-          await reauthenticateWithCredential(user, cred);
-          await verifyBeforeUpdateEmail(user, novoEmail, { url: LOGIN_URL, handleCodeInApp: true });
-          showMsg('Enviamos um link de confirmação para o novo e-mail. Abra e confirme para concluir a troca.', true);
-          fecharEmailModal();
-        } catch (e) {
-          console.error('Erro na troca de e-mail:', e.code, e.message);
-          const code = e?.code || '';
-          if (code.includes('wrong-password') || code.includes('invalid-credential')) {
-            showMsg('Senha incorreta. Verifique e tente novamente.');
-          } else if (code.includes('requires-recent-login')) {
-            showMsg('Sessão expirada. Faça login novamente e tente de novo.');
-          } else if (code.includes('email-already-in-use')) {
-            showMsg('Este e-mail já está em uso por outra conta.');
-          } else if (code.includes('invalid-continue-uri')) {
-            showMsg('Erro de configuração: verifique o URL de redirecionamento no Firebase Console.');
-          } else {
-            showMsg(`Erro: ${e.code || 'desconhecido'}. Tente novamente ou contate o suporte.`);
-          }
-        } finally {
-          busy = false; btn.disabled = false; btn.style.opacity = '1';
+          const storageRef = ref(storage, `avatars/${user.uid}.jpg`);
+          await uploadBytes(storageRef, file);
+          const url = await getDownloadURL(storageRef);
+
+          localStorage.setItem("fotoPerfil", url);
+          userCircle.style.backgroundImage = `url('${url}')`;
+          avatarPreview.style.backgroundImage = `url('${url}')`;
+          avatarPreview.textContent = "";
+          showAlert({
+            title: "Foto atualizada",
+            html: "Sua foto de perfil foi atualizada com sucesso!"
+          });
+        } catch (err) {
+          console.error(err);
+          showAlert({
+            title: "Erro ao enviar imagem",
+            html: "Não foi possível atualizar sua foto agora. Tente novamente em instantes."
+          });
         }
-      };
+      });
     }
 
-    onAuthStateChanged(auth, async (user) => {
-      const a = $('#authText');
-      if (user) {
-        a.textContent = 'Sair';
-        a.onclick = async (e) => {
-          e.preventDefault();
-          await signOut(auth);
-          localStorage.removeItem('fotoPerfil');
-          location = '/index.html';
-        };
-        $('#foto').onchange = ev => previewImagem(ev, user.uid);
-        $('#btnSalvar').onclick = () => salvar(user.uid);
-        $('#btnExcluirFoto').onclick = () => removerFoto(user.uid);
-        $('#btnAlterarEmail').onclick = () => abrirEmailModal();
-        await ensureAssinaturaDoc(user.uid);
-        wireAssinatura(user.uid);
-        await aplicarParametrosURL(user.uid);
-        await carregar(user.uid);
-        await prefetchFoto(user.uid);
-        await wireCatalogo(user.uid);
-        iniciarTrocaEmail(user);
-      } else {
-        $('#alertaLogin').style.display = 'block';
-        $('main.container').style.display = 'none';
-        localStorage.removeItem('fotoPerfil');
-        setTimeout(() => location = '/index.html', 4000);
-        a.textContent = 'Entrar';
-        a.onclick = (e) => { e.preventDefault(); abrirModal(); };
-      }
-    }); 
+    // Botão alterar e-mail
+    if (btnAlterarEmail) {
+      btnAlterarEmail.addEventListener("click", () => {
+        window.location.href = "alterar-email.html";
+      });
+    }
+
+    // Botão alterar assinatura
+    if (btnAlterarPlano) {
+      btnAlterarPlano.addEventListener("click", () => {
+        window.location.href = "planos.html#trocar";
+      });
+    }
+
+    // Botão cancelar assinatura
+    if (btnCancelarPlano) {
+      btnCancelarPlano.addEventListener("click", () => {
+        showAlert({
+          title: "Cancelar assinatura",
+          html: "O cancelamento é feito pelo intermediador de pagamento (ex: Mercado Pago).<br>Entre em contato pelo WhatsApp ou e-mail <b>mostreaki@mostreaki.com.br</b> para orientações detalhadas.",
+          actions: [{ text: "Entendi" }]
+        });
+      });
+    }
+
+    // Editar catálogo
+    if (btnEditarCatalogo) {
+      btnEditarCatalogo.addEventListener("click", () => {
+        window.location.href = "editar-catalogo.html";
+      });
+    }
+
+    // Editar álbum
+    if (btnEditarAlbum) {
+      btnEditarAlbum.addEventListener("click", () => {
+        window.location.href = "editar-album.html";
+      });
+    }
   </script>
 </body>
 </html>
