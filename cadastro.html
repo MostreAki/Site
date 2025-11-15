@@ -1,579 +1,892 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Cadastro – MostreAki</title>
-<link rel="icon" href="favicon.ico" type="image/x-icon"/>
-<style>
-  /* ====== DESIGN BASE (alinhado ao anexo de Planos) ====== */
-  :root{
-    --brand:#15b0af; --brandLight:#c2e7df; --accent:#FA1E39; --ink:#063b39;
-    --card:#ffffff; --muted:#445; --bg:#f4f7f7; --ok:#18a957; --err:#ef4444;
-  }
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{
-    font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Arial,sans-serif;
-    color:#222; min-height:100vh; display:flex; flex-direction:column;
-    background-image:url("fundo-mobile-escuro.png");
-    background-size:cover; background-repeat:no-repeat; background-attachment:fixed;
-  }
-  @media (min-width:768px){ body{ background-image:url("fundo-desktop.png"); } }
+  <meta charset="UTF-8">
+  <title>Cadastro – MostreAki</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root {
+      --fundo: #92a9a6;
+      --fundo-card: #cfe0dd;
+      --bordo: #7d2f59;
+      --bordo-escuro: #5b123a;
+      --verde-escuro: #003735;
+      --texto: #23313a;
+      --grad1: #d9d9d9;
+      --grad2: #af91a1;
+      --radius-pill: 999px;
+      --shadow-soft: 0 4px 10px rgba(0,0,0,.18);
+      --shadow-light: 0 2px 6px rgba(0,0,0,.12);
+    }
 
-  /* ====== HEADER ====== */
-  header{
-    background:var(--brandLight); height:60px; display:flex; align-items:center; justify-content:space-between;
-    padding:0 20px; position:relative; box-shadow:0 2px 6px rgba(0,0,0,.1);
-  }
-  .logo-container{display:flex;align-items:center;cursor:pointer}
-  .logo-container img{height:40px;margin-right:10px}
-  .logo{font-size:1.5rem;font-weight:bold}
-  .logo .mostre{color:#00C2BF}.logo .aki{color:#FA1E39}
-  .header-auth{ display:flex; align-items:center; gap:10px; }
-  .user-circle{
-    background:#15b0af;color:#fff;font-weight:bold;border-radius:50%;
-    width:32px;height:32px;display:flex;align-items:center;justify-content:center;
-    overflow:hidden;font-size:.9rem;
-  }
-  .user-circle img{ width:100%; height:100%; object-fit:cover; display:block; }
-  .menu-icon{ width:32px; height:32px; display:flex; align-items:center; justify-content:center; line-height:1; font-size:1.5rem; cursor:pointer; user-select:none; }
-  .menu-list{
-    position:absolute;top:60px;right:20px;background:#16807C;border:2px solid #000;border-radius:6px;
-    display:none;flex-direction:column;padding:10px;z-index:10000;
-  }
-  .menu-list a{
-    background:#FA1E39;color:#fff;text-decoration:none;padding:10px;margin-bottom:8px;border-radius:6px;
-    text-align:center;font-weight:bold;
-  }
-  .menu-list a:hover{background:#b8313b}
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-  /* ====== CONTEÚDO ====== */
-  main{ max-width:980px; margin:32px auto; padding:0 18px; width:100%; }
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--fundo);
+      color: var(--texto);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
 
-  .card{
-    background:var(--card); border-radius:16px; width:100%;
-    box-shadow:0 10px 40px rgba(0,0,0,.08); padding:22px 20px; border:2px solid var(--brandLight);
-  }
-  .card h1{margin:0 0 4px; color:#0f6f6e; font-size:1.45rem}
-  .sub{color:#4a6665; font-size:.95rem; margin-bottom:16px}
-  .section-title{margin-top:16px; font-weight:700; color:#0f6f6e}
+    a {
+      color: var(--bordo);
+      text-decoration: none;
+    }
 
-  .form-grid{display:grid; gap:12px}
-  @media (min-width:720px){ .cols-2{ grid-template-columns:1fr 1fr; } .cols-3{ grid-template-columns:1fr 1fr 1fr; } }
+    /* ===== TOPBAR ===== */
+    header {
+      background: #c6d7d4;
+      box-shadow: 0 2px 6px rgba(0,0,0,.12);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+    }
 
-  .radio-row{display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin:6px 0 2px}
+    .topbar-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: .4rem .9rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .75rem;
+    }
 
-  .field{ position:relative; background:#fff; border:1.5px solid #e6efed; border-radius:12px; padding:12px 12px 10px; }
-  .field:focus-within{ border-color:var(--brand); box-shadow:0 0 0 3px rgba(21,176,175,.12); }
-  .field input, .field select{ width:100%; border:0; outline:0; font-size:1rem; background:transparent; padding:10px 0 2px; color:#233; }
-  .field label{ position:absolute; left:12px; top:10px; color:#667; font-size:.95rem; pointer-events:none; transition:all .18s ease; background:#fff; padding:0 6px; border-radius:6px; transform-origin:left top; }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: .45rem;
+    }
 
-  /* rótulo flutuante NÃO afeta a label.showpwd */
-  .field.focus label:not(.showpwd),
-  .field.has-value label:not(.showpwd){
-    top:-8px; font-size:.78rem; color:var(--brand);
-  }
+    .brand-logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: linear-gradient(145deg,#cee3f2,#cfcfcf);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--bordo);
+      box-shadow: var(--shadow-light);
+    }
 
-  /* Campo de senha */
-  .field.pwd input{ padding-right:0; }
+    .brand-text {
+      font-weight: 800;
+      font-size: 1.3rem;
+      color: var(--verde-escuro);
+    }
 
-  /* Checkbox “Mostrar senha” */
-  .showpwd{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:.9rem;color:#444}
-  .showpwd input{width:auto}
+    .brand-text span {
+      color: var(--bordo);
+    }
 
-  /* A label da caixinha deve ser estática, abaixo do input */
-  .field label.showpwd{
-    position:static; top:auto; left:auto;
-    background:transparent; padding:0; margin-top:8px;
-    display:flex; align-items:center; gap:8px;
-    font-size:.9rem; color:#444; pointer-events:auto;
-  }
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+    }
 
-  /* BOTÕES */
-  button,.btn{width:100%; margin-top:12px; padding:12px; border-radius:12px; border:0; font-weight:700; cursor:pointer; transition:filter .15s ease, transform .1s ease}
-  .primary{background:linear-gradient(135deg,var(--brand) 0%, #24c5bd 100%); color:#fff}
-  .primary:hover{filter:brightness(1.06)}
-  .primary:active{transform:translateY(1px)}
-  .muted{font-size:.92rem; color:#666; margin-top:10px}
-  a{color:var(--brand); text-decoration:none; font-weight:700}
+    .btn-login {
+      padding: .45rem 1.1rem;
+      border-radius: var(--radius-pill);
+      border: none;
+      cursor: pointer;
+      background: linear-gradient(180deg,var(--bordo),var(--bordo-escuro));
+      color: #fff;
+      font-weight: 600;
+      box-shadow: var(--shadow-soft);
+      font-size: .9rem;
+    }
 
-  /* POPUP brand */
-  .alert-bg{position:fixed; inset:0; background:rgba(0,0,0,.55); display:none; align-items:center; justify-content:center; z-index:9999; padding:20px}
-  .alert-card{background:#fff; border-radius:16px; overflow:hidden; max-width:520px; width:100%; box-shadow:0 22px 70px rgba(0,0,0,.25); border:2px solid var(--brandLight)}
-  .alert-head{background:linear-gradient(90deg,var(--brandLight),var(--brand)); padding:14px 16px; display:flex; align-items:center; gap:10px}
-  .alert-dot{width:10px; height:10px; border-radius:50%; background:var(--accent)}
-  .alert-title{color:var(--ink); font-weight:700}
-  .alert-body{padding:16px; color:#2b2b2b}
-  .alert-actions{display:flex; gap:10px; flex-wrap:wrap; padding:0 16px 16px}
-  .btn-solid{background:var(--brand); color:#fff}
-  .btn-ghost{background:#fff; border:2px solid var(--brand); color:var(--brand)}
+    .user-circle {
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      background: var(--bordo);
+      color: #fff;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: .95rem;
+      background-size: cover;
+      background-position: center;
+      cursor: pointer;
+      box-shadow: var(--shadow-light);
+    }
 
-  /* Estilo para o checkbox de termos no popup */
-  .terms-checkbox{display:flex;align-items:center;gap:8px;margin:16px 0;font-size:.9rem;color:#444}
-  .terms-checkbox input{width:auto}
+    .burger {
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      border: 2px solid var(--bordo);
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+    }
 
-  .msg{font-size:.9rem; margin-top:8px}
-  .ok{color:var(--ok)} .err{color:var(--err)}
+    .burger span,
+    .burger span::before,
+    .burger span::after {
+      display: block;
+      width: 18px;
+      height: 2px;
+      border-radius: 999px;
+      background: var(--bordo);
+      position: absolute;
+      transition: .2s ease;
+    }
 
-  footer{background:var(--brandLight);padding:20px;text-align:center;color:#555;font-size:.9rem;margin-top:40px}
+    .burger span::before {
+      content: "";
+      transform: translateY(-5px);
+    }
 
-  /* Selo SSL acima do footer */
-.ssl-seal {
-  text-align: center;
-  padding: 16px 0;
-  background: var(--brandLight);
-  margin-top: 20px;
-  border-top: 1px solid rgba(250,30,39,.22);
-}
-.ssl-seal a {
-  text-decoration: none;
-  display: inline-block;
-}
-.ssl-seal img {
-  max-width: 100px;
-  height: auto;
-}
-.ssl-seal p {
-  font-size: 0.8rem;
-  color: var(--muted);
-  margin: 4px 0 0;
-}
-.ssl-seal p:hover {
-  color: var(--brand);
-}
-.ssl-seal .fallback-svg {
-  width: 50px;
-  height: 50px;
-  vertical-align: middle;
-}
-@media (max-width: 768px) {
-  .ssl-seal img {
-    max-width: 80px;
-  }
-  .ssl-seal p {
-    font-size: 0.75rem;
-  }
-}
-  
-</style>
+    .burger span::after {
+      content: "";
+      transform: translateY(5px);
+    }
+
+    .topbar-strip {
+      height: 4px;
+      background: var(--bordo);
+    }
+
+    nav#menu {
+      display: none;
+      background: rgba(0,0,0,.14);
+      backdrop-filter: blur(6px);
+      padding: .9rem 1rem 1.2rem;
+    }
+
+    nav#menu.open {
+      display: block;
+    }
+
+    .menu-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: .55rem;
+    }
+
+    .menu-link {
+      width: 210px;
+      max-width: 92vw;
+      align-self: center;
+      white-space: nowrap;
+      background: linear-gradient(180deg, var(--grad1), var(--grad2));
+      border-radius: 999px;
+      padding: .55rem 1rem;
+      text-align: center;
+      color: var(--bordo);
+      text-decoration: none;
+      font-weight: 600;
+      border: 2px solid rgba(0,0,0,.12);
+      box-shadow: 0 2px 6px rgba(0,0,0,.1);
+      font-size: .95rem;
+    }
+
+    /* ===== MAIN / CARD ===== */
+    main {
+      flex: 1;
+      padding: 1.6rem .85rem 2.2rem;
+    }
+
+    .shell {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .page-title {
+      font-size: 2rem;
+      color: var(--verde-escuro);
+      margin-bottom: .4rem;
+      font-weight: 800;
+    }
+
+    .page-sub {
+      max-width: 620px;
+      font-size: 1rem;
+      color: #20313a;
+      line-height: 1.5;
+      margin-bottom: 1.6rem;
+    }
+
+    .card {
+      background: #e2eeeb;
+      border-radius: 24px;
+      padding: 1.4rem 1.2rem 1.8rem;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(0,0,0,.05);
+    }
+
+    @media (min-width: 768px) {
+      .card {
+        padding: 1.8rem 2rem 2.1rem;
+      }
+    }
+
+    h2.section-title {
+      font-size: 1.35rem;
+      color: var(--verde-escuro);
+      margin-bottom: .4rem;
+    }
+
+    p.section-text {
+      font-size: .98rem;
+      color: #3c4a52;
+      margin-bottom: 1.2rem;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: minmax(0,1fr);
+      gap: 1rem;
+    }
+
+    @media (min-width: 700px) {
+      .form-grid {
+        grid-template-columns: minmax(0,1.1fr) minmax(0,1.1fr);
+      }
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: .35rem;
+    }
+
+    .field label {
+      font-size: .9rem;
+      font-weight: 600;
+      color: var(--verde-escuro);
+    }
+
+    .field small {
+      font-size: .78rem;
+      color: #55636b;
+    }
+
+    .input,
+    .input-readonly {
+      border-radius: 14px;
+      border: 1px solid rgba(0,0,0,.12);
+      padding: .6rem .85rem;
+      font-size: .95rem;
+      background: #f6fbfa;
+      outline: none;
+      transition: border-color .15s, box-shadow .15s, background .15s;
+      width: 100%;
+    }
+
+    .input:focus {
+      border-color: var(--bordo);
+      box-shadow: 0 0 0 2px rgba(125,47,89,.25);
+      background: #ffffff;
+    }
+
+    .input-readonly {
+      background: #e8f0ee;
+      color: #5c6a72;
+    }
+
+    .slug-preview {
+      font-size: .8rem;
+      color: #44545c;
+      margin-top: -0.25rem;
+    }
+
+    .slug-preview code {
+      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: .78rem;
+      background: rgba(0,0,0,.04);
+      padding: .05rem .35rem;
+      border-radius: 999px;
+    }
+
+    .btn-primary,
+    .btn-ghost,
+    .btn-outline {
+      border-radius: var(--radius-pill);
+      padding: .7rem 1.4rem;
+      font-size: .95rem;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .4rem;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: linear-gradient(180deg,var(--bordo),var(--bordo-escuro));
+      color: #fff;
+      box-shadow: var(--shadow-soft);
+      width: 100%;
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid rgba(0,0,0,.18);
+      color: var(--bordo);
+      width: 100%;
+      background: linear-gradient(180deg,#f7f7f7,#e4dde6);
+      box-shadow: var(--shadow-light);
+    }
+
+    .btn-google-icon {
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      background: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .9rem;
+    }
+
+    .or-row {
+      text-align: center;
+      margin: 1.1rem 0 .8rem;
+      font-size: .85rem;
+      color: #6a777f;
+      position: relative;
+    }
+
+    .or-row::before,
+    .or-row::after {
+      content: "";
+      position: absolute;
+      height: 1px;
+      background: rgba(0,0,0,.12);
+      top: 50%;
+      width: 33%;
+    }
+
+    .or-row::before { left: 0; }
+    .or-row::after { right: 0; }
+
+    .terms {
+      margin-top: .9rem;
+      font-size: .8rem;
+      color: #5a676f;
+    }
+
+    .help-text {
+      margin-top: .7rem;
+      font-size: .85rem;
+    }
+
+    /* ===== ALERTA BRAND ===== */
+    #alert {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.35);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 60;
+    }
+
+    #alertPanel {
+      background: #f6fbfa;
+      border-radius: 18px;
+      max-width: 360px;
+      width: 92vw;
+      padding: 1.1rem 1.2rem 1rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,.35);
+      border: 1px solid rgba(0,0,0,.12);
+    }
+
+    #alertTitle {
+      font-weight: 700;
+      color: var(--verde-escuro);
+      margin-bottom: .4rem;
+      font-size: 1.05rem;
+    }
+
+    #alertMsg {
+      font-size: .9rem;
+      color: #34424a;
+      margin-bottom: .9rem;
+    }
+
+    #alertActions {
+      display: flex;
+      gap: .5rem;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .btn-solid {
+      border-radius: var(--radius-pill);
+      padding: .45rem 1.1rem;
+      border: none;
+      cursor: pointer;
+      background: linear-gradient(180deg,var(--bordo),var(--bordo-escuro));
+      color: #fff;
+      font-weight: 600;
+      font-size: .9rem;
+    }
+
+    .btn-ghost {
+      border-radius: var(--radius-pill);
+      padding: .45rem 1.1rem;
+      border: 1px solid rgba(0,0,0,.15);
+      cursor: pointer;
+      background: #ffffff;
+      color: var(--bordo);
+      font-weight: 600;
+      font-size: .9rem;
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      margin-top: auto;
+      background: #c6d7d4;
+      padding-top: 1.1rem;
+    }
+
+    .footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 .9rem 1rem;
+      font-size: .8rem;
+      color: #37454d;
+      display: flex;
+      flex-direction: column;
+      gap: .3rem;
+    }
+
+    footer img {
+      display: block;
+      max-width: 140px;
+      margin-bottom: .4rem;
+    }
+
+    .footer-strip {
+      height: 4px;
+      background: var(--bordo);
+      margin-top: .4rem;
+    }
+
+    @media (min-width: 720px) {
+      .footer-inner {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+  </style>
 </head>
 <body>
-<header>
-  <div class="logo-container" onclick="location.href='index.html'">
-    <img src="logomarca-mostreaki.svg" alt="Logo">
-    <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
-  </div>
-  <div class="header-auth">
-    <span id="authText" style="font-weight:bold;color:#15b0af;cursor:pointer;display:none">Entrar</span>
-    <div id="userCircle" class="user-circle" title="Perfil">F</div>
-    <div id="menuBtn" class="menu-icon" aria-controls="menu" aria-expanded="false">☰</div>
-  </div>
-  <nav class="menu-list" id="menu">
-    <a href="/index.html">Página Inicial</a>
-    <a href="/sobre.html">Sobre</a>
-    <a href="/minha-conta.html">Minha Conta</a>
-    <a href="/parceiros.html">Parceiros</a>
-    <a href="/servicos-adicionais.html">Serviços Adicionais</a>
-    <a href="/redes-sociais.html">Redes Sociais</a>
-    <a href="/contatos.html">Contatos</a>
-  </nav>
-</header>
-
-<main>
-  <div class="card">
-    <h1>Criar conta</h1>
-    <div class="sub">Preencha seus dados para começar a usar o MostreAki.</div>
-
-    <div class="section-title">Tipo de cadastro</div>
-    <div class="radio-row">
-      <label><input type="radio" name="tipoPessoa" value="PF" checked> Pessoa Física</label>
-      <label><input type="radio" name="tipoPessoa" value="PJ"> Pessoa Jurídica</label>
-    </div>
-
-    <div class="section-title">Identidade no MostreAki</div>
-    <div class="form-grid">
-      <div class="field"><label for="username">Nome de usuário *</label><input id="username" required></div>
-    </div>
-    <div class="hint" style="margin:6px 0 10px;color:#667;font-size:.85rem">Use 3–40 caracteres. Permitidos: letras, números, ponto, hífen e underline.</div>
-
-    <div class="form-grid" id="grupoPF">
-      <div class="field"><label for="nome">Nome completo *</label><input id="nome" required autocomplete="name"></div>
-      <div class="field"><label for="cpf">CPF *</label><input id="cpf" inputmode="numeric"></div>
-    </div>
-
-    <div class="form-grid" id="grupoPJ" style="display:none">
-      <div class="field"><label for="razao">Razão Social *</label><input id="razao"></div>
-      <div class="field"><label for="cnpj">CNPJ *</label><input id="cnpj" inputmode="numeric"></div>
-      <div class="field"><label for="ie">Inscrição Estadual</label><input id="ie"></div>
-      <div class="radio-row" style="margin-top:-6px">
-        <label><input type="checkbox" id="isentoIE"> Isento de IE</label>
+  <header>
+    <div class="topbar-inner">
+      <a href="index.html" class="brand">
+        <div class="brand-logo">↑</div>
+        <div class="brand-text">Mostre<span>Aki</span></div>
+      </a>
+      <div class="topbar-right">
+        <button id="btnAbrirLogin" class="btn-login" type="button" onclick="location.href='index.html'">
+          Entrar
+        </button>
+        <div id="userCircle" class="user-circle" title="Minha conta"></div>
+        <button class="burger" type="button" onclick="toggleMenu()">
+          <span></span>
+        </button>
       </div>
     </div>
-
-    <div class="section-title">Contato</div>
-    <div class="form-grid cols-2">
-      <div class="field"><label for="fone">Celular / WhatsApp *</label><input id="fone" type="tel" inputmode="tel" required autocomplete="tel"></div>
-      <div class="field"><label for="email">E-mail *</label><input id="email" type="email" required autocomplete="email"></div>
-    </div>
-    <div class="form-grid cols-2">
-      <div class="field"><label for="email2">Confirmar e-mail *</label><input id="email2" type="email" required></div>
-    </div>
-
-    <div class="section-title">Endereço (faturamento/NFS-e)</div>
-    <div class="form-grid cols-3">
-      <div class="field"><label for="cep">CEP *</label><input id="cep" inputmode="numeric"></div>
-      <div class="field"><label for="uf">UF *</label>
-        <select id="uf"><option value="">Selecione</option><option>AC</option><option>AL</option><option>AP</option><option>AM</option><option>BA</option><option>CE</option><option>DF</option><option>ES</option><option>GO</option><option>MA</option><option>MT</option><option>MS</option><option>MG</option><option>PA</option><option>PB</option><option>PR</option><option>PE</option><option>PI</option><option>RJ</option><option>RN</option><option>RS</option><option>RO</option><option>RR</option><option>SC</option><option>SP</option><option>SE</option><option>TO</option></select>
+    <div class="topbar-strip"></div>
+    <nav id="menu">
+      <div class="menu-inner">
+        <a href="index.html#sobre" class="menu-link">Sobre</a>
+        <a href="minha-conta.html" class="menu-link">Minha Conta</a>
+        <a href="planos.html" class="menu-link">Planos</a>
+        <a href="parceiros.html" class="menu-link">Parceiros</a>
+        <a href="servicos-adicionais.html" class="menu-link">Serviços Adicionais</a>
+        <a href="instrucoes.html" class="menu-link">Instruções</a>
+        <a href="contato.html" class="menu-link">Contato</a>
       </div>
-      <div class="field"><label for="cidade">Cidade *</label><input id="cidade"></div>
-    </div>
-    <div class="form-grid cols-2">
-      <div class="field"><label for="bairro">Bairro *</label><input id="bairro"></div>
-      <div class="field"><label for="logradouro">Logradouro (rua/avenida) *</label><input id="logradouro"></div>
-    </div>
-    <div class="form-grid cols-2">
-      <div class="field"><label for="numero">Número *</label><input id="numero" inputmode="numeric"></div>
-      <div class="field"><label for="complemento">Complemento</label><input id="complemento"></div>
-    </div>
+    </nav>
+  </header>
 
-    <div class="section-title">Acesso</div>
-    <div class="form-grid cols-2">
-      <!-- Campo de senha COM checkbox “Mostrar senha” (sem botão olho) -->
-      <div class="field pwd">
-        <label for="senha">Senha (mín. 6) *</label>
-        <input id="senha" type="password" required autocomplete="new-password">
-        <label class="showpwd" for="chkMostrarSenha">
-          <input id="chkMostrarSenha" type="checkbox" aria-controls="senha" aria-label="Mostrar senha">
-          Mostrar senha
-        </label>
-      </div>
-
-      <!-- Confirmação de senha COM checkbox -->
-      <div class="field pwd">
-        <label for="senha2">Confirmar senha *</label>
-        <input id="senha2" type="password" required>
-        <label class="showpwd" for="chkMostrarSenha2">
-          <input id="chkMostrarSenha2" type="checkbox" aria-controls="senha2" aria-label="Mostrar confirmação">
-          Mostrar senha
-        </label>
-      </div>
-    </div>
-
-    <button class="primary" id="btnCadastrar">Criar conta</button>
-    <p class="muted">Já tem conta? <a href="/login.html">Entrar</a></p>
-    <div id="status" class="msg" aria-live="polite"></div>
-  </div>
-</main>
-
-  <!-- Selo SSL acima do footer -->
-<div class="ssl-seal">
-  <a href="https://www.ssllabs.com/ssltest/analyze.html?d=app.mostreaki.com.br&hideResults=on" target="_blank" rel="noopener" title="Verificar Certificado SSL (SSL Labs)">
-    <img src="https://seal.ssl2buy.com/images/seal/ssl2buy-seal.gif?v=2" alt="SSL Secured by SSL2BUY" onerror="this.style.display='none';this.nextElementSibling.style.display='inline-block';">
-    <svg class="fallback-svg" style="display:none;" viewBox="0 0 24 24" fill="none" stroke="#15b0af" stroke-width="2">
-      <path d="M12 17v4m0-4c-2.8 0-5-2.2-5-5V8c0-1.1.9-2 2-2h6c1.1 0 2 .9 2 2v4c0 2.8-2.2 5-5 5z"/>
-      <path d="M9 8V6c0-1.7 1.3-3 3-3s3 1.3 3 3v2"/>
-    </svg>
-  </a>
-  <p>Site Seguro com Certificado SSL</p>
-</div>
-  
-<footer>&copy; 2025 MostreAki. Todos os direitos reservados.</footer>
-
-<!-- POPUP EXISTENTE -->
-<div id="alert" class="alert-bg" role="dialog" aria-modal="true" aria-labelledby="alertTitle">
-  <div class="alert-card">
-    <div class="alert-head">
-      <div class="alert-dot"></div>
-      <div id="alertTitle" class="alert-title">Mensagem</div>
-    </div>
-    <div id="alertMsg" class="alert-body">...</div>
-    <div id="alertActions" class="alert-actions"></div>
-  </div>
-</div>
-
-<!-- NOVO POPUP DE TERMOS -->
-<div id="termsAlert" class="alert-bg" role="dialog" aria-modal="true" aria-labelledby="termsTitle">
-  <div class="alert-card">
-    <div class="alert-head">
-      <div class="alert-dot"></div>
-      <div id="termsTitle" class="alert-title">Aceite os Termos</div>
-    </div>
-    <div id="termsMsg" class="alert-body">
-      Para prosseguir com o cadastro, leia e aceite nossos <a href="/termos-de-servico.html" target="_blank">Termos de Serviço</a> e <a href="/termos-privacidade.html" target="_blank">Política de Privacidade</a>.
-      <div class="terms-checkbox">
-        <input type="checkbox" id="chkTerms" aria-label="Aceitar Termos de Serviço e Política de Privacidade">
-        <label for="chkTerms">Li e aceito os Termos de Serviço e a Política de Privacidade</label>
-      </div>
-    </div>
-    <div id="termsActions" class="alert-actions">
-      <button class="btn btn-solid" id="btnAcceptTerms" disabled>Aceito</button>
-      <button class="btn btn-ghost" id="btnCancelTerms">Cancelar</button>
+  <!-- ALERTA BRAND -->
+  <div id="alert">
+    <div id="alertPanel">
+      <div id="alertTitle">Aviso</div>
+      <div id="alertMsg"></div>
+      <div id="alertActions"></div>
     </div>
   </div>
-</div>
 
-<script type="module">
-import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-import { getAuth, createUserWithEmailAndPassword, updateProfile, sendEmailVerification, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-import { getFirestore, doc, setDoc, getDoc, deleteDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-import { getStorage, ref, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
+  <main>
+    <div class="shell">
+      <h1 class="page-title">Criar conta</h1>
+      <p class="page-sub">
+        Cadastre-se para gerenciar sua assinatura, catálogo digital e receber suporte do MostreAki.
+        O nome de usuário será usado como <b>slug</b> nos links públicos.
+      </p>
 
-const cfg = {
-  apiKey:"AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
-  authDomain:"mostreaki-2025.firebaseapp.com",
-  projectId:"mostreaki-2025",
-  storageBucket:"mostreaki-2025.firebasestorage.app",
-  messagingSenderId:"748712068097",
-  appId:"1:748712068097:web:09cf043fbb45917ef6ec00"
-};
-const app = getApps().length ? getApp() : initializeApp(cfg);
-const auth = getAuth(app);
-const db   = getFirestore(app);
-const stg  = getStorage(app, 'gs://mostreaki-2025.firebasestorage.app');
+      <section class="card">
+        <h2 class="section-title">Dados de acesso</h2>
+        <p class="section-text">
+          Preencha seu nome de usuário, WhatsApp e escolha se prefere criar a conta com
+          <b>e-mail e senha</b> ou entrar com o <b>Google</b>.
+        </p>
 
-/* ===== HEADER: menu e avatar ===== */
-const cacheBust = u => u ? u + (u.includes('?')?'&':'?') + 'v=' + Date.now() : u;
-function setAvatar(url){
-  if(!url) return; localStorage.setItem('fotoPerfil', url);
-  const el = document.getElementById('userCircle'); if(!el) return;
-  el.textContent=''; el.style.display='flex';
-  const img = new Image(); img.src = cacheBust(url); img.alt='Foto'; img.style.width='100%'; img.style.height='100%'; img.style.objectFit='cover';
-  el.append(img);
-}
-(()=>{ const c = localStorage.getItem('fotoPerfil'); if(c) setAvatar(c); })();
-async function prefetchFoto(uid){
-  try{ const s = await getDoc(doc(db,'usuarios',uid)); const saved = s.exists() && s.data().fotoPerfil; if(saved){ setAvatar(saved); return; } }catch{}
-  try{
-    const tryExt = async e => getDownloadURL(ref(stg, `usuarios/${uid}/perfil/avatar.${e}`)).catch(()=>null);
-    const direct = await tryExt('jpg') || await tryExt('png') || await tryExt('webp') || await tryExt('gif');
-    if(direct){ try{ await setDoc(doc(db,'usuarios',uid), { fotoPerfil:direct }, { merge:true }); }catch{} setAvatar(direct); return; }
-  }catch{}
-  if(auth.currentUser?.photoURL) setAvatar(auth.currentUser.photoURL);
-}
-(function wireMenu(){
-  const btn = document.getElementById('menuBtn'); const menu = document.getElementById('menu'); if(!btn||!menu) return;
-  const open=()=>{menu.style.display='flex';btn.setAttribute('aria-expanded','true');document.addEventListener('click',onDoc,true);document.addEventListener('keydown',onKey)};
-  const close=()=>{menu.style.display='none';btn.setAttribute('aria-expanded','false');document.removeEventListener('click',onDoc,true);document.removeEventListener('keydown',onKey)};
-  const toggle=()=> menu.style.display==='flex'?close():open();
-  function onDoc(e){ if(!menu.contains(e.target) && e.target!==btn) close(); }
-  function onKey(e){ if(e.key==='Escape') close(); }
-  btn.addEventListener('click',e=>{e.stopPropagation();toggle();});
-})();
-(function wireAuthUI(){
-  const at = document.getElementById('authText');
-  onAuthStateChanged(auth, user=>{
-    if(user){ if(at){ at.textContent='Sair'; at.style.display='inline'; at.onclick = async ()=>{ await signOut(auth); localStorage.removeItem('fotoPerfil'); location='/index.html'; }; } prefetchFoto(user.uid); }
-    else{ if(at){ at.textContent='Entrar'; at.style.display='inline'; at.onclick = ()=> location='/login.html'; } }
-  });
-})();
+        <form id="formCadastro" autocomplete="off">
+          <div class="form-grid">
+            <div class="field">
+              <label for="username">Nome de usuário (slug)</label>
+              <input id="username" class="input" type="text" maxlength="40"
+                     placeholder="ex: lamaggie, doceria-da-lu" required>
+              <div class="slug-preview">
+                Seu link ficará assim:
+                <code>mostreaki.com.br/cat/<span id="slugPreview">slug-exemplo</span></code>
+              </div>
+              <small>Esse será o identificador do seu catálogo e álbum digital.</small>
+            </div>
 
-/* ===== Floating label ===== */
-function wireFloat(){
-  document.querySelectorAll('.field').forEach(f=>{
-    const i=f.querySelector('input,select');
-    const set = ()=>{ f.classList.toggle('has-value', !!i.value); };
-    i.addEventListener('focus', ()=>f.classList.add('focus'));
-    i.addEventListener('blur', ()=>f.classList.remove('focus'));
-    i.addEventListener('input', set); set();
-  });
-}
-wireFloat();
+            <div class="field">
+              <label for="whats">WhatsApp / celular</label>
+              <input id="whats" class="input" type="tel"
+                     placeholder="(99) 99999-9999" required>
+              <small>Usado apenas para contato e suporte. Não compartilhamos com terceiros.</small>
+            </div>
 
-/* ===== POPUP helpers ===== */
-const alertBG = document.getElementById('alert');
-const alertTitle = document.getElementById('alertTitle');
-const alertMsg = document.getElementById('alertMsg');
-const alertActions = document.getElementById('alertActions');
-function showAlert({title="Aviso", html="", actions=[{text:"Fechar", kind:"solid"}]}){
-  alertTitle.textContent = title;
-  alertMsg.innerHTML = html;
-  alertActions.innerHTML = "";
-  actions.forEach(a=>{ const b=document.createElement('button'); b.className = 'btn ' + (a.kind==='ghost'?'btn-ghost':'btn-solid'); b.textContent = a.text; b.onclick = ()=>{ if(a.onClick) a.onClick(); closeAlert(); }; alertActions.appendChild(b); });
-  alertBG.style.display='flex';
-}
-function closeAlert(){ alertBG.style.display='none'; }
-alertBG.addEventListener('click', e=>{ if(e.target===alertBG) closeAlert(); });
-window.addEventListener('keydown', e=>{ if(e.key==='Escape' && alertBG.style.display==='flex') closeAlert(); });
+            <div class="field">
+              <label for="email">E-mail de acesso</label>
+              <input id="email" class="input" type="email"
+                     placeholder="voce@exemplo.com" required>
+            </div>
 
-/* ===== NOVO POPUP DE TERMOS ===== */
-const termsAlertBG = document.getElementById('termsAlert');
-const termsTitle = document.getElementById('termsTitle');
-const termsMsg = document.getElementById('termsMsg');
-const termsActions = document.getElementById('termsActions');
-function showTermsAlert({title="Aceite os Termos", html="", onAccept=()=>{}}){
-  termsTitle.textContent = title;
-  termsMsg.innerHTML = html || `Para prosseguir com o cadastro, leia e aceite nossos <a href="/termos-servicos.html" target="_blank">Termos de Serviço</a> e <a href="/termos-privacidade.html" target="_blank">Política de Privacidade</a>.
-    <div class="terms-checkbox">
-      <input type="checkbox" id="chkTerms" aria-label="Aceitar Termos de Serviço e Política de Privacidade">
-      <label for="chkTerms">Li e aceito os Termos de Serviço e a Política de Privacidade</label>
-    </div>`;
-  termsActions.innerHTML = "";
-  const acceptBtn = document.createElement('button'); acceptBtn.className = 'btn btn-solid'; acceptBtn.id = 'btnAcceptTerms'; acceptBtn.textContent = 'Aceito'; acceptBtn.disabled = true; acceptBtn.onclick = ()=>{ onAccept(); closeTermsAlert(); };
-  const cancelBtn = document.createElement('button'); cancelBtn.className = 'btn btn-ghost'; cancelBtn.textContent = 'Cancelar'; cancelBtn.onclick = closeTermsAlert;
-  termsActions.append(acceptBtn, cancelBtn);
-  termsAlertBG.style.display = 'flex';
-  const chk = document.getElementById('chkTerms');
-  chk.addEventListener('change', ()=>{ acceptBtn.disabled = !chk.checked; });
-}
-function closeTermsAlert(){ termsAlertBG.style.display='none'; }
-termsAlertBG.addEventListener('click', e=>{ if(e.target===termsAlertBG) closeTermsAlert(); });
-window.addEventListener('keydown', e=>{ if(e.key==='Escape' && termsAlertBG.style.display==='flex') closeTermsAlert(); });
+            <div class="field">
+              <label for="senha">Senha</label>
+              <input id="senha" class="input" type="password" minlength="6" required>
+              <small>Mínimo de 6 caracteres.</small>
+            </div>
+          </div>
 
-/* ===== Helpers e máscaras ===== */
-const $ = (id)=>document.getElementById(id);
-const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-const emailValido = v => emailRe.test(v);
-function onlyDigits(s){ return (s||'').replace(/\D/g,''); }
-function stripDiacritics(s){ return (s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,''); }
-function normalizeUsername(s){ return stripDiacritics(String(s).toLowerCase()).replace(/\s+/g,'-').replace(/[^a-z0-9._-]/g,'').replace(/-+/g,'-').slice(0,40); }
-function isUsernameValid(u){ return /^[a-z0-9._-]{3,40}$/.test(u); }
+          <div class="terms">
+            Ao criar sua conta, você concorda com o uso do seu e-mail apenas para
+            autenticação, avisos importantes e comunicação sobre sua assinatura.
+          </div>
 
-const fone = $("fone");
-fone.addEventListener("input", () => {
-  let v = onlyDigits(fone.value);
-  if (v.length > 11) v = v.slice(0,11);
-  if (v.length >= 3 && v.length <= 6) fone.value = `(${v.slice(0,2)}) ${v.slice(2)}`;
-  else if (v.length >= 7 && v.length <= 10) fone.value = `(${v.slice(0,2)}) ${v.slice(2,6)}-${v.slice(6)}`;
-  else if (v.length === 11) fone.value = `(${v.slice(0,2)}) ${v.slice(2,7)}-${v.slice(7)}`;
-  else fone.value = v;
-});
+          <div style="margin-top:1.2rem; display:flex; flex-direction:column; gap:.6rem;">
+            <button id="btnCriarEmail" class="btn-primary" type="submit">
+              Criar conta com e-mail
+            </button>
+          </div>
+        </form>
 
-$("cep").addEventListener("input", async ()=>{
-  let v = onlyDigits($("cep").value).slice(0,8);
-  $("cep").value = v.length>5 ? `${v.slice(0,5)}-${v.slice(5)}` : v;
-  if(v.length===8){
-    try{
-      const r = await fetch(`https://viacep.com.br/ws/${v}/json/`);
-      const data = await r.json();
-      if(data.erro) return showAlert({title:"CEP não encontrado", html:"Verifique o CEP informado."});
-      $("logradouro").value = data.logradouro || "";
-      $("bairro").value     = data.bairro || "";
-      $("cidade").value     = data.localidade || "";
-      $("uf").value         = data.uf || "";
-      ["logradouro","bairro","cidade","uf"].forEach(id=>{ $(id).closest('.field')?.classList.add('has-value'); });
-    }catch(e){ showAlert({title:"Falha ao buscar CEP", html:"Tente novamente em instantes."}); }
-  }
-});
+        <div class="or-row">ou</div>
 
-const cpfI = $("cpf"), cnpjI = $("cnpj");
-cpfI.addEventListener('input', ()=>{
-  let v = onlyDigits(cpfI.value).slice(0,11);
-  if(v.length>9) cpfI.value = v.replace(/^(\d{3})(\d{3})(\d{3})(\d{0,2}).*$/, "$1.$2.$3-$4");
-  else if(v.length>6) cpfI.value = v.replace(/^(\d{3})(\d{3})(\d{0,3}).*$/, "$1.$2.$3");
-  else if(v.length>3) cpfI.value = v.replace(/^(\d{3})(\d{0,3}).*$/, "$1.$2");
-  else cpfI.value = v;
-});
-cnpjI.addEventListener('input', ()=>{
-  let v = onlyDigits(cnpjI.value).slice(0,14);
-  if(v.length>12) cnpjI.value = v.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{0,2}).*$/, "$1.$2.$3/$4-$5");
-  else if(v.length>8) cnpjI.value = v.replace(/^(\d{2})(\d{3})(\d{3})(\d{0,4}).*$/, "$1.$2.$3/$4");
-  else if(v.length>5) cnpjI.value = v.replace(/^(\d{2})(\d{3})(\d{0,3}).*$/, "$1.$2.$3");
-  else if(v.length>2) cnpjI.value = v.replace(/^(\d{2})(\d{0,3}).*$/, "$1.$2");
-  else cnpjI.value = v;
-});
-function validaCPF(raw){ const s = onlyDigits(raw); if(!s || s.length!==11 || /(\d)\1+/.test(s)) return false; let soma=0; for(let i=0;i<9;i++) soma+=parseInt(s[i])*(10-i); let d1 = 11-(soma%11); d1 = (d1>9)?0:d1; if(d1!==parseInt(s[9])) return false; soma=0; for(let i=0;i<10;i++) soma+=parseInt(s[i])*(11-i); let d2 = 11-(soma%11); d2 = (d2>9)?0:d2; return d2===parseInt(s[10]); }
-function validaCNPJ(raw){ const s = onlyDigits(raw); if(!s || s.length!==14 || /(\d)\1+/.test(s)) return false; const calc=(base)=>{let soma=0,pos=base.length-7;for(let i=0;i<base.length;i++){soma+=base[i]*pos--; if(pos<2) pos=9;} return soma%11<2?0:11-soma%11;}; const nums = s.substring(0,12).split('').map(Number); const dv1 = calc(nums); nums.push(dv1); const dv2 = calc(nums); return dv1===parseInt(s[12]) && dv2===parseInt(s[13]); }
+        <button id="btnGoogle" class="btn-outline" type="button">
+          <span class="btn-google-icon">G</span>
+          <span>Continuar com Google</span>
+        </button>
 
-const grupoPF = $("grupoPF"), grupoPJ = $("grupoPJ"), isentoIE = $("isentoIE");
-function setTipo(tipo){ const pf = tipo==='PF'; grupoPF.style.display = pf ? '' : 'none'; grupoPJ.style.display = pf ? 'none' : ''; $("nome").required = pf; $("cpf").required = pf; $("razao").required = !pf; $("cnpj").required = !pf; $("ie").disabled = isentoIE.checked; $("ie").required = !isentoIE.checked && !pf; }
-Array.from(document.querySelectorAll('input[name="tipoPessoa"]')).forEach(r=>{ r.addEventListener('change', ()=> setTipo(r.value)); });
-isentoIE.addEventListener('change', ()=> setTipo(document.querySelector('input[name="tipoPessoa"]:checked').value));
-setTipo('PF');
+        <p class="help-text">
+          Já tem cadastro? <a href="index.html"><b>Entrar</b></a>
+        </p>
+      </section>
+    </div>
+  </main>
 
-/* ===== Checkbox “Mostrar senha” (substitui o botão olho) ===== */
-(function wireShowPasswords(){
-  const pairs = [
-    {input:'senha', chk:'chkMostrarSenha'},
-    {input:'senha2', chk:'chkMostrarSenha2'}
-  ];
-  pairs.forEach(({input,chk})=>{
-    const i = document.getElementById(input);
-    const c = document.getElementById(chk);
-    if(i && c){ c.addEventListener('change', ()=>{ i.type = c.checked ? 'text' : 'password'; }); }
-  });
-})();
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <!-- se tiver logo em SVG/PNG pode colocar aqui -->
+        <!-- <img src="logo-mostreaki-footer.svg" alt="MostreAki"> -->
+        <div><b>MostreAki</b> &copy; <span id="anoFooter"></span></div>
+      </div>
+      <div>
+        <span>suporte@mostreaki.com.br</span>
+      </div>
+    </div>
+    <div class="footer-strip"></div>
+  </footer>
 
-/* ===== Cadastro + reserva de username + origem do funil ===== */
-const params = new URLSearchParams(location.search); const origemCadastro = params.get('c') || 'site';
-async function reservarUsername(username){ const ref = doc(db,'usernames', username); const snap = await getDoc(ref); if(snap.exists()) return false; await setDoc(ref, { reserved:true, reservedAt: Date.now() }); return true; }
-async function liberarUsername(username){ try{ await deleteDoc(doc(db,'usernames', username)); }catch{} }
-function uiBusy(b){ const btn = document.getElementById('btnCadastrar'); btn.disabled = b; btn.textContent = b ? 'Enviando…' : 'Criar conta'; }
-function showErr(title, html){ showAlert({title, html}); }
-function phoneDigits(v){ return (v||'').replace(/\D/g,'').length; }
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+    import {
+      getAuth,
+      onAuthStateChanged,
+      createUserWithEmailAndPassword,
+      updateProfile,
+      sendEmailVerification,
+      GoogleAuthProvider,
+      signInWithPopup
+    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+    import {
+      getFirestore,
+      doc,
+      setDoc,
+      getDocs,
+      query,
+      where,
+      collection,
+      serverTimestamp,
+      limit
+    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
-/* ===== Função de Cadastro com Verificação de Termos ===== */
-document.getElementById('btnCadastrar').onclick = () => {
-  showTermsAlert({
-    onAccept: async () => {
-      const tipo = document.querySelector('input[name="tipoPessoa"]:checked').value;
-      const usernameRaw = document.getElementById('username').value.trim();
-      const username    = normalizeUsername(usernameRaw);
-      const nome = document.getElementById('nome').value.trim();
-      const cpf  = document.getElementById('cpf').value.trim();
-      const razao= document.getElementById('razao').value.trim();
-      const cnpj = document.getElementById('cnpj').value.trim();
-      const ie   = document.getElementById('ie').value.trim();
-      const ieIsento = document.getElementById('isentoIE').checked;
-      const foneV = document.getElementById('fone').value.trim();
-      const email = document.getElementById('email').value.trim(), email2 = document.getElementById('email2').value.trim();
-      const s1 = document.getElementById('senha').value, s2 = document.getElementById('senha2').value;
-      const cep = document.getElementById('cep').value.trim();
-      const uf = document.getElementById('uf').value.trim();
-      const cidade = document.getElementById('cidade').value.trim();
-      const bairro = document.getElementById('bairro').value.trim();
-      const logradouro = document.getElementById('logradouro').value.trim();
-      const numero = document.getElementById('numero').value.trim();
-      const complemento = document.getElementById('complemento').value.trim();
+    const app = initializeApp({
+      apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
+      authDomain: "mostreaki-2025.firebaseapp.com",
+      projectId: "mostreaki-2025",
+      storageBucket: "mostreaki-2025.firebasestorage.app",
+      messagingSenderId: "748712068097",
+      appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
+    });
 
-      if(!isUsernameValid(username)) return showErr('Nome de usuário inválido','Use 3–40 caracteres minúsculos: letras, números, ponto, hífen ou underline.');
-      if(tipo==='PF'){ if(!nome) return showErr('Nome obrigatório','Informe seu <b>nome completo</b>.'); if(!validaCPF(cpf)) return showErr('CPF inválido','Revise o CPF informado.'); }
-      else{ if(!razao) return showErr('Razão Social obrigatória','Informe a <b>razão social</b>.'); if(!validaCNPJ(cnpj)) return showErr('CNPJ inválido','Revise o CNPJ informado.'); if(!ieIsento && !ie) return showErr('IE obrigatória','Informe a IE ou marque <b>Isento</b>.'); }
-      if(!(phoneDigits(foneV)===10 || phoneDigits(foneV)===11)) return showErr('Celular inválido','Informe um número com DDD (10 ou 11 dígitos).');
-      const emailRe=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/; if(!emailRe.test(email)||!emailRe.test(email2)) return showErr('E-mail inválido','Revise os e-mails digitados.');
-      if(email!==email2) return showErr('E-mails não conferem','Digite o mesmo e-mail nos dois campos.');
-      if((cep.replace(/\D/g,'').length)!==8) return showErr('CEP inválido','Informe 8 dígitos de CEP.');
-      if(!uf||!cidade||!bairro||!logradouro||!numero) return showErr('Endereço incompleto','Preencha UF, cidade, bairro, logradouro e número.');
-      if(s1.length<6) return showErr('Senha fraca','Use pelo menos 6 caracteres.');
-      if(s1!==s2) return showErr('Senhas não conferem','Digite a mesma senha nos dois campos.');
+    const auth = getAuth(app);
+    const db   = getFirestore(app);
 
-      uiBusy(true);
-      try{
-        const ok = await reservarUsername(username);
-        if(!ok){ uiBusy(false); return showErr('Nome de usuário indisponível',`Tente outra variação (ex.: <b>${username}-br</b>).`); }
+    const $  = (id) => document.getElementById(id);
+    const formCadastro = $("formCadastro");
+    const usernameInput = $("username");
+    const whatsInput = $("whats");
+    const emailInput = $("email");
+    const senhaInput = $("senha");
+    const slugPreview = $("slugPreview");
+    const btnGoogle = $("btnGoogle");
+    const btnAbrirLogin = $("btnAbrirLogin");
+    const userCircle = $("userCircle");
+    const alertBG = $("alert");
+    const alertTitle = $("alertTitle");
+    const alertMsg = $("alertMsg");
+    const alertActions = $("alertActions");
 
-        const cred = await createUserWithEmailAndPassword(auth, email, s1);
-        const uid = cred.user.uid;
-        await updateProfile(cred.user,{ displayName: tipo==='PF' ? nome : razao });
-
-        const payload = {
-          uid, tipoPessoa: tipo, origemCadastro,
-          username,
-          nomeCompleto: tipo==='PF' ? nome : '', cpf: tipo==='PF' ? cpf.replace(/\D/g,'') : '',
-          razaoSocial: tipo==='PJ' ? razao : '', cnpj: tipo==='PJ' ? cnpj.replace(/\D/g,'') : '',
-          ie: (tipo==='PJ' ? (ieIsento ? 'ISENTO' : ie) : ''), isentoIE: tipo==='PJ' ? !!ieIsento : null,
-          fone: foneV, email,
-          endereco: { cep: cep.replace(/\D/g,''), uf, cidade, bairro, logradouro, numero, complemento },
-          createdAt: serverTimestamp()
+    function showAlert({ title = "Aviso", html = "", actions = [{ text: "Fechar", kind: "solid" }] }) {
+      alertTitle.textContent = title;
+      alertMsg.innerHTML = html;
+      alertActions.innerHTML = "";
+      actions.forEach(a => {
+        const b = document.createElement("button");
+        b.className = a.kind === "ghost" ? "btn-ghost" : "btn-solid";
+        b.textContent = a.text;
+        b.onclick = () => {
+          if (a.onClick) a.onClick();
+          closeAlert();
         };
-        await setDoc(doc(db,'usuarios',uid), payload, { merge:true });
-        await setDoc(doc(db,'usernames', username), { uid, createdAt: serverTimestamp() }, { merge:true });
-
-        await sendEmailVerification(cred.user);
-        showAlert({ title:'Confirme seu e-mail', html:`Enviamos um link para <b>${email}</b>.<br>Depois de confirmar, você poderá <b>Fazer Login</b>.`, actions:[{text:'OK, vou verificar', kind:'solid', onClick:()=>{ location.href='/login.html'; }}] });
-        await signOut(auth);
-      }catch(e){
-        await liberarUsername(username);
-        const mapa={
-          'auth/email-already-in-use':"Este e-mail já possui cadastro.<br><a href='/login.html' style='color:var(--brand);font-weight:700;'>Ir para o login</a>",
-          'auth/invalid-email':'E-mail inválido. Revise o endereço.',
-          'auth/weak-password':'Senha fraca (mínimo 6 caracteres).',
-          'auth/network-request-failed':'Falha de rede. Verifique sua conexão.'
-        };
-        showAlert({title:'Não foi possível cadastrar', html: mapa[e.code] || `Erro inesperado (${e.code}). Tente novamente.`});
-      } finally { uiBusy(false); }
+        alertActions.appendChild(b);
+      });
+      alertBG.style.display = "flex";
     }
-  });
-};
-</script>
+
+    function closeAlert() {
+      alertBG.style.display = "none";
+    }
+
+    alertBG.addEventListener("click", e => {
+      if (e.target === alertBG) closeAlert();
+    });
+
+    // ===== MENU =====
+    window.toggleMenu = function () {
+      const menu = document.getElementById("menu");
+      menu.classList.toggle("open");
+    };
+
+    // ===== SLUGIFY =====
+    function slugify(value) {
+      return value
+        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "")
+        .substring(0, 40);
+    }
+
+    usernameInput.addEventListener("input", () => {
+      const slug = slugify(usernameInput.value || "");
+      slugPreview.textContent = slug || "slug-exemplo";
+    });
+
+    // verifica se já existe alguma conta com a mesma slug
+    async function slugJaExiste(slug) {
+      const q = query(
+        collection(db, "usuarios"),
+        where("catalogoSlug", "==", slug),
+        limit(1)
+      );
+      const snap = await getDocs(q);
+      return !snap.empty;
+    }
+
+    async function criarDocsBasicos({ uid, email, slug, username, whats }) {
+      const agora = serverTimestamp();
+
+      await setDoc(doc(db, "usuarios", uid), {
+        email,
+        username,
+        whats,
+        catalogoSlug: slug,
+        catalogoAtivo: false,
+        albumAtivo: false,
+        fotoPerfil: "",
+        createdAt: agora,
+        updatedAt: agora
+      }, { merge: true });
+
+      await setDoc(doc(db, "catalogos", slug), {
+        ownerUid: uid,
+        catalogoAtivo: false,
+        createdAt: agora,
+        updatedAt: agora
+      }, { merge: true });
+    }
+
+    // ===== CADASTRO COM E-MAIL =====
+    formCadastro.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const username = usernameInput.value.trim();
+      const whats = whatsInput.value.trim();
+      const email = emailInput.value.trim();
+      const senha = senhaInput.value;
+
+      const slug = slugify(username);
+
+      if (!username || !whats || !email || !senha) {
+        return showAlert({ title: "Campos obrigatórios", html: "Preencha todos os campos para continuar." });
+      }
+      if (!slug || slug.length < 3) {
+        return showAlert({
+          title: "Nome de usuário inválido",
+          html: "Escolha um nome de usuário com pelo menos 3 letras/números."
+        });
+      }
+      if (await slugJaExiste(slug)) {
+        return showAlert({
+          title: "Slug já usada",
+          html: `O identificador <b>${slug}</b> já está em uso. Tente outra combinação.`
+        });
+      }
+
+      try {
+        const cred = await createUserWithEmailAndPassword(auth, email, senha);
+        await updateProfile(cred.user, { displayName: username });
+        await criarDocsBasicos({
+          uid: cred.user.uid,
+          email,
+          slug,
+          username,
+          whats
+        });
+        await sendEmailVerification(cred.user);
+
+        showAlert({
+          title: "Conta criada!",
+          html: `Enviamos um e-mail de confirmação para <b>${email}</b>.<br>
+                 Confirme o endereço e depois clique em <b>Entrar</b> na página inicial.`,
+          actions: [
+            { text: "Ir para página inicial", kind: "solid", onClick: () => location.href = "index.html" }
+          ]
+        });
+
+      } catch (err) {
+        console.error(err);
+        let msg = "Não foi possível criar a conta. Tente novamente.";
+        if (err.code === "auth/email-already-in-use") {
+          msg = "Este e-mail já está em uso. Tente entrar ou recuperar a senha.";
+        } else if (err.code === "auth/weak-password") {
+          msg = "A senha é muito fraca. Use pelo menos 6 caracteres.";
+        }
+        showAlert({ title: "Erro ao cadastrar", html: msg });
+      }
+    });
+
+    // ===== GOOGLE SIGN-IN =====
+    const provider = new GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: "select_account" });
+
+    btnGoogle.addEventListener("click", async () => {
+      const username = usernameInput.value.trim();
+      const whats = whatsInput.value.trim();
+      const slug = slugify(username);
+
+      if (!username || !whats) {
+        return showAlert({
+          title: "Informe os dados",
+          html: "Para continuar com o Google, preencha o nome de usuário e o WhatsApp."
+        });
+      }
+      if (!slug || slug.length < 3) {
+        return showAlert({
+          title: "Nome de usuário inválido",
+          html: "Escolha um nome de usuário com pelo menos 3 letras/números."
+        });
+      }
+      if (await slugJaExiste(slug)) {
+        return showAlert({
+          title: "Slug já usada",
+          html: `O identificador <b>${slug}</b> já está em uso. Tente outra combinação.`
+        });
+      }
+
+      try {
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+
+        await updateProfile(user, { displayName: username });
+        await criarDocsBasicos({
+          uid: user.uid,
+          email: user.email,
+          slug,
+          username,
+          whats
+        });
+
+        showAlert({
+          title: "Conta conectada!",
+          html: "Login com Google realizado com sucesso. Vamos para a sua conta.",
+          actions: [
+            { text: "Ir para Minha Conta", kind: "solid", onClick: () => location.href = "minha-conta.html" }
+          ]
+        });
+
+      } catch (err) {
+        console.error(err);
+        if (err.code === "auth/popup-closed-by-user") return;
+        showAlert({
+          title: "Erro ao entrar com Google",
+          html: "Não foi possível concluir o login com Google. Tente novamente."
+        });
+      }
+    });
+
+    // ===== ESTADO DE AUTH NO HEADER =====
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const nome = (user.displayName || user.email || "?").trim();
+        userCircle.textContent = nome.charAt(0).toUpperCase();
+        userCircle.style.display = "flex";
+        btnAbrirLogin.style.display = "none";
+        userCircle.onclick = () => location.href = "minha-conta.html";
+      } else {
+        userCircle.style.display = "none";
+        btnAbrirLogin.style.display = "inline-block";
+      }
+    });
+
+    // ano footer
+    document.getElementById("anoFooter").textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>
