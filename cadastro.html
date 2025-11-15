@@ -1,22 +1,19 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Cadastro – MostreAki</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <title>Cadastro • MostreAki</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     :root {
-      --fundo: #92a9a6;
-      --fundo-card: #cfe0dd;
-      --bordo: #7d2f59;
-      --bordo-escuro: #5b123a;
       --verde-escuro: #003735;
-      --texto: #23313a;
+      --verde-texto: #214645;
+      --fundo: #92a9a6;
+      --bordo: #7d2f59;
       --grad1: #d9d9d9;
       --grad2: #af91a1;
-      --radius-pill: 999px;
-      --shadow-soft: 0 4px 10px rgba(0,0,0,.18);
-      --shadow-light: 0 2px 6px rgba(0,0,0,.12);
+      --chip-bg: #f5e7ef;
+      --input-bg: #f7f7f7;
     }
 
     * {
@@ -28,623 +25,527 @@
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background: var(--fundo);
-      color: var(--texto);
+      color: var(--verde-texto);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
 
-    a {
-      color: var(--bordo);
-      text-decoration: none;
-    }
-
-    /* ===== TOPBAR ===== */
+    /* HEADER */
     header {
-      background: #c6d7d4;
-      box-shadow: 0 2px 6px rgba(0,0,0,.12);
+      background: #c4d4d1;
+      padding: 0.75rem 1rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,.08);
       position: sticky;
       top: 0;
-      z-index: 40;
+      z-index: 20;
     }
 
     .topbar-inner {
       max-width: 1100px;
       margin: 0 auto;
-      padding: .4rem .9rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: .75rem;
+      gap: 1rem;
     }
 
     .brand {
       display: flex;
       align-items: center;
-      gap: .45rem;
-    }
-
-    .brand-logo {
-      width: 40px;
-      height: 40px;
-      border-radius: 8px;
-      background: linear-gradient(145deg,#cee3f2,#cfcfcf);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.4rem;
-      font-weight: 800;
-      color: var(--bordo);
-      box-shadow: var(--shadow-light);
-    }
-
-    .brand-text {
-      font-weight: 800;
-      font-size: 1.3rem;
+      gap: .5rem;
+      text-decoration: none;
       color: var(--verde-escuro);
-    }
-
-    .brand-text span {
-      color: var(--bordo);
-    }
-
-    .topbar-right {
-      display: flex;
-      align-items: center;
-      gap: .6rem;
-    }
-
-    .btn-login {
-      padding: .45rem 1.1rem;
-      border-radius: var(--radius-pill);
-      border: none;
-      cursor: pointer;
-      background: linear-gradient(180deg,var(--bordo),var(--bordo-escuro));
-      color: #fff;
-      font-weight: 600;
-      box-shadow: var(--shadow-soft);
-      font-size: .9rem;
-    }
-
-    .user-circle {
-      width: 34px;
-      height: 34px;
-      border-radius: 999px;
-      background: var(--bordo);
-      color: #fff;
-      display: none;
-      align-items: center;
-      justify-content: center;
       font-weight: 700;
-      font-size: .95rem;
-      background-size: cover;
-      background-position: center;
-      cursor: pointer;
-      box-shadow: var(--shadow-light);
+      letter-spacing: .01em;
     }
 
-    .burger {
-      width: 40px;
-      height: 40px;
-      border-radius: 999px;
-      border: 2px solid var(--bordo);
-      background: transparent;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      position: relative;
-    }
-
-    .burger span,
-    .burger span::before,
-    .burger span::after {
+    .brand img {
+      height: 55px;
+      width: auto;
       display: block;
-      width: 18px;
-      height: 2px;
-      border-radius: 999px;
-      background: var(--bordo);
-      position: absolute;
-      transition: .2s ease;
     }
 
-    .burger span::before {
-      content: "";
-      transform: translateY(-5px);
+    .brand span {
+      font-size: 1.35rem;
     }
 
-    .burger span::after {
-      content: "";
-      transform: translateY(5px);
-    }
-
-    .topbar-strip {
+    .topbar-accent {
       height: 4px;
       background: var(--bordo);
+      box-shadow: 0 1px 3px rgba(0,0,0,.15);
     }
 
-    nav#menu {
-      display: none;
-      background: rgba(0,0,0,.14);
-      backdrop-filter: blur(6px);
-      padding: .9rem 1rem 1.2rem;
-    }
-
-    nav#menu.open {
-      display: block;
-    }
-
-    .menu-inner {
-      max-width: 1100px;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      gap: .55rem;
-    }
-
-    .menu-link {
-      width: 210px;
-      max-width: 92vw;
-      align-self: center;
-      white-space: nowrap;
-      background: linear-gradient(180deg, var(--grad1), var(--grad2));
-      border-radius: 999px;
-      padding: .55rem 1rem;
-      text-align: center;
-      color: var(--bordo);
-      text-decoration: none;
-      font-weight: 600;
-      border: 2px solid rgba(0,0,0,.12);
-      box-shadow: 0 2px 6px rgba(0,0,0,.1);
-      font-size: .95rem;
-    }
-
-    /* ===== MAIN / CARD ===== */
+    /* MAIN LAYOUT */
     main {
       flex: 1;
-      padding: 1.6rem .85rem 2.2rem;
+      padding: 2rem 1rem 2.5rem;
     }
 
-    .shell {
+    .wrap {
       max-width: 1100px;
       margin: 0 auto;
     }
 
     .page-title {
-      font-size: 2rem;
+      font-size: clamp(1.8rem, 4vw, 2.3rem);
       color: var(--verde-escuro);
-      margin-bottom: .4rem;
+      margin-bottom: .25rem;
       font-weight: 800;
     }
 
     .page-sub {
-      max-width: 620px;
       font-size: 1rem;
-      color: #20313a;
+      margin-bottom: 1.5rem;
+      max-width: 620px;
       line-height: 1.5;
-      margin-bottom: 1.6rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 3fr);
+      gap: 1.75rem;
+    }
+
+    @media (min-width: 880px) {
+      .grid {
+        grid-template-columns: minmax(0, 3fr) minmax(0, 2.4fr);
+        align-items: flex-start;
+      }
     }
 
     .card {
-      background: #e2eeeb;
+      background: #fdfdfd;
       border-radius: 24px;
-      padding: 1.4rem 1.2rem 1.8rem;
-      box-shadow: var(--shadow-soft);
-      border: 1px solid rgba(0,0,0,.05);
+      box-shadow:
+        0 18px 30px rgba(0,0,0,.18),
+        0 0 0 1px rgba(255,255,255,.7);
+      padding: 1.75rem 1.5rem 1.9rem;
+      position: relative;
+      overflow: hidden;
     }
 
-    @media (min-width: 768px) {
-      .card {
-        padding: 1.8rem 2rem 2.1rem;
-      }
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 0 0, rgba(255,255,255,.7) 0, transparent 45%),
+        radial-gradient(circle at 100% 100%, rgba(125,47,89,.08) 0, transparent 55%);
+      opacity: .9;
     }
 
-    h2.section-title {
-      font-size: 1.35rem;
+    .card-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .card-title {
+      font-size: 1.3rem;
       color: var(--verde-escuro);
-      margin-bottom: .4rem;
+      font-weight: 700;
+      margin-bottom: .35rem;
     }
 
-    p.section-text {
-      font-size: .98rem;
-      color: #3c4a52;
-      margin-bottom: 1.2rem;
+    .card-sub {
+      font-size: .95rem;
+      line-height: 1.6;
+      margin-bottom: 1.15rem;
     }
 
-    .form-grid {
-      display: grid;
-      grid-template-columns: minmax(0,1fr);
-      gap: 1rem;
-    }
-
-    @media (min-width: 700px) {
-      .form-grid {
-        grid-template-columns: minmax(0,1.1fr) minmax(0,1.1fr);
-      }
+    /* FORM */
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: .9rem;
     }
 
     .field {
       display: flex;
       flex-direction: column;
-      gap: .35rem;
-    }
-
-    .field label {
-      font-size: .9rem;
-      font-weight: 600;
-      color: var(--verde-escuro);
-    }
-
-    .field small {
-      font-size: .78rem;
-      color: #55636b;
-    }
-
-    .input,
-    .input-readonly {
-      border-radius: 14px;
-      border: 1px solid rgba(0,0,0,.12);
-      padding: .6rem .85rem;
-      font-size: .95rem;
-      background: #f6fbfa;
-      outline: none;
-      transition: border-color .15s, box-shadow .15s, background .15s;
-      width: 100%;
-    }
-
-    .input:focus {
-      border-color: var(--bordo);
-      box-shadow: 0 0 0 2px rgba(125,47,89,.25);
-      background: #ffffff;
-    }
-
-    .input-readonly {
-      background: #e8f0ee;
-      color: #5c6a72;
-    }
-
-    .slug-preview {
-      font-size: .8rem;
-      color: #44545c;
-      margin-top: -0.25rem;
-    }
-
-    .slug-preview code {
-      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size: .78rem;
-      background: rgba(0,0,0,.04);
-      padding: .05rem .35rem;
-      border-radius: 999px;
-    }
-
-    .btn-primary,
-    .btn-ghost,
-    .btn-outline {
-      border-radius: var(--radius-pill);
-      padding: .7rem 1.4rem;
-      font-size: .95rem;
-      border: none;
-      cursor: pointer;
-      font-weight: 600;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: .4rem;
-      white-space: nowrap;
-    }
-
-    .btn-primary {
-      background: linear-gradient(180deg,var(--bordo),var(--bordo-escuro));
-      color: #fff;
-      box-shadow: var(--shadow-soft);
-      width: 100%;
-    }
-
-    .btn-outline {
-      background: transparent;
-      border: 1px solid rgba(0,0,0,.18);
-      color: var(--bordo);
-      width: 100%;
-      background: linear-gradient(180deg,#f7f7f7,#e4dde6);
-      box-shadow: var(--shadow-light);
-    }
-
-    .btn-google-icon {
-      width: 18px;
-      height: 18px;
-      border-radius: 4px;
-      background: #fff;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: .9rem;
-    }
-
-    .or-row {
-      text-align: center;
-      margin: 1.1rem 0 .8rem;
-      font-size: .85rem;
-      color: #6a777f;
-      position: relative;
-    }
-
-    .or-row::before,
-    .or-row::after {
-      content: "";
-      position: absolute;
-      height: 1px;
-      background: rgba(0,0,0,.12);
-      top: 50%;
-      width: 33%;
-    }
-
-    .or-row::before { left: 0; }
-    .or-row::after { right: 0; }
-
-    .terms {
-      margin-top: .9rem;
-      font-size: .8rem;
-      color: #5a676f;
-    }
-
-    .help-text {
-      margin-top: .7rem;
-      font-size: .85rem;
-    }
-
-    /* ===== ALERTA BRAND ===== */
-    #alert {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,.35);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 60;
-    }
-
-    #alertPanel {
-      background: #f6fbfa;
-      border-radius: 18px;
-      max-width: 360px;
-      width: 92vw;
-      padding: 1.1rem 1.2rem 1rem;
-      box-shadow: 0 10px 30px rgba(0,0,0,.35);
-      border: 1px solid rgba(0,0,0,.12);
-    }
-
-    #alertTitle {
-      font-weight: 700;
-      color: var(--verde-escuro);
-      margin-bottom: .4rem;
-      font-size: 1.05rem;
-    }
-
-    #alertMsg {
-      font-size: .9rem;
-      color: #34424a;
-      margin-bottom: .9rem;
-    }
-
-    #alertActions {
-      display: flex;
-      gap: .5rem;
-      justify-content: flex-end;
-      flex-wrap: wrap;
-    }
-
-    .btn-solid {
-      border-radius: var(--radius-pill);
-      padding: .45rem 1.1rem;
-      border: none;
-      cursor: pointer;
-      background: linear-gradient(180deg,var(--bordo),var(--bordo-escuro));
-      color: #fff;
-      font-weight: 600;
-      font-size: .9rem;
-    }
-
-    .btn-ghost {
-      border-radius: var(--radius-pill);
-      padding: .45rem 1.1rem;
-      border: 1px solid rgba(0,0,0,.15);
-      cursor: pointer;
-      background: #ffffff;
-      color: var(--bordo);
-      font-weight: 600;
-      font-size: .9rem;
-    }
-
-    /* ===== FOOTER ===== */
-    footer {
-      margin-top: auto;
-      background: #c6d7d4;
-      padding-top: 1.1rem;
-    }
-
-    .footer-inner {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 0 .9rem 1rem;
-      font-size: .8rem;
-      color: #37454d;
-      display: flex;
-      flex-direction: column;
       gap: .3rem;
     }
 
-    footer img {
-      display: block;
-      max-width: 140px;
-      margin-bottom: .4rem;
+    .field-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .75rem;
     }
 
-    .footer-strip {
-      height: 4px;
-      background: var(--bordo);
+    .field-row .field {
+      flex: 1 1 160px;
+    }
+
+    label {
+      font-size: .9rem;
+      font-weight: 600;
+      color: var(--verde-escuro);
+    }
+
+    .hint {
+      font-size: .8rem;
+      color: #666;
+      line-height: 1.4;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="tel"] {
+      width: 100%;
+      border-radius: 999px;
+      border: 1px solid rgba(0,0,0,.12);
+      background: var(--input-bg);
+      padding: .7rem 1rem;
+      font-size: .95rem;
+      outline: none;
+      transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
+    }
+
+    input:focus {
+      border-color: var(--bordo);
+      box-shadow: 0 0 0 3px rgba(125,47,89,.18);
+      background: #fff;
+    }
+
+    input[readonly] {
+      color: #777;
+      background: #ececec;
+    }
+
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: .75rem;
+      margin-top: .75rem;
+    }
+
+    .btn {
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: .98rem;
+      padding: .7rem 1.2rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .55rem;
+      transition: transform .1s ease, box-shadow .1s ease, filter .1s ease;
+      text-decoration: none;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+      box-shadow: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(180deg, var(--grad1), var(--grad2));
+      color: var(--bordo);
+      box-shadow: 0 4px 10px rgba(0,0,0,.18);
+      border: 2px solid rgba(0,0,0,.08);
+    }
+
+    .btn-primary:hover {
+      filter: brightness(1.03);
+    }
+
+    .btn-google {
+      background: #fff;
+      color: #444;
+      border: 1px solid rgba(0,0,0,.16);
+      box-shadow: 0 2px 6px rgba(0,0,0,.12);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--bordo);
+      border: 1px solid rgba(125,47,89,.45);
+    }
+
+    .btn-google img {
+      width: 18px;
+      height: 18px;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      margin: .8rem 0 .2rem;
+      font-size: .8rem;
+      color: #777;
+    }
+
+    .divider span {
+      flex: 1;
+      height: 1px;
+      background: rgba(0,0,0,.12);
+    }
+
+    .small-text {
+      font-size: .8rem;
+      color: #666;
+      line-height: 1.5;
       margin-top: .4rem;
     }
 
-    @media (min-width: 720px) {
-      .footer-inner {
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-      }
+    /* LATERAL CARD */
+    .side-card-title {
+      font-weight: 700;
+      margin-bottom: .4rem;
+      color: var(--verde-escuro);
+    }
+
+    .bullet-list {
+      font-size: .9rem;
+      line-height: 1.6;
+      padding-left: 1rem;
+    }
+
+    .bullet-list li + li {
+      margin-top: .3rem;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      padding: .25rem .7rem;
+      border-radius: 999px;
+      background: var(--chip-bg);
+      font-size: .8rem;
+      color: var(--bordo);
+      margin-top: .6rem;
+    }
+
+    /* ALERT MODAL */
+    .alert-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.45);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+      padding: 1rem;
+    }
+
+    .alert-box {
+      background: #fff;
+      border-radius: 18px;
+      max-width: 420px;
+      width: 100%;
+      padding: 1.3rem 1.4rem 1.1rem;
+      box-shadow: 0 18px 35px rgba(0,0,0,.35);
+      border: 1px solid rgba(125,47,89,.18);
+    }
+
+    .alert-title {
+      font-weight: 700;
+      margin-bottom: .25rem;
+      color: var(--verde-escuro);
+    }
+
+    .alert-msg {
+      font-size: .9rem;
+      line-height: 1.5;
+      margin-bottom: .9rem;
+    }
+
+    .alert-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: .5rem;
+    }
+
+    .alert-actions .btn {
+      padding-inline: 1rem;
+      font-size: .88rem;
+    }
+
+    /* FOOTER */
+    footer {
+      margin-top: auto;
+      background: #7c9390;
+      padding: 1.1rem 1rem 1.3rem;
+      color: #f5f5f5;
+    }
+
+    footer .foot-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: .5rem;
+      font-size: .8rem;
+      align-items: center;
+    }
+
+    footer img {
+      height: 26px;
+      width: auto;
+      display: block;
     }
   </style>
 </head>
 <body>
   <header>
     <div class="topbar-inner">
-      <a href="index.html" class="brand">
-        <div class="brand-logo">↑</div>
-        <div class="brand-text">Mostre<span>Aki</span></div>
+      <a href="index.html" class="brand" aria-label="Voltar para a página inicial MostreAki">
+        <img src="logo.svg" alt="MostreAki">
+        <span>MostreAki</span>
       </a>
-      <div class="topbar-right">
-        <button id="btnAbrirLogin" class="btn-login" type="button" onclick="location.href='index.html'">
-          Entrar
-        </button>
-        <div id="userCircle" class="user-circle" title="Minha conta"></div>
-        <button class="burger" type="button" onclick="toggleMenu()">
-          <span></span>
-        </button>
-      </div>
     </div>
-    <div class="topbar-strip"></div>
-    <nav id="menu">
-      <div class="menu-inner">
-        <a href="index.html#sobre" class="menu-link">Sobre</a>
-        <a href="minha-conta.html" class="menu-link">Minha Conta</a>
-        <a href="planos.html" class="menu-link">Planos</a>
-        <a href="parceiros.html" class="menu-link">Parceiros</a>
-        <a href="servicos-adicionais.html" class="menu-link">Serviços Adicionais</a>
-        <a href="instrucoes.html" class="menu-link">Instruções</a>
-        <a href="contato.html" class="menu-link">Contato</a>
-      </div>
-    </nav>
+    <div class="topbar-accent"></div>
   </header>
 
-  <!-- ALERTA BRAND -->
-  <div id="alert">
-    <div id="alertPanel">
-      <div id="alertTitle">Aviso</div>
-      <div id="alertMsg"></div>
-      <div id="alertActions"></div>
-    </div>
-  </div>
-
   <main>
-    <div class="shell">
+    <div class="wrap">
       <h1 class="page-title">Criar conta</h1>
       <p class="page-sub">
-        Cadastre-se para gerenciar sua assinatura, catálogo digital e receber suporte do MostreAki.
-        O nome de usuário será usado como <b>slug</b> nos links públicos.
+        Crie sua conta MostreAki para ativar sua assinatura, configurar seu catálogo
+        digital e gerenciar tudo em um só lugar.
       </p>
 
-      <section class="card">
-        <h2 class="section-title">Dados de acesso</h2>
-        <p class="section-text">
-          Preencha seu nome de usuário, WhatsApp e escolha se prefere criar a conta com
-          <b>e-mail e senha</b> ou entrar com o <b>Google</b>.
-        </p>
+      <div class="grid">
+        <!-- FORM CARD -->
+        <section class="card">
+          <div class="card-inner">
+            <h2 class="card-title">Dados de acesso</h2>
+            <p class="card-sub">
+              Você pode se cadastrar usando um e-mail e senha ou conectar sua conta Google.
+            </p>
 
-        <form id="formCadastro" autocomplete="off">
-          <div class="form-grid">
-            <div class="field">
-              <label for="username">Nome de usuário (slug)</label>
-              <input id="username" class="input" type="text" maxlength="40"
-                     placeholder="ex: lamaggie, doceria-da-lu" required>
-              <div class="slug-preview">
-                Seu link ficará assim:
-                <code>mostreaki.com.br/cat/<span id="slugPreview">slug-exemplo</span></code>
+            <div class="actions">
+              <button type="button" id="btnGoogle" class="btn btn-google">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="">
+                <span>Continuar com Google</span>
+              </button>
+            </div>
+
+            <div class="divider" aria-hidden="true">
+              <span></span> ou preencha seus dados <span></span>
+            </div>
+
+            <form id="cadastroForm" novalidate>
+              <div class="field">
+                <label for="slug">Nome de usuário (slug)</label>
+                <input id="slug" type="text" autocomplete="username" required
+                       placeholder="ex: lamaggie, studio-ana, bar-do-joao" />
+                <p class="hint">
+                  Esse será o seu <strong>nome de usuário público</strong> e também o identificador
+                  do seu catálogo. Use apenas letras, números, pontos e hífen.
+                </p>
               </div>
-              <small>Esse será o identificador do seu catálogo e álbum digital.</small>
-            </div>
 
-            <div class="field">
-              <label for="whats">WhatsApp / celular</label>
-              <input id="whats" class="input" type="tel"
-                     placeholder="(99) 99999-9999" required>
-              <small>Usado apenas para contato e suporte. Não compartilhamos com terceiros.</small>
-            </div>
+              <div class="field">
+                <label for="telefone">WhatsApp comercial</label>
+                <input id="telefone" type="tel" autocomplete="tel" required
+                       placeholder="(11) 90000-0000" />
+                <p class="hint">
+                  Telefone usado para contato nos botões de WhatsApp dos seus anúncios
+                  (pode ser ajustado depois na sua conta).
+                </p>
+              </div>
 
-            <div class="field">
-              <label for="email">E-mail de acesso</label>
-              <input id="email" class="input" type="email"
-                     placeholder="voce@exemplo.com" required>
-            </div>
+              <div class="field">
+                <label for="email">E-mail de acesso</label>
+                <input id="email" type="email" autocomplete="email" required
+                       placeholder="voce@exemplo.com" />
+              </div>
 
-            <div class="field">
-              <label for="senha">Senha</label>
-              <input id="senha" class="input" type="password" minlength="6" required>
-              <small>Mínimo de 6 caracteres.</small>
+              <div class="field-row" id="pwRow">
+                <div class="field">
+                  <label for="senha">Senha</label>
+                  <input id="senha" type="password" autocomplete="new-password" minlength="6" />
+                </div>
+                <div class="field">
+                  <label for="senha2">Confirmar senha</label>
+                  <input id="senha2" type="password" autocomplete="new-password" minlength="6" />
+                </div>
+              </div>
+
+              <p class="small-text">
+                Ao criar sua conta você concorda com os termos de uso e autoriza o contato
+                do MostreAki para assuntos relacionados à sua assinatura.
+              </p>
+
+              <div class="actions">
+                <button type="submit" class="btn btn-primary" id="btnCriarConta">
+                  Criar conta
+                </button>
+                <a href="login.html" class="btn btn-ghost">Já tenho conta</a>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <!-- SIDE CARD -->
+        <aside class="card">
+          <div class="card-inner">
+            <h3 class="side-card-title">O que você ganha com sua conta?</h3>
+            <ul class="bullet-list">
+              <li>Gerenciar seus dados de titular diretamente na página <b>Minha Conta</b>.</li>
+              <li>Acesso ao <b>catálogo digital</b> e ao <b>álbum</b> conforme o plano contratado.</li>
+              <li>Facilidade para trocar banners, fotos e informações principais do seu site.</li>
+              <li>Integração com links externos (Mercado Livre, PicPay, PayPal, Pix QR Code e outros).</li>
+              <li>Suporte do MostreAki por WhatsApp em horário comercial.</li>
+            </ul>
+            <div class="chip">
+              ✔ Cadastro simples • sem burocracia
             </div>
           </div>
-
-          <div class="terms">
-            Ao criar sua conta, você concorda com o uso do seu e-mail apenas para
-            autenticação, avisos importantes e comunicação sobre sua assinatura.
-          </div>
-
-          <div style="margin-top:1.2rem; display:flex; flex-direction:column; gap:.6rem;">
-            <button id="btnCriarEmail" class="btn-primary" type="submit">
-              Criar conta com e-mail
-            </button>
-          </div>
-        </form>
-
-        <div class="or-row">ou</div>
-
-        <button id="btnGoogle" class="btn-outline" type="button">
-          <span class="btn-google-icon">G</span>
-          <span>Continuar com Google</span>
-        </button>
-
-        <p class="help-text">
-          Já tem cadastro? <a href="index.html"><b>Entrar</b></a>
-        </p>
-      </section>
+        </aside>
+      </div>
     </div>
   </main>
 
   <footer>
-    <div class="footer-inner">
-      <div>
-        <!-- se tiver logo em SVG/PNG pode colocar aqui -->
-        <!-- <img src="logo-mostreaki-footer.svg" alt="MostreAki"> -->
-        <div><b>MostreAki</b> &copy; <span id="anoFooter"></span></div>
-      </div>
-      <div>
-        <span>suporte@mostreaki.com.br</span>
-      </div>
+    <div class="foot-inner">
+      <div>© <span id="year"></span> MostreAki • Todos os direitos reservados.</div>
+      <img src="logo.svg" alt="MostreAki">
     </div>
-    <div class="footer-strip"></div>
   </footer>
 
+  <!-- ALERT -->
+  <div id="alert" class="alert-backdrop" role="alertdialog" aria-modal="true">
+    <div class="alert-box">
+      <div class="alert-title" id="alertTitle">Aviso</div>
+      <div class="alert-msg" id="alertMsg">Mensagem.</div>
+      <div class="alert-actions" id="alertActions"></div>
+    </div>
+  </div>
+
+  <!-- Firebase + Lógica de cadastro -->
   <script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import {
       getAuth,
-      onAuthStateChanged,
       createUserWithEmailAndPassword,
-      updateProfile,
-      sendEmailVerification,
+      signInWithPopup,
       GoogleAuthProvider,
-      signInWithPopup
-    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+      sendEmailVerification,
+      updateProfile
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
     import {
       getFirestore,
       doc,
       setDoc,
+      getDoc,
       getDocs,
+      collection,
       query,
       where,
-      collection,
-      serverTimestamp,
-      limit
-    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+    // ====== Firebase config ======
     const app = initializeApp({
       apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
       authDomain: "mostreaki-2025.firebaseapp.com",
@@ -653,38 +554,31 @@
       messagingSenderId: "748712068097",
       appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
     });
-
     const auth = getAuth(app);
     const db   = getFirestore(app);
 
-    const $  = (id) => document.getElementById(id);
-    const formCadastro = $("formCadastro");
-    const usernameInput = $("username");
-    const whatsInput = $("whats");
-    const emailInput = $("email");
-    const senhaInput = $("senha");
-    const slugPreview = $("slugPreview");
-    const btnGoogle = $("btnGoogle");
-    const btnAbrirLogin = $("btnAbrirLogin");
-    const userCircle = $("userCircle");
+    // ====== util ======
+    const $ = id => document.getElementById(id);
+    $("year").textContent = new Date().getFullYear();
+
     const alertBG = $("alert");
     const alertTitle = $("alertTitle");
     const alertMsg = $("alertMsg");
     const alertActions = $("alertActions");
 
-    function showAlert({ title = "Aviso", html = "", actions = [{ text: "Fechar", kind: "solid" }] }) {
+    function showAlert({ title = "Aviso", html = "", actions = [{ text: "Fechar" }] }) {
       alertTitle.textContent = title;
       alertMsg.innerHTML = html;
       alertActions.innerHTML = "";
       actions.forEach(a => {
-        const b = document.createElement("button");
-        b.className = a.kind === "ghost" ? "btn-ghost" : "btn-solid";
-        b.textContent = a.text;
-        b.onclick = () => {
+        const btn = document.createElement("button");
+        btn.className = "btn " + (a.variant === "ghost" ? "btn-ghost" : "btn-primary");
+        btn.textContent = a.text;
+        btn.onclick = () => {
           if (a.onClick) a.onClick();
           closeAlert();
         };
-        alertActions.appendChild(b);
+        alertActions.appendChild(btn);
       });
       alertBG.style.display = "flex";
     }
@@ -697,196 +591,193 @@
       if (e.target === alertBG) closeAlert();
     });
 
-    // ===== MENU =====
-    window.toggleMenu = function () {
-      const menu = document.getElementById("menu");
-      menu.classList.toggle("open");
-    };
-
-    // ===== SLUGIFY =====
-    function slugify(value) {
-      return value
-        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    // ====== helpers de slug e telefone ======
+    function normalizarSlug(raw) {
+      return raw
+        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")   // tira acentos
         .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-+|-+$/g, "")
-        .substring(0, 40);
+        .replace(/[^a-z0-9.-]+/g, "-")                     // só letras/números/ponto/hífen
+        .replace(/-+/g, "-")
+        .replace(/^-|-$/g, "");
     }
 
-    usernameInput.addEventListener("input", () => {
-      const slug = slugify(usernameInput.value || "");
-      slugPreview.textContent = slug || "slug-exemplo";
-    });
-
-    // verifica se já existe alguma conta com a mesma slug
     async function slugJaExiste(slug) {
-      const q = query(
-        collection(db, "usuarios"),
-        where("catalogoSlug", "==", slug),
-        limit(1)
-      );
+      const q = query(collection(db, "usuarios"), where("slug", "==", slug));
       const snap = await getDocs(q);
       return !snap.empty;
     }
 
-    async function criarDocsBasicos({ uid, email, slug, username, whats }) {
-      const agora = serverTimestamp();
+    // ====== estado: cadastro via Google? ======
+    let usandoGoogle = false;
 
-      await setDoc(doc(db, "usuarios", uid), {
-        email,
-        username,
-        whats,
-        catalogoSlug: slug,
-        catalogoAtivo: false,
-        albumAtivo: false,
-        fotoPerfil: "",
-        createdAt: agora,
-        updatedAt: agora
-      }, { merge: true });
-
-      await setDoc(doc(db, "catalogos", slug), {
-        ownerUid: uid,
-        catalogoAtivo: false,
-        createdAt: agora,
-        updatedAt: agora
-      }, { merge: true });
-    }
-
-    // ===== CADASTRO COM E-MAIL =====
-    formCadastro.addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const username = usernameInput.value.trim();
-      const whats = whatsInput.value.trim();
-      const email = emailInput.value.trim();
-      const senha = senhaInput.value;
-
-      const slug = slugify(username);
-
-      if (!username || !whats || !email || !senha) {
-        return showAlert({ title: "Campos obrigatórios", html: "Preencha todos os campos para continuar." });
-      }
-      if (!slug || slug.length < 3) {
-        return showAlert({
-          title: "Nome de usuário inválido",
-          html: "Escolha um nome de usuário com pelo menos 3 letras/números."
-        });
-      }
-      if (await slugJaExiste(slug)) {
-        return showAlert({
-          title: "Slug já usada",
-          html: `O identificador <b>${slug}</b> já está em uso. Tente outra combinação.`
-        });
-      }
-
-      try {
-        const cred = await createUserWithEmailAndPassword(auth, email, senha);
-        await updateProfile(cred.user, { displayName: username });
-        await criarDocsBasicos({
-          uid: cred.user.uid,
-          email,
-          slug,
-          username,
-          whats
-        });
-        await sendEmailVerification(cred.user);
-
-        showAlert({
-          title: "Conta criada!",
-          html: `Enviamos um e-mail de confirmação para <b>${email}</b>.<br>
-                 Confirme o endereço e depois clique em <b>Entrar</b> na página inicial.`,
-          actions: [
-            { text: "Ir para página inicial", kind: "solid", onClick: () => location.href = "index.html" }
-          ]
-        });
-
-      } catch (err) {
-        console.error(err);
-        let msg = "Não foi possível criar a conta. Tente novamente.";
-        if (err.code === "auth/email-already-in-use") {
-          msg = "Este e-mail já está em uso. Tente entrar ou recuperar a senha.";
-        } else if (err.code === "auth/weak-password") {
-          msg = "A senha é muito fraca. Use pelo menos 6 caracteres.";
-        }
-        showAlert({ title: "Erro ao cadastrar", html: msg });
-      }
-    });
-
-    // ===== GOOGLE SIGN-IN =====
-    const provider = new GoogleAuthProvider();
-    provider.setCustomParameters({ prompt: "select_account" });
+    const form = $("cadastroForm");
+    const inputSlug = $("slug");
+    const inputTel = $("telefone");
+    const inputEmail = $("email");
+    const inputSenha = $("senha");
+    const inputSenha2 = $("senha2");
+    const pwRow = $("pwRow");
+    const btnGoogle = $("btnGoogle");
 
     btnGoogle.addEventListener("click", async () => {
-      const username = usernameInput.value.trim();
-      const whats = whatsInput.value.trim();
-      const slug = slugify(username);
-
-      if (!username || !whats) {
-        return showAlert({
-          title: "Informe os dados",
-          html: "Para continuar com o Google, preencha o nome de usuário e o WhatsApp."
-        });
-      }
-      if (!slug || slug.length < 3) {
-        return showAlert({
-          title: "Nome de usuário inválido",
-          html: "Escolha um nome de usuário com pelo menos 3 letras/números."
-        });
-      }
-      if (await slugJaExiste(slug)) {
-        return showAlert({
-          title: "Slug já usada",
-          html: `O identificador <b>${slug}</b> já está em uso. Tente outra combinação.`
-        });
-      }
-
       try {
+        const provider = new GoogleAuthProvider();
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
 
-        await updateProfile(user, { displayName: username });
-        await criarDocsBasicos({
-          uid: user.uid,
-          email: user.email,
+        usandoGoogle = true;
+        inputEmail.value = user.email || "";
+        inputEmail.readOnly = true;
+        pwRow.style.display = "none";
+
+        if (!inputSlug.value && user.displayName) {
+          inputSlug.value = normalizarSlug(user.displayName);
+        }
+
+        showAlert({
+          title: "Conta Google conectada",
+          html: "Agora escolha o seu <b>nome de usuário (slug)</b> e informe o WhatsApp comercial. Depois clique em <b>Criar conta</b> para concluir o cadastro."
+        });
+
+      } catch (e) {
+        console.error(e);
+        showAlert({
+          title: "Não foi possível entrar com Google",
+          html: "Tente novamente ou use o cadastro por e-mail e senha."
+        });
+      }
+    });
+
+    form.addEventListener("submit", async (ev) => {
+      ev.preventDefault();
+
+      const slugRaw = inputSlug.value.trim();
+      const tel = inputTel.value.trim();
+      const email = inputEmail.value.trim();
+      const senha = inputSenha.value;
+      const senha2 = inputSenha2.value;
+
+      if (!slugRaw) {
+        return showAlert({ title: "Slug obrigatório", html: "Informe o seu nome de usuário (slug)." });
+      }
+      const slug = normalizarSlug(slugRaw);
+      if (!slug) {
+        return showAlert({
+          title: "Slug inválido",
+          html: "Use apenas letras, números, pontos e hífens no seu nome de usuário."
+        });
+      }
+
+      if (!tel) {
+        return showAlert({ title: "WhatsApp obrigatório", html: "Informe o número de WhatsApp comercial." });
+      }
+
+      if (!email) {
+        return showAlert({ title: "E-mail obrigatório", html: "Informe um e-mail para acesso." });
+      }
+
+      // e-mail simples
+      const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+      if (!emailRe.test(email)) {
+        return showAlert({ title: "E-mail inválido", html: "Revise o endereço de e-mail informado." });
+      }
+
+      // se NÃO for Google, precisamos de senha
+      if (!usandoGoogle) {
+        if (!senha || !senha2) {
+          return showAlert({
+            title: "Defina uma senha",
+            html: "Informe e confirme sua senha para continuar."
+          });
+        }
+        if (senha.length < 6) {
+          return showAlert({
+            title: "Senha fraca",
+            html: "A senha deve ter pelo menos <b>6 caracteres</b>."
+          });
+        }
+        if (senha !== senha2) {
+          return showAlert({
+            title: "Senhas diferentes",
+            html: "A confirmação de senha não confere. Digite novamente."
+          });
+        }
+      }
+
+      try {
+        // checar se slug já existe
+        if (await slugJaExiste(slug)) {
+          return showAlert({
+            title: "Nome de usuário em uso",
+            html: "Esse slug já está cadastrado. Escolha outro nome de usuário."
+          });
+        }
+
+        let user;
+
+        if (usandoGoogle) {
+          user = auth.currentUser;
+          if (!user) {
+            return showAlert({
+              title: "Sessão expirada",
+              html: "Entre novamente com Google ou faça o cadastro por e-mail."
+            });
+          }
+          // atualiza displayName e e-mail (já vem do Google)
+          await updateProfile(user, { displayName: slug });
+        } else {
+          const cred = await createUserWithEmailAndPassword(auth, email, senha);
+          user = cred.user;
+          await updateProfile(user, { displayName: slug });
+          await sendEmailVerification(user);
+        }
+
+        // cria/atualiza documento em "usuarios"
+        const userDocRef = doc(db, "usuarios", user.uid);
+        await setDoc(userDocRef, {
+          email,
           slug,
-          username,
-          whats
-        });
+          catalogoSlug: slug,
+          whatsapp: tel,
+          createdAt: serverTimestamp(),
+          catalogoAtivo: false
+        }, { merge: true });
 
-        showAlert({
-          title: "Conta conectada!",
-          html: "Login com Google realizado com sucesso. Vamos para a sua conta.",
-          actions: [
-            { text: "Ir para Minha Conta", kind: "solid", onClick: () => location.href = "minha-conta.html" }
-          ]
-        });
+        // tudo ok
+        if (usandoGoogle) {
+          showAlert({
+            title: "Cadastro concluído",
+            html: "Sua conta foi vinculada ao Google e os dados foram salvos. Você já pode acessar a página <b>Minha Conta</b> e seus recursos.",
+            actions: [
+              {
+                text: "Ir para Minha Conta",
+                onClick: () => { window.location.href = "minha-conta.html"; }
+              }
+            ]
+          });
+        } else {
+          showAlert({
+            title: "Cadastro criado",
+            html: "Enviamos um e-mail de confirmação para <b>" + email +
+                  "</b>.<br>Confirme o endereço e, depois, acesse a página <b>Minha Conta</b> para continuar.",
+            actions: [
+              {
+                text: "Ir para login",
+                onClick: () => { window.location.href = "login.html"; }
+              }
+            ]
+          });
+        }
 
-      } catch (err) {
-        console.error(err);
-        if (err.code === "auth/popup-closed-by-user") return;
-        showAlert({
-          title: "Erro ao entrar com Google",
-          html: "Não foi possível concluir o login com Google. Tente novamente."
-        });
+      } catch (e) {
+        console.error(e);
+        let msg = "Erro inesperado ao criar conta. Tente novamente em alguns instantes.";
+        if (e.code === "auth/email-already-in-use") {
+          msg = "Este e-mail já está sendo usado em outra conta. Tente fazer login ou recuperar a senha.";
+        }
+        showAlert({ title: "Não foi possível concluir", html: msg });
       }
     });
-
-    // ===== ESTADO DE AUTH NO HEADER =====
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        const nome = (user.displayName || user.email || "?").trim();
-        userCircle.textContent = nome.charAt(0).toUpperCase();
-        userCircle.style.display = "flex";
-        btnAbrirLogin.style.display = "none";
-        userCircle.onclick = () => location.href = "minha-conta.html";
-      } else {
-        userCircle.style.display = "none";
-        btnAbrirLogin.style.display = "inline-block";
-      }
-    });
-
-    // ano footer
-    document.getElementById("anoFooter").textContent = new Date().getFullYear();
   </script>
 </body>
 </html>
