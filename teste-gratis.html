@@ -1,324 +1,843 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Teste Grátis – MostreAki</title>
-  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Minha Conta – MostreAki</title>
+
   <style>
-    *{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
 
-    :root{
-      --brand:#15b0af;
-      --brandLight:#c2e7df;
-      --accent:#FA1E39;
-      --ink:#063b39;
-      --card:#ffffff;
-      --titleAccent:#c6f2e0;
-    }
-
-    body{
-      background-image:url("fundo-mobile-escuro-mostreaki.png");
-      background-size:cover;background-repeat:no-repeat;background-attachment:fixed;
-      color:#222;
-    }
-    @media (min-width:768px){
-      body{ background-image:url("fundo-desktop.png"); }
+    :root {
+      --bg: #aabcbb;
+      --header-footer: #cde0e0;
+      --bordo: #7d2f59;
+      --texto: #003735;
+      --grad1: #d9d9d9;
+      --grad2: #af91a1;
+      --card: #ffffff;
     }
 
-    header{
-      background:#c2e7df;height:60px;display:flex;align-items:center;justify-content:space-between;
-      padding:0 20px;position:relative;box-shadow:0 2px 6px rgba(0,0,0,.1);
-    }
-    .logo-container{display:flex;align-items:center;cursor:pointer}
-    .logo-container img{height:40px;margin-right:10px}
-    .logo{font-size:1.5rem;font-weight:bold}
-    .logo .mostre{color:#00C2BF}.logo .aki{color:#FA1E39}
-
-    .header-auth{display:flex;align-items:center;gap:10px}
-    .user-circle{
-      background:#15b0af;color:#fff;font-weight:bold;border-radius:50%;
-      width:32px;height:32px;display:flex;align-items:center;justify-content:center;
-      overflow:hidden;font-size:.9rem;
-    }
-    .user-circle img{width:100%;height:100%;object-fit:cover;display:block}
-    .menu-icon{
-      width:32px;height:32px;display:flex;align-items:center;justify-content:center;
-      line-height:1;font-size:1.5rem;cursor:pointer
-    }
-    .menu-list{
-      position:absolute;top:60px;right:20px;background:#16807C;border:2px solid #000;
-      border-radius:6px;display:none;flex-direction:column;padding:10px;z-index:10000;
-    }
-    .menu-list a{
-      background:#FA1E39;color:#fff;text-decoration:none;padding:10px;margin-bottom:8px;
-      border-radius:6px;text-align:center;font-weight:bold;
-    }
-    .menu-list a:hover{background:#b8313b}
-
-    h1{
-      color:var(--titleAccent);font-size:1.9rem;text-align:center;margin:40px 20px;
-      text-shadow:0 1px 0 rgba(0,0,0,.2), 0 2px 4px rgba(0,0,0,.25);
+    * {
+      box-sizing: border-box;
     }
 
-    main{
-      max-width:600px;margin:0 auto 40px;padding:20px;background:#fff;border-radius:14px;
-      box-shadow:0 6px 20px rgba(0,0,0,.1);
+    body {
+      margin: 0;
+      background: radial-gradient(circle at top left, #cfe0e0, #92a9a6);
+      font-family: 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--texto);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
-    p.lead{
-      color:#234;font-size:1.05rem;text-align:center;margin-bottom:20px;
+
+    /* ===== Header padrão MostreAki ===== */
+    header {
+      background: var(--header-footer);
+      border-bottom: 3px solid var(--bordo);
+      padding: .4rem .9rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 999;
     }
-    button.primary{
-      background:var(--brand);color:#fff;border:0;border-radius:10px;padding:12px;
-      font-weight:bold;cursor:pointer;width:100%;font-size:1.05rem;margin-top:20px;
-      transition:filter .15s ease, opacity .15s ease;
+
+    header img {
+      height: 55px;
+      max-width: 190px;
+      object-fit: contain;
+      display: block;
     }
-    button.primary:hover{filter:brightness(.95)}
-    button.primary[disabled]{opacity:.7;cursor:not-allowed}
-    .note{
-      margin:12px 0;padding:12px 14px;background:#f3fbfa;border-left:4px solid var(--brand);
-      border-radius:10px;color:#234;font-size:.95rem;
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
     }
-    .alerta-login{
-      display:none;margin:14px auto;max-width:600px;background:#fffbe6;border:1px solid #ffe8a3;
-      border-radius:12px;padding:10px 14px;color:#7a5600;text-align:center;
+
+    .header-auth-label {
+      font-size: .85rem;
+      color: var(--texto);
+      cursor: pointer;
+      display: none; /* será mostrado quando logado */
     }
-    footer{
-      background:#c2e7df;padding:20px;text-align:center;color:#555;font-size:.9rem;
+
+    .user-circle {
+      background: var(--bordo);
+      color: #fff;
+      font-weight: 600;
+      border-radius: 50%;
+      width: 34px;
+      height: 34px;
+      display: none; /* será mostrado quando logado */
+      align-items: center;
+      justify-content: center;
+      background-size: cover;
+      background-position: center;
+      font-size: .9rem;
+      cursor: pointer;
+    }
+
+    .hamburger {
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      border: 2px solid var(--bordo);
+      background: linear-gradient(180deg, var(--grad1), var(--grad2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 4px;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 60%;
+      height: 3px;
+      border-radius: 999px;
+      background: var(--bordo);
+    }
+
+    /* ===== Menu lateral ===== */
+    .menu-overlay{
+      position: fixed; top: 60px; right: 0;
+      width: 280px; max-width: 90vw;
+      background: #92a9a6; box-shadow: -4px 0 12px rgba(0,0,0,.09);
+      height: calc(100vh - 60px);
+      transform: translateX(100%); transition: transform .25s ease;
+      z-index: 999; display: flex; flex-direction: column; gap: .55rem; padding: 1rem;
+    }
+    .menu-overlay.show { transform: translateX(0); }
+
+    .menu-link {
+      width: 210px;
+      max-width: 92vw;
+      align-self: center;
+      white-space: nowrap;
+      background: linear-gradient(180deg, var(--grad1), var(--grad2));
+      border-radius: 999px;
+      padding: .55rem 1rem;
+      text-align: center;
+      color: var(--bordo);
+      text-decoration: none;
+      font-weight: 600;
+      border: 2px solid rgba(0,0,0,.12);
+      box-shadow: 0 2px 6px rgba(0,0,0,.1);
+      font-size: .95rem;
+    }
+    .menu-link:hover {
+      filter: brightness(1.03);
+      transform: translateY(-1px);
+    }
+
+    /* ===== Main ===== */
+    main {
+      flex: 1;
+      max-width: min(1100px, 94vw);
+      margin: 2rem auto 2.6rem;
+    }
+
+    .page-title {
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-bottom: .25rem;
+      color: var(--texto);
+    }
+    .page-sub {
+      font-size: .95rem;
+      color: #214b4a;
+      margin-bottom: 1.8rem;
+    }
+
+    .conta-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+      gap: 1.6rem;
+    }
+
+    @media (max-width: 768px) {
+      .conta-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .card {
+      background: rgba(255,255,255,0.98);
+      border-radius: 18px;
+      box-shadow: 0 10px 24px rgba(0,0,0,.16);
+      padding: 1.4rem 1.6rem 1.6rem;
+      border: 2px solid rgba(125,47,89,0.25);
+    }
+    .card h2 {
+      font-size: 1.1rem;
+      margin: 0 0 .4rem;
+      color: var(--texto);
+    }
+    .card p.desc {
+      font-size: .9rem;
+      color: #345;
+      margin: 0 0 1.2rem;
+    }
+
+    .field-group {
+      margin-bottom: 1rem;
+    }
+    .field-group label {
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+      font-size: .9rem;
+      margin-bottom: .25rem;
+      color: #234;
+    }
+    .lock-icon {
+      font-size: .95rem;
+      color: var(--bordo);
+    }
+    .field-group input[type="text"],
+    .field-group input[type="email"] {
+      width: 100%;
+      padding: .55rem .75rem;
+      border-radius: 10px;
+      border: 1px solid #c3c9cf;
+      font-size: .9rem;
+      outline: none;
+      background: #f7f8fa;
+    }
+    .field-group input[disabled] {
+      color: #667;
+      cursor: not-allowed;
+    }
+    .hint {
+      font-size: .8rem;
+      color: #566;
+      margin-top: .15rem;
+    }
+
+    .avatar-wrap {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: .8rem;
+    }
+    .avatar-preview {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg,#d9d9d9,#af91a1);
+      border: 3px solid var(--bordo);
+      background-position: center;
+      background-size: cover;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 700;
+      font-size: 1.3rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .4rem;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-size: .9rem;
+      font-weight: 600;
+      padding: .55rem 1.2rem;
+      text-decoration: none;
+      transition: .18s;
+      white-space: nowrap;
+    }
+    .btn-primary {
+      background: linear-gradient(180deg, var(--grad1), var(--grad2));
+      color: var(--bordo);
+      border: 2px solid rgba(125,47,89,0.4);
+      box-shadow: 0 2px 6px rgba(0,0,0,.18);
+    }
+    .btn-primary:hover {
+      filter: brightness(1.04);
+      transform: translateY(-1px);
+    }
+    .btn-ghost {
+      background: transparent;
+      color: var(--bordo);
+      border: 1px dashed rgba(125,47,89,0.6);
+    }
+    .btn-ghost:hover {
+      background: rgba(255,255,255,.4);
+    }
+    .btn-danger {
+      background: #fae0e6;
+      color: #9a1536;
+      border: 2px solid #e38ba3;
+    }
+    .btn-danger:hover {
+      filter: brightness(1.02);
+      transform: translateY(-1px);
+    }
+
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .6rem;
+      margin-top: .6rem;
+    }
+
+    .section-title {
+      font-size: .95rem;
+      font-weight: 700;
+      margin: 1rem 0 .4rem;
+      color: #20373a;
+    }
+    .section-note {
+      font-size: .8rem;
+      color: #445;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: .3rem;
+      font-size: .8rem;
+      padding: .25rem .55rem;
+      border-radius: 999px;
+      background: #e8d7e1;
+      color: var(--bordo);
+      margin-bottom: .4rem;
+    }
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #47b572;
+    }
+    .dot.off {
+      background: #e03a58;
+    }
+
+    /* ===== Alert brand ===== */
+    .alert-bg {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.55);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      padding: 20px;
+    }
+    .alert-card {
+      background: #fff;
+      border-radius: 16px;
+      overflow: hidden;
+      max-width: 460px;
+      width: 100%;
+      box-shadow: 0 22px 70px rgba(0,0,0,.25);
+      border: 2px solid #cde0e0;
+    }
+    .alert-head {
+      background: linear-gradient(90deg,#cde0e0,#af91a1);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .alert-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #FA1E39;
+    }
+    .alert-title {
+      color: #003735;
+      font-weight: 700;
+      font-size: .98rem;
+    }
+    .alert-body {
+      padding: 16px;
+      color: #223;
+      font-size: .9rem;
+    }
+    .alert-actions {
+      padding: 10px 16px 14px;
+      display: flex;
+      justify-content: flex-end;
+      gap: .5rem;
+      background: #f7faf9;
+    }
+
+    footer {
+      background: var(--header-footer);
+      padding: 1rem;
+      font-size: .85rem;
+      text-align: center;
+      color: #444;
+      margin-top: auto;
+      border-top: 2px solid rgba(0,0,0,.05);
     }
   </style>
 </head>
 <body>
   <header>
-    <div class="logo-container" onclick="location.href='index.html'">
-      <img src="logomarca-mostreaki.svg" alt="Logo">
-      <div class="logo"><span class="mostre">Mostre</span><span class="aki">Aki</span></div>
+    <a href="index.html" aria-label="Voltar para a página inicial">
+      <img src="logo-mostreaki.svg" alt="MostreAki">
+    </a>
+
+    <div class="header-right">
+      <div id="authText" class="header-auth-label" title="Clique para sair">
+        Sair
+      </div>
+      <div id="userCircle" class="user-circle" title="Minha conta"></div>
+
+      <button class="hamburger" type="button" onclick="toggleMenu()" aria-label="Abrir menu">
+        <span></span><span></span><span></span>
+      </button>
     </div>
-    <div class="header-auth">
-      <span id="authText" style="font-weight:bold;color:#15b0af;cursor:pointer;display:none">Entrar</span>
-      <div id="userCircle" class="user-circle" title="Perfil">F</div>
-      <div id="menuBtn" class="menu-icon" aria-controls="menu" aria-expanded="false">☰</div>
-    </div>
-    <nav class="menu-list" id="menu">
-      <a href="/index.html">Página Inicial</a>
-      <a href="/sobre.html">Sobre</a>
-      <a href="/minha-conta.html">Minha Conta</a>
-      <a href="/parceiros.html">Parceiros</a>
-      <a href="/servicos-adicionais.html">Serviços Adicionais</a>
-      <a href="/redes-sociais.html">Redes Sociais</a>
-      <a href="/contatos.html">Contatos</a>
-    </nav>
   </header>
 
-  <div id="alertaLogin" class="alerta-login">⚠️ Você precisa estar logado para começar o Trial. Redirecionando…</div>
+  <!-- Menu lateral -->
+  <nav id="menu" class="menu-overlay" aria-label="Menu principal">
+    <a class="menu-link" href="index.html">Início</a>
+    <a class="menu-link" href="planos.html">Planos</a>
+    <a class="menu-link" href="parceiros.html">Templates de Parceiros</a>
+    <a class="menu-link" href="servicos-adicionais.html">Serviços Adicionais</a>
+    <a class="menu-link" href="instrucoes.html">Instruções</a>
+    <a class="menu-link" href="sobre.html">Sobre o MostreAki</a>
+    <a class="menu-link" href="contato.html">Contato</a>
+  </nav>
+
+  <!-- ALERTA -->
+  <div id="alert" class="alert-bg" role="alertdialog" aria-modal="true">
+    <div class="alert-card">
+      <div class="alert-head">
+        <div class="alert-dot"></div>
+        <div id="alertTitle" class="alert-title">Aviso</div>
+      </div>
+      <div id="alertMsg" class="alert-body">Mensagem.</div>
+      <div id="alertActions" class="alert-actions">
+        <!-- botões via JS -->
+      </div>
+    </div>
+  </div>
 
   <main>
-    <p class="lead">Entraremos em contato para entender suas necessidades e criar um site personalizado que você vai amar!</p>
-    <div class="note">
-      <b>Nota:</b> Após confirmar seu interesse, nossa equipe entrará em contato para criar seu site sob medida, com 7 dias de teste grátis.
-    </div>
-    <button id="startTrialBtn" class="primary">Começar Teste Grátis</button>
+    <h1 class="page-title">Minha Conta</h1>
+    <p class="page-sub">
+      Aqui você gerencia seus dados, assinatura e acessos ao catálogo e álbum da sua marca.
+    </p>
+
+    <section class="conta-grid">
+      <!-- Dados principais -->
+      <article class="card">
+        <h2>Dados do titular</h2>
+        <p class="desc">Informações básicas vinculadas à sua conta MostreAki.</p>
+
+        <div class="avatar-wrap">
+          <div id="avatarPreview" class="avatar-preview">M</div>
+
+          <div>
+            <button class="btn btn-primary" type="button" id="btnEscolherFoto">
+              Escolher imagem
+            </button>
+            <input type="file" id="fileFoto" accept="image/*" style="display:none" />
+            <div class="hint">
+              A foto será usada no círculo de usuário. Tamanho máximo: <b>400 KB</b>.
+            </div>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label for="slug">
+            Nome de usuário (slug)
+            <span class="lock-icon" title="Campo bloqueado">&#128274;</span>
+          </label>
+          <input type="text" id="slug" disabled value="carregando..." />
+          <div class="hint">
+            Para alterar o seu slug, envie uma solicitação para
+            <b>mostreaki@mostreaki.com.br</b>. Essa alteração afeta os links públicos do seu site.
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label for="emailConta">E-mail de acesso</label>
+          <input type="email" id="emailConta" disabled value="carregando..." />
+          <div class="btn-row">
+            <button class="btn btn-primary" type="button" id="btnAlterarEmail">
+              Alterar e-mail
+            </button>
+          </div>
+          <div class="hint">
+            O e-mail é usado para login e comunicações importantes do MostreAki.
+          </div>
+        </div>
+      </article>
+
+      <!-- Assinatura + recursos -->
+      <article class="card">
+        <h2>Assinatura & recursos</h2>
+        <p class="desc">Gerencie sua assinatura e os acessos ao catálogo e álbum digital.</p>
+
+        <!-- Status assinatura -->
+        <div class="section-title">Status da assinatura</div>
+        <div id="statusAssinatura" class="status-pill">
+          <span class="dot" id="dotAssinatura"></span>
+          <span id="textoAssinatura">Carregando assinatura...</span>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn-primary" type="button" id="btnAlterarPlano">
+            Alterar assinatura
+          </button>
+          <button class="btn btn-danger" type="button" id="btnCancelarPlano">
+            Cancelar assinatura
+          </button>
+        </div>
+        <div class="section-note">
+          A alteração de plano será redirecionada para a página de planos. O cancelamento segue as regras do intermediador de pagamento.
+        </div>
+
+        <!-- Catálogo -->
+        <div class="section-title" style="margin-top:1.4rem;">Catálogo digital</div>
+        <div id="statusCatalogo" class="status-pill">
+          <span class="dot off" id="dotCatalogo"></span>
+          <span id="textoCatalogo">Verificando acesso ao catálogo...</span>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" type="button" id="btnEditarCatalogo" style="display:none;">
+            Editar catálogo
+          </button>
+        </div>
+        <div class="section-note">
+          O botão "Editar catálogo" só aparece se sua assinatura estiver com o catálogo ativo no Firestore.
+        </div>
+
+        <!-- Álbum -->
+        <div class="section-title" style="margin-top:1.4rem;">Álbum / Galeria</div>
+        <div id="statusAlbum" class="status-pill">
+          <span class="dot off" id="dotAlbum"></span>
+          <span id="textoAlbum">Verificando acesso ao álbum...</span>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" type="button" id="btnEditarAlbum" style="display:none;">
+            Editar álbum
+          </button>
+        </div>
+        <div class="section-note">
+          Assim como o catálogo, o acesso ao álbum depende da configuração da sua assinatura no Firestore.
+        </div>
+      </article>
+    </section>
   </main>
 
-  <footer>&copy; 2025 MostreAki. Todos os direitos reservados.</footer>
+  <footer>
+    MostreAki &copy; 2025 — Fortalecendo a identidade da sua marca no universo digital.
+  </footer>
 
+  <!-- Firebase + Script -->
   <script type="module">
-    import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-    import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-    import { getFirestore, doc, getDoc, addDoc, collection, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-    import { getStorage, ref, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+    import {
+      getAuth,
+      onAuthStateChanged,
+      signOut
+    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+    import {
+      getFirestore,
+      doc,
+      getDoc
+    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+    import {
+      getStorage,
+      ref,
+      uploadBytes,
+      getDownloadURL
+    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
 
-    const cfg = {
-      apiKey: 'AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE',
-      authDomain: 'mostreaki-2025.firebaseapp.com',
-      projectId: 'mostreaki-2025',
-      storageBucket: 'mostreaki-2025.firebasestorage.app',
-      messagingSenderId: '748712068097',
-      appId: '1:748712068097:web:09cf043fbb45917ef6ec00'
-    };
-    const app = getApps().length ? getApp() : initializeApp(cfg);
+    const app = initializeApp({
+      apiKey: "AIzaSyBrKUtwP4T77oXE22cjOFVhfEUiJ7yctIE",
+      authDomain: "mostreaki-2025.firebaseapp.com",
+      projectId: "mostreaki-2025",
+      storageBucket: "mostreaki-2025.firebasestorage.app",
+      messagingSenderId: "748712068097",
+      appId: "1:748712068097:web:09cf043fbb45917ef6ec00"
+    });
+
     const auth = getAuth(app);
     const db = getFirestore(app);
-    const stg = getStorage(app, 'gs://mostreaki-2025.firebasestorage.app');
+    const storage = getStorage(app);
 
-    const $ = s => document.querySelector(s);
-    const toast = (m) => {
-      const t = document.createElement('div');
-      t.textContent = m;
-      t.style.position = 'fixed';
-      t.style.top = '16px';
-      t.style.right = '16px';
-      t.style.background = '#FA1E39';
-      t.style.color = '#fff';
-      t.style.padding = '12px 14px';
-      t.style.borderRadius = '10px';
-      t.style.boxShadow = '0 6px 18px rgba(0,0,0,.2)';
-      t.style.zIndex = '99999';
-      t.style.fontWeight = 'bold';
-      document.body.append(t);
-      setTimeout(() => t.remove(), 2400);
+    /* ===== helpers UI ===== */
+    const $ = (id) => document.getElementById(id);
+
+    const menu = $("menu");
+    window.toggleMenu = function () {
+      if (!menu) return;
+      menu.classList.toggle("show");
     };
 
-    /* Avatar */
-    function setAvatar(url, nome = '') {
-      const el = $('#userCircle'); if (!el) return;
-      el.textContent = ''; el.style.display = 'flex';
-      if (url) {
-        localStorage.setItem('fotoPerfil', url);
-        const img = new Image();
-        img.src = url; img.alt = 'Foto de Perfil'; img.style.width = '100%'; img.style.height = '100%'; img.style.objectFit = 'cover';
-        el.append(img);
-      } else {
-        el.textContent = nome ? nome[0].toUpperCase() : 'F';
-      }
+    const alertBG = $("alert");
+    const alertTitle = $("alertTitle");
+    const alertMsg = $("alertMsg");
+    const alertActions = $("alertActions");
+
+    function showAlert({ title = "Aviso", html = "", actions = [{ text: "Fechar" }] }) {
+      alertTitle.textContent = title;
+      alertMsg.innerHTML = html;
+      alertActions.innerHTML = "";
+      actions.forEach(a => {
+        const btn = document.createElement("button");
+        btn.className = "btn " + (a.kind === "danger" ? "btn-danger" : "btn-primary");
+        btn.textContent = a.text;
+        btn.onclick = () => {
+          if (a.onClick) a.onClick();
+          closeAlert();
+        };
+        alertActions.appendChild(btn);
+      });
+      alertBG.style.display = "flex";
     }
-    async function prefetchFoto(uid) {
+    function closeAlert() {
+      alertBG.style.display = "none";
+    }
+    alertBG.addEventListener("click", (e) => {
+      if (e.target === alertBG) closeAlert();
+    });
+
+    const userCircle = $("userCircle");
+    const authText = $("authText");
+    const avatarPreview = $("avatarPreview");
+    const fileFoto = $("fileFoto");
+    const btnEscolherFoto = $("btnEscolherFoto");
+
+    const slugInput = $("slug");
+    const emailConta = $("emailConta");
+
+    const dotAssinatura = $("dotAssinatura");
+    const textoAssinatura = $("textoAssinatura");
+    const dotCatalogo = $("dotCatalogo");
+    const textoCatalogo = $("textoCatalogo");
+    const dotAlbum = $("dotAlbum");
+    const textoAlbum = $("textoAlbum");
+    const btnEditarCatalogo = $("btnEditarCatalogo");
+    const btnEditarAlbum = $("btnEditarAlbum");
+
+    const btnAlterarEmail = $("btnAlterarEmail");
+    const btnAlterarPlano = $("btnAlterarPlano");
+    const btnCancelarPlano = $("btnCancelarPlano");
+
+    /* ===== estado de auth ===== */
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        // Não logado: volta para a página inicial
+        window.location.href = "index.html";
+        return;
+      }
+
+      // Preenche e-mail
+      emailConta.value = user.email || "";
+
+      // Mostra user-circle e label "Sair"
+      if (userCircle) {
+        const letra = (user.displayName || user.email || "?").trim().charAt(0).toUpperCase();
+        userCircle.textContent = letra;
+        userCircle.style.display = "flex";
+
+        // Se já tiver fotoPerfil no localStorage, usa
+        const savedFoto = localStorage.getItem("fotoPerfil");
+        if (savedFoto) {
+          userCircle.style.backgroundImage = `url('${savedFoto}')`;
+          avatarPreview.style.backgroundImage = `url('${savedFoto}')`;
+          avatarPreview.textContent = "";
+        }
+      }
+      if (authText) {
+        authText.style.display = "inline";
+      }
+
+      // TODO: Aqui você integra o Firestore de verdade.
+      // Exemplo de estrutura que você comentou:
+      //   /usuarios/{uid} -> { slug, assinaturaStatus, catalogoAtivo, albumAtivo, fotoPerfilURL }
       try {
-        const userDoc = await getDoc(doc(db, 'usuarios', uid));
-        const nome = userDoc.exists() ? userDoc.data().nomeCompleto || '' : '';
-        const tryExt = e => getDownloadURL(ref(stg, `usuarios/${uid}/perfil/avatar.${e}`)).catch(() => null);
-        const direct = await tryExt('jpg') || await tryExt('png') || await tryExt('webp') || await tryExt('gif');
-        if (direct) {
-          setAvatar(direct, nome);
+        const docRef = doc(db, "usuarios", user.uid);
+        const snap = await getDoc(docRef);
+        if (snap.exists()) {
+          const data = snap.data();
+
+          // slug
+          if (data.slug) {
+            slugInput.value = data.slug;
+          } else {
+            slugInput.value = "(definir slug no Firestore)";
+          }
+
+          // foto de perfil do Firestore (se existir e ainda não tiver no localStorage)
+          if (data.fotoPerfilURL && !localStorage.getItem("fotoPerfil")) {
+            localStorage.setItem("fotoPerfil", data.fotoPerfilURL);
+            userCircle.style.backgroundImage = `url('${data.fotoPerfilURL}')`;
+            avatarPreview.style.backgroundImage = `url('${data.fotoPerfilURL}')`;
+            avatarPreview.textContent = "";
+          }
+
+          // assinatura
+          const status = data.assinaturaStatus || "sem-assinatura";
+          if (status === "ativa") {
+            dotAssinatura.classList.remove("off");
+            textoAssinatura.textContent = "Assinatura ativa";
+          } else if (status === "suspensa") {
+            dotAssinatura.classList.add("off");
+            textoAssinatura.textContent = "Assinatura suspensa";
+          } else {
+            dotAssinatura.classList.add("off");
+            textoAssinatura.textContent = "Sem assinatura ativa";
+          }
+
+          // catálogo
+          const catAtivo = !!data.catalogoAtivo;
+          if (catAtivo) {
+            dotCatalogo.classList.remove("off");
+            textoCatalogo.textContent = "Catálogo digital ativo";
+            btnEditarCatalogo.style.display = "inline-flex";
+          } else {
+            dotCatalogo.classList.add("off");
+            textoCatalogo.textContent = "Catálogo ainda não habilitado";
+            btnEditarCatalogo.style.display = "none";
+          }
+
+          // álbum
+          const albAtivo = !!data.albumAtivo;
+          if (albAtivo) {
+            dotAlbum.classList.remove("off");
+            textoAlbum.textContent = "Álbum / galeria ativo";
+            btnEditarAlbum.style.display = "inline-flex";
+          } else {
+            dotAlbum.classList.add("off");
+            textoAlbum.textContent = "Álbum ainda não habilitado";
+            btnEditarAlbum.style.display = "none";
+          }
         } else {
-          setAvatar('', nome);
+          slugInput.value = "(usuário sem documento em /usuarios ainda)";
+          dotAssinatura.classList.add("off");
+          textoAssinatura.textContent = "Sem assinatura ativa.";
         }
       } catch (e) {
-        console.log('Erro ao carregar foto:', e.message);
-        const userDoc = await getDoc(doc(db, 'usuarios', uid));
-        const nome = userDoc.exists() ? userDoc.data().nomeCompleto || '' : '';
-        setAvatar('', nome);
-      }
-    }
-    (() => { const c = localStorage.getItem('fotoPerfil'); if (c) setAvatar(c); })();
-
-    /* Auth header */
-    (function wireAuthUI() {
-      const at = $('#authText');
-      onAuthStateChanged(auth, async user => {
-        if (user) {
-          if (at) {
-            at.textContent = 'Sair';
-            at.style.display = 'inline';
-            at.onclick = async () => {
-              await auth.signOut();
-              localStorage.removeItem('fotoPerfil');
-              location = '/index.html';
-            };
-          }
-          await prefetchFoto(user.uid);
-        } else {
-          if (at) {
-            at.textContent = 'Entrar';
-            at.style.display = 'inline';
-            at.onclick = () => location.href = '/login.html';
-          }
-          $('#userCircle').textContent = 'F';
-          $('#userCircle').style.display = 'flex';
-          $('#alertaLogin').style.display = 'block';
-          $('#startTrialBtn').style.display = 'none';
-          setTimeout(() => location.href = '/login.html', 4000);
-        }
-      });
-    })();
-
-    /* Menu */
-    (function wireMenu() {
-      const btn = $('#menuBtn');
-      const menu = $('#menu');
-      if (!btn || !menu) return;
-      const open = () => {
-        menu.style.display = 'flex';
-        btn.setAttribute('aria-expanded', 'true');
-        document.addEventListener('click', onDoc, true);
-        document.addEventListener('keydown', onKey);
-      };
-      const close = () => {
-        menu.style.display = 'none';
-        btn.setAttribute('aria-expanded', 'false');
-        document.removeEventListener('click', onDoc, true);
-        document.removeEventListener('keydown', onKey);
-      };
-      const toggle = () => menu.style.display === 'flex' ? close() : open();
-      function onDoc(e) {
-        if (!menu.contains(e.target) && e.target !== btn) close();
-      }
-      function onKey(e) {
-        if (e.key === 'Escape') close();
-      }
-      btn.addEventListener('click', e => {
-        e.stopPropagation();
-        toggle();
-      });
-    })();
-
-    /* === Trial: grava no Firestore (coleção "mail") e redireciona ===
-       Requer a extensão Firebase "Trigger Email" instalada e configurada. */
-    async function notifyTrialInterest(user) {
-      const btn = $('#startTrialBtn');
-      try {
-        btn.disabled = true;
-        const originalText = btn.textContent;
-        btn.textContent = 'Enviando...';
-
-        // Puxa nome do Firestore (fallback pro local-part do email)
-        const userDoc = await getDoc(doc(db, 'usuarios', user.uid));
-        const nome = userDoc.exists()
-          ? (userDoc.data().nomeCompleto || (user.email ? user.email.split('@')[0] : 'Usuário'))
-          : (user.email ? user.email.split('@')[0] : 'Usuário');
-
-        // Cria o documento na coleção "mail" monitorada pela extensão Trigger Email
-        await addDoc(collection(db, 'mail'), {
-          to: ['contato.mostreaki@gmail.com'],  // <- troque se necessário
-          message: {
-            subject: 'Novo interesse no plano trial - MostreAki',
-            text:
-`Um usuário demonstrou interesse no Trial.
-
-UID: ${user.uid}
-Nome: ${nome}
-Email: ${user.email || '(sem email)'}
-Foto: ${user.photoURL || '(sem foto)'}
-Quando: ${new Date().toISOString()}
-
-Acesse o Firestore para mais detalhes.`
-            // Você pode adicionar "html" se quiser email formatado:
-            // html: `<p><b>UID:</b> ${user.uid}</p> ...`
-          },
-          createdAt: serverTimestamp(),
-          usuario: {
-            uid: user.uid,
-            nome,
-            email: user.email || null,
-            photoURL: user.photoURL || null
-          },
-          origem: 'teste-gratis.html'
-        });
-
-        // Feedback e redirecionamento
-        toast('Interesse registrado! Já vamos entrar em contato.');
-        setTimeout(() => location.href = '/obrigado.html', 400);
-      } catch (e) {
-        console.error('Erro ao registrar interesse:', e);
-        toast('Não foi possível registrar seu interesse agora. Tente novamente.');
-        // Reabilita botão pra nova tentativa
-        const btn = $('#startTrialBtn');
-        if (btn) {
-          btn.disabled = false;
-          btn.textContent = 'Começar Teste Grátis';
-        }
-      }
-    }
-
-    $('#startTrialBtn').addEventListener('click', async () => {
-      const user = auth.currentUser;
-      if (user) {
-        await notifyTrialInterest(user);
-      } else {
-        toast('Você precisa estar logado para começar o Trial.');
-        setTimeout(() => location.href = '/login.html', 2000);
+        console.error("Erro ao ler Firestore:", e);
+        textoAssinatura.textContent = "Não foi possível carregar os dados da assinatura.";
       }
     });
+
+    // Sair
+    if (authText) {
+      authText.addEventListener("click", async () => {
+        try {
+          await signOut(auth);
+          localStorage.removeItem("fotoPerfil");
+          window.location.href = "index.html";
+        } catch (e) {
+          showAlert({
+            title: "Erro ao sair",
+            html: "Não foi possível encerrar a sessão. Tente novamente."
+          });
+        }
+      });
+    }
+
+    // Avatar: escolher arquivo
+    if (btnEscolherFoto && fileFoto) {
+      btnEscolherFoto.addEventListener("click", () => fileFoto.click());
+
+      fileFoto.addEventListener("change", async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        if (file.size > 400 * 1024) {
+          showAlert({
+            title: "Imagem muito pesada",
+            html: "Por favor, escolha uma imagem com até <b>400 KB</b> para o avatar."
+          });
+          fileFoto.value = "";
+          return;
+        }
+
+        const user = auth.currentUser;
+        if (!user) {
+          showAlert({
+            title: "Sessão expirada",
+            html: "Faça login novamente para alterar sua foto de perfil.",
+            actions: [{ text: "Ok" }]
+          });
+          return;
+        }
+
+        try {
+          const storageRef = ref(storage, `avatars/${user.uid}.jpg`);
+          await uploadBytes(storageRef, file);
+          const url = await getDownloadURL(storageRef);
+
+          localStorage.setItem("fotoPerfil", url);
+          userCircle.style.backgroundImage = `url('${url}')`;
+          avatarPreview.style.backgroundImage = `url('${url}')`;
+          avatarPreview.textContent = "";
+          showAlert({
+            title: "Foto atualizada",
+            html: "Sua foto de perfil foi atualizada com sucesso!"
+          });
+        } catch (err) {
+          console.error(err);
+          showAlert({
+            title: "Erro ao enviar imagem",
+            html: "Não foi possível atualizar sua foto agora. Tente novamente em instantes."
+          });
+        }
+      });
+    }
+
+    // Botão alterar e-mail
+    if (btnAlterarEmail) {
+      btnAlterarEmail.addEventListener("click", () => {
+        window.location.href = "alterar-email.html";
+      });
+    }
+
+    // Botão alterar assinatura
+    if (btnAlterarPlano) {
+      btnAlterarPlano.addEventListener("click", () => {
+        window.location.href = "planos.html#trocar";
+      });
+    }
+
+    // Botão cancelar assinatura
+    if (btnCancelarPlano) {
+      btnCancelarPlano.addEventListener("click", () => {
+        showAlert({
+          title: "Cancelar assinatura",
+          html: "O cancelamento é feito pelo intermediador de pagamento (ex: Mercado Pago).<br>Entre em contato pelo WhatsApp ou e-mail <b>mostreaki@mostreaki.com.br</b> para orientações detalhadas.",
+          actions: [{ text: "Entendi" }]
+        });
+      });
+    }
+
+    // Editar catálogo
+    if (btnEditarCatalogo) {
+      btnEditarCatalogo.addEventListener("click", () => {
+        window.location.href = "editar-catalogo.html";
+      });
+    }
+
+    // Editar álbum
+    if (btnEditarAlbum) {
+      btnEditarAlbum.addEventListener("click", () => {
+        window.location.href = "editar-album.html";
+      });
+    }
   </script>
 </body>
 </html>
