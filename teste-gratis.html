@@ -18,9 +18,7 @@
       --card: #ffffff;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -62,7 +60,7 @@
       font-size: .85rem;
       color: var(--texto);
       cursor: pointer;
-      display: none; /* será mostrado quando logado */
+      display: none;
     }
 
     .user-circle {
@@ -72,7 +70,7 @@
       border-radius: 50%;
       width: 34px;
       height: 34px;
-      display: none; /* será mostrado quando logado */
+      display: none;
       align-items: center;
       justify-content: center;
       background-size: cover;
@@ -96,7 +94,6 @@
       cursor: pointer;
       padding: 0;
     }
-
     .hamburger span {
       display: block;
       width: 60%;
@@ -105,7 +102,7 @@
       background: var(--bordo);
     }
 
-    /* ===== Menu lateral (overlay + painel) ===== */
+    /* ===== Menu lateral ===== */
     .menu-overlay {
       position: fixed;
       top: 60px;
@@ -117,9 +114,7 @@
       justify-content: flex-end;
       z-index: 999;
     }
-    .menu-overlay.show {
-      display: flex;
-    }
+    .menu-overlay.show { display: flex; }
 
     .menu-panel {
       width: 280px;
@@ -178,11 +173,8 @@
       grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
       gap: 1.6rem;
     }
-
     @media (max-width: 768px) {
-      .conta-grid {
-        grid-template-columns: minmax(0, 1fr);
-      }
+      .conta-grid { grid-template-columns: minmax(0, 1fr); }
     }
 
     .card {
@@ -203,9 +195,7 @@
       margin: 0 0 1.2rem;
     }
 
-    .field-group {
-      margin-bottom: 1rem;
-    }
+    .field-group { margin-bottom: 1rem; }
     .field-group label {
       display: flex;
       align-items: center;
@@ -214,10 +204,8 @@
       margin-bottom: .25rem;
       color: #234;
     }
-    .lock-icon {
-      font-size: .95rem;
-      color: var(--bordo);
-    }
+    .lock-icon { font-size: .95rem; color: var(--bordo); }
+
     .field-group input[type="text"],
     .field-group input[type="email"] {
       width: 100%;
@@ -232,6 +220,7 @@
       color: #667;
       cursor: not-allowed;
     }
+
     .hint {
       font-size: .8rem;
       color: #566;
@@ -291,9 +280,8 @@
       color: var(--bordo);
       border: 1px dashed rgba(125,47,89,0.6);
     }
-    .btn-ghost:hover {
-      background: rgba(255,255,255,.4);
-    }
+    .btn-ghost:hover { background: rgba(255,255,255,.4); }
+
     .btn-danger {
       background: #fae0e6;
       color: #9a1536;
@@ -339,9 +327,7 @@
       border-radius: 50%;
       background: #47b572;
     }
-    .dot.off {
-      background: #e03a58;
-    }
+    .dot.off { background: #e03a58; }
 
     /* ===== Alert brand ===== */
     .alert-bg {
@@ -444,9 +430,7 @@
         <div id="alertTitle" class="alert-title">Aviso</div>
       </div>
       <div id="alertMsg" class="alert-body">Mensagem.</div>
-      <div id="alertActions" class="alert-actions">
-        <!-- botões via JS -->
-      </div>
+      <div id="alertActions" class="alert-actions"></div>
     </div>
   </div>
 
@@ -597,7 +581,6 @@
     const db = getFirestore(app);
     const storage = getStorage(app);
 
-    /* ===== helpers UI ===== */
     const $ = (id) => document.getElementById(id);
 
     const menu = $("menu");
@@ -605,13 +588,9 @@
       if (!menu) return;
       menu.classList.toggle("show");
     };
-
-    // fechar menu ao clicar fora do painel
     if (menu) {
       menu.addEventListener("click", (e) => {
-        if (e.target === menu) {
-          menu.classList.remove("show");
-        }
+        if (e.target === menu) menu.classList.remove("show");
       });
     }
 
@@ -636,9 +615,7 @@
       });
       alertBG.style.display = "flex";
     }
-    function closeAlert() {
-      alertBG.style.display = "none";
-    }
+    function closeAlert() { alertBG.style.display = "none"; }
     alertBG.addEventListener("click", (e) => {
       if (e.target === alertBG) closeAlert();
     });
@@ -667,36 +644,43 @@
 
     let currentSlug = null;
 
-    /* ===== estado de auth ===== */
+    function capitalizarPlano(p) {
+      if (!p) return "";
+      const map = {
+        basico: "Básico",
+        intermediario: "Intermediário",
+        avancado: "Avançado"
+      };
+      return map[p] || p;
+    }
+
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
-        // Não logado: volta para a página inicial
         window.location.href = "index.html";
         return;
       }
 
-      // Preenche e-mail
       emailConta.value = user.email || "";
 
-      // Mostra user-circle e label "Sair"
       if (userCircle) {
         const letra = (user.displayName || user.email || "?").trim().charAt(0).toUpperCase();
         userCircle.textContent = letra;
         userCircle.style.display = "flex";
       }
-      if (authText) {
-        authText.style.display = "inline";
-      }
+      if (authText) authText.style.display = "inline";
 
       try {
-        // -------- documento em /usuarios/{uid} ----------
-        const docRef = doc(db, "usuarios", user.uid);
-        const snap = await getDoc(docRef);
-        if (snap.exists()) {
-          const data = snap.data();
+        let catalogoAtivo = false;
+        let albumAtivo = false;
+        let userData = null;
 
-          // SLUG: usamos catalogoSlug como principal
-          currentSlug = data.catalogoSlug || data.slug || "";
+        // ------ usuarios/{uid} ------
+        const userDocRef = doc(db, "usuarios", user.uid);
+        const userSnap = await getDoc(userDocRef);
+        if (userSnap.exists()) {
+          userData = userSnap.data();
+
+          currentSlug = userData.catalogoSlug || userData.slug || "";
           if (currentSlug) {
             slugInput.value = currentSlug;
             localStorage.setItem("catalogoSlug", currentSlug);
@@ -704,11 +688,9 @@
             slugInput.value = "(definir slug no Firestore)";
           }
 
-          // FOTO DE PERFIL: fotoPerfilURL ou fotoPerfil
-          const fotoUrl = data.fotoPerfilURL || data.fotoPerfil;
-          if (fotoUrl) {
-            localStorage.setItem("fotoPerfil", fotoUrl);
-          }
+          const fotoUrl = userData.fotoPerfilURL || userData.fotoPerfil;
+          if (fotoUrl) localStorage.setItem("fotoPerfil", fotoUrl);
+
           const savedFoto = localStorage.getItem("fotoPerfil");
           if (savedFoto) {
             userCircle.style.backgroundImage = `url('${savedFoto}')`;
@@ -716,66 +698,83 @@
             avatarPreview.textContent = "";
           } else {
             avatarPreview.textContent = (user.displayName || user.email || "?")
-              .trim()
-              .charAt(0)
-              .toUpperCase();
+              .trim().charAt(0).toUpperCase();
           }
 
-          // ASSINATURA (campo genérico no doc de usuário, se já existir)
-          const status =
-            data.assinaturaStatus ||
-            (data.assinaturaAtiva ? "ativa" : "sem-assinatura");
-
-          if (status === "ativa") {
-            dotAssinatura.classList.remove("off");
-            textoAssinatura.textContent = "Assinatura ativa";
-          } else if (status === "suspensa") {
-            dotAssinatura.classList.add("off");
-            textoAssinatura.textContent = "Assinatura suspensa";
-          } else if (status === "sem-assinatura") {
-            dotAssinatura.classList.add("off");
-            textoAssinatura.textContent = "Sem assinatura ativa";
-          } else {
-            // fallback genérico
-            dotAssinatura.classList.add("off");
-            textoAssinatura.textContent = "Status de assinatura não definido";
-          }
-
-          // CATÁLOGO: baseado em usuarios/{uid}.catalogoAtivo
-          const catAtivo = !!data.catalogoAtivo;
-          if (catAtivo && currentSlug) {
-            dotCatalogo.classList.remove("off");
-            textoCatalogo.textContent = `Catálogo digital ativo (${currentSlug})`;
-            btnEditarCatalogo.style.display = "inline-flex";
-          } else if (catAtivo) {
-            dotCatalogo.classList.remove("off");
-            textoCatalogo.textContent = "Catálogo digital ativo";
-            btnEditarCatalogo.style.display = "inline-flex";
-          } else {
-            dotCatalogo.classList.add("off");
-            textoCatalogo.textContent = "Catálogo ainda não habilitado";
-            btnEditarCatalogo.style.display = "none";
-          }
-
-          // ÁLBUM: baseado em usuarios/{uid}.albumAtivo (boolean)
-          const albAtivo = !!data.albumAtivo;
-          if (albAtivo) {
-            dotAlbum.classList.remove("off");
-            textoAlbum.textContent = "Álbum / galeria ativo";
-            btnEditarAlbum.style.display = "inline-flex";
-          } else {
-            dotAlbum.classList.add("off");
-            textoAlbum.textContent = "Álbum ainda não habilitado";
-            btnEditarAlbum.style.display = "none";
-          }
+          catalogoAtivo = !!userData.catalogoAtivo;
+          albumAtivo = !!userData.albumAtivo;
         } else {
           slugInput.value = "(usuário sem documento em /usuarios ainda)";
-          dotAssinatura.classList.add("off");
-          textoAssinatura.textContent = "Sem assinatura ativa.";
         }
 
-        // Aqui no futuro dá pra buscar também:
-        // catalogos/{slug}/meta/config, se você quiser detalhes avançados.
+        // ------ assinaturas/{uid} ------
+        let assinaturaStatus = null;
+        let assinaturaPlano = null;
+
+        const assDocRef = doc(db, "assinaturas", user.uid);
+        const assSnap = await getDoc(assDocRef);
+        if (assSnap.exists()) {
+          const a = assSnap.data();
+          assinaturaStatus = a.status || null;   // ex: "ativa"
+          assinaturaPlano = a.plano || null;     // ex: "basico"
+        }
+
+        // se não tiver em assinaturas, tenta campos antigos em usuarios
+        if (!assinaturaStatus && userData) {
+          if (userData.assinaturaStatus) assinaturaStatus = userData.assinaturaStatus;
+          else if (userData.assinaturaAtiva) assinaturaStatus = "ativa";
+        }
+
+        // se ainda não tiver nada, mas catálogo/álbum estão ativos, considera ativa
+        if (!assinaturaStatus) {
+          if (catalogoAtivo || albumAtivo) {
+            assinaturaStatus = "ativa";
+          } else {
+            assinaturaStatus = "sem-assinatura";
+          }
+        }
+
+        // aplica na UI
+        if (assinaturaStatus === "ativa") {
+          dotAssinatura.classList.remove("off");
+          const planoTexto = assinaturaPlano ? " – Plano " + capitalizarPlano(assinaturaPlano) : "";
+          textoAssinatura.textContent = "Assinatura ativa" + planoTexto;
+        } else if (assinaturaStatus === "suspensa") {
+          dotAssinatura.classList.add("off");
+          textoAssinatura.textContent = "Assinatura suspensa";
+        } else if (assinaturaStatus === "cancelada") {
+          dotAssinatura.classList.add("off");
+          textoAssinatura.textContent = "Assinatura cancelada";
+        } else {
+          dotAssinatura.classList.add("off");
+          textoAssinatura.textContent = "Sem assinatura ativa";
+        }
+
+        // Catálogo na UI
+        if (catalogoAtivo && currentSlug) {
+          dotCatalogo.classList.remove("off");
+          textoCatalogo.textContent = `Catálogo digital ativo (${currentSlug})`;
+          btnEditarCatalogo.style.display = "inline-flex";
+        } else if (catalogoAtivo) {
+          dotCatalogo.classList.remove("off");
+          textoCatalogo.textContent = "Catálogo digital ativo";
+          btnEditarCatalogo.style.display = "inline-flex";
+        } else {
+          dotCatalogo.classList.add("off");
+          textoCatalogo.textContent = "Catálogo ainda não habilitado";
+          btnEditarCatalogo.style.display = "none";
+        }
+
+        // Álbum na UI
+        if (albumAtivo) {
+          dotAlbum.classList.remove("off");
+          textoAlbum.textContent = "Álbum / galeria ativo";
+          btnEditarAlbum.style.display = "inline-flex";
+        } else {
+          dotAlbum.classList.add("off");
+          textoAlbum.textContent = "Álbum ainda não habilitado";
+          btnEditarAlbum.style.display = "none";
+        }
 
       } catch (e) {
         console.error("Erro ao ler Firestore:", e);
@@ -783,7 +782,6 @@
       }
     });
 
-    // Sair
     if (authText) {
       authText.addEventListener("click", async () => {
         try {
@@ -800,7 +798,6 @@
       });
     }
 
-    // Avatar: escolher arquivo
     if (btnEscolherFoto && fileFoto) {
       btnEscolherFoto.addEventListener("click", () => fileFoto.click());
 
@@ -832,22 +829,16 @@
           await uploadBytes(storageRef, file);
           const url = await getDownloadURL(storageRef);
 
-          // salva em localStorage
           localStorage.setItem("fotoPerfil", url);
 
-          // atualiza UI
           userCircle.style.backgroundImage = `url('${url}')`;
           avatarPreview.style.backgroundImage = `url('${url}')`;
           avatarPreview.textContent = "";
 
-          // salva também no Firestore em /usuarios/{uid}
           const userDocRef = doc(db, "usuarios", user.uid);
           await setDoc(
             userDocRef,
-            {
-              fotoPerfilURL: url,
-              fotoPerfil: url
-            },
+            { fotoPerfilURL: url, fotoPerfil: url },
             { merge: true }
           );
 
@@ -865,21 +856,18 @@
       });
     }
 
-    // Botão alterar e-mail
     if (btnAlterarEmail) {
       btnAlterarEmail.addEventListener("click", () => {
         window.location.href = "alterar-email.html";
       });
     }
 
-    // Botão alterar assinatura
     if (btnAlterarPlano) {
       btnAlterarPlano.addEventListener("click", () => {
         window.location.href = "planos.html#trocar";
       });
     }
 
-    // Botão cancelar assinatura
     if (btnCancelarPlano) {
       btnCancelarPlano.addEventListener("click", () => {
         showAlert({
@@ -890,15 +878,12 @@
       });
     }
 
-    // Editar catálogo
     if (btnEditarCatalogo) {
       btnEditarCatalogo.addEventListener("click", () => {
-        // você pode usar o slug salvo no localStorage dentro da página editar-catalogo.html
         window.location.href = "editar-catalogo.html";
       });
     }
 
-    // Editar álbum
     if (btnEditarAlbum) {
       btnEditarAlbum.addEventListener("click", () => {
         window.location.href = "editar-album.html";
