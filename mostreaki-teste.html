@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MostreAki</title>
+  <title>Parceiros • MostreAki</title>
 
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap');
@@ -330,157 +330,160 @@
       transform: translateY(-1px);
     }
 
-    /* ===== Main com mesmo respiro dos planos ===== */
+    /* ===== Main ===== */
     main {
       flex: 1;
       max-width: min(1100px, 94vw);
       margin: 2rem auto 2.6rem;
     }
 
-    /* ===== Carrossel ===== */
-    .banner-wrapper {
-      margin: 0 auto 2.5rem;
-      width: min(1100px, 94vw);
-      border-radius: 1.6rem;
-      overflow: hidden;
-      box-shadow: 0 14px 34px rgba(0,0,0,.28);
-      background: #000;
+    .page-header {
+      background: rgba(205,224,224,.93);
+      border-radius: 1.5rem;
+      box-shadow: 0 10px 26px rgba(0,0,0,.18);
+      border: 1px solid rgba(255,255,255,.5);
+      padding: 1.6rem 1.4rem 1.4rem;
+      margin-bottom: 2rem;
     }
-    .banner-slider {
-      position: relative;
+
+    .page-header h1 {
+      font-family: "Poppins", system-ui, sans-serif;
+      font-size: clamp(1.5rem, 2.2vw, 2rem);
+      color: var(--bordo);
+      margin-bottom: .4rem;
+    }
+
+    .page-header p {
+      font-size: .95rem;
+      line-height: 1.6;
+      margin-bottom: .4rem;
+    }
+
+    .page-header p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* ===== Grid de parceiros ===== */
+    .partner-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .partner-card {
+      background: rgba(205,224,224,.96);
+      border-radius: 1.4rem;
+      box-shadow: 0 10px 24px rgba(0,0,0,.22);
+      border: 1px solid rgba(255,255,255,.6);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .partner-thumb {
       width: 100%;
-      overflow: hidden;
-      border-radius: 1.6rem;
-    }
-
-    .banner-track {
-      display: flex;
-      transition: transform .4s ease;
-    }
-
-    .banner-slide {
-      min-width: 100%;
-      height: clamp(220px, 45vw, 420px);
+      aspect-ratio: 16 / 9;
       background: #000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      overflow: hidden;
     }
-    .banner-slide video {
+
+    .partner-thumb img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       display: block;
     }
 
-    .banner-desktop { display: none; }
-    .banner-mobile  { display: block; }
+    .partner-body {
+      padding: 1rem 1rem 1.1rem;
+      display: flex;
+      flex-direction: column;
+      gap: .3rem;
+    }
 
-    .banner-dots {
-      position: absolute;
-      bottom: 10px; left: 50%;
-      transform: translateX(-50%);
-      display: flex; gap: 8px;
-    }
-    .banner-dot {
-      width: 10px; height: 10px; border-radius: 50%;
-      background: rgba(255,255,255,.4);
-      border: 2px solid rgba(0,0,0,.15);
-      cursor: pointer; transition: .2s;
-    }
-    .banner-dot.active {
+    .partner-tag {
+      font-size: .75rem;
+      font-weight: 600;
+      color: #fff;
       background: var(--bordo);
-      border-color: rgba(0,0,0,.35);
+      align-self: flex-start;
+      padding: .2rem .6rem;
+      border-radius: 999px;
+      margin-bottom: .2rem;
     }
 
-    /* ===== Hexágonos ===== */
-    .menu-opcoes {
-      width: 100%;
-      margin: 2.6rem auto 3.2rem;
-      display: flex; gap: 1rem; justify-content: space-between; flex-wrap: wrap;
-    }
-    .hex-group {
-      position: relative; width: 180px; height: 240px;
-      display: flex; justify-content: center; align-items: center; transition:.3s;
-    }
-    .hex-group:nth-child(2),
-    .hex-group:nth-child(4) { transform: translateY(-40px); }
-
-    .hex {
-      width: 150px; height: 130px;
-      border: 3px solid var(--bordo);
-      clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
-      overflow: hidden;
-      background: rgba(255,255,255,0.03);
-      backdrop-filter: blur(8px);
-      display:flex; align-items:center; justify-content:center;
-      box-shadow: 0 10px 24px rgba(0,0,0,.35);
-    }
-    .hex::before {
-      content:"";
-      position:absolute; inset:1px;
-      background: radial-gradient(circle at top, rgba(255,255,255,.4), transparent 60%);
-      opacity:.9;
+    .partner-name {
+      font-weight: 700;
+      font-size: 1rem;
+      color: #003735;
     }
 
-    .hex-btn {
-      position:relative; z-index:1;
-      width:100%; height:100%;
-      display:flex; flex-direction:column; align-items:center; justify-content:center;
-      color:#111; text-decoration:none; text-align:center;
-      padding:.5rem;
-    }
-    .hex-btn span {
-      display:block;
+    .partner-niche {
+      font-size: .8rem;
+      color: #333;
+      opacity: .9;
     }
 
-    .hex-icon {
-      width:36px; height:36px; border-radius:12px;
-      border:1px solid rgba(0,0,0,.15);
-      display:flex; align-items:center; justify-content:center;
-      margin-bottom:.35rem;
-      background: linear-gradient(180deg, #f5f5f5, #dcdcdc);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.8);
-      font-size:1.2rem;
-    }
-
-    .hex-title {
-      font-weight:700; font-size:.9rem;
-      margin-bottom:.25rem;
-    }
-    .hex-desc {
-      font-size:.8rem;
-    }
-
-    .hex-group:hover {
-      transform: translateY(-8px);
-    }
-    .hex-group:hover .hex {
-      box-shadow: 0 12px 30px rgba(0,0,0,.4);
-    }
-
-    /* ===== Sessão texto ===== */
-    .intro {
-      margin-top: .5rem;
-      padding: 1.4rem 1.1rem 1.6rem;
-      background: rgba(205,224,224,.93);
-      border-radius: 1.5rem;
-      box-shadow: 0 10px 26px rgba(0,0,0,.2);
-      border: 1px solid rgba(255,255,255,.5);
-    }
-    .intro h1 {
-      font-family: "Poppins", system-ui, sans-serif;
-      font-size: clamp(1.4rem, 2.1vw, 1.9rem);
-      color: var(--bordo);
-      margin-bottom: .6rem;
-      letter-spacing: .02em;
-    }
-    .intro p {
-      font-size: .95rem;
+    .partner-desc {
+      font-size: .85rem;
       line-height: 1.5;
-      margin-bottom: .55rem;
+      margin-top: .25rem;
     }
-    .intro p:last-child { margin-bottom: 0; }
+
+    .partner-meta {
+      font-size: .8rem;
+      color: #233;
+      margin-top: .3rem;
+    }
+
+    .partner-actions {
+      margin-top: .7rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+    }
+
+    .btn-primary,
+    .btn-outline {
+      border-radius: 999px;
+      padding: .4rem .8rem;
+      font-size: .85rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: .2rem;
+      border: 2px solid transparent;
+    }
+
+    .btn-primary {
+      background: var(--bordo);
+      color: #fff;
+      border-color: rgba(0,0,0,.1);
+      box-shadow: 0 2px 6px rgba(0,0,0,.25);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--bordo);
+      border-color: var(--bordo);
+    }
+
+    .btn-primary:hover {
+      background: #5d2343;
+    }
+    .btn-outline:hover {
+      background: rgba(125,47,89,.08);
+    }
+
+    .partner-note {
+      font-size: .78rem;
+      color: #233;
+      margin-top: .3rem;
+      opacity: .9;
+    }
 
     /* ===== Rodapé ===== */
     footer {
@@ -504,76 +507,32 @@
       font-weight: 600;
     }
 
-    /* ===== Breakpoints ===== */
     @media (max-width: 768px) {
       header { padding: 0 .9rem; }
-
       .menu-overlay { width: 280px; max-width: 85vw; }
       .menu-link { width: 210px; max-width: 100%; }
 
-      .banner-wrapper { width: 100%; border-radius: 0; }
-      .banner-slider { border-radius: 0; }
+      main { margin-top: 1.8rem; }
+      .page-header { padding: 1.3rem 1.1rem 1.2rem; }
+    }
 
-      .menu-opcoes {
-        display:flex; flex-wrap:wrap; gap:1.1rem;
-        justify-content:center; margin-top:2.3rem;
+    @media (max-width: 480px) {
+      .partner-card {
+        border-radius: 1.1rem;
       }
-      .hex-group {
-        width:160px; height:210px;
-        transform:none !important;
-      }
-      .hex {
-        width:140px; height:120px;
-      }
-      .intro {
-        margin-top:1rem;
+      .partner-body {
+        padding: .9rem .9rem 1rem;
       }
     }
 
-    @media (max-width: 480px){
-      .menu-opcoes {
-        gap:1rem;
-      }
-      .hex-group {
-        width:140px; height:200px;
-      }
-      .hex {
-        width:130px; height:110px;
-      }
-      .intro {
-        padding:1.1rem 1rem 1.3rem;
-      }
-    }
-
-    @media (hover:hover){
-      .hex-group:hover .hex-btn {
-        transform:translateY(-1px);
-      }
-    }
-
-    @media (pointer:coarse){
-      .hex-group {
-        opacity:1; border-radius:10px;
-      }
-      .hex-group:nth-child(2),
-      .hex-group:nth-child(4) { margin-top:1.4rem; }
-      .hex-group:active .hex,
-      .hex-group:active .hex-btn {
-        box-shadow: 0 0 12px 2px rgba(125,47,89,.75);
-      }
-    }
-
-    @media (min-width: 880px) {
-      .banner-desktop { display: block; }
-      .banner-mobile  { display: none;  }
-    }
-  
   </style>
 </head>
 <body>
   <header>
     <div class="header-left">
-      <img src="/logomarca.svg" alt="MostreAki">
+      <a href="/index.html">
+        <img src="/logomarca.svg" alt="MostreAki">
+      </a>
     </div>
     <div class="header-right">
       <button id="btnAbrirLogin" type="button">Entrar</button>
@@ -587,11 +546,11 @@
 
   <!-- Menu lateral -->
   <nav class="menu-overlay" id="menu-overlay">
-    <!-- página atual (index) não aparece -->
+    <a href="/index.html" class="menu-link">Início</a>
     <a href="/sobre.html" class="menu-link">Sobre</a>
     <a href="/minha-conta.html" class="menu-link">Minha Conta</a>
     <a href="/planos.html" class="menu-link">Planos</a>
-    <a href="/parceiros.html" class="menu-link">Parceiros</a>
+    <!-- página atual (parceiros) não aparece aqui -->
     <a href="/servicos-adicionais.html" class="menu-link">Serviços Adicionais</a>
     <a href="/redes-sociais.html" class="menu-link">Redes Sociais</a>
     <a href="/contato.html" class="menu-link">Contato</a>
@@ -637,90 +596,136 @@
   </div>
 
   <main>
-    <!-- ===== Carrossel 6 banners ===== -->
-    <section class="banner-wrapper">
-      <div class="banner-slider" id="bannerSlider">
-        <div class="banner-track" id="bannerTrack">
-          <!-- mobile -->
-          <div class="banner-slide banner-mobile">
-            <video src="planos-mobile-mostreaki.mp4" autoplay muted loop playsinline></video>
-          </div>
-          <div class="banner-slide banner-mobile">
-            <video src="parceiros-mobile-mostreaki.mp4" autoplay muted loop playsinline></video>
-          </div>
-          <div class="banner-slide banner-mobile">
-            <video src="servicos-mobile-mostreaki.mp4" autoplay muted loop playsinline></video>
-          </div>
-
-          <!-- desktop -->
-          <div class="banner-slide banner-desktop">
-            <video src="planos-desktop-mostreaki.mp4" autoplay muted loop playsinline></video>
-          </div>
-          <div class="banner-slide banner-desktop">
-            <video src="parceiros-desktop-mostreaki.mp4" autoplay muted loop playsinline></video>
-          </div>
-          <div class="banner-slide banner-desktop">
-            <video src="servicos-desktop-mostreaki.mp4" autoplay muted loop playsinline></video>
-          </div>
-        </div>
-
-        <div class="banner-dots" aria-label="Navegação dos banners">
-          <button class="banner-dot active" data-index="0"></button>
-          <button class="banner-dot" data-index="1"></button>
-          <button class="banner-dot" data-index="2"></button>
-        </div>
-      </div>
+    <section class="page-header">
+      <h1>Templates dos Parceiros MostreAki</h1>
+      <p>
+        Aqui você encontra exemplos reais de sites desenvolvidos pelo MostreAki, em produção, com marcas que já estão fortalecendo sua presença digital.
+      </p>
+      <p>
+        Cada parceiro abaixo representa um <b>template vivo</b>: estrutura, identidade visual, catálogo digital e integração com redes sociais e canais de contato.
+      </p>
+      <p>
+        Ao clicar em <b>Ver site</b>, você conhece o projeto no ar. Em <b>Ver template</b>, você pode usar aquela estrutura como referência para o seu próprio MostreAki.
+      </p>
     </section>
 
-    <!-- ===== Hexágonos ===== -->
-    <section class="menu-opcoes" aria-label="Acessos principais">
-      <div class="hex-group">
-        <div class="hex">
-          <a href="/planos.html" class="hex-btn">
-            <div class="hex-icon">💼</div>
-            <span class="hex-title">Planos</span>
-            <span class="hex-desc">Conheça as opções para ter sua vitrine digital.</span>
-          </a>
+    <section class="partner-grid" aria-label="Lista de parceiros e templates">
+      <!-- Lamaggie -->
+      <article class="partner-card">
+        <div class="partner-thumb">
+          <!-- Troque esta imagem pelo print real do site -->
+          <img src="/templates/lamaggie-template.png" alt="Template Lamaggie" />
         </div>
-      </div>
-
-      <div class="hex-group">
-        <div class="hex">
-          <a href="/parceiros.html" class="hex-btn">
-            <div class="hex-icon">🤝</div>
-            <span class="hex-title">Parceiros</span>
-            <span class="hex-desc">Veja quem já está fortalecendo a marca com o MostreAki.</span>
-          </a>
+        <div class="partner-body">
+          <div class="partner-tag">Template em produção</div>
+          <div class="partner-name">Lamaggie</div>
+          <div class="partner-niche">Confeitaria artesanal & doces personalizados</div>
+          <div class="partner-desc">
+            Vitrine digital para apresentação de portfólio, encomendas e destaques de produtos sazonais, com foco em fotos atrativas e contato rápido pelo WhatsApp.
+          </div>
+          <div class="partner-meta">
+            Catálogo com produtos em destaque, seções institucionais e integração com redes sociais.
+          </div>
+          <div class="partner-actions">
+            <a href="https://lamaggie.com.br" target="_blank" rel="noopener noreferrer" class="btn-primary">
+              Ver site
+            </a>
+            <a href="#lamaggie-template" class="btn-outline">
+              Ver template
+            </a>
+          </div>
+          <div class="partner-note">
+            Ideal para confeiteiras, boleiras, docerias e empreendedores do ramo gastronômico.
+          </div>
         </div>
-      </div>
+      </article>
 
-      <div class="hex-group">
-        <div class="hex">
-          <a href="/servicos-adicionais.html" class="hex-btn">
-            <div class="hex-icon">🎨</div>
-            <span class="hex-title">Serviços Adicionais</span>
-            <span class="hex-desc">Artes, ajustes e soluções extras para sua presença digital.</span>
-          </a>
+      <!-- Percival BRICS -->
+      <article class="partner-card">
+        <div class="partner-thumb">
+          <!-- Troque esta imagem pelo print real do site -->
+          <img src="/templates/percival-brics-template.png" alt="Template Percival BRICS" />
         </div>
-      </div>
-
-      <div class="hex-group">
-        <div class="hex">
-          <a href="/redes-sociais.html" class="hex-btn">
-            <div class="hex-icon">📲</div>
-            <span class="hex-title">Redes Sociais</span>
-            <span class="hex-desc">Conecte seu catálogo à sua audiência.</span>
-          </a>
+        <div class="partner-body">
+          <div class="partner-tag">Template em produção</div>
+          <div class="partner-name">Percival BRICS</div>
+          <div class="partner-niche">Conteúdo estratégico & posicionamento internacional</div>
+          <div class="partner-desc">
+            Estrutura pensada para profissionais que trabalham com análise, conteúdo e consultoria, valorizando textos claros, áreas de destaque e chamadas para ação.
+          </div>
+          <div class="partner-meta">
+            Seções para artigos, vídeos incorporados e links externos para canais e plataformas.
+          </div>
+          <div class="partner-actions">
+            <a href="https://percival-brics.com.br" target="_blank" rel="noopener noreferrer" class="btn-primary">
+              Ver site
+            </a>
+            <a href="#percival-template" class="btn-outline">
+              Ver template
+            </a>
+          </div>
+          <div class="partner-note">
+            Indicado para criadores de conteúdo, consultores, jornalistas independentes e educadores.
+          </div>
         </div>
-      </div>
-    </section>
+      </article>
 
-    <!-- ===== Texto institucional ===== -->
-    <section class="intro">
-      <h1>MostreAki: a vitrine digital da sua marca</h1>
-      <p>O MostreAki nasceu para dar visibilidade à sua marca, ao seu serviço, conteúdo e catálogo de produtos.</p>
-      <p>Nosso objetivo é exibir uma vitrine digital acessível, organizada e integrada com as redes sociais, para que o seu cliente encontre tudo o que precisa em poucos cliques.</p>
-      <p>Enquanto você cuida do seu trabalho, nós cuidamos da apresentação da sua marca no ambiente digital.</p>
+      <!-- Almanyx -->
+      <article class="partner-card">
+        <div class="partner-thumb">
+          <!-- Troque esta imagem pelo print real do site -->
+          <img src="/templates/almanyx-template.png" alt="Template Almanyx" />
+        </div>
+        <div class="partner-body">
+          <div class="partner-tag">Template em produção</div>
+          <div class="partner-name">Almanyx</div>
+          <div class="partner-niche">Tecnologia, identidade digital & experiências interativas</div>
+          <div class="partner-desc">
+            Um layout voltado para projetos mais futuristas, com foco em identidade visual forte,
+            destaque para serviços digitais e integração com páginas especiais.
+          </div>
+          <div class="partner-meta">
+            Estrutura flexível para serviços, depoimentos, chamadas para projetos e links estratégicos.
+          </div>
+          <div class="partner-actions">
+            <a href="https://almanyx.com.br" target="_blank" rel="noopener noreferrer" class="btn-primary">
+              Ver site
+            </a>
+            <a href="#almanyx-template" class="btn-outline">
+              Ver template
+            </a>
+          </div>
+          <div class="partner-note">
+            Indicado para estúdios criativos, projetos de tecnologia e marcas com proposta inovadora.
+          </div>
+        </div>
+      </article>
+
+      <!-- Exemplo template futuro (placeholder) -->
+      <article class="partner-card">
+        <div class="partner-thumb">
+          <img src="/templates/em-breve-template.png" alt="Template MostreAki em breve" />
+        </div>
+        <div class="partner-body">
+          <div class="partner-tag">Em breve</div>
+          <div class="partner-name">Seu Projeto Aqui</div>
+          <div class="partner-niche">Marca em construção com o MostreAki</div>
+          <div class="partner-desc">
+            Este espaço está reservado para novos parceiros que desejam transformar sua marca em uma vitrine digital organizada, responsiva e integrada às redes sociais.
+          </div>
+          <div class="partner-meta">
+            Entre em contato e vamos planejar juntos o template da sua marca.
+          </div>
+          <div class="partner-actions">
+            <a href="/contato.html" class="btn-primary">
+              Falar com o MostreAki
+            </a>
+          </div>
+          <div class="partner-note">
+            Quando o site for publicado, ele passa a aparecer aqui como exemplo real de template.
+          </div>
+        </div>
+      </article>
     </section>
   </main>
 
@@ -742,57 +747,12 @@
       );
     }
 
-    // Carrossel (3 grupos: 0,1,2)
-    const track = document.getElementById("bannerTrack");
-    const dots  = document.querySelectorAll(".banner-dot");
-    const slider= document.getElementById("bannerSlider");
-    let current = 0;
-    const total  = 3;
-
-    function setSlide(index) {
-      current = Math.max(0, Math.min(total - 1, index));
-      const width = slider.clientWidth;
-      track.style.transform = `translateX(-${width * current}px)`;
-      dots.forEach(d => d.classList.toggle("active", Number(d.dataset.index) === current));
-    }
-
-    dots.forEach(d => d.addEventListener("click", () => setSlide(Number(d.dataset.index))));
-
-    // Swipe touch
-    let startX = 0, dragging = false;
-    slider.addEventListener("touchstart", e => {
-      dragging = true;
-      startX = e.touches[0].clientX;
-    }, {passive:true});
-    slider.addEventListener("touchend",   e => {
-      if(!dragging) return;
-      dragging = false;
-      const diff = e.changedTouches[0].clientX - startX;
-      if (diff > 40) setSlide(current - 1);
-      else if (diff < -40) setSlide(current + 1);
-    });
-
-    // Swipe mouse (desktop)
-    slider.addEventListener("mousedown", e => {
-      dragging = true;
-      startX = e.clientX;
-    });
-    slider.addEventListener("mouseup",   e => {
-      if(!dragging) return;
-      dragging = false;
-      const diff = e.clientX - startX;
-      if (diff > 40) setSlide(current - 1);
-      else if (diff < -40) setSlide(current + 1);
-    });
-
-    window.addEventListener("resize", () => setSlide(current));
-    setSlide(0);
-
     // Ano no rodapé
     const spanAno = document.getElementById('ano');
     if (spanAno) spanAno.textContent = new Date().getFullYear();
   </script>
 
+  <!-- Firebase + Login (mesmo padrão da index) -->
   <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
 import { 
