@@ -523,8 +523,8 @@
             Cancelar assinatura
           </button>
         </div>
-        <div class="section-note" id="notaLimitesPlano">
-          <!-- Atualizado via JS com limites do plano -->
+        <div class="section-note">
+          A alteração de plano será redirecionada para a página de planos. O cancelamento segue as regras do intermediador de pagamento.
         </div>
 
         <!-- Catálogo -->
@@ -664,15 +664,21 @@
     const btnAlterarEmail = $("btnAlterarEmail");
     const btnAlterarPlano = $("btnAlterarPlano");
     const btnCancelarPlano = $("btnCancelarPlano");
-    const notaLimitesPlano = $("notaLimitesPlano");
 
-    const LIMITES_PLANO = {
-      basico: { label: "Básico", limite: 100 },
-      intermediario: { label: "Intermediário", limite: 250 },
-      avancado: { label: "Avançado", limite: 500 }
+    function normalizarPlano(planoRaw) {
+      if (!planoRaw) return null;
+      const p = planoRaw.toLowerCase();
+      if (p.includes("basi")) return "básico";
+      if (p.includes("inter")) return "intermediário";
+      if (p.includes("avanc")) return "avançado";
+      return null;
+    }
+
+    const limitesPlano = {
+      "básico": 100,
+      "intermediário": 250,
+      "avançado": 500
     };
-
-    let planoAtualChave = null;
 
     /* ===== estado de auth ===== */
     onAuthStateChanged(auth, async (user) => {
@@ -691,7 +697,6 @@
         userCircle.textContent = letra;
         userCircle.style.display = "flex";
 
-        // Se já tiver fotoPerfil no localStorage, usa
         const savedFoto = localStorage.getItem("fotoPerfil");
         if (savedFoto) {
           userCircle.style.backgroundImage = `url('${savedFoto}')`;
@@ -705,13 +710,12 @@
 
       let slug = null;
 
+      // 1) Ler documento em /usuarios/{uid} para slug, catálogo e álbum
       try {
-        // 1) Lê documento do usuário
-        const docRefUsuario = doc(db, "usuarios", user.uid);
-        const snapUsuario = await getDoc(docRefUsuario);
-
-        if (snapUsuario.exists()) {
-          const data = snapUsuario.data();
+        const docRef = doc(db, "usuarios", user.uid);
+        const snap = await getDoc(docRef);
+        if (snap.exists()) {
+          const data = snap.data();
 
           // slug
           if (data.slug) {
@@ -721,101 +725,21 @@
             slugInput.value = "(definir slug no Firestore)";
           }
 
-          // foto de perfil do Firestore (se existir e ainda não tiver no localStorage)
+          // foto de perfil armazenada no Firestore (opcional)
           if (data.fotoPerfilURL && !localStorage.getItem("fotoPerfil")) {
             localStorage.setItem("fotoPerfil", data.fotoPerfilURL);
-            userCircle.style.backgroundImage = `url('${data.fotoPerfilURL}')`;
+            if (userCircle) {
+              userCircle.style.backgroundImage = `url('${data.fotoPerfilURL}')`;
+            }
             avatarPreview.style.backgroundImage = `url('${data.fotoPerfilURL}')`;
             avatarPreview.textContent = "";
           }
-        } else {
-          slugInput.value = "(usuário sem documento em /usuarios ainda)";
-        }
 
-        // 2) Se não tiver slug, não conseguimos seguir com assinatura/catalogo
-        if (!slug) {
-          dotAssinatura.classList.add("off");
-          textoAssinatura.textContent = "Sem assinatura ativa (slug não definido).";
-          dotCatalogo.classList.add("off");
-          textoCatalogo.textContent = "Catálogo ainda não habilitado (slug não definido).";
-          dotAlbum.classList.add("off");
-          textoAlbum.textContent = "Álbum ainda não habilitado (slug não definido).";
-          return;
-        }
-
-        // 3) Lê assinatura em /assinaturas/{slug}
-        try {
-          const docRefAss = doc(db, "assinaturas", slug);
-          const snapAss = await getDoc(docRefAss);
-
-          if (snapAss.exists()) {
-            const a = snapAss.data();
-            const status = (a.status || "").toLowerCase();
-            const plano = (a.plano || a.planos || "").toLowerCase();
-            planoAtualChave = plano;
-
-            const infoPlano = LIMITES_PLANO[plano];
-
-            if (status === "ativo") {
-              dotAssinatura.classList.remove("off");
-              if (infoPlano) {
-                textoAssinatura.textContent = `Assinatura ativa – Plano ${infoPlano.label}`;
-                notaLimitesPlano.textContent =
-                  `Seu plano atual permite até ${infoPlano.limite} produtos no catálogo e até ${infoPlano.limite} itens no álbum.`;
-              } else {
-                textoAssinatura.textContent = "Assinatura ativa.";
-                notaLimitesPlano.textContent =
-                  "Seu plano está ativo. Os limites do catálogo e álbum serão configurados de acordo com o plano contratado.";
-              }
-            } else if (status === "suspenso" || status === "suspensa") {
-              dotAssinatura.classList.add("off");
-              textoAssinatura.textContent = "Assinatura suspensa.";
-              notaLimitesPlano.textContent =
-                "Regularize sua assinatura com o intermediador de pagamento para reativar o catálogo e o álbum.";
-            } else {
-              dotAssinatura.classList.add("off");
-              textoAssinatura.textContent = "Sem assinatura ativa.";
-              notaLimitesPlano.textContent =
-                "Contrate um plano MostreAki para habilitar catálogo digital e álbum da sua marca.";
-            }
-          } else {
-            // não há doc em /assinaturas
-            dotAssinatura.classList.add("off");
-            textoAssinatura.textContent = "Sem assinatura ativa.";
-            notaLimitesPlano.textContent =
-              "Contrate um plano MostreAki para habilitar catálogo digital e álbum da sua marca.";
-          }
-        } catch (errAss) {
-          console.error("Erro ao ler assinatura:", errAss);
-          dotAssinatura.classList.add("off");
-          textoAssinatura.textContent = "Não foi possível carregar os dados da assinatura.";
-          notaLimitesPlano.textContent =
-            "Tente recarregar a página. Se o problema persistir, fale com o suporte.";
-        }
-
-        // 4) Lê config de catálogo/álbum em /catalogos/{slug}/meta/config
-        try {
-          const docRefCfg = doc(db, "catalogos", slug, "meta", "config");
-          const snapCfg = await getDoc(docRefCfg);
-
-          let catAtivo = false;
-          let albAtivo = false;
-
-          if (snapCfg.exists()) {
-            const cfg = snapCfg.data();
-            catAtivo = !!cfg.catalogoAtivo;
-            albAtivo = !!cfg.albumAtivo;
-          }
-
-          // Atualiza catálogo
+          // catálogo ativo
+          const catAtivo = !!data.catalogoAtivo;
           if (catAtivo) {
             dotCatalogo.classList.remove("off");
-            if (planoAtualChave && LIMITES_PLANO[planoAtualChave]) {
-              const lim = LIMITES_PLANO[planoAtualChave].limite;
-              textoCatalogo.textContent = `Catálogo digital ativo – limite de até ${lim} produtos.`;
-            } else {
-              textoCatalogo.textContent = "Catálogo digital ativo.";
-            }
+            textoCatalogo.textContent = "Catálogo digital ativo.";
             btnEditarCatalogo.style.display = "inline-flex";
           } else {
             dotCatalogo.classList.add("off");
@@ -823,15 +747,11 @@
             btnEditarCatalogo.style.display = "none";
           }
 
-          // Atualiza álbum
+          // álbum ativo
+          const albAtivo = !!data.albumAtivo;
           if (albAtivo) {
             dotAlbum.classList.remove("off");
-            if (planoAtualChave && LIMITES_PLANO[planoAtualChave]) {
-              const lim = LIMITES_PLANO[planoAtualChave].limite;
-              textoAlbum.textContent = `Álbum / galeria ativo – limite de até ${lim} itens.`;
-            } else {
-              textoAlbum.textContent = "Álbum / galeria ativo.";
-            }
+            textoAlbum.textContent = "Álbum / galeria ativo.";
             btnEditarAlbum.style.display = "inline-flex";
           } else {
             dotAlbum.classList.add("off");
@@ -839,20 +759,62 @@
             btnEditarAlbum.style.display = "none";
           }
 
-        } catch (errCfg) {
-          console.error("Erro ao ler config de catálogo/álbum:", errCfg);
+        } else {
+          slugInput.value = "(usuário sem documento em /usuarios ainda)";
           dotCatalogo.classList.add("off");
-          textoCatalogo.textContent = "Não foi possível carregar o status do catálogo.";
+          textoCatalogo.textContent = "Catálogo ainda não habilitado.";
           dotAlbum.classList.add("off");
-          textoAlbum.textContent = "Não foi possível carregar o status do álbum.";
+          textoAlbum.textContent = "Álbum ainda não habilitado.";
         }
-
       } catch (e) {
-        console.error("Erro ao ler Firestore (bloco geral):", e);
+        console.error("Erro ao ler /usuarios:", e);
+        slugInput.value = "(erro ao carregar dados)";
+      }
+
+      // 2) Ler documento em /assinaturas/{uid} para status + tipo de plano
+      try {
+        const assRef = doc(db, "assinaturas", user.uid);
+        const assSnap = await getDoc(assRef);
+
+        if (assSnap.exists()) {
+          const a = assSnap.data();
+          const statusRaw = (a.status || "").toLowerCase();
+          const planoRaw = a.plano || a.planos || "";
+          const planoNorm = normalizarPlano(planoRaw);
+          const limite = planoNorm ? limitesPlano[planoNorm] : null;
+
+          let ativa = false;
+          let suspensa = false;
+
+          if (statusRaw === "ativo" || statusRaw === "ativa") {
+            ativa = true;
+          } else if (statusRaw === "suspenso" || statusRaw === "suspensa") {
+            suspensa = true;
+          }
+
+          if (ativa) {
+            dotAssinatura.classList.remove("off");
+            if (planoNorm && limite) {
+              textoAssinatura.textContent =
+                `Assinatura ativa – Plano ${planoNorm} (até ${limite} produtos no catálogo).`;
+            } else {
+              textoAssinatura.textContent = "Assinatura ativa.";
+            }
+          } else if (suspensa) {
+            dotAssinatura.classList.add("off");
+            textoAssinatura.textContent = "Assinatura suspensa.";
+          } else {
+            dotAssinatura.classList.add("off");
+            textoAssinatura.textContent = "Sem assinatura ativa.";
+          }
+        } else {
+          dotAssinatura.classList.add("off");
+          textoAssinatura.textContent = "Sem assinatura ativa.";
+        }
+      } catch (e) {
+        console.error("Erro ao ler /assinaturas:", e);
         dotAssinatura.classList.add("off");
-        textoAssinatura.textContent = "Não foi possível carregar os dados. Tente novamente.";
-        notaLimitesPlano.textContent =
-          "Se o erro continuar, entre em contato com o suporte MostreAki.";
+        textoAssinatura.textContent = "Não foi possível carregar os dados da assinatura.";
       }
     });
 
@@ -905,7 +867,9 @@
           const url = await getDownloadURL(storageRef);
 
           localStorage.setItem("fotoPerfil", url);
-          userCircle.style.backgroundImage = `url('${url}')`;
+          if (userCircle) {
+            userCircle.style.backgroundImage = `url('${url}')`;
+          }
           avatarPreview.style.backgroundImage = `url('${url}')`;
           avatarPreview.textContent = "";
           showAlert({
